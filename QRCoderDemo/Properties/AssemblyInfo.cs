@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
-[assembly: AssemblyTitle("Qr_P_Antilog_GenPolynom")]
+[assembly: AssemblyTitle("QRCoderDemo")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Qr_P_Antilog_GenPolynom")]
+[assembly: AssemblyProduct("QRCoderDemo")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-[assembly: Guid("d051e038-820f-4537-bdad-4f971fc755b6")]
+[assembly: Guid("bf334514-4578-4886-9794-0d20e1f42ec2")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 //
