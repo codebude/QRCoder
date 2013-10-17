@@ -8,9 +8,9 @@ Feel free to grab-up/fork the project and make it better!
 
 For more information visit:
 
-(german) => (link follows)
+(german) => http://code-bude.net/2013/10/17/qrcoder-eine-open-source-qr-code-implementierung-in-csharp/
 
-(english) => (link follows)
+(english) => http://en.code-bude.net/2013/10/17/qrcoder-an-open-source-qr-code-generator-implementation-in-csharp/
  
 
 ## Legal information and credits
