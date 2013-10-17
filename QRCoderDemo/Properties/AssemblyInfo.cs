@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 [assembly: AssemblyTitle("QRCoderDemo")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A demo project which shows how to use the QRCoder library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("www.code-bude.net")]
 [assembly: AssemblyProduct("QRCoderDemo")]
-[assembly: AssemblyCopyright("Copyright ©  2013")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCopyright("Free to use (MIT license)")]
+[assembly: AssemblyTrademark("written by Raffael Herrmann")]
 [assembly: AssemblyCulture("")]
 
 // Durch Festlegen von ComVisible auf "false" werden die Typen in dieser Assembly unsichtbar 
