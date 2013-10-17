@@ -23,6 +23,8 @@ in 10/2013. It's licensed unter MIT license.
 
 After referencing the QRCoder.dll in your project, you only need three lines of code, to generate and view your first QR code.
 
-`QRCodeGenerator qrGenerator = new QRCodeGenerator();
-QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.Q);   
-pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20);`
+```
+QRCodeGenerator qrGenerator = new QRCodeGenerator();
+QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.Q);
+pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20);
+```
