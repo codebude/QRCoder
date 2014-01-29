@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -730,7 +730,7 @@ namespace QRCoder
         {
             return bitString.ToList().Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / 8)
-                .Select(x => String.Concat(x.Select(v => v.Value).ToList()))
+                .Select(x => String.Join("", x.Select(v => v.Value.ToString()).ToArray()))
                 .ToList();
         }
 
