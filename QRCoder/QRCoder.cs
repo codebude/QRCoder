@@ -1216,7 +1216,7 @@ namespace QRCoder
                     ModuleMatrix.Add(new BitArray(size));
             }
 
-            public Bitmap GetGraphic(int pixelsPerModule)
+            public Bitmap GetGraphic(int pixelsPerModule, String frontColor="#000000",String backgroundColor="#FFFFFF" )
             {
                 var size = ModuleMatrix.Count * pixelsPerModule;
                 Bitmap bmp = new Bitmap(size, size);
@@ -1227,9 +1227,9 @@ namespace QRCoder
                     {
                         var module = ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
                         if (module)
-                            gfx.FillRectangle(Brushes.Black, new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
+                            gfx.FillRectangle(new SolidBrush(ColorTranslator.FromHtml(frontColor)), new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
                         else
-                            gfx.FillRectangle(Brushes.White, new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
+                            gfx.FillRectangle(new SolidBrush(ColorTranslator.FromHtml(backgroundColor)), new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
                     }
                 }
 
