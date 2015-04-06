@@ -625,14 +625,22 @@ namespace QRCoder
                     Exponent = generatorPolynom.PolyItems[i].Exponent + genLeadtermFactor
                 };
 
+
+
             var leadTermSource = messagePolynom;
             for (int i = 0; i < messagePolynom.PolyItems.Count; i++)
             {
-
-                var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
-                resPoly = ConvertToDecNotation(resPoly);
-                resPoly = XORPolynoms(leadTermSource, resPoly);
-                leadTermSource = resPoly;
+                if (leadTermSource.PolyItems[0].Coefficient == 0)
+                {   // First coefficient is already 0, simply remove it and continue
+                    leadTermSource.PolyItems.RemoveAt(0);
+                }
+                else
+                {
+                    var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
+                    resPoly = ConvertToDecNotation(resPoly);
+                    resPoly = XORPolynoms(leadTermSource, resPoly);
+                    leadTermSource = resPoly;
+                }
             }
             return leadTermSource.PolyItems.Select(x => DecToBin(x.Coefficient, 8)).ToList();
         }

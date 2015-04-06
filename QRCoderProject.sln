@@ -1,9 +1,14 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoder", "QRCoder\QRCoder.csproj", "{AECE5DF3-C379-46CA-BB7D-7BDBE59011FD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderDemo", "QRCoderDemo\QRCoderDemo.csproj", "{CA6DB0F5-DB6C-4DDD-8B5F-EF82FBB963E9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AECE5DF3-C379-46CA-BB7D-7BDBE59011FD} = {AECE5DF3-C379-46CA-BB7D-7BDBE59011FD}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

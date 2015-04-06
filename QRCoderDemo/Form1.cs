@@ -30,7 +30,7 @@ namespace QRCoderDemo
         private void renderQRCode()
         {
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.Q);
+            QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.M);
             pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20);
         }
     }

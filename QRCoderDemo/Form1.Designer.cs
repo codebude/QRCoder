@@ -53,7 +53,7 @@
             this.textBoxQRCode.Name = "textBoxQRCode";
             this.textBoxQRCode.Size = new System.Drawing.Size(182, 20);
             this.textBoxQRCode.TabIndex = 1;
-            this.textBoxQRCode.Text = "Please visit: www.code-bude.net";
+            this.textBoxQRCode.Text = "www.code-bude.net";
             // 
             // pictureBoxQRCode
             // 
