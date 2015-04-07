@@ -31,16 +31,18 @@ namespace QRCoder
             CreateAlignmentPatternTable();
         }
 
-        public QRCode CreateQrCode(string plainText, ECCLevel eccLevel)
+        public QRCode CreateQrCode(string plainText, ECCLevel eccLevel, bool utf8BOM = false)
         {
-            var encoding = GetEncodingFromPlaintext(plainText);
-            var version = GetVersion(plainText, encoding, eccLevel);
+            var encoding = GetEncodingFromPlaintext(plainText);           
+            var codedText = PlainTextToBinary(plainText, encoding, utf8BOM);
+            var dataInputLength = GetDataLength(encoding, plainText, codedText);
+            var version = GetVersion(dataInputLength, encoding, eccLevel);
 
             var modeIndicator = DecToBin((int)encoding, 4);
-            var countIndicator = DecToBin(plainText.Length, GetCountIndicatorLength(version, encoding));
+            var countIndicator = DecToBin(dataInputLength, GetCountIndicatorLength(version, encoding));
             var bitString = modeIndicator + countIndicator;
-
-            var codedText = PlainTextToBinary(plainText, encoding);
+            
+            
             bitString += codedText;
 
             //Fill up data code word
@@ -672,12 +674,12 @@ namespace QRCoder
             return newPoly;
         }
 
-        private int GetVersion(string plainText, EncodingMode encMode, ECCLevel eccLevel)
+        private int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
             var version = capacityTable.Where(
                 x => x.Details.Where(
                     y => (y.ErrorCorrectionLevel == eccLevel
-                          && y.CapacityDict[encMode] >= Convert.ToInt32(plainText.Length)
+                          && y.CapacityDict[encMode] >= Convert.ToInt32(length)
                           )
                     ).Count() > 0
               ).Select(x => new
@@ -796,6 +798,16 @@ namespace QRCoder
             }
         }
 
+        private int GetDataLength(EncodingMode encoding, string plainText, string codedText)
+        {
+            return IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
+        }
+
+        private bool IsUtf8(EncodingMode encoding, string plainText)
+        {
+            return (encoding == EncodingMode.Byte && !IsValidISO(plainText));
+        }
+
         private bool IsValidISO(string input)
         {
             byte[] bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
@@ -803,14 +815,14 @@ namespace QRCoder
             return String.Equals(input, result);
         }
 
-        private string PlainTextToBinary(string plainText, EncodingMode encMode)
+        private string PlainTextToBinary(string plainText, EncodingMode encMode, bool utf8BOM)
         {
             if (encMode.Equals(EncodingMode.Numeric))
                 return PlainTextToBinaryNumeric(plainText);
             else if (encMode.Equals(EncodingMode.Alphanumeric))
                 return PlainTextToBinaryAlphanumeric(plainText);
             else if (encMode.Equals(EncodingMode.Byte))
-                return PlainTextToBinaryByte(plainText);
+                return PlainTextToBinaryByte(plainText, utf8BOM);
             else
                 return string.Empty;
         }
@@ -856,7 +868,7 @@ namespace QRCoder
             return codeText;
         }
 
-        private string PlainTextToBinaryByte(string plainText)
+        private string PlainTextToBinaryByte(string plainText, bool utf8BOM)
         {
             byte[] codeBytes = new byte[1];
             string codeText = string.Empty;
@@ -864,7 +876,8 @@ namespace QRCoder
             if (IsValidISO(plainText))
                 codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
             else
-                codeBytes = Encoding.UTF8.GetBytes(plainText);
+                codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);          
+
             foreach (var b in codeBytes)
                 codeText += DecToBin(b, 8);
 
