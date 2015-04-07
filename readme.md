@@ -28,3 +28,10 @@ QRCodeGenerator qrGenerator = new QRCodeGenerator();
 QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.Q);
 pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20);
 ```
+
+If you wanna define the color and background by yourself, just need another line to replace the last line on the above.
+
+```
+pictureBoxQRCode.BackgroundImage=qrCode.GetGraphic(20, "#000000", "#FFFFFF" );
+```
+The former string representing frontColor(defalut: black), and the later representing backgroundColor(default: white). Both string are in HTML color format.
