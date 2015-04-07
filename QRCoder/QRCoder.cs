@@ -98,10 +98,13 @@ namespace QRCoder
             for (int i = 0; i < eccInfo.ECCPerBlock; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
-                    interleavedWordsSb.Append(codeBlock.ECCWords[i]);
+                    if (codeBlock.ECCWords.Count > i)
+                        interleavedWordsSb.Append(codeBlock.ECCWords[i]);
             }
             interleavedWordsSb.Append(new string('0', remainderBits[version - 1]));
             var interleavedData = interleavedWordsSb.ToString();
+
+
             //Place interleaved data on module matrix
             QRCode qr = new QRCode(version);
             List<Rectangle> blockedModules = new List<Rectangle>();
