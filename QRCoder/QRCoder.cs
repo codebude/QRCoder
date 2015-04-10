@@ -1242,6 +1242,16 @@ namespace QRCoder
 
             public Bitmap GetGraphic(int pixelsPerModule)
             {
+                return GetGraphic(pixelsPerModule, Color.Black, Color.White);
+            }
+
+            public Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex)
+            {
+                return GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex));
+            }
+
+            public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor)
+            {
                 var size = ModuleMatrix.Count * pixelsPerModule;
                 Bitmap bmp = new Bitmap(size, size);
                 Graphics gfx = Graphics.FromImage(bmp);
@@ -1251,12 +1261,13 @@ namespace QRCoder
                     {
                         var module = ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
                         if (module)
-                            gfx.FillRectangle(Brushes.Black, new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
+                        {
+                            gfx.FillRectangle(new SolidBrush(darkColor), new Rectangle(x, y, pixelsPerModule, pixelsPerModule));                           
+                        }
                         else
-                            gfx.FillRectangle(Brushes.White, new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
+                            gfx.FillRectangle(new SolidBrush(lightColor), new Rectangle(x, y, pixelsPerModule, pixelsPerModule));                        
                     }
                 }
-
 
                 gfx.Save();
                 return bmp;
