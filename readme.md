@@ -28,3 +28,13 @@ QRCodeGenerator qrGenerator = new QRCodeGenerator();
 QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.Q);
 pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20);
 ```
+
+The GetGraphics-method has 2 more overloads. Both enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
+
+```
+//Set color by using Color-class types
+pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.DarkRed, Color.PaleGreen);
+
+//Set color by using HTML hex color notation
+pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, "#000ff0", "#0ff000");
+```
