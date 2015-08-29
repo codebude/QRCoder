@@ -19,6 +19,7 @@ namespace QRCoderDemo
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            comboBox1.SelectedIndex = 0;
             renderQRCode();
         }
 
@@ -29,8 +30,10 @@ namespace QRCoderDemo
 
         private void renderQRCode()
         {
+            string level = comboBox1.SelectedItem.ToString();
+            QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.M);
+            QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
             pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20);
         }
     }

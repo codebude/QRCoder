@@ -31,6 +31,8 @@
             this.buttonGenerate = new System.Windows.Forms.Button();
             this.textBoxQRCode = new System.Windows.Forms.TextBox();
             this.pictureBoxQRCode = new System.Windows.Forms.PictureBox();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxQRCode)).BeginInit();
             this.SuspendLayout();
             // 
@@ -62,17 +64,42 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxQRCode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBoxQRCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxQRCode.Location = new System.Drawing.Point(40, 55);
+            this.pictureBoxQRCode.Location = new System.Drawing.Point(40, 84);
             this.pictureBoxQRCode.Name = "pictureBoxQRCode";
             this.pictureBoxQRCode.Size = new System.Drawing.Size(250, 250);
             this.pictureBoxQRCode.TabIndex = 2;
             this.pictureBoxQRCode.TabStop = false;
             // 
+            // comboBox1
+            // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "L",
+            "M",
+            "Q",
+            "H"});
+            this.comboBox1.Location = new System.Drawing.Point(97, 49);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(125, 21);
+            this.comboBox1.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(37, 52);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(57, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "ECC-Level";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(331, 323);
+            this.ClientSize = new System.Drawing.Size(331, 352);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.pictureBoxQRCode);
             this.Controls.Add(this.textBoxQRCode);
             this.Controls.Add(this.buttonGenerate);
@@ -91,6 +118,8 @@
         private System.Windows.Forms.Button buttonGenerate;
         private System.Windows.Forms.TextBox textBoxQRCode;
         private System.Windows.Forms.PictureBox pictureBoxQRCode;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 
