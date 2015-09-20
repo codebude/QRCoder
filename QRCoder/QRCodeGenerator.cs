@@ -1225,27 +1225,27 @@ namespace QRCoder
             }
         }
         
-		private class Point {
-			public int X;
-			public int Y;
-			public Point(int x, int y) {
-				X = x;
-				Y = y;
-			}
-		}
+        private class Point {
+            public int X;
+            public int Y;
+            public Point(int x, int y) {
+                X = x;
+                Y = y;
+            }
+        }
         
-		private class Rectangle {
-			public int X;
-			public int Y;
-			public int Width;
-			public int Height;
-			
-			public Rectangle(int x, int y, int w, int h) {
-				X = x;
-				Y = y;
-				Width = w;
-				Height = h;
-			}
-		}
+        private class Rectangle {
+            public int X;
+            public int Y;
+            public int Width;
+            public int Height;
+            
+            public Rectangle(int x, int y, int w, int h) {
+                X = x;
+                Y = y;
+                Width = w;
+                Height = h;
+            }
+        }
     }
 }
