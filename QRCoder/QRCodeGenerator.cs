@@ -30,7 +30,7 @@ namespace QRCoder
             CreateAlignmentPatternTable();
         }
 
-        public QRCode CreateQrCode(string plainText, ECCLevel eccLevel, bool utf8BOM = false)
+        public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool utf8BOM = false)
         {
             var encoding = GetEncodingFromPlaintext(plainText);           
             var codedText = PlainTextToBinary(plainText, encoding, utf8BOM);
@@ -107,7 +107,7 @@ namespace QRCoder
 
 
             //Place interleaved data on module matrix
-            QRCode qr = new QRCode(version);
+            QRCodeData qr = new QRCodeData(version);
             List<Rectangle> blockedModules = new List<Rectangle>();
             ModulePlacer.PlaceFinderPatterns(ref qr, ref blockedModules);
             ModulePlacer.ReserveSeperatorAreas(qr.ModuleMatrix.Count, ref blockedModules);
@@ -176,7 +176,7 @@ namespace QRCoder
 
         private static class ModulePlacer
         {
-            public static void AddQuietZone(ref QRCode qrCode)
+            public static void AddQuietZone(ref QRCodeData qrCode)
             {
                 bool[] quietLine = new bool[qrCode.ModuleMatrix.Count + 8];
                 for (int i = 0; i < quietLine.Length; i++)
@@ -196,7 +196,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceVersion(ref QRCode qrCode, string versionStr)
+            public static void PlaceVersion(ref QRCodeData qrCode, string versionStr)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var vStr = new string(versionStr.Reverse().ToArray());
@@ -211,7 +211,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceFormat(ref QRCode qrCode, string formatStr)
+            public static void PlaceFormat(ref QRCodeData qrCode, string formatStr)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var fStr = new string(formatStr.Reverse().ToArray());
@@ -225,7 +225,7 @@ namespace QRCoder
                 }
             }
 
-            public static int MaskCode(ref QRCode qrCode, int version, ref List<Rectangle> blockedModules)
+            public static int MaskCode(ref QRCodeData qrCode, int version, ref List<Rectangle> blockedModules)
             {
                 var patternName = string.Empty;
                 var patternScore = 0;
@@ -236,7 +236,7 @@ namespace QRCoder
                 {
                     if (pattern.Name.Length == 8 && pattern.Name.Substring(0, 7) == "Pattern")
                     {
-                        QRCode qrTemp = new QRCode(version);
+                        QRCodeData qrTemp = new QRCodeData(version);
                         for (int y = 0; y < size; y++)
                         {
                             for (int x = 0; x < size; x++)
@@ -282,7 +282,7 @@ namespace QRCoder
             }
 
 
-            public static void PlaceDataWords(ref QRCode qrCode, string data, ref List<Rectangle> blockedModules)
+            public static void PlaceDataWords(ref QRCodeData qrCode, string data, ref List<Rectangle> blockedModules)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var up = true;
@@ -347,13 +347,13 @@ namespace QRCoder
                 });
                 }
             }
-            public static void PlaceDarkModule(ref QRCode qrCode, int version, ref List<Rectangle> blockedModules)
+            public static void PlaceDarkModule(ref QRCodeData qrCode, int version, ref List<Rectangle> blockedModules)
             {
                 qrCode.ModuleMatrix[4 * version + 9][8] = true;
                 blockedModules.Add(new Rectangle(8, 4 * version + 9, 1, 1));
             }
 
-            public static void PlaceFinderPatterns(ref QRCode qrCode, ref List<Rectangle> blockedModules)
+            public static void PlaceFinderPatterns(ref QRCodeData qrCode, ref List<Rectangle> blockedModules)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 int[] locations = { 0, 0, size - 7, 0, 0, size - 7 };
@@ -374,7 +374,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceAlignmentPatterns(ref QRCode qrCode, List<Point> alignmentPatternLocations, ref List<Rectangle> blockedModules)
+            public static void PlaceAlignmentPatterns(ref QRCodeData qrCode, List<Point> alignmentPatternLocations, ref List<Rectangle> blockedModules)
             {
                 foreach (var loc in alignmentPatternLocations)
                 {
@@ -405,7 +405,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceTimingPatterns(ref QRCode qrCode, ref List<Rectangle> blockedModules)
+            public static void PlaceTimingPatterns(ref QRCodeData qrCode, ref List<Rectangle> blockedModules)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 for (int i = 8; i < size - 8; i++)
@@ -480,7 +480,7 @@ namespace QRCoder
                     return (((x + y) % 2) + ((x * y) % 3)) % 2 == 0;
                 }
 
-                public static int Score(ref QRCode qrCode)
+                public static int Score(ref QRCodeData qrCode)
                 {
                     var score = 0;
                     var size = qrCode.ModuleMatrix.Count;

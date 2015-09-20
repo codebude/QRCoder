@@ -5,9 +5,8 @@ namespace QRCoder
 {
     public class QRCode : AbstractQRCode<Bitmap>
     {
+        public QRCode(QRCodeData data) : base(data) {}
         
-        public QRCode(int version) : base(version) { }
-    
         public override Bitmap GetGraphic(int pixelsPerModule)
         {
             return GetGraphic(pixelsPerModule, Color.Black, Color.White);
@@ -20,14 +19,14 @@ namespace QRCoder
     
         public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor)
         {
-            var size = ModuleMatrix.Count * pixelsPerModule;
+            var size = qrCodeData.ModuleMatrix.Count * pixelsPerModule;
             Bitmap bmp = new Bitmap(size, size);
             Graphics gfx = Graphics.FromImage(bmp);
             for (int x = 0; x < size; x = x + pixelsPerModule)
             {
                 for (int y = 0; y < size; y = y + pixelsPerModule)
                 {
-                    var module = ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
+                    var module = qrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
                     if (module)
                     {
                         gfx.FillRectangle(new SolidBrush(darkColor), new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
@@ -43,7 +42,7 @@ namespace QRCoder
     
         public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon=null, int iconSizePercent=15, int iconBorderWidth = 6)
         {
-            var size = ModuleMatrix.Count * pixelsPerModule;
+            var size = qrCodeData.ModuleMatrix.Count * pixelsPerModule;
             Bitmap bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             Graphics gfx = Graphics.FromImage(bmp);
             gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
@@ -74,7 +73,7 @@ namespace QRCoder
             {
                 for (int y = 0; y < size; y = y + pixelsPerModule)
                 {
-                    var module = ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
+                    var module = qrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
                     if (module)
                     {
                         RectangleF r = new RectangleF(x, y, pixelsPerModule, pixelsPerModule);

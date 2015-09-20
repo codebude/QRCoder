@@ -1,33 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace QRCoder
+﻿namespace QRCoder
 {
     public abstract class AbstractQRCode<T>
     {
-        public List<BitArray> ModuleMatrix { get; set; }
-        private int _version;
+        protected QRCodeData qrCodeData;
         
-        protected AbstractQRCode(int version)
-        {
-            this._version = version;
-            var size = ModulesPerSideFromVersion(version);
-            ModuleMatrix = new List<BitArray>();
-            for (int i = 0; i < size; i++)
-                ModuleMatrix.Add(new BitArray(size));
-        }
-        
-        public int version {
-            get {
-                return _version;
-            }
+        protected AbstractQRCode(QRCodeData data) {
+            qrCodeData = data;
         }
         
         public abstract T GetGraphic(int pixelsPerModule);
-        
-        protected int ModulesPerSideFromVersion(int version)
-        {
-            return 21 + (version - 1) * 4;
-        }
     }
 }

@@ -33,7 +33,8 @@ namespace QRCoderDemo
             string level = comboBox1.SelectedItem.ToString();
             QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCoder.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
+            QRCode qrCode = new QRCode(qrCodeData);
 
             pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.Black, Color.White, getIconBitmap());
         }
