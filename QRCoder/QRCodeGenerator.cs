@@ -45,7 +45,7 @@ namespace QRCoder
             bitString += codedText;
 
             //Fill up data code word
-            var eccInfo = capacityECCTable.Where(x => x.Version == version && x.ErrorCorrectionLevel.Equals(eccLevel)).Single();
+            var eccInfo = capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel.Equals(eccLevel));
             var dataLength = eccInfo.TotalDataCodewords * 8;
             var lengthDiff = dataLength - bitString.Length;
             if (lengthDiff > 0)
@@ -267,7 +267,7 @@ namespace QRCoder
 
                     }
                 }
-                var patterMethod = typeof(MaskPattern).GetMethods().Where(x => x.Name == patternName).First();
+                var patterMethod = typeof(MaskPattern).GetMethods().First(x => x.Name == patternName);
                 for (int x = 0; x < size; x++)
                 {
                     for (int y = 0; y < size; y++)
@@ -676,16 +676,15 @@ namespace QRCoder
         private int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
             var version = capacityTable.Where(
-                x => x.Details.Where(
+                x => x.Details.Count(
                     y => (y.ErrorCorrectionLevel == eccLevel
                           && y.CapacityDict[encMode] >= Convert.ToInt32(length)
                           )
-                    ).Count() > 0
+                    ) > 0
               ).Select(x => new
               {
                   version = x.Version,
-                  capacity = x.Details.Where(y => y.ErrorCorrectionLevel == eccLevel)
-                                            .Single()
+                  capacity = x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel)
                                             .CapacityDict[encMode]
               }).Min(x => x.version);
             return version;
