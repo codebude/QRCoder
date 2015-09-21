@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
 using System.Collections;
-using System.Drawing.Drawing2D;
 
 namespace QRCoder
 {
@@ -32,7 +30,7 @@ namespace QRCoder
             CreateAlignmentPatternTable();
         }
 
-        public QRCode CreateQrCode(string plainText, ECCLevel eccLevel, bool utf8BOM = false)
+        public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool utf8BOM = false)
         {
             var encoding = GetEncodingFromPlaintext(plainText);           
             var codedText = PlainTextToBinary(plainText, encoding, utf8BOM);
@@ -109,7 +107,7 @@ namespace QRCoder
 
 
             //Place interleaved data on module matrix
-            QRCode qr = new QRCode(version);
+            QRCodeData qr = new QRCodeData(version);
             List<Rectangle> blockedModules = new List<Rectangle>();
             ModulePlacer.PlaceFinderPatterns(ref qr, ref blockedModules);
             ModulePlacer.ReserveSeperatorAreas(qr.ModuleMatrix.Count, ref blockedModules);
@@ -178,7 +176,7 @@ namespace QRCoder
 
         private static class ModulePlacer
         {
-            public static void AddQuietZone(ref QRCode qrCode)
+            public static void AddQuietZone(ref QRCodeData qrCode)
             {
                 bool[] quietLine = new bool[qrCode.ModuleMatrix.Count + 8];
                 for (int i = 0; i < quietLine.Length; i++)
@@ -198,7 +196,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceVersion(ref QRCode qrCode, string versionStr)
+            public static void PlaceVersion(ref QRCodeData qrCode, string versionStr)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var vStr = new string(versionStr.Reverse().ToArray());
@@ -213,7 +211,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceFormat(ref QRCode qrCode, string formatStr)
+            public static void PlaceFormat(ref QRCodeData qrCode, string formatStr)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var fStr = new string(formatStr.Reverse().ToArray());
@@ -227,7 +225,7 @@ namespace QRCoder
                 }
             }
 
-            public static int MaskCode(ref QRCode qrCode, int version, ref List<Rectangle> blockedModules)
+            public static int MaskCode(ref QRCodeData qrCode, int version, ref List<Rectangle> blockedModules)
             {
                 var patternName = string.Empty;
                 var patternScore = 0;
@@ -238,7 +236,7 @@ namespace QRCoder
                 {
                     if (pattern.Name.Length == 8 && pattern.Name.Substring(0, 7) == "Pattern")
                     {
-                        QRCode qrTemp = new QRCode(version);
+                        QRCodeData qrTemp = new QRCodeData(version);
                         for (int y = 0; y < size; y++)
                         {
                             for (int x = 0; x < size; x++)
@@ -284,7 +282,7 @@ namespace QRCoder
             }
 
 
-            public static void PlaceDataWords(ref QRCode qrCode, string data, ref List<Rectangle> blockedModules)
+            public static void PlaceDataWords(ref QRCodeData qrCode, string data, ref List<Rectangle> blockedModules)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var up = true;
@@ -349,13 +347,13 @@ namespace QRCoder
                 });
                 }
             }
-            public static void PlaceDarkModule(ref QRCode qrCode, int version, ref List<Rectangle> blockedModules)
+            public static void PlaceDarkModule(ref QRCodeData qrCode, int version, ref List<Rectangle> blockedModules)
             {
                 qrCode.ModuleMatrix[4 * version + 9][8] = true;
                 blockedModules.Add(new Rectangle(8, 4 * version + 9, 1, 1));
             }
 
-            public static void PlaceFinderPatterns(ref QRCode qrCode, ref List<Rectangle> blockedModules)
+            public static void PlaceFinderPatterns(ref QRCodeData qrCode, ref List<Rectangle> blockedModules)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 int[] locations = { 0, 0, size - 7, 0, 0, size - 7 };
@@ -376,7 +374,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceAlignmentPatterns(ref QRCode qrCode, List<Point> alignmentPatternLocations, ref List<Rectangle> blockedModules)
+            public static void PlaceAlignmentPatterns(ref QRCodeData qrCode, List<Point> alignmentPatternLocations, ref List<Rectangle> blockedModules)
             {
                 foreach (var loc in alignmentPatternLocations)
                 {
@@ -407,7 +405,7 @@ namespace QRCoder
                 }
             }
 
-            public static void PlaceTimingPatterns(ref QRCode qrCode, ref List<Rectangle> blockedModules)
+            public static void PlaceTimingPatterns(ref QRCodeData qrCode, ref List<Rectangle> blockedModules)
             {
                 var size = qrCode.ModuleMatrix.Count;
                 for (int i = 8; i < size - 8; i++)
@@ -482,7 +480,7 @@ namespace QRCoder
                     return (((x + y) % 2) + ((x * y) % 3)) % 2 == 0;
                 }
 
-                public static int Score(ref QRCode qrCode)
+                public static int Score(ref QRCodeData qrCode)
                 {
                     var score = 0;
                     var size = qrCode.ModuleMatrix.Count;
@@ -1226,139 +1224,28 @@ namespace QRCoder
                 return sb.ToString().TrimEnd(new char[] { ' ', '+' });
             }
         }
-
-        public class QRCode
-        {
-            public List<BitArray> ModuleMatrix { get; set; }
-            private int version;
-
-            public QRCode(int version)
-            {
-                this.version = version;
-                var size = ModulesPerSideFromVersion(version);
-                ModuleMatrix = new List<BitArray>();
-                for (int i = 0; i < size; i++)
-                    ModuleMatrix.Add(new BitArray(size));
+        
+        private class Point {
+            public int X;
+            public int Y;
+            public Point(int x, int y) {
+                X = x;
+                Y = y;
             }
-
-            public Bitmap GetGraphic(int pixelsPerModule)
-            {
-                return GetGraphic(pixelsPerModule, Color.Black, Color.White);
+        }
+        
+        private class Rectangle {
+            public int X;
+            public int Y;
+            public int Width;
+            public int Height;
+            
+            public Rectangle(int x, int y, int w, int h) {
+                X = x;
+                Y = y;
+                Width = w;
+                Height = h;
             }
-
-            public Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex)
-            {
-                return GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex));
-            }
-
-            public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor)
-            {
-                var size = ModuleMatrix.Count * pixelsPerModule;
-                Bitmap bmp = new Bitmap(size, size);
-                Graphics gfx = Graphics.FromImage(bmp);
-                for (int x = 0; x < size; x = x + pixelsPerModule)
-                {
-                    for (int y = 0; y < size; y = y + pixelsPerModule)
-                    {
-                        var module = ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
-                        if (module)
-                        {
-                            gfx.FillRectangle(new SolidBrush(darkColor), new Rectangle(x, y, pixelsPerModule, pixelsPerModule));                           
-                        }
-                        else
-                            gfx.FillRectangle(new SolidBrush(lightColor), new Rectangle(x, y, pixelsPerModule, pixelsPerModule));                        
-                    }
-                }
-
-                gfx.Save();
-                return bmp;
-            }
-
-            public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon=null, int iconSizePercent=15, int iconBorderWidth = 6)
-            {
-                var size = ModuleMatrix.Count * pixelsPerModule;
-                Bitmap bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-                Graphics gfx = Graphics.FromImage(bmp);
-                gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-                gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                gfx.CompositingQuality = CompositingQuality.HighQuality;
-                gfx.Clear(lightColor);
-
-                bool drawIconFlag = icon != null && iconSizePercent>0 && iconSizePercent<100;
-
-                GraphicsPath iconPath = null;
-                float iconDestWidth=0, iconDestHeight=0, iconX=0, iconY=0;
-
-                if (drawIconFlag)
-                {
-                    iconDestWidth = iconSizePercent * bmp.Width / 100f;
-                    iconDestHeight = drawIconFlag ? iconDestWidth * icon.Height / icon.Width : 0;
-                    iconX = (bmp.Width - iconDestWidth) / 2;
-                    iconY = (bmp.Height - iconDestHeight) / 2;
-
-                    RectangleF centerDest = new RectangleF(iconX - iconBorderWidth, iconY - iconBorderWidth, iconDestWidth + iconBorderWidth * 2, iconDestHeight + iconBorderWidth * 2);
-                    iconPath = CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
-                }
-
-                SolidBrush lightBrush = new SolidBrush(lightColor);
-                SolidBrush darkBrush = new SolidBrush(darkColor);
-                
-                for (int x = 0; x < size; x = x + pixelsPerModule)
-                {
-                    for (int y = 0; y < size; y = y + pixelsPerModule)
-                    {
-                        var module = ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
-                        if (module)
-                        {
-                            RectangleF r = new RectangleF(x, y, pixelsPerModule, pixelsPerModule);
-
-                            if (drawIconFlag)
-                            {
-                                Region region = new Region(r);
-                                region.Exclude(iconPath);
-                                gfx.FillRegion(Brushes.Black, region);
-                            }
-                            else
-                            {
-                                gfx.FillRectangle(darkBrush, r);
-                            }
-                        }
-                        else
-                            gfx.FillRectangle(lightBrush, new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
-                    }
-                }
-
-                if (drawIconFlag)
-                {
-                    RectangleF iconDestRect = new RectangleF(iconX, iconY, iconDestWidth, iconDestHeight);
-                    gfx.DrawImage(icon, iconDestRect, new RectangleF(0, 0, icon.Width, icon.Height), GraphicsUnit.Pixel);
-                }
-
-                gfx.Save();
-                return bmp;
-            }
-
-            internal GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
-            {
-                GraphicsPath roundedRect = new GraphicsPath();
-                roundedRect.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);
-                roundedRect.AddLine(rect.X + cornerRadius, rect.Y, rect.Right - cornerRadius * 2, rect.Y);
-                roundedRect.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y, cornerRadius * 2, cornerRadius * 2, 270, 90);
-                roundedRect.AddLine(rect.Right, rect.Y + cornerRadius * 2, rect.Right, rect.Y + rect.Height - cornerRadius * 2);
-                roundedRect.AddArc(rect.X + rect.Width - cornerRadius * 2, rect.Y + rect.Height - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 0, 90);
-                roundedRect.AddLine(rect.Right - cornerRadius * 2, rect.Bottom, rect.X + cornerRadius * 2, rect.Bottom);
-                roundedRect.AddArc(rect.X, rect.Bottom - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 90, 90);
-                roundedRect.AddLine(rect.X, rect.Bottom - cornerRadius * 2, rect.X, rect.Y + cornerRadius * 2);
-                roundedRect.CloseFigure();
-                return roundedRect;
-            }
-
-
-            private int ModulesPerSideFromVersion(int version)
-            {
-                return 21 + (version - 1) * 4;
-            }
-
         }
     }
 }
