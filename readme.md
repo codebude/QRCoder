@@ -55,7 +55,7 @@ If you want to render QR codes in Unity, just use UnityQRCode instead of QRCode 
 QRCodeGenerator qrGenerator = new QRCodeGenerator();
 QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
 UnityQRCode qrCode = new UnityQRCode(qrCodeData);
-Bitmap qrCodeImage = qrCode.GetGraphic(20);
+Texture2D qrCodeImage = qrCode.GetGraphic(20);
 ```
 
 ##
