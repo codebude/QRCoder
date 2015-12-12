@@ -45,12 +45,11 @@ namespace QRCoder
             var size = qrCodeData.ModuleMatrix.Count * pixelsPerModule;
             Bitmap bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             Graphics gfx = Graphics.FromImage(bmp);
-            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
             gfx.CompositingQuality = CompositingQuality.HighQuality;
             gfx.Clear(lightColor);
     
-            bool drawIconFlag = icon != null && iconSizePercent>0 && iconSizePercent<100;
+            bool drawIconFlag = icon != null && iconSizePercent>0 && iconSizePercent<=100;
     
             GraphicsPath iconPath = null;
             float iconDestWidth=0, iconDestHeight=0, iconX=0, iconY=0;
@@ -76,13 +75,13 @@ namespace QRCoder
                     var module = qrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
                     if (module)
                     {
-                        RectangleF r = new RectangleF(x, y, pixelsPerModule, pixelsPerModule);
+                        Rectangle r = new Rectangle(x, y, pixelsPerModule, pixelsPerModule);
     
                         if (drawIconFlag)
                         {
                             Region region = new Region(r);
                             region.Exclude(iconPath);
-                            gfx.FillRegion(Brushes.Black, region);
+                            gfx.FillRegion(darkBrush, region);
                         }
                         else
                         {
@@ -93,13 +92,13 @@ namespace QRCoder
                         gfx.FillRectangle(lightBrush, new Rectangle(x, y, pixelsPerModule, pixelsPerModule));
                 }
             }
-    
+        
             if (drawIconFlag)
             {
                 RectangleF iconDestRect = new RectangleF(iconX, iconY, iconDestWidth, iconDestHeight);
                 gfx.DrawImage(icon, iconDestRect, new RectangleF(0, 0, icon.Width, icon.Height), GraphicsUnit.Pixel);
             }
-    
+
             gfx.Save();
             return bmp;
         }
