@@ -12,6 +12,25 @@ namespace QRCoder
             return GetGraphic(pixelsPerModule, Color.black, Color.white);
         }
 
+        public Texture2D GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex)
+        {
+            return GetGraphic(pixelsPerModule, hexToColor(darkColorHtmlHex), hexToColor(lightColorHtmlHex));
+        }
+
+        public static Color hexToColor(string hexColor)
+        {
+            hexColor = hexColor.Replace("0x", "").Replace("#", "").Trim();
+            byte a = 255;
+            byte r = byte.Parse(hexColor.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            byte g = byte.Parse(hexColor.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            byte b = byte.Parse(hexColor.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            if (hexColor.Length == 8)
+            {
+                a = byte.Parse(hexColor.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+            }
+            return new Color32(r, g, b, a);
+        }
+
         public Texture2D GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor)
         {
             var size = qrCodeData.ModuleMatrix.Count * pixelsPerModule;
