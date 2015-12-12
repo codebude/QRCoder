@@ -21,20 +21,41 @@ in 10/2013. It's licensed under the MIT license.
 
 ##Usage
 
-After referencing the QRCoder.dll in your project, you only need three lines of code, to generate and view your first QR code.
+After referencing the QRCoder.dll in your project, you only need four lines of code, to generate and view your first QR code.
 
 ```
 QRCodeGenerator qrGenerator = new QRCodeGenerator();
-QRCodeGenerator.QRCode qrCode = qrGenerator.CreateQrCode(textBoxQRCode.Text, QRCodeGenerator.ECCLevel.Q);
-pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20);
+QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
+QRCode qrCode = new QRCode(qrCodeData);
+Bitmap qrCodeImage = qrCode.GetGraphic(20);
 ```
 
-The GetGraphics-method has 2 more overloads. Both enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
+###Overloads
+The GetGraphics-method has 3 more overloads. The first two enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
 
 ```
 //Set color by using Color-class types
-pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.DarkRed, Color.PaleGreen);
+Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.DarkRed, Color.PaleGreen);
 
 //Set color by using HTML hex color notation
-pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, "#000ff0", "#0ff000");
+Bitmap qrCodeImage = qrCode.GetGraphic(20, "#000ff0", "#0ff000");
 ```
+
+The third overload enables you to render a logo/image in the center of the QR code.
+
+```
+Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.Black, Color.White, "C:\\Path\\to\\logo.jpg", 20);
+```
+
+###QR code in Unity
+
+If you want to render QR codes in Unity, just use UnityQRCode instead of QRCode class.
+
+```
+QRCodeGenerator qrGenerator = new QRCodeGenerator();
+QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
+UnityQRCode qrCode = new UnityQRCode(qrCodeData);
+Bitmap qrCodeImage = qrCode.GetGraphic(20);
+```
+
+##
