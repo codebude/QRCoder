@@ -19,7 +19,7 @@ namespace QRCoderDemo
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            comboBox1.SelectedIndex = 0;
+            comboBoxECC.SelectedIndex = 0; //Pre-select ECC level "L"
             renderQRCode();
         }
 
@@ -30,15 +30,15 @@ namespace QRCoderDemo
 
         private void renderQRCode()
         {
-            string level = comboBox1.SelectedItem.ToString();
+            string level = comboBoxECC.SelectedItem.ToString();
             QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
             QRCodeGenerator qrGenerator = new QRCodeGenerator();
             QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
             QRCode qrCode = new QRCode(qrCodeData);
-
-            pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.Black, Color.White, getIconBitmap());
+            
+            pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.Black, Color.White, getIconBitmap(), (int)iconSize.Value);
         }
-
+        
         private Bitmap getIconBitmap()
         {
             Bitmap img = null;
@@ -61,8 +61,7 @@ namespace QRCoderDemo
             openFileDlg.Title = "Select icon";
             openFileDlg.Multiselect = false;
             openFileDlg.CheckFileExists = true;
-            DialogResult dr = openFileDlg.ShowDialog();
-            if (dr == System.Windows.Forms.DialogResult.OK)
+            if (openFileDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 iconPath.Text = openFileDlg.FileName;
                 if (iconSize.Value == 0)
