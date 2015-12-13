@@ -572,7 +572,7 @@ namespace QRCoder
                                 !qrCode.ModuleMatrix[x + 8][y] &&
                                 !qrCode.ModuleMatrix[x + 9][y] &&
                                 !qrCode.ModuleMatrix[x + 10][y]) ||
-                                (!qrCode.ModuleMatrix[x][x] &&
+                                (!qrCode.ModuleMatrix[x][y] &&
                                 !qrCode.ModuleMatrix[x + 1][y] &&
                                 !qrCode.ModuleMatrix[x + 2][y] &&
                                 !qrCode.ModuleMatrix[x + 3][y] &&
