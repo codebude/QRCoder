@@ -1,9 +1,11 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace QRCoder
 {
-    public class QRCodeData
+    using System;
+
+    public class QRCodeData : IDisposable
     {
         public List<BitArray> ModuleMatrix { get; set; }
         private int _version;
@@ -26,6 +28,13 @@ namespace QRCoder
         private int ModulesPerSideFromVersion(int version)
         {
             return 21 + (version - 1) * 4;
+        }
+
+        public void Dispose()
+        {
+            this.ModuleMatrix = null;
+            this._version = 0;
+            
         }
     }
 }
