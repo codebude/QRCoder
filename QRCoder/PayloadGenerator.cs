@@ -227,7 +227,7 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return (!url.StartsWith("http") && !url.StartsWith("http") ? "http://" + url : url);
+                return (!url.StartsWith("http") ? "http://" + url : url);
             }
         }
 
