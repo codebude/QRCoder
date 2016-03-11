@@ -1,9 +1,11 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 
 namespace QRCoder
 {
-    public class QRCode : AbstractQRCode<Bitmap>
+    using System;
+
+    public class QRCode : AbstractQRCode<Bitmap>, IDisposable
     {
         public QRCode(QRCodeData data) : base(data) {}
         
@@ -117,6 +119,10 @@ namespace QRCoder
             roundedRect.CloseFigure();
             return roundedRect;
         }
-    
+
+        public void Dispose()
+        {
+            this.qrCodeData = null;
+        }
     }
 }
