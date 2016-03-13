@@ -20,26 +20,33 @@ namespace QRCoderDemo
         private void Form1_Load(object sender, EventArgs e)
         {
             comboBoxECC.SelectedIndex = 0; //Pre-select ECC level "L"
-            renderQRCode();
+            RenderQrCode();
         }
 
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
-            renderQRCode();
+            RenderQrCode();
         }
 
-        private void renderQRCode()
+        private void RenderQrCode()
         {
             string level = comboBoxECC.SelectedItem.ToString();
             QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
-            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
-            QRCode qrCode = new QRCode(qrCodeData);
-            
-            pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.Black, Color.White, getIconBitmap(), (int)iconSize.Value);
+            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            {
+                using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel))
+                {
+                    using (QRCode qrCode = new QRCode(qrCodeData))
+                    {
+
+                        pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.Black, Color.White,
+                            GetIconBitmap(), (int) iconSize.Value);
+                    }
+                }
+            }
         }
         
-        private Bitmap getIconBitmap()
+        private Bitmap GetIconBitmap()
         {
             Bitmap img = null;
             if (iconPath.Text.Length > 0)
@@ -48,8 +55,9 @@ namespace QRCoderDemo
                 {
                     img = new Bitmap(iconPath.Text);
                 }
-                catch (Exception) 
-                { 
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             return img;
@@ -57,10 +65,12 @@ namespace QRCoderDemo
 
         private void selectIconBtn_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDlg = new OpenFileDialog();
-            openFileDlg.Title = "Select icon";
-            openFileDlg.Multiselect = false;
-            openFileDlg.CheckFileExists = true;
+            OpenFileDialog openFileDlg = new OpenFileDialog
+            {
+                Title = @"Select icon",
+                Multiselect = false,
+                CheckFileExists = true
+            };
             if (openFileDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 iconPath.Text = openFileDlg.FileName;
