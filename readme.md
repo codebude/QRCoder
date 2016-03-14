@@ -58,6 +58,20 @@ UnityQRCode qrCode = new UnityQRCode(qrCodeData);
 Texture2D qrCodeImage = qrCode.GetGraphic(20);
 ```
 
+###Vectorized QR code as SVG file
+
+If you want to render QR code in vector format as SVG file, just use SvgQRCode instead of QRCode class.
+
+```
+QRCodeGenerator qrGenerator = new QRCodeGenerator();
+QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
+SvgQRCode qrCode = new SvgQRCode(qrCodeData);
+string qrCodeImage = qrCode.GetGraphic(20);
+```
+
+The string *qrCodeImage* contains the QR code as SVG formatted string. Either you pass the string to a control which can render SVG or just save it with FileWriter or StreamWriter class. 
+
+
 ##PayloadGenerator.cs - Generate QR code payloads
 
 Technically QR code is just a visual representation of a text/string. Nevertheless most QR code readers can read "special" QR codes which trigger different actions. For example: WiFi-QRcodes which, when scanned by smartphone, let the smartphone join an access point automatically.
