@@ -55,9 +55,8 @@ namespace QRCoderDemo
                 {
                     img = new Bitmap(iconPath.Text);
                 }
-                catch (Exception e)
-                {
-                    MessageBox.Show(e.Message, @"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                catch (Exception) 
+                { 
                 }
             }
             return img;
@@ -65,12 +64,10 @@ namespace QRCoderDemo
 
         private void selectIconBtn_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDlg = new OpenFileDialog
-            {
-                Title = @"Select icon",
-                Multiselect = false,
-                CheckFileExists = true
-            };
+            OpenFileDialog openFileDlg = new OpenFileDialog();
+            openFileDlg.Title = "Select icon";
+            openFileDlg.Multiselect = false;
+            openFileDlg.CheckFileExists = true;
             if (openFileDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 iconPath.Text = openFileDlg.FileName;
