@@ -33,7 +33,7 @@ namespace QRCoder
 
         public string GetGraphic(Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true)
         {
-            StringBuilder svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" width=""{viewBox.Width}"" height=""{viewBox.Height}"" xmlns=""http://www.w3.org/2000/svg"">");
+            StringBuilder svgFile = new StringBuilder(@"<svg version=""1.1"" baseProfile=""full"" width="""+viewBox.Width+ @""" height="""+viewBox.Height+ @""" xmlns=""http://www.w3.org/2000/svg"">");
             int unitsPerModule = (int)Math.Floor(Convert.ToDouble(Math.Min(viewBox.Width, viewBox.Height)) / qrCodeData.ModuleMatrix.Count);
             var size = (qrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * unitsPerModule;
             int offset = drawQuietZones ? 0 : 4 * unitsPerModule;
@@ -43,7 +43,7 @@ namespace QRCoder
                 for (int y = 0; y < drawableSize; y = y + unitsPerModule)
                 {
                     var module = qrCodeData.ModuleMatrix[(y + unitsPerModule) / unitsPerModule - 1][(x + unitsPerModule) / unitsPerModule - 1];
-                    svgFile.AppendLine($@"<rect x=""{x - offset}"" y=""{y - offset}"" width=""{unitsPerModule}"" height=""{unitsPerModule}"" fill=""{(module ? darkColorHex : lightColorHex)}"" />");
+                    svgFile.AppendLine(@"<rect x="""+(x - offset)+ @""" y=""" + (y - offset) + @""" width=""" + unitsPerModule + @""" height=""" + unitsPerModule + @""" fill=""" + (module ? darkColorHex : lightColorHex) + @""" />");
                 }
             }
             svgFile.Append(@"</svg>");
