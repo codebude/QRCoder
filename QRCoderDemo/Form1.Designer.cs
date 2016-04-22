@@ -39,6 +39,7 @@
             this.selectIconBtn = new System.Windows.Forms.Button();
             this.labelIconsize = new System.Windows.Forms.Label();
             this.iconSize = new System.Windows.Forms.NumericUpDown();
+            this.buttonSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxQRCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconSize)).BeginInit();
             this.SuspendLayout();
@@ -46,7 +47,7 @@
             // buttonGenerate
             // 
             this.buttonGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonGenerate.Location = new System.Drawing.Point(801, 23);
+            this.buttonGenerate.Location = new System.Drawing.Point(440, 23);
             this.buttonGenerate.Name = "buttonGenerate";
             this.buttonGenerate.Size = new System.Drawing.Size(62, 23);
             this.buttonGenerate.TabIndex = 0;
@@ -60,7 +61,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxQRCode.Location = new System.Drawing.Point(40, 23);
             this.textBoxQRCode.Name = "textBoxQRCode";
-            this.textBoxQRCode.Size = new System.Drawing.Size(755, 20);
+            this.textBoxQRCode.Size = new System.Drawing.Size(394, 20);
             this.textBoxQRCode.TabIndex = 1;
             this.textBoxQRCode.Text = "1234567890";
             // 
@@ -73,7 +74,7 @@
             this.pictureBoxQRCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxQRCode.Location = new System.Drawing.Point(40, 77);
             this.pictureBoxQRCode.Name = "pictureBoxQRCode";
-            this.pictureBoxQRCode.Size = new System.Drawing.Size(823, 413);
+            this.pictureBoxQRCode.Size = new System.Drawing.Size(462, 397);
             this.pictureBoxQRCode.TabIndex = 2;
             this.pictureBoxQRCode.TabStop = false;
             // 
@@ -102,8 +103,9 @@
             // 
             // labelIcon
             // 
+            this.labelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelIcon.AutoSize = true;
-            this.labelIcon.Location = new System.Drawing.Point(485, 529);
+            this.labelIcon.Location = new System.Drawing.Point(249, 486);
             this.labelIcon.Name = "labelIcon";
             this.labelIcon.Size = new System.Drawing.Size(31, 13);
             this.labelIcon.TabIndex = 5;
@@ -111,14 +113,16 @@
             // 
             // iconPath
             // 
-            this.iconPath.Location = new System.Drawing.Point(545, 523);
+            this.iconPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.iconPath.Location = new System.Drawing.Point(286, 483);
             this.iconPath.Name = "iconPath";
-            this.iconPath.Size = new System.Drawing.Size(125, 20);
+            this.iconPath.Size = new System.Drawing.Size(148, 20);
             this.iconPath.TabIndex = 6;
             // 
             // selectIconBtn
             // 
-            this.selectIconBtn.Location = new System.Drawing.Point(677, 523);
+            this.selectIconBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.selectIconBtn.Location = new System.Drawing.Point(440, 482);
             this.selectIconBtn.Name = "selectIconBtn";
             this.selectIconBtn.Size = new System.Drawing.Size(61, 25);
             this.selectIconBtn.TabIndex = 7;
@@ -128,8 +132,9 @@
             // 
             // labelIconsize
             // 
+            this.labelIconsize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelIconsize.AutoSize = true;
-            this.labelIconsize.Location = new System.Drawing.Point(277, 529);
+            this.labelIconsize.Location = new System.Drawing.Point(41, 486);
             this.labelIconsize.Name = "labelIconsize";
             this.labelIconsize.Size = new System.Drawing.Size(52, 13);
             this.labelIconsize.TabIndex = 8;
@@ -137,16 +142,29 @@
             // 
             // iconSize
             // 
-            this.iconSize.Location = new System.Drawing.Point(337, 525);
+            this.iconSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.iconSize.Location = new System.Drawing.Point(101, 482);
             this.iconSize.Name = "iconSize";
             this.iconSize.Size = new System.Drawing.Size(125, 20);
             this.iconSize.TabIndex = 9;
+            // 
+            // buttonSave
+            // 
+            this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSave.Location = new System.Drawing.Point(409, 513);
+            this.buttonSave.Name = "buttonSave";
+            this.buttonSave.Size = new System.Drawing.Size(92, 25);
+            this.buttonSave.TabIndex = 10;
+            this.buttonSave.Text = "Save QR code";
+            this.buttonSave.UseVisualStyleBackColor = true;
+            this.buttonSave.Click += new System.EventHandler(this.btn_save_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(904, 571);
+            this.ClientSize = new System.Drawing.Size(543, 563);
+            this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.iconSize);
             this.Controls.Add(this.labelIconsize);
             this.Controls.Add(this.selectIconBtn);
@@ -158,7 +176,7 @@
             this.Controls.Add(this.textBoxQRCode);
             this.Controls.Add(this.buttonGenerate);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(347, 361);
+            this.MinimumSize = new System.Drawing.Size(559, 602);
             this.Name = "Form1";
             this.Text = "QRCoder";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -181,6 +199,7 @@
         private System.Windows.Forms.Button selectIconBtn;
         private System.Windows.Forms.Label labelIconsize;
         private System.Windows.Forms.NumericUpDown iconSize;
+        private System.Windows.Forms.Button buttonSave;
     }
 }
 

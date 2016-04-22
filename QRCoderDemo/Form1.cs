@@ -89,11 +89,7 @@ namespace QRCoderDemo
                 iconPath.Text = "";
             }
         }
-
-        private void btn_close_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+        
 
         private void btn_save_Click(object sender, EventArgs e)
         {
@@ -108,16 +104,13 @@ namespace QRCoderDemo
             if (saveFileDialog1.FileName != "")
             {
                 // Saves the Image via a FileStream created by the OpenFile method.
-                System.IO.FileStream fs = (System.IO.FileStream)saveFileDialog1.OpenFile();
-                // Saves the Image in the appropriate ImageFormat based upon the
-                // File type selected in the dialog box.
-                // NOTE that the FilterIndex property is one-based.
-
-                using (var bitmap = new Bitmap(pictureBoxQRCode.Width, pictureBoxQRCode.Height))  //  pictureBoxQRCode.BackgroundImage.Width, pictureBoxQRCode.BackgroundImage.Height))
+                using (FileStream fs = (System.IO.FileStream) saveFileDialog1.OpenFile())
                 {
-                    pictureBoxQRCode.DrawToBitmap(bitmap, ClientRectangle);
-                    ImageFormat imageFormat = null;
+                    // Saves the Image in the appropriate ImageFormat based upon the
+                    // File type selected in the dialog box.
+                    // NOTE that the FilterIndex property is one-based.
 
+                    ImageFormat imageFormat = null;
                     switch (saveFileDialog1.FilterIndex)
                     {
                         case 1:
@@ -136,12 +129,9 @@ namespace QRCoderDemo
                             throw new NotSupportedException("File extension is not supported");
                     }
 
-                    bitmap.Save(fs, imageFormat);
+                    pictureBoxQRCode.BackgroundImage.Save(fs, imageFormat);
+                    fs.Close();
                 }
-
-
-
-                fs.Close();
             }
 
 
