@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QRCoder
+﻿namespace QRCoder
 {
     public static class PayloadGenerator
     {
 
         public class WiFi
         {
-            private string SSID, password, authenticationMode;
-            private bool isHiddenSSID;
-            public WiFi(string SSID, string password, Authentication authenticationMode, bool isHiddenSSID = false)
+            private readonly string ssid, password, authenticationMode;
+            private readonly bool isHiddenSsid;
+            public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false)
             {
-                this.SSID = escapeInput(SSID);
-                this.SSID = isHexStyle(this.SSID) ? "\"" + this.SSID + "\"" : this.SSID;
-                this.password = escapeInput(password);
+                this.ssid = EscapeInput(ssid);
+                this.ssid = isHexStyle(this.ssid) ? "\"" + this.ssid + "\"" : this.ssid;
+                this.password = EscapeInput(password);
                 this.password = isHexStyle(this.password) ? "\"" + this.password + "\"" : this.password;
                 this.authenticationMode = authenticationMode.ToString();
-                this.isHiddenSSID = isHiddenSSID;
+                this.isHiddenSsid = isHiddenSSID;
             }
 
             public override string ToString()
             {
-                return String.Format("WIFI:T:{0};S:{1};P:{2};{3};", authenticationMode, SSID, password, (isHiddenSSID ? "H:true" : string.Empty));
+                return
+                    $"WIFI:T:{this.authenticationMode};S:{this.ssid};P:{this.password};{(this.isHiddenSsid ? "H:true" : string.Empty)};";
             }
 
             public enum Authentication
@@ -38,8 +34,8 @@ namespace QRCoder
 
         public class Mail
         {
-            private string mailReceiver, subject, message;
-            private MailEncoding encoding;
+            private readonly string mailReceiver, subject, message;
+            private readonly MailEncoding encoding;
 
             public Mail(string mailReceiver, MailEncoding encoding = MailEncoding.MAILTO)
             {
@@ -67,16 +63,19 @@ namespace QRCoder
 
             public override string ToString()
             {
-                switch (encoding)
+                switch (this.encoding)
                 {
                     case MailEncoding.MAILTO:
-                        return String.Format("mailto:{0}?subject={1}&body={2}", mailReceiver, System.Uri.EscapeDataString(subject), System.Uri.EscapeDataString(message));
+                        return
+                            $"mailto:{this.mailReceiver}?subject={System.Uri.EscapeDataString(this.subject)}&body={System.Uri.EscapeDataString(this.message)}";
                     case MailEncoding.MATMSG:
-                        return String.Format("MATMSG:TO:{0};SUB:{1};BODY:{2};;", mailReceiver, escapeInput(subject), escapeInput(message));
+                        return
+                            $"MATMSG:TO:{this.mailReceiver};SUB:{EscapeInput(this.subject)};BODY:{EscapeInput(this.message)};;";
                     case MailEncoding.SMTP:
-                        return String.Format("SMTP:{0}:{1}:{2}", mailReceiver, escapeInput(subject, true), escapeInput(message, true));
+                        return
+                            $"SMTP:{this.mailReceiver}:{EscapeInput(this.subject, true)}:{EscapeInput(this.message, true)}";
                     default:
-                        return mailReceiver;
+                        return this.mailReceiver;
                 }
             }
 
@@ -90,8 +89,8 @@ namespace QRCoder
 
         public class SMS
         {
-            private string number, subject;
-            private SMSEncoding encoding;
+            private readonly string number, subject;
+            private readonly SMSEncoding encoding;
 
             public SMS(string number, SMSEncoding encoding = SMSEncoding.SMS)
             {
@@ -110,14 +109,14 @@ namespace QRCoder
 
             public override string ToString()
             {
-                switch (encoding)
+                switch (this.encoding)
                 { 
                     case SMSEncoding.SMS:
-                        return String.Format("sms:{0}?body={1}", number, System.Uri.EscapeDataString(subject));
+                        return $"sms:{this.number}?body={System.Uri.EscapeDataString(this.subject)}";
                     case SMSEncoding.SMS_iOS:
-                        return String.Format("sms:{0};body={1}", number, System.Uri.EscapeDataString(subject));
+                        return $"sms:{this.number};body={System.Uri.EscapeDataString(this.subject)}";
                     case SMSEncoding.SMSTO:
-                        return String.Format("SMSTO:{0}:{1}", number, subject);
+                        return $"SMSTO:{this.number}:{this.subject}";
                     default:
                         return "sms:";
                 }
@@ -133,8 +132,8 @@ namespace QRCoder
 
         public class MMS
         {
-            private string number, subject;
-            private MMSEncoding encoding;
+            private readonly string number, subject;
+            private readonly MMSEncoding encoding;
 
             public MMS(string number, MMSEncoding encoding = MMSEncoding.MMS)
             {
@@ -152,12 +151,12 @@ namespace QRCoder
             
             public override string ToString()
             {
-                switch (encoding)
+                switch (this.encoding)
                 {
                     case MMSEncoding.MMSTO:
-                        return String.Format("mmsto:{0}?subject={1}", number, System.Uri.EscapeDataString(subject));
+                        return $"mmsto:{this.number}?subject={System.Uri.EscapeDataString(this.subject)}";
                     case MMSEncoding.MMS:
-                        return String.Format("mms:{0}?body={1}", number, System.Uri.EscapeDataString(subject));
+                        return $"mms:{this.number}?body={System.Uri.EscapeDataString(this.subject)}";
                     default:
                         return "mms:";
                 }
@@ -174,8 +173,8 @@ namespace QRCoder
 
         public class Geolocation
         {
-            private string latitude, longitude;
-            private GeolocationEncoding encoding;
+            private readonly string latitude, longitude;
+            private readonly GeolocationEncoding encoding;
             public Geolocation(string latitude, string longitude, GeolocationEncoding encoding = GeolocationEncoding.GEO)
             {
                 this.latitude = latitude.Replace(",",".");
@@ -185,12 +184,12 @@ namespace QRCoder
 
             public override string ToString()
             {
-                switch (encoding)
+                switch (this.encoding)
                 {
                     case GeolocationEncoding.GEO:
-                        return String.Format("geo:{0},{1}", latitude, longitude);
+                        return $"geo:{this.latitude},{this.longitude}";
                     case GeolocationEncoding.GoogleMaps:
-                        return String.Format("http://maps.google.com/maps?q={0},{1}", latitude, longitude);
+                        return $"http://maps.google.com/maps?q={this.latitude},{this.longitude}";
                     default:
                         return "geo:";
                 }
@@ -205,7 +204,7 @@ namespace QRCoder
 
         public class PhoneNumber
         {
-            private string number;
+            private readonly string number;
             public PhoneNumber(string number)
             {
                 this.number = number;
@@ -213,13 +212,13 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return "tel:"+number;
+                return "tel:"+ this.number;
             }
         }
 
         public class Url
         {
-            private string url;
+            private readonly string url;
             public Url(string url)
             {
                 this.url = url;
@@ -227,30 +226,30 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return (!url.StartsWith("http") ? "http://" + url : url);
+                return (!this.url.StartsWith("http") ? "http://" + this.url : this.url);
             }
         }
 
         public class Bookmark
         {
-            private string url, title;
+            private readonly string url, title;
             public Bookmark(string url, string title)
             {
-                this.url = escapeInput(url);
-                this.title = escapeInput(title);
+                this.url = EscapeInput(url);
+                this.title = EscapeInput(title);
             }
 
             public override string ToString()
             {
-                return String.Format("MEBKM:TITLE:{0};URL:{1};;", title, url);
+                return $"MEBKM:TITLE:{this.title};URL:{this.url};;";
             }
         }
       
-        private static string escapeInput(string inp, bool simple = false)
+        private static string EscapeInput(string inp, bool simple = false)
         {
             char[] forbiddenChars = { '\\', ';', ',', ':' };
             if (simple) { forbiddenChars = new char[1] { ':' }; }
-            foreach (char c in forbiddenChars)
+            foreach (var c in forbiddenChars)
             {
                 inp = inp.Replace(c.ToString(), "\\" + c);
             }

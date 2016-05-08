@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Reflection;
 
 namespace QRCoder
 {
@@ -23,29 +24,29 @@ namespace QRCoder
 
         public QRCodeGenerator()
         {
-            CreateAntilogTable();
-            CreateAlphanumEncDict();
-            CreateCapacityTable();
-            CreateCapacityECCTable();
-            CreateAlignmentPatternTable();
+            this.CreateAntilogTable();
+            this.CreateAlphanumEncDict();
+            this.CreateCapacityTable();
+            this.CreateCapacityECCTable();
+            this.CreateAlignmentPatternTable();
         }
 
         public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool utf8BOM = false)
         {
-            var encoding = GetEncodingFromPlaintext(plainText);           
-            var codedText = PlainTextToBinary(plainText, encoding, utf8BOM);
-            var dataInputLength = GetDataLength(encoding, plainText, codedText);
-            var version = GetVersion(dataInputLength, encoding, eccLevel);
+            var encoding = this.GetEncodingFromPlaintext(plainText);
+            var codedText = this.PlainTextToBinary(plainText, encoding, utf8BOM);
+            var dataInputLength = this.GetDataLength(encoding, plainText, codedText);
+            var version = this.GetVersion(dataInputLength, encoding, eccLevel);
 
-            var modeIndicator = DecToBin((int)encoding, 4);
-            var countIndicator = DecToBin(dataInputLength, GetCountIndicatorLength(version, encoding));
+            var modeIndicator = this.DecToBin((int)encoding, 4);
+            var countIndicator = this.DecToBin(dataInputLength, this.GetCountIndicatorLength(version, encoding));
             var bitString = modeIndicator + countIndicator;
-            
-            
+
+
             bitString += codedText;
 
             //Fill up data code word
-            var eccInfo = capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel.Equals(eccLevel));
+            var eccInfo = this.capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel.Equals(eccLevel));
             var dataLength = eccInfo.TotalDataCodewords * 8;
             var lengthDiff = dataLength - bitString.Length;
             if (lengthDiff > 0)
@@ -58,37 +59,23 @@ namespace QRCoder
                 bitString = bitString.Substring(0, dataLength);
 
             //Calculate error correction words
-            List<CodewordBlock> codeWordWithECC = new List<CodewordBlock>();
-            for (int i = 0; i < eccInfo.BlocksInGroup1; i++)
+            var codeWordWithECC = new List<CodewordBlock>();
+            for (var i = 0; i < eccInfo.BlocksInGroup1; i++)
             {
                 var bitStr = bitString.Substring(i * eccInfo.CodewordsInGroup1 * 8, eccInfo.CodewordsInGroup1 * 8);
-                codeWordWithECC.Add(new CodewordBlock()
-                {
-                    BitString = bitStr,
-                    BlockNumber = i + 1,
-                    GroupNumber = 1,
-                    CodeWords = BinaryStringToBitBlockList(bitStr),
-                    ECCWords = CalculateECCWords(bitStr, eccInfo)
-                });
+                codeWordWithECC.Add(new CodewordBlock(1, i + 1, bitStr, this.BinaryStringToBitBlockList(bitStr), this.CalculateECCWords(bitStr, eccInfo)));
             }
             bitString = bitString.Substring(eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8);
-            for (int i = 0; i < eccInfo.BlocksInGroup2; i++)
+            for (var i = 0; i < eccInfo.BlocksInGroup2; i++)
             {
                 var bitStr = bitString.Substring(i * eccInfo.CodewordsInGroup2 * 8, eccInfo.CodewordsInGroup2 * 8);
-                codeWordWithECC.Add(new CodewordBlock()
-                {
-                    BitString = bitStr,
-                    BlockNumber = i + 1,
-                    GroupNumber = 2,
-                    CodeWords = BinaryStringToBitBlockList(bitStr),
-                    ECCWords = CalculateECCWords(bitStr, eccInfo)
-                });
+                codeWordWithECC.Add(new CodewordBlock(2, i + 1, bitStr, this.BinaryStringToBitBlockList(bitStr), this.CalculateECCWords(bitStr, eccInfo)));
             }
 
 
             //Interleave code words
-            StringBuilder interleavedWordsSb = new StringBuilder();
-            for (int i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
+            var interleavedWordsSb = new StringBuilder();
+            for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
                     if (codeBlock.CodeWords.Count > i)
@@ -96,33 +83,33 @@ namespace QRCoder
             }
 
 
-            for (int i = 0; i < eccInfo.ECCPerBlock; i++)
+            for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
                     if (codeBlock.ECCWords.Count > i)
                         interleavedWordsSb.Append(codeBlock.ECCWords[i]);
             }
-            interleavedWordsSb.Append(new string('0', remainderBits[version - 1]));
+            interleavedWordsSb.Append(new string('0', this.remainderBits[version - 1]));
             var interleavedData = interleavedWordsSb.ToString();
 
 
             //Place interleaved data on module matrix
-            QRCodeData qr = new QRCodeData(version);
-            List<Rectangle> blockedModules = new List<Rectangle>();
+            var qr = new QRCodeData(version);
+            var blockedModules = new List<Rectangle>();
             ModulePlacer.PlaceFinderPatterns(ref qr, ref blockedModules);
             ModulePlacer.ReserveSeperatorAreas(qr.ModuleMatrix.Count, ref blockedModules);
-            ModulePlacer.PlaceAlignmentPatterns(ref qr, alignmentPatternTable.Where(x => x.Version == version).Select(x => x.PatternPositions).First(), ref blockedModules);
+            ModulePlacer.PlaceAlignmentPatterns(ref qr, this.alignmentPatternTable.Where(x => x.Version == version).Select(x => x.PatternPositions).First(), ref blockedModules);
             ModulePlacer.PlaceTimingPatterns(ref qr, ref blockedModules);
             ModulePlacer.PlaceDarkModule(ref qr, version, ref blockedModules);
             ModulePlacer.ReserveVersionAreas(qr.ModuleMatrix.Count, version, ref blockedModules);
             ModulePlacer.PlaceDataWords(ref qr, interleavedData, ref blockedModules);
             var maskVersion = ModulePlacer.MaskCode(ref qr, version, ref blockedModules);
-            var formatStr = GetFormatString(eccLevel, maskVersion);
+            var formatStr = this.GetFormatString(eccLevel, maskVersion);
 
             ModulePlacer.PlaceFormat(ref qr, formatStr);
             if (version >= 7)
             {
-                var versionString = GetVersionString(version);
+                var versionString = this.GetVersionString(version);
                 ModulePlacer.PlaceVersion(ref qr, versionString);
             }
             ModulePlacer.AddQuietZone(ref qr);
@@ -135,21 +122,21 @@ namespace QRCoder
             var fStrMask = "101010000010010";
 
             var fStr = (level == ECCLevel.L) ? "01" : (level == ECCLevel.M) ? "00" : (level == ECCLevel.Q) ? "11" : "10";
-            fStr += DecToBin(maskVersion, 3);
+            fStr += this.DecToBin(maskVersion, 3);
             var fStrEcc = fStr.PadRight(15, '0').TrimStart('0');
             while (fStrEcc.Length > 10)
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 generator = generator.PadRight(fStrEcc.Length, '0');
-                for (int i = 0; i < fStrEcc.Length; i++)
+                for (var i = 0; i < fStrEcc.Length; i++)
                     sb.Append((Convert.ToInt32(fStrEcc[i]) ^ Convert.ToInt32(generator[i])).ToString());
                 fStrEcc = sb.ToString().TrimStart('0');
             }
             fStrEcc = fStrEcc.PadLeft(10, '0');
             fStr += fStrEcc;
 
-            StringBuilder sbMask = new StringBuilder();
-            for (int i = 0; i < fStr.Length; i++)
+            var sbMask = new StringBuilder();
+            for (var i = 0; i < fStr.Length; i++)
                 sbMask.Append((Convert.ToInt32(fStr[i]) ^ Convert.ToInt32(fStrMask[i])).ToString());
             return sbMask.ToString();
         }
@@ -158,13 +145,13 @@ namespace QRCoder
         {
             var generator = "1111100100101";
 
-            var vStr = DecToBin(version, 6);
+            var vStr = this.DecToBin(version, 6);
             var vStrEcc = vStr.PadRight(18, '0').TrimStart('0');
             while (vStrEcc.Length > 12)
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 generator = generator.PadRight(vStrEcc.Length, '0');
-                for (int i = 0; i < vStrEcc.Length; i++)
+                for (var i = 0; i < vStrEcc.Length; i++)
                     sb.Append((Convert.ToInt32(vStrEcc[i]) ^ Convert.ToInt32(generator[i])).ToString());
                 vStrEcc = sb.ToString().TrimStart('0');
             }
@@ -178,19 +165,18 @@ namespace QRCoder
         {
             public static void AddQuietZone(ref QRCodeData qrCode)
             {
-                bool[] quietLine = new bool[qrCode.ModuleMatrix.Count + 8];
-                for (int i = 0; i < quietLine.Length; i++)
+                var quietLine = new bool[qrCode.ModuleMatrix.Count + 8];
+                for (var i = 0; i < quietLine.Length; i++)
                     quietLine[i] = false;
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                     qrCode.ModuleMatrix.Insert(0, new BitArray(quietLine));
-                for (int i = 0; i < 4; i++)
+                for (var i = 0; i < 4; i++)
                     qrCode.ModuleMatrix.Add(new BitArray(quietLine));
-                for (int i = 4; i < qrCode.ModuleMatrix.Count - 4; i++)
+                for (var i = 4; i < qrCode.ModuleMatrix.Count - 4; i++)
                 {
-                    bool[] quietPart = new bool[4] { false, false, false, false };
-                    List<bool> tmpLine = new List<bool>(quietPart);
-                    foreach (bool module in qrCode.ModuleMatrix[i])
-                        tmpLine.Add(module);
+                    bool[] quietPart = { false, false, false, false };
+                    var tmpLine = new List<bool>(quietPart);
+                    tmpLine.AddRange(qrCode.ModuleMatrix[i].Cast<bool>());
                     tmpLine.AddRange(quietPart);
                     qrCode.ModuleMatrix[i] = new BitArray(tmpLine.ToArray());
                 }
@@ -201,12 +187,12 @@ namespace QRCoder
                 var size = qrCode.ModuleMatrix.Count;
                 var vStr = new string(versionStr.Reverse().ToArray());
 
-                for (int x = 0; x < 6; x++)
+                for (var x = 0; x < 6; x++)
                 {
-                    for (int y = 0; y < 3; y++)
+                    for (var y = 0; y < 3; y++)
                     {
-                        qrCode.ModuleMatrix[y + size - 11][x] = vStr[x * 3 + y] == '1' ? true : false;
-                        qrCode.ModuleMatrix[x][y + size - 11] = vStr[x * 3 + y] == '1' ? true : false;
+                        qrCode.ModuleMatrix[y + size - 11][x] = vStr[x * 3 + y] == '1';
+                        qrCode.ModuleMatrix[x][y + size - 11] = vStr[x * 3 + y] == '1';
                     }
                 }
             }
@@ -215,13 +201,13 @@ namespace QRCoder
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var fStr = new string(formatStr.Reverse().ToArray());
-                int[,] modules = new int[15, 4] { { 8, 0, size - 1, 8 }, { 8, 1, size - 2, 8 }, { 8, 2, size - 3, 8 }, { 8, 3, size - 4, 8 }, { 8, 4, size - 5, 8 }, { 8, 5, size - 6, 8 }, { 8, 7, size - 7, 8 }, { 8, 8, size - 8, 8 }, { 7, 8, 8, size - 7 }, { 5, 8, 8, size - 6 }, { 4, 8, 8, size - 5 }, { 3, 8, 8, size - 4 }, { 2, 8, 8, size - 3 }, { 1, 8, 8, size - 2 }, { 0, 8, 8, size - 1 } };
-                for (int i = 0; i < 15; i++)
+                var modules = new[,] { { 8, 0, size - 1, 8 }, { 8, 1, size - 2, 8 }, { 8, 2, size - 3, 8 }, { 8, 3, size - 4, 8 }, { 8, 4, size - 5, 8 }, { 8, 5, size - 6, 8 }, { 8, 7, size - 7, 8 }, { 8, 8, size - 8, 8 }, { 7, 8, 8, size - 7 }, { 5, 8, 8, size - 6 }, { 4, 8, 8, size - 5 }, { 3, 8, 8, size - 4 }, { 2, 8, 8, size - 3 }, { 1, 8, 8, size - 2 }, { 0, 8, 8, size - 1 } };
+                for (var i = 0; i < 15; i++)
                 {
                     var p1 = new Point(modules[i, 0], modules[i, 1]);
                     var p2 = new Point(modules[i, 2], modules[i, 3]);
-                    qrCode.ModuleMatrix[p1.Y][p1.X] = fStr[i] == '1' ? true : false;
-                    qrCode.ModuleMatrix[p2.Y][p2.X] = fStr[i] == '1' ? true : false;
+                    qrCode.ModuleMatrix[p1.Y][p1.X] = fStr[i] == '1';
+                    qrCode.ModuleMatrix[p2.Y][p2.X] = fStr[i] == '1';
                 }
             }
 
@@ -236,10 +222,10 @@ namespace QRCoder
                 {
                     if (pattern.Name.Length == 8 && pattern.Name.Substring(0, 7) == "Pattern")
                     {
-                        QRCodeData qrTemp = new QRCodeData(version);
-                        for (int y = 0; y < size; y++)
+                        var qrTemp = new QRCodeData(version);
+                        for (var y = 0; y < size; y++)
                         {
-                            for (int x = 0; x < size; x++)
+                            for (var x = 0; x < size; x++)
                             {
                                 qrTemp.ModuleMatrix[y][x] = qrCode.ModuleMatrix[y][x];
                             }
@@ -247,9 +233,9 @@ namespace QRCoder
                         }
 
 
-                        for (int x = 0; x < size; x++)
+                        for (var x = 0; x < size; x++)
                         {
-                            for (int y = 0; y < size; y++)
+                            for (var y = 0; y < size; y++)
                             {
                                 if (!IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                                 {
@@ -268,9 +254,9 @@ namespace QRCoder
                     }
                 }
                 var patterMethod = typeof(MaskPattern).GetMethods().First(x => x.Name == patternName);
-                for (int x = 0; x < size; x++)
+                for (var x = 0; x < size; x++)
                 {
-                    for (int y = 0; y < size; y++)
+                    for (var y = 0; y < size; y++)
                     {
                         if (!IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                         {
@@ -287,14 +273,14 @@ namespace QRCoder
                 var size = qrCode.ModuleMatrix.Count;
                 var up = true;
                 var datawords = new Queue<bool>();
-                data.ToList().ForEach(x => datawords.Enqueue(x == '0' ? false : true));
-                for (int x = size - 1; x >= 0; x = x - 2)
+                data.ToList().ForEach(x => datawords.Enqueue(x != '0'));
+                for (var x = size - 1; x >= 0; x = x - 2)
                 {
                     if (x == 7 || x == 6)
                         x = 5;
-                    for (int yMod = 1; yMod <= size; yMod++)
+                    for (var yMod = 1; yMod <= size; yMod++)
                     {
-                        int y = 0;
+                        int y;
                         if (up)
                         {
                             y = size - yMod;
@@ -318,7 +304,7 @@ namespace QRCoder
 
             public static void ReserveSeperatorAreas(int size, ref List<Rectangle> blockedModules)
             {
-                blockedModules.AddRange(new Rectangle[]{
+                blockedModules.AddRange(new[]{
                     new Rectangle(7, 0, 1, 8),
                     new Rectangle(0, 7, 7, 1),
                     new Rectangle(0, size-8, 8, 1),
@@ -330,7 +316,7 @@ namespace QRCoder
 
             public static void ReserveVersionAreas(int size, int version, ref List<Rectangle> blockedModules)
             {
-                blockedModules.AddRange(new Rectangle[]{
+                blockedModules.AddRange(new[]{
                     new Rectangle(8, 0, 1, 6),
                     new Rectangle(8, 7, 1, 1),
                     new Rectangle(0, 8, 6, 1),
@@ -341,7 +327,7 @@ namespace QRCoder
 
                 if (version >= 7)
                 {
-                    blockedModules.AddRange(new Rectangle[]{
+                    blockedModules.AddRange(new[]{
                     new Rectangle(size-11, 0, 3, 6),
                     new Rectangle(0, size-11, 6, 3)
                 });
@@ -358,11 +344,11 @@ namespace QRCoder
                 var size = qrCode.ModuleMatrix.Count;
                 int[] locations = { 0, 0, size - 7, 0, 0, size - 7 };
 
-                for (int i = 0; i < 6; i = i + 2)
+                for (var i = 0; i < 6; i = i + 2)
                 {
-                    for (int x = 0; x < 7; x++)
+                    for (var x = 0; x < 7; x++)
                     {
-                        for (int y = 0; y < 7; y++)
+                        for (var y = 0; y < 7; y++)
                         {
                             if (!(((x == 1 || x == 5) && y > 0 && y < 6) || (x > 0 && x < 6 && (y == 1 || y == 5))))
                             {
@@ -391,9 +377,9 @@ namespace QRCoder
                     if (blocked)
                         continue;
 
-                    for (int x = 0; x < 5; x++)
+                    for (var x = 0; x < 5; x++)
                     {
-                        for (int y = 0; y < 5; y++)
+                        for (var y = 0; y < 5; y++)
                         {
                             if (y == 0 || y == 4 || x == 0 || x == 4 || (x == 2 && y == 2))
                             {
@@ -408,7 +394,7 @@ namespace QRCoder
             public static void PlaceTimingPatterns(ref QRCodeData qrCode, ref List<Rectangle> blockedModules)
             {
                 var size = qrCode.ModuleMatrix.Count;
-                for (int i = 8; i < size - 8; i++)
+                for (var i = 8; i < size - 8; i++)
                 {
                     if (i % 2 == 0)
                     {
@@ -416,7 +402,7 @@ namespace QRCoder
                         qrCode.ModuleMatrix[i][6] = true;
                     }
                 }
-                blockedModules.AddRange(new Rectangle[]{
+                blockedModules.AddRange(new[]{
                     new Rectangle(6, 8, 1, size-16),
                     new Rectangle(8, 6, size-16, 1)
                 });
@@ -486,13 +472,13 @@ namespace QRCoder
                     var size = qrCode.ModuleMatrix.Count;
 
                     //Penalty 1                   
-                    for (int y = 0; y < size; y++)
+                    for (var y = 0; y < size; y++)
                     {
                         var modInRow = 0;
                         var modInColumn = 0;
                         var lastValRow = qrCode.ModuleMatrix[y][0];
                         var lastValColumn = qrCode.ModuleMatrix[0][y];
-                        for (int x = 0; x < size; x++)
+                        for (var x = 0; x < size; x++)
                         {
                             if (qrCode.ModuleMatrix[y][x] == lastValRow)
                                 modInRow++;
@@ -519,9 +505,9 @@ namespace QRCoder
 
 
                     //Penalty 2
-                    for (int y = 0; y < size - 1; y++)
+                    for (var y = 0; y < size - 1; y++)
                     {
-                        for (int x = 0; x < size - 1; x++)
+                        for (var x = 0; x < size - 1; x++)
                         {
                             if (qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y][x + 1] &&
                                 qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y + 1][x] &&
@@ -531,9 +517,9 @@ namespace QRCoder
                     }
 
                     //Penalty 3
-                    for (int y = 0; y < size; y++)
+                    for (var y = 0; y < size; y++)
                     {
-                        for (int x = 0; x < size - 10; x++)
+                        for (var x = 0; x < size - 10; x++)
                         {
                             if ((qrCode.ModuleMatrix[y][x] &&
                                 !qrCode.ModuleMatrix[y][x + 1] &&
@@ -611,28 +597,22 @@ namespace QRCoder
         private List<string> CalculateECCWords(string bitString, ECCInfo eccInfo)
         {
             var eccWords = eccInfo.ECCPerBlock;
-            var messagePolynom = CalculateMessagePolynom(bitString);
-            var generatorPolynom = CalculateGeneratorPolynom(eccWords);
+            var messagePolynom = this.CalculateMessagePolynom(bitString);
+            var generatorPolynom = this.CalculateGeneratorPolynom(eccWords);
 
-            for (int i = 0; i < messagePolynom.PolyItems.Count; i++)
-                messagePolynom.PolyItems[i] = new PolynomItem()
-                {
-                    Coefficient = messagePolynom.PolyItems[i].Coefficient,
-                    Exponent = messagePolynom.PolyItems[i].Exponent + eccWords
-                };
+            for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
+                messagePolynom.PolyItems[i] = new PolynomItem(messagePolynom.PolyItems[i].Coefficient,
+                    messagePolynom.PolyItems[i].Exponent + eccWords);
 
             var genLeadtermFactor = messagePolynom.PolyItems[0].Exponent - generatorPolynom.PolyItems[0].Exponent;
-            for (int i = 0; i < generatorPolynom.PolyItems.Count; i++)
-                generatorPolynom.PolyItems[i] = new PolynomItem()
-                {
-                    Coefficient = generatorPolynom.PolyItems[i].Coefficient,
-                    Exponent = generatorPolynom.PolyItems[i].Exponent + genLeadtermFactor
-                };
+            for (var i = 0; i < generatorPolynom.PolyItems.Count; i++)
+                generatorPolynom.PolyItems[i] = new PolynomItem(generatorPolynom.PolyItems[i].Coefficient,
+                    generatorPolynom.PolyItems[i].Exponent + genLeadtermFactor);
 
 
 
             var leadTermSource = messagePolynom;
-            for (int i = 0; i < messagePolynom.PolyItems.Count; i++)
+            for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
             {
                 if (leadTermSource.PolyItems[0].Coefficient == 0)
                 {   // First coefficient is already 0, simply remove it and continue
@@ -640,42 +620,38 @@ namespace QRCoder
                 }
                 else
                 {
-                    var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
-                    resPoly = ConvertToDecNotation(resPoly);
-                    resPoly = XORPolynoms(leadTermSource, resPoly);
+                    var resPoly = this.MultiplyGeneratorPolynomByLeadterm(generatorPolynom, this.ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
+                    resPoly = this.ConvertToDecNotation(resPoly);
+                    resPoly = this.XORPolynoms(leadTermSource, resPoly);
                     leadTermSource = resPoly;
                 }
             }
-            return leadTermSource.PolyItems.Select(x => DecToBin(x.Coefficient, 8)).ToList();
+            return leadTermSource.PolyItems.Select(x => this.DecToBin(x.Coefficient, 8)).ToList();
         }
 
         private Polynom ConvertToAlphaNotation(Polynom poly)
         {
-            Polynom newPoly = new Polynom();
-            for (int i = 0; i < poly.PolyItems.Count; i++)
-                newPoly.PolyItems.Add(new PolynomItem()
-                {
-                    Coefficient = (poly.PolyItems[i].Coefficient != 0 ? GetAlphaExpFromIntVal(poly.PolyItems[i].Coefficient) : 0),
-                    Exponent = poly.PolyItems[i].Exponent
-                });
+            var newPoly = new Polynom();
+            for (var i = 0; i < poly.PolyItems.Count; i++)
+                newPoly.PolyItems.Add(
+                    new PolynomItem(
+                        (poly.PolyItems[i].Coefficient != 0
+                            ? this.GetAlphaExpFromIntVal(poly.PolyItems[i].Coefficient)
+                            : 0), poly.PolyItems[i].Exponent));
             return newPoly;
         }
 
         private Polynom ConvertToDecNotation(Polynom poly)
         {
-            Polynom newPoly = new Polynom();
-            for (int i = 0; i < poly.PolyItems.Count; i++)
-                newPoly.PolyItems.Add(new PolynomItem()
-                {
-                    Coefficient = GetIntValFromAlphaExp(poly.PolyItems[i].Coefficient),
-                    Exponent = poly.PolyItems[i].Exponent
-                });
+            var newPoly = new Polynom();
+            for (var i = 0; i < poly.PolyItems.Count; i++)
+                newPoly.PolyItems.Add(new PolynomItem(this.GetIntValFromAlphaExp(poly.PolyItems[i].Coefficient), poly.PolyItems[i].Exponent));
             return newPoly;
         }
 
         private int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
-            var version = capacityTable.Where(
+            var version = this.capacityTable.Where(
                 x => x.Details.Count(
                     y => (y.ErrorCorrectionLevel == eccLevel
                           && y.CapacityDict[encMode] >= Convert.ToInt32(length)
@@ -694,7 +670,7 @@ namespace QRCoder
         {
             if (plainText.All(c => "0123456789".Contains(c)))
                 return EncodingMode.Numeric;
-            else if (plainText.All(c => alphanumEncTable.Contains(c)))
+            else if (plainText.All(c => this.alphanumEncTable.Contains(c)))
                 return EncodingMode.Alphanumeric;
             else
                 return EncodingMode.Byte;
@@ -702,14 +678,10 @@ namespace QRCoder
 
         private Polynom CalculateMessagePolynom(string bitString)
         {
-            Polynom messagePol = new Polynom();
-            for (int i = bitString.Length / 8 - 1; i >= 0; i--)
+            var messagePol = new Polynom();
+            for (var i = bitString.Length / 8 - 1; i >= 0; i--)
             {
-                messagePol.PolyItems.Add(new PolynomItem()
-                {
-                    Coefficient = BinToDec(bitString.Substring(0, 8)),
-                    Exponent = i
-                });
+                messagePol.PolyItems.Add(new PolynomItem(this.BinToDec(bitString.Substring(0, 8)), 1));
                 bitString = bitString.Remove(0, 8);
             }
             return messagePol;
@@ -718,20 +690,20 @@ namespace QRCoder
 
         private Polynom CalculateGeneratorPolynom(int numEccWords)
         {
-            Polynom generatorPolynom = new Polynom();
-            generatorPolynom.PolyItems.AddRange(new PolynomItem[]{
-                new PolynomItem(){ Coefficient = 0, Exponent = 1},
-                new PolynomItem(){ Coefficient = 0, Exponent = 0}
+            var generatorPolynom = new Polynom();
+            generatorPolynom.PolyItems.AddRange(new[]{
+                new PolynomItem(0,1),
+                new PolynomItem(0,0)
             });
-            for (int i = 1; i <= numEccWords - 1; i++)
+            for (var i = 1; i <= numEccWords - 1; i++)
             {
-                Polynom multiplierPolynom = new Polynom();
-                multiplierPolynom.PolyItems.AddRange(new PolynomItem[]{
-                    new PolynomItem(){ Coefficient = 0, Exponent = 1},
-                    new PolynomItem(){ Coefficient = i, Exponent = 0}
+                var multiplierPolynom = new Polynom();
+                multiplierPolynom.PolyItems.AddRange(new[]{
+                   new PolynomItem(0,1),
+                new PolynomItem(i,0)
                 });
 
-                generatorPolynom = MultiplyAlphaPolynoms(generatorPolynom, multiplierPolynom);
+                generatorPolynom = this.MultiplyAlphaPolynoms(generatorPolynom, multiplierPolynom);
             }
 
             return generatorPolynom;
@@ -757,7 +729,7 @@ namespace QRCoder
 
         private string DecToBin(int decNum, int padLeftUpTo)
         {
-            var binStr = DecToBin(decNum);
+            var binStr = this.DecToBin(decNum);
             return binStr.PadLeft(padLeftUpTo, '0');
         }
 
@@ -798,86 +770,86 @@ namespace QRCoder
 
         private int GetDataLength(EncodingMode encoding, string plainText, string codedText)
         {
-            return IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
+            return this.IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
         }
 
         private bool IsUtf8(EncodingMode encoding, string plainText)
         {
-            return (encoding == EncodingMode.Byte && !IsValidISO(plainText));
+            return (encoding == EncodingMode.Byte && !this.IsValidISO(plainText));
         }
 
         private bool IsValidISO(string input)
         {
-            byte[] bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
-            String result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
+            var bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
+            var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
             return String.Equals(input, result);
         }
 
         private string PlainTextToBinary(string plainText, EncodingMode encMode, bool utf8BOM)
         {
             if (encMode.Equals(EncodingMode.Numeric))
-                return PlainTextToBinaryNumeric(plainText);
+                return this.PlainTextToBinaryNumeric(plainText);
             else if (encMode.Equals(EncodingMode.Alphanumeric))
-                return PlainTextToBinaryAlphanumeric(plainText);
+                return this.PlainTextToBinaryAlphanumeric(plainText);
             else if (encMode.Equals(EncodingMode.Byte))
-                return PlainTextToBinaryByte(plainText, utf8BOM);
+                return this.PlainTextToBinaryByte(plainText, utf8BOM);
             else
                 return string.Empty;
         }
 
         private string PlainTextToBinaryNumeric(string plainText)
         {
-            string codeText = string.Empty;
+            var codeText = string.Empty;
             while (plainText.Length >= 3)
             {
                 var dec = Convert.ToInt32(plainText.Substring(0, 3));
-                codeText += DecToBin(dec, 10);
+                codeText += this.DecToBin(dec, 10);
                 plainText = plainText.Substring(3);
 
             }
             if (plainText.Length == 2)
             {
                 var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
-                codeText += DecToBin(dec, 7);
+                codeText += this.DecToBin(dec, 7);
             }
             else if (plainText.Length == 1)
             {
                 var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
-                codeText += DecToBin(dec, 4);
+                codeText += this.DecToBin(dec, 4);
             }
             return codeText;
         }
 
         private string PlainTextToBinaryAlphanumeric(string plainText)
         {
-            string codeText = string.Empty;
+            var codeText = string.Empty;
             while (plainText.Length >= 2)
             {
                 var token = plainText.Substring(0, 2);
-                var dec = alphanumEncDict[token[0]] * 45 + alphanumEncDict[token[1]];
-                codeText += DecToBin(dec, 11);
+                var dec = this.alphanumEncDict[token[0]] * 45 + this.alphanumEncDict[token[1]];
+                codeText += this.DecToBin(dec, 11);
                 plainText = plainText.Substring(2);
 
             }
             if (plainText.Length > 0)
             {
-                codeText += DecToBin(alphanumEncDict[plainText[0]], 6);
+                codeText += this.DecToBin(this.alphanumEncDict[plainText[0]], 6);
             }
             return codeText;
         }
 
         private string PlainTextToBinaryByte(string plainText, bool utf8BOM)
         {
-            byte[] codeBytes = new byte[1];
-            string codeText = string.Empty;
+            byte[] codeBytes;
+            var codeText = string.Empty;
 
-            if (IsValidISO(plainText))
+            if (this.IsValidISO(plainText))
                 codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
             else
-                codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);          
+                codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
 
             foreach (var b in codeBytes)
-                codeText += DecToBin(b, 8);
+                codeText += this.DecToBin(b, 8);
 
             return codeText;
         }
@@ -885,7 +857,7 @@ namespace QRCoder
 
         private Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
         {
-            Polynom resultPolynom = new Polynom();
+            var resultPolynom = new Polynom();
             Polynom longPoly, shortPoly;
             if (messagePolynom.PolyItems.Count >= resPolynom.PolyItems.Count)
             {
@@ -898,11 +870,15 @@ namespace QRCoder
                 shortPoly = messagePolynom;
             }
 
-            for (int i = 0; i < longPoly.PolyItems.Count; i++)
+            for (var i = 0; i < longPoly.PolyItems.Count; i++)
             {
-                PolynomItem polItemRes = new PolynomItem();
-                polItemRes.Coefficient = longPoly.PolyItems[i].Coefficient ^ (shortPoly.PolyItems.Count > i ? shortPoly.PolyItems[i].Coefficient : 0);
-                polItemRes.Exponent = messagePolynom.PolyItems[0].Exponent - i;
+                var polItemRes = new PolynomItem
+                (
+
+                        longPoly.PolyItems[i].Coefficient ^
+                        (shortPoly.PolyItems.Count > i ? shortPoly.PolyItems[i].Coefficient : 0),
+                    messagePolynom.PolyItems[0].Exponent - i
+                );
                 resultPolynom.PolyItems.Add(polItemRes);
             }
             resultPolynom.PolyItems.RemoveAt(0);
@@ -912,12 +888,14 @@ namespace QRCoder
 
         private Polynom MultiplyGeneratorPolynomByLeadterm(Polynom genPolynom, PolynomItem leadTerm, int lowerExponentBy)
         {
-            Polynom resultPolynom = new Polynom();
+            var resultPolynom = new Polynom();
             foreach (var polItemBase in genPolynom.PolyItems)
             {
-                PolynomItem polItemRes = new PolynomItem();
-                polItemRes.Coefficient = (polItemBase.Coefficient + leadTerm.Coefficient) % 255;
-                polItemRes.Exponent = polItemBase.Exponent - lowerExponentBy;
+                var polItemRes = new PolynomItem(
+
+                    (polItemBase.Coefficient + leadTerm.Coefficient) % 255,
+                    polItemBase.Exponent - lowerExponentBy
+                );
                 resultPolynom.PolyItems.Add(polItemRes);
             }
             return resultPolynom;
@@ -925,32 +903,30 @@ namespace QRCoder
 
         private Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
         {
-            Polynom resultPolynom = new Polynom();
+            var resultPolynom = new Polynom();
             foreach (var polItemBase in polynomMultiplier.PolyItems)
             {
                 foreach (var polItemMulti in polynomBase.PolyItems)
                 {
-                    PolynomItem polItemRes = new PolynomItem();
-                    polItemRes.Coefficient = ShrinkAlphaExp(polItemBase.Coefficient + polItemMulti.Coefficient);
-                    polItemRes.Exponent = (polItemBase.Exponent + polItemMulti.Exponent);
+                    var polItemRes = new PolynomItem
+                    (
+                        ShrinkAlphaExp(polItemBase.Coefficient + polItemMulti.Coefficient),
+                        (polItemBase.Exponent + polItemMulti.Exponent)
+                    );
                     resultPolynom.PolyItems.Add(polItemRes);
                 }
             }
             var exponentsToGlue = resultPolynom.PolyItems.GroupBy(x => x.Exponent).Where(x => x.Count() > 1).Select(x => x.First().Exponent);
-            List<PolynomItem> gluedPolynoms = new List<PolynomItem>();
-            foreach (var exponent in exponentsToGlue)
+            var gluedPolynoms = new List<PolynomItem>();
+            var toGlue = exponentsToGlue as IList<int> ?? exponentsToGlue.ToList();
+            foreach (var exponent in toGlue)
             {
-                PolynomItem polynomFixed = new PolynomItem();
-                polynomFixed.Exponent = exponent;
-                int coefficient = 0;
-                foreach (var polynomOld in resultPolynom.PolyItems.Where(x => x.Exponent == exponent))
-                {
-                    coefficient ^= GetIntValFromAlphaExp(polynomOld.Coefficient);
-                }
-                polynomFixed.Coefficient = GetAlphaExpFromIntVal(coefficient);
+                var coefficient = resultPolynom.PolyItems.Where(x => x.Exponent == exponent).Aggregate(0, (current, polynomOld)
+                    => current ^ this.GetIntValFromAlphaExp(polynomOld.Coefficient));
+                var polynomFixed = new PolynomItem(this.GetAlphaExpFromIntVal(coefficient), exponent);
                 gluedPolynoms.Add(polynomFixed);
             }
-            resultPolynom.PolyItems.RemoveAll(x => exponentsToGlue.Contains(x.Exponent));
+            resultPolynom.PolyItems.RemoveAll(x => toGlue.Contains(x.Exponent));
             resultPolynom.PolyItems.AddRange(gluedPolynoms);
             resultPolynom.PolyItems = resultPolynom.PolyItems.OrderByDescending(x => x.Exponent).ToList();
             return resultPolynom;
@@ -958,41 +934,42 @@ namespace QRCoder
 
         private int GetIntValFromAlphaExp(int exp)
         {
-            return galoisField.Where(alog => alog.ExponentAlpha == exp).Select(alog => alog.IntegerValue).First();
+            return this.galoisField.Where(alog => alog.ExponentAlpha == exp).Select(alog => alog.IntegerValue).First();
         }
 
         private int GetAlphaExpFromIntVal(int intVal)
         {
-            return galoisField.Where(alog => alog.IntegerValue == intVal).Select(alog => alog.ExponentAlpha).First();
+            return this.galoisField.Where(alog => alog.IntegerValue == intVal).Select(alog => alog.ExponentAlpha).First();
         }
 
-        private int ShrinkAlphaExp(int alphaExp)
+        private static int ShrinkAlphaExp(int alphaExp)
         {
+            // ReSharper disable once PossibleLossOfFraction
             return (int)((alphaExp % 256) + Math.Floor((double)(alphaExp / 256)));
         }
 
         private void CreateAlphanumEncDict()
         {
-            alphanumEncDict = new Dictionary<char, int>();
-            alphanumEncTable.ToList().Select((x, i) => new { Chr = x, Index = i }).ToList().ForEach(x => alphanumEncDict.Add(x.Chr, x.Index));
+            this.alphanumEncDict = new Dictionary<char, int>();
+            this.alphanumEncTable.ToList().Select((x, i) => new { Chr = x, Index = i }).ToList().ForEach(x => this.alphanumEncDict.Add(x.Chr, x.Index));
         }
 
         private void CreateAlignmentPatternTable()
         {
-            alignmentPatternTable = new List<AlignmentPattern>();
+            this.alignmentPatternTable = new List<AlignmentPattern>();
 
-            for (int i = 0; i < (7 * 40); i = i + 7)
+            for (var i = 0; i < (7 * 40); i = i + 7)
             {
-                List<Point> points = new List<Point>();
-                for (int x = 0; x < 7; x++)
+                var points = new List<Point>();
+                for (var x = 0; x < 7; x++)
                 {
-                    if (alignmentPatternBaseValues[i + x] != 0)
+                    if (this.alignmentPatternBaseValues[i + x] != 0)
                     {
-                        for (int y = 0; y < 7; y++)
+                        for (var y = 0; y < 7; y++)
                         {
-                            if (alignmentPatternBaseValues[i + y] != 0)
+                            if (this.alignmentPatternBaseValues[i + y] != 0)
                             {
-                                Point p = new Point(alignmentPatternBaseValues[i + x] - 2, alignmentPatternBaseValues[i + y] - 2);
+                                var p = new Point(this.alignmentPatternBaseValues[i + x] - 2, this.alignmentPatternBaseValues[i + y] - 2);
                                 if (!points.Contains(p))
                                     points.Add(p);
                             }
@@ -1000,7 +977,7 @@ namespace QRCoder
                     }
                 }
 
-                alignmentPatternTable.Add(new AlignmentPattern()
+                this.alignmentPatternTable.Add(new AlignmentPattern()
                 {
                     Version = (i + 7) / 7,
                     PatternPositions = points
@@ -1012,129 +989,126 @@ namespace QRCoder
 
         private void CreateCapacityECCTable()
         {
-            capacityECCTable = new List<ECCInfo>();
-            for (int i = 0; i < (4 * 6 * 40); i = i + (4 * 6))
+            this.capacityECCTable = new List<ECCInfo>();
+            for (var i = 0; i < (4 * 6 * 40); i = i + (4 * 6))
             {
-                capacityECCTable.AddRange(
-                new ECCInfo[]
+                this.capacityECCTable.AddRange(
+                new[]
                 {
-                    new ECCInfo()
-                    {
-                        Version = (i + 24) / 24,
-                        ErrorCorrectionLevel = ECCLevel.L,
-                        TotalDataCodewords = capacityECCBaseValues[i],
-                        ECCPerBlock = capacityECCBaseValues[i+1],
-                        BlocksInGroup1 = capacityECCBaseValues[i+2],
-                        CodewordsInGroup1 = capacityECCBaseValues[i+3],
-                        BlocksInGroup2  = capacityECCBaseValues[i+4],
-                        CodewordsInGroup2 = capacityECCBaseValues[i+5]
-                    },
-                    new ECCInfo()
-                    {
-                        Version = (i + 24) / 24,
-                        ErrorCorrectionLevel = ECCLevel.M,
-                        TotalDataCodewords = capacityECCBaseValues[i+6],
-                        ECCPerBlock = capacityECCBaseValues[i+7],
-                        BlocksInGroup1 = capacityECCBaseValues[i+8],
-                        CodewordsInGroup1 = capacityECCBaseValues[i+9],
-                        BlocksInGroup2  = capacityECCBaseValues[i+10],
-                        CodewordsInGroup2 = capacityECCBaseValues[i+11]
-                    },
-                    new ECCInfo()
-                    {
-                        Version = (i + 24) / 24,
-                        ErrorCorrectionLevel = ECCLevel.Q,
-                        TotalDataCodewords = capacityECCBaseValues[i+12],
-                        ECCPerBlock = capacityECCBaseValues[i+13],
-                        BlocksInGroup1 = capacityECCBaseValues[i+14],
-                        CodewordsInGroup1 = capacityECCBaseValues[i+15],
-                        BlocksInGroup2  = capacityECCBaseValues[i+16],
-                        CodewordsInGroup2 = capacityECCBaseValues[i+17]
-                    },
-                    new ECCInfo()
-                    {
-                        Version = (i + 24) / 24,
-                        ErrorCorrectionLevel = ECCLevel.H,
-                        TotalDataCodewords = capacityECCBaseValues[i+18],
-                        ECCPerBlock= capacityECCBaseValues[i+19],
-                        BlocksInGroup1 = capacityECCBaseValues[i+20],
-                        CodewordsInGroup1 = capacityECCBaseValues[i+21],
-                        BlocksInGroup2  = capacityECCBaseValues[i+22],
-                        CodewordsInGroup2 = capacityECCBaseValues[i+23]
-                    }
+                    new ECCInfo(
+                        (i+24) / 24,
+                        ECCLevel.L,
+                        this.capacityECCBaseValues[i],
+                        this.capacityECCBaseValues[i+1],
+                        this.capacityECCBaseValues[i+2],
+                        this.capacityECCBaseValues[i+3],
+                        this.capacityECCBaseValues[i+4],
+                        this.capacityECCBaseValues[i+5]),
+                    new ECCInfo
+                    (
+                        version: (i + 24) / 24,
+                        errorCorrectionLevel: ECCLevel.M,
+                        totalDataCodewords: this.capacityECCBaseValues[i+6],
+                        eccPerBlock: this.capacityECCBaseValues[i+7],
+                        blocksInGroup1: this.capacityECCBaseValues[i+8],
+                        codewordsInGroup1: this.capacityECCBaseValues[i+9],
+                        blocksInGroup2: this.capacityECCBaseValues[i+10],
+                        codewordsInGroup2: this.capacityECCBaseValues[i+11]
+                    ),
+                    new ECCInfo
+                    (
+                        version: (i + 24) / 24,
+                        errorCorrectionLevel: ECCLevel.Q,
+                        totalDataCodewords: this.capacityECCBaseValues[i+12],
+                        eccPerBlock: this.capacityECCBaseValues[i+13],
+                        blocksInGroup1: this.capacityECCBaseValues[i+14],
+                        codewordsInGroup1: this.capacityECCBaseValues[i+15],
+                        blocksInGroup2: this.capacityECCBaseValues[i+16],
+                        codewordsInGroup2: this.capacityECCBaseValues[i+17]
+                    ),
+                    new ECCInfo
+                    (
+                        version: (i + 24) / 24,
+                        errorCorrectionLevel: ECCLevel.H,
+                        totalDataCodewords: this.capacityECCBaseValues[i+18],
+                        eccPerBlock: this.capacityECCBaseValues[i+19],
+                        blocksInGroup1: this.capacityECCBaseValues[i+20],
+                        codewordsInGroup1: this.capacityECCBaseValues[i+21],
+                        blocksInGroup2: this.capacityECCBaseValues[i+22],
+                        codewordsInGroup2: this.capacityECCBaseValues[i+23]
+                    )
                 });
             }
         }
 
         private void CreateCapacityTable()
         {
-            capacityTable = new List<VersionInfo>();
-            for (int i = 0; i < (16 * 40); i = i + 16)
+            this.capacityTable = new List<VersionInfo>();
+            for (var i = 0; i < (16 * 40); i = i + 16)
             {
-                capacityTable.Add(new VersionInfo()
-                {
-                    Version = (i + 16) / 16,
-                    Details = new List<VersionInfoDetails>
+                this.capacityTable.Add(new VersionInfo(
+
+                    (i + 16) / 16,
+                    new List<VersionInfoDetails>
                     {
-                        new VersionInfoDetails(){
-                             ErrorCorrectionLevel = ECCLevel.L,
-                             CapacityDict = new Dictionary<EncodingMode,int>(){
-                                 { EncodingMode.Numeric, capacityBaseValues[i] },
-                                 { EncodingMode.Alphanumeric, capacityBaseValues[i+1] },
-                                 { EncodingMode.Byte, capacityBaseValues[i+2] },
-                                 { EncodingMode.Kanji, capacityBaseValues[i+3] },
+                        new VersionInfoDetails(
+                             ECCLevel.L,
+                             new Dictionary<EncodingMode,int>(){
+                                 { EncodingMode.Numeric, this.capacityBaseValues[i] },
+                                 { EncodingMode.Alphanumeric, this.capacityBaseValues[i+1] },
+                                 { EncodingMode.Byte, this.capacityBaseValues[i+2] },
+                                 { EncodingMode.Kanji, this.capacityBaseValues[i+3] },
+                            }
+                        ),
+                        new VersionInfoDetails(
+                             ECCLevel.M,
+                             new Dictionary<EncodingMode,int>(){
+                                 { EncodingMode.Numeric, this.capacityBaseValues[i+4] },
+                                 { EncodingMode.Alphanumeric, this.capacityBaseValues[i+5] },
+                                 { EncodingMode.Byte, this.capacityBaseValues[i+6] },
+                                 { EncodingMode.Kanji, this.capacityBaseValues[i+7] },
                              }
-                        },
-                        new VersionInfoDetails(){
-                             ErrorCorrectionLevel = ECCLevel.M,
-                             CapacityDict = new Dictionary<EncodingMode,int>(){
-                                 { EncodingMode.Numeric, capacityBaseValues[i+4] },
-                                 { EncodingMode.Alphanumeric, capacityBaseValues[i+5] },
-                                 { EncodingMode.Byte, capacityBaseValues[i+6] },
-                                 { EncodingMode.Kanji, capacityBaseValues[i+7] },
+                        ),
+                        new VersionInfoDetails(
+                             ECCLevel.Q,
+                             new Dictionary<EncodingMode,int>(){
+                                 { EncodingMode.Numeric, this.capacityBaseValues[i+8] },
+                                 { EncodingMode.Alphanumeric, this.capacityBaseValues[i+9] },
+                                 { EncodingMode.Byte, this.capacityBaseValues[i+10] },
+                                 { EncodingMode.Kanji, this.capacityBaseValues[i+11] },
                              }
-                        },
-                        new VersionInfoDetails(){
-                             ErrorCorrectionLevel = ECCLevel.Q,
-                             CapacityDict = new Dictionary<EncodingMode,int>(){
-                                 { EncodingMode.Numeric, capacityBaseValues[i+8] },
-                                 { EncodingMode.Alphanumeric, capacityBaseValues[i+9] },
-                                 { EncodingMode.Byte, capacityBaseValues[i+10] },
-                                 { EncodingMode.Kanji, capacityBaseValues[i+11] },
+                        ),
+                        new VersionInfoDetails(
+                             ECCLevel.H,
+                             new Dictionary<EncodingMode,int>(){
+                                 { EncodingMode.Numeric, this.capacityBaseValues[i+12] },
+                                 { EncodingMode.Alphanumeric, this.capacityBaseValues[i+13] },
+                                 { EncodingMode.Byte, this.capacityBaseValues[i+14] },
+                                 { EncodingMode.Kanji, this.capacityBaseValues[i+15] },
                              }
-                        },
-                        new VersionInfoDetails(){
-                             ErrorCorrectionLevel = ECCLevel.H,
-                             CapacityDict = new Dictionary<EncodingMode,int>(){
-                                 { EncodingMode.Numeric, capacityBaseValues[i+12] },
-                                 { EncodingMode.Alphanumeric, capacityBaseValues[i+13] },
-                                 { EncodingMode.Byte, capacityBaseValues[i+14] },
-                                 { EncodingMode.Kanji, capacityBaseValues[i+15] },
-                             }
-                        }
+                        )
                     }
-                });
+                ));
             }
         }
 
         private void CreateAntilogTable()
         {
-            galoisField = new List<Antilog>();
-            int gfItem;
+            this.galoisField = new List<Antilog>();
 
-            for (int i = 0; i < 256; i++)
+            for (var i = 0; i < 256; i++)
             {
-                gfItem = (int)Math.Pow(2, i);
+                var gfItem = (int)Math.Pow(2, i);
 
                 if (i > 7)
                 {
-                    gfItem = galoisField[i - 1].IntegerValue * 2;
+                    gfItem = this.galoisField[i - 1].IntegerValue * 2;
                 }
                 if (gfItem > 255)
                 {
                     gfItem = gfItem ^ 285;
                 }
-                galoisField.Add(new Antilog() { ExponentAlpha = i, IntegerValue = gfItem });
+                this.galoisField.Add(new Antilog(i, gfItem));
             }
         }
 
@@ -1163,87 +1137,135 @@ namespace QRCoder
 
         private struct CodewordBlock
         {
-            public int GroupNumber;
-            public int BlockNumber;
-            public string BitString;
-            public List<string> CodeWords;
-            public List<string> ECCWords;
+            public CodewordBlock(int groupNumber, int blockNumber, string bitString, List<string> codeWords,
+                List<string> eccWords)
+            {
+                this.GroupNumber = groupNumber;
+                this.BlockNumber = blockNumber;
+                this.BitString = bitString;
+                this.CodeWords = codeWords;
+                this.ECCWords = eccWords;
+            }
+
+            public int GroupNumber { get; }
+            public int BlockNumber { get; }
+            public string BitString { get; }
+            public List<string> CodeWords { get; }
+            public List<string> ECCWords { get; }
         }
 
         private struct ECCInfo
         {
-            public int Version;
-            public ECCLevel ErrorCorrectionLevel;
-            public int TotalDataCodewords;
-            public int ECCPerBlock;
-            public int BlocksInGroup1;
-            public int CodewordsInGroup1;
-            public int BlocksInGroup2;
-            public int CodewordsInGroup2;
+            public ECCInfo(int version, ECCLevel errorCorrectionLevel, int totalDataCodewords, int eccPerBlock, int blocksInGroup1,
+                int codewordsInGroup1, int blocksInGroup2, int codewordsInGroup2)
+            {
+                this.Version = version;
+                this.ErrorCorrectionLevel = errorCorrectionLevel;
+                this.TotalDataCodewords = totalDataCodewords;
+                this.ECCPerBlock = eccPerBlock;
+                this.BlocksInGroup1 = blocksInGroup1;
+                this.CodewordsInGroup1 = codewordsInGroup1;
+                this.BlocksInGroup2 = blocksInGroup2;
+                this.CodewordsInGroup2 = codewordsInGroup2;
+            }
+            public int Version { get; }
+            public ECCLevel ErrorCorrectionLevel { get; }
+            public int TotalDataCodewords { get; }
+            public int ECCPerBlock { get; }
+            public int BlocksInGroup1 { get; }
+            public int CodewordsInGroup1 { get; }
+            public int BlocksInGroup2 { get; }
+            public int CodewordsInGroup2 { get; }
         }
 
         private struct VersionInfo
         {
-            public int Version;
-            public List<VersionInfoDetails> Details;
+            public VersionInfo(int version, List<VersionInfoDetails> versionInfoDetails)
+            {
+                this.Version = version;
+                this.Details = versionInfoDetails;
+            }
+            public int Version { get; }
+            public List<VersionInfoDetails> Details { get; }
         }
 
         private struct VersionInfoDetails
         {
-            public ECCLevel ErrorCorrectionLevel;
-            public Dictionary<EncodingMode, int> CapacityDict;
+            public VersionInfoDetails(ECCLevel errorCorrectionLevel, Dictionary<EncodingMode, int> capacityDict)
+            {
+                this.ErrorCorrectionLevel = errorCorrectionLevel;
+                this.CapacityDict = capacityDict;
+            }
+
+            public ECCLevel ErrorCorrectionLevel { get; }
+            public Dictionary<EncodingMode, int> CapacityDict { get; }
         }
 
         private struct Antilog
         {
-            public int ExponentAlpha;
-            public int IntegerValue;
+            public Antilog(int exponentAlpha, int integerValue)
+            {
+                this.ExponentAlpha = exponentAlpha;
+                this.IntegerValue = integerValue;
+            }
+            public int ExponentAlpha { get; }
+            public int IntegerValue { get; }
         }
 
         private struct PolynomItem
         {
-            public int Coefficient;
-            public int Exponent;
+            public PolynomItem(int coefficient, int exponent)
+            {
+                this.Coefficient = coefficient;
+                this.Exponent = exponent;
+            }
+
+            public int Coefficient { get; }
+            public int Exponent { get; }
         }
 
         private class Polynom
         {
             public Polynom()
             {
-                PolyItems = new List<PolynomItem>();
+                this.PolyItems = new List<PolynomItem>();
             }
 
             public List<PolynomItem> PolyItems { get; set; }
 
             public override string ToString()
             {
-                StringBuilder sb = new StringBuilder();
-                PolyItems.ForEach(x => sb.Append("a^" + x.Coefficient + "*x^" + x.Exponent + " + "));
+                var sb = new StringBuilder();
+                this.PolyItems.ForEach(x => sb.Append("a^" + x.Coefficient + "*x^" + x.Exponent + " + "));
 
-                return sb.ToString().TrimEnd(new char[] { ' ', '+' });
+                return sb.ToString().TrimEnd(new[] { ' ', '+' });
             }
         }
-        
-        private class Point {
-            public int X;
-            public int Y;
-            public Point(int x, int y) {
-                X = x;
-                Y = y;
+
+        private class Point
+        {
+            public int X { get; }
+            public int Y { get; }
+            public Point(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
             }
         }
-        
-        private class Rectangle {
-            public int X;
-            public int Y;
-            public int Width;
-            public int Height;
-            
-            public Rectangle(int x, int y, int w, int h) {
-                X = x;
-                Y = y;
-                Width = w;
-                Height = h;
+
+        private class Rectangle
+        {
+            public int X { get; }
+            public int Y { get; }
+            public int Width { get; }
+            public int Height { get; }
+
+            public Rectangle(int x, int y, int w, int h)
+            {
+                this.X = x;
+                this.Y = y;
+                this.Width = w;
+                this.Height = h;
             }
         }
 

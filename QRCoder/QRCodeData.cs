@@ -8,24 +8,19 @@ namespace QRCoder
     public class QRCodeData : IDisposable
     {
         public List<BitArray> ModuleMatrix { get; set; }
-        private int _version;
         
         public QRCodeData(int version)
         {
-            this._version = version;
+            this.Version = version;
             var size = ModulesPerSideFromVersion(version);
-            ModuleMatrix = new List<BitArray>();
-            for (int i = 0; i < size; i++)
-                ModuleMatrix.Add(new BitArray(size));
+            this.ModuleMatrix = new List<BitArray>();
+            for (var i = 0; i < size; i++)
+                this.ModuleMatrix.Add(new BitArray(size));
         }
         
-        public int version {
-            get {
-                return _version;
-            }
-        }
+        public int Version { get; private set; }
         
-        private int ModulesPerSideFromVersion(int version)
+        private static int ModulesPerSideFromVersion(int version)
         {
             return 21 + (version - 1) * 4;
         }
@@ -33,7 +28,7 @@ namespace QRCoder
         public void Dispose()
         {
             this.ModuleMatrix = null;
-            this._version = 0;
+            this.Version = 0;
             
         }
     }

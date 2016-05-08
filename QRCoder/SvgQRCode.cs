@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Text;
 
 namespace QRCoder
@@ -12,37 +11,37 @@ namespace QRCoder
 
         public override string GetGraphic(int pixelsPerModule)
         {
-            Size viewBox = new Size(pixelsPerModule*qrCodeData.ModuleMatrix.Count, pixelsPerModule * qrCodeData.ModuleMatrix.Count);
-            return GetGraphic(viewBox, Color.Black, Color.White);
+            var viewBox = new Size(pixelsPerModule*this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
+            return this.GetGraphic(viewBox, Color.Black, Color.White);
         }
 
         public string GetGraphic(Size viewBox)
         {
-            return GetGraphic(viewBox, Color.Black, Color.White);
+            return this.GetGraphic(viewBox, Color.Black, Color.White);
         }
 
         public string GetGraphic(Size viewBox, Color darkColor, Color lightColor)
         {
-            return GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())));
+            return this.GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())));
         }
 
         public string GetGraphic(Size viewBox, Color darkColor, Color lightColor, bool drawQuietZones = true)
         {
-            return GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())), drawQuietZones);
+            return this.GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())), drawQuietZones);
         }
 
         public string GetGraphic(Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true)
         {
-            StringBuilder svgFile = new StringBuilder(@"<svg version=""1.1"" baseProfile=""full"" width="""+viewBox.Width+ @""" height="""+viewBox.Height+ @""" xmlns=""http://www.w3.org/2000/svg"">");
-            int unitsPerModule = (int)Math.Floor(Convert.ToDouble(Math.Min(viewBox.Width, viewBox.Height)) / qrCodeData.ModuleMatrix.Count);
-            var size = (qrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * unitsPerModule;
-            int offset = drawQuietZones ? 0 : 4 * unitsPerModule;
-            int drawableSize = size + offset;
-            for (int x = 0; x < drawableSize; x = x + unitsPerModule)
+            var svgFile = new StringBuilder(@"<svg version=""1.1"" baseProfile=""full"" width="""+viewBox.Width+ @""" height="""+viewBox.Height+ @""" xmlns=""http://www.w3.org/2000/svg"">");
+            var unitsPerModule = (int)Math.Floor(Convert.ToDouble(Math.Min(viewBox.Width, viewBox.Height)) / this.QrCodeData.ModuleMatrix.Count);
+            var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * unitsPerModule;
+            var offset = drawQuietZones ? 0 : 4 * unitsPerModule;
+            var drawableSize = size + offset;
+            for (var x = 0; x < drawableSize; x = x + unitsPerModule)
             {
-                for (int y = 0; y < drawableSize; y = y + unitsPerModule)
+                for (var y = 0; y < drawableSize; y = y + unitsPerModule)
                 {
-                    var module = qrCodeData.ModuleMatrix[(y + unitsPerModule) / unitsPerModule - 1][(x + unitsPerModule) / unitsPerModule - 1];
+                    var module = this.QrCodeData.ModuleMatrix[(y + unitsPerModule) / unitsPerModule - 1][(x + unitsPerModule) / unitsPerModule - 1];
                     svgFile.AppendLine(@"<rect x="""+(x - offset)+ @""" y=""" + (y - offset) + @""" width=""" + unitsPerModule + @""" height=""" + unitsPerModule + @""" fill=""" + (module ? darkColorHex : lightColorHex) + @""" />");
                 }
             }
@@ -52,7 +51,7 @@ namespace QRCoder
 
         public void Dispose()
         {
-            this.qrCodeData = null;
+            this.QrCodeData = null;
         }
     }
 }
