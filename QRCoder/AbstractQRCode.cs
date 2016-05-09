@@ -2,10 +2,10 @@
 {
     public abstract class AbstractQRCode<T>
     {
-        protected QRCodeData qrCodeData;
+        protected QRCodeData QrCodeData { get; set; }
         
         protected AbstractQRCode(QRCodeData data) {
-            qrCodeData = data;
+            this.QrCodeData = data;
         }
         
         public abstract T GetGraphic(int pixelsPerModule);
