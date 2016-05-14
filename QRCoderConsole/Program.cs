@@ -45,54 +45,57 @@ namespace QRCoderConsole
 				}
 			};
 
-			try
-			{
+		    try
+		    {
 
-				var settings = optionSet.Parse(args);
+		        var settings = optionSet.Parse(args);
 
-			if (showHelp) {
-				optionSet.WriteOptionDescriptions(Console.Out);
-				Environment.Exit(0);
-			}
-				
-				var fileInfo = new FileInfo(fileName);
+		        if (showHelp)
+		        {
+		            optionSet.WriteOptionDescriptions(Console.Out);
+		            Environment.Exit(0);
+		        }
 
-				if (fileInfo.Exists)
-				{
-					var buffer = new byte[fileInfo.Length];
+		        var fileInfo = new FileInfo(fileName);
 
-					using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Open))
-					{
-						fileStream.Read(buffer, 0, buffer.Length);
-					}
+		        if (fileInfo.Exists)
+		        {
+		            var buffer = new byte[fileInfo.Length];
 
-					var text = Encoding.UTF8.GetString(buffer);
+		            using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Open))
+		            {
+		                fileStream.Read(buffer, 0, buffer.Length);
+		            }
 
-					using (var generator = new QRCodeGenerator())
-					{
-						using (var data = generator.CreateQrCode(text, eccLevel))
-						{
-							using (var code = new QRCode(data))
-							{
-								using (var bitmap = code.GetGraphic(20))
-								{
-									bitmap.Save(outputFileName, ImageFormat.Png);
-								}
-							}
-						}
-					}
-								
+		            var text = Encoding.UTF8.GetString(buffer);
 
-				}
-				else {
-					Console.WriteLine($"{friendlyName}: {fileName}: No such file or directory");
-				}
-			}
-			catch (OptionException oe) {
-				Console.Error.WriteLine($"{friendlyName}:{newLine}{oe.Message}{newLine}Try '{friendlyName} --help' for more information");
-				Environment.Exit (-1);
-			}
+		            using (var generator = new QRCodeGenerator())
+		            {
+		                using (var data = generator.CreateQrCode(text, eccLevel))
+		                {
+		                    using (var code = new QRCode(data))
+		                    {
+		                        using (var bitmap = code.GetGraphic(20))
+		                        {
+		                            bitmap.Save(outputFileName, ImageFormat.Png);
+		                        }
+		                    }
+		                }
+		            }
 
+
+		        }
+		        else
+		        {
+		            Console.WriteLine($"{friendlyName}: {fileName}: No such file or directory");
+		        }
+		    }
+		    catch (Exception oe)
+		    {
+		        Console.Error.WriteLine(
+		            $"{friendlyName}:{newLine}{oe.Message}{newLine}Try '{friendlyName} --help' for more information");
+		        Environment.Exit(-1);
+		    }
 		}
 	}
 
