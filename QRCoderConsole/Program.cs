@@ -17,11 +17,13 @@ namespace QRCoderConsole
 			var newLine = Environment.NewLine;
 			var setter = new OptionSetter ();
 
-			String fileName = null, outputFileName = null;
+			String fileName = null, outputFileName = null, payload = null;
 
 			QRCodeGenerator.ECCLevel eccLevel = QRCodeGenerator.ECCLevel.L;
+		    ImageFormat imageFormat = ImageFormat.Png;
 
-			var showHelp = false;
+
+            var showHelp = false;
 
 
 			var optionSet = new OptionSet {
@@ -29,12 +31,21 @@ namespace QRCoderConsole
 					"error correction level",
 					value => eccLevel = setter.GetECCLevel(value)
 				},
-				{
+                {   "f|output-format=",
+                    "Image format for outputfile. Possible values: png, jpg, gif, bmp, tiff (default: png)",
+                    value => imageFormat = setter.GetImageFormat(value)
+                },
+                {
 					"i|in=",
-					"input file",
+					"input file | alternative to parameter -p",
 					value => fileName = value
 				},
-				{
+                {
+                    "p|payload=",
+                    "payload string | alternative to parameter -i",
+                    value => payload = value
+                },
+                {
 					"o|out=",
 					"output file",
 					value => outputFileName = value
@@ -56,39 +67,31 @@ namespace QRCoderConsole
 		            Environment.Exit(0);
 		        }
 
-		        var fileInfo = new FileInfo(fileName);
-
-		        if (fileInfo.Exists)
+		        if (fileName != null)
 		        {
-		            var buffer = new byte[fileInfo.Length];
-
-		            using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Open))
+		            var fileInfo = new FileInfo(fileName);
+		            if (fileInfo.Exists)
 		            {
-		                fileStream.Read(buffer, 0, buffer.Length);
-		            }
+		                var buffer = new byte[fileInfo.Length];
 
-		            var text = Encoding.UTF8.GetString(buffer);
-
-		            using (var generator = new QRCodeGenerator())
-		            {
-		                using (var data = generator.CreateQrCode(text, eccLevel))
+		                using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Open))
 		                {
-		                    using (var code = new QRCode(data))
-		                    {
-		                        using (var bitmap = code.GetGraphic(20))
-		                        {
-		                            bitmap.Save(outputFileName, ImageFormat.Png);
-		                        }
-		                    }
+		                    fileStream.Read(buffer, 0, buffer.Length);
 		                }
+
+		                var text = Encoding.UTF8.GetString(buffer);
+
+		                GenerateQRCode(text, eccLevel, outputFileName, imageFormat);
 		            }
-
-
+		            else
+		            {
+		                Console.WriteLine($"{friendlyName}: {fileName}: No such file or directory");
+		            }
 		        }
-		        else
-		        {
-		            Console.WriteLine($"{friendlyName}: {fileName}: No such file or directory");
-		        }
+                else if (payload != null)
+                {
+                    GenerateQRCode(payload, eccLevel, outputFileName, imageFormat);
+                }
 		    }
 		    catch (Exception oe)
 		    {
@@ -97,6 +100,23 @@ namespace QRCoderConsole
 		        Environment.Exit(-1);
 		    }
 		}
+
+	    private static void GenerateQRCode(string payloadString, QRCodeGenerator.ECCLevel eccLevel, string outputFileName, ImageFormat imgFormat)
+	    {
+            using (var generator = new QRCodeGenerator())
+            {
+                using (var data = generator.CreateQrCode(payloadString, eccLevel))
+                {
+                    using (var code = new QRCode(data))
+                    {
+                        using (var bitmap = code.GetGraphic(20))
+                        {
+                            bitmap.Save(outputFileName, imgFormat);
+                        }
+                    }
+                }
+            }
+        }
 	}
 
 	public class OptionSetter
@@ -109,6 +129,27 @@ namespace QRCoderConsole
 
 			return level;
 		}
-	}
+
+        public ImageFormat GetImageFormat(string value)
+        {
+            switch (value.ToLower())
+            {
+                case "png":
+                    return ImageFormat.Png;
+                case "jpg":
+                    return ImageFormat.Jpeg;
+                case "jpeg":
+                    return ImageFormat.Jpeg;
+                case "gif":
+                    return ImageFormat.Gif;
+                case "bmp":
+                    return ImageFormat.Bmp;
+                case "tiff":
+                    return ImageFormat.Tiff;
+                default:
+                    return ImageFormat.Png;
+            }
+        }
+    }
 		
 }
