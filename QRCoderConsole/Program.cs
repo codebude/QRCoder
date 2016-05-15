@@ -22,9 +22,7 @@ namespace QRCoderConsole
             QRCodeGenerator.ECCLevel eccLevel = QRCodeGenerator.ECCLevel.L;
             ImageFormat imageFormat = ImageFormat.Png;
 
-
             var showHelp = false;
-
 
             var optionSet = new OptionSet {
                 {    "e|ecc-level=",
@@ -59,12 +57,11 @@ namespace QRCoderConsole
             try
             {
 
-                var settings = optionSet.Parse(args);
+                optionSet.Parse(args);
 
                 if (showHelp)
                 {
-                    optionSet.WriteOptionDescriptions(Console.Out);
-                    Environment.Exit(0);
+                ShowHelp(optionSet);
                 }
 
                 if (fileName != null)
@@ -72,14 +69,7 @@ namespace QRCoderConsole
                     var fileInfo = new FileInfo(fileName);
                     if (fileInfo.Exists)
                     {
-                        var buffer = new byte[fileInfo.Length];
-
-                        using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Open))
-                        {
-                            fileStream.Read(buffer, 0, buffer.Length);
-                        }
-
-                        var text = Encoding.UTF8.GetString(buffer);
+                    var text = GetTextFromFile(fileInfo);
 
                         GenerateQRCode(text, eccLevel, outputFileName, imageFormat);
                     }
@@ -92,11 +82,19 @@ namespace QRCoderConsole
                 {
                     GenerateQRCode(payload, eccLevel, outputFileName, imageFormat);
                 }
+                else
+                {
+                    var stdin = Console.OpenStandardInput();
+
+                    var text = GetTextFromStream(stdin);
+
+                    GenerateQRCode(text, eccLevel, outputFileName, imageFormat);
+                }
             }
             catch (Exception oe)
             {
                 Console.Error.WriteLine(
-                    $"{friendlyName}:{newLine}{oe.Message}{newLine}Try '{friendlyName} --help' for more information");
+					$"{friendlyName}:{newLine}{oe.GetType().FullName}{newLine}{oe.Message}{newLine}{oe.StackTrace}{newLine}Try '{friendlyName} --help' for more information");
                 Environment.Exit(-1);
             }
         }
@@ -117,6 +115,44 @@ namespace QRCoderConsole
                 }
             }
         }
+
+        private static string GetTextFromFile(FileInfo fileInfo)
+        {
+            var buffer = new byte[fileInfo.Length];
+
+            using (var fileStream = new FileStream(fileInfo.FullName, FileMode.Open))
+            {
+                fileStream.Read(buffer, 0, buffer.Length);
+            }
+
+            return Encoding.UTF8.GetString(buffer);
+        }
+
+        private static string GetTextFromStream(Stream stream)
+        {
+            var buffer = new byte[256];
+            var bytesRead = 0;
+
+            using (var memoryStream = new MemoryStream ())
+            {
+                while ((bytesRead = stream.Read (buffer, 0, buffer.Length)) > 0)
+                {
+                    memoryStream.Write (buffer, 0, bytesRead);
+                }
+
+                var text = Encoding.UTF8.GetString (memoryStream.ToArray ());
+
+                Console.WriteLine($"text retrieved from input stream: {text}");
+
+                return text;
+            }
+        }
+
+        private static void ShowHelp(OptionSet optionSet)
+        {
+            optionSet.WriteOptionDescriptions(Console.Out);
+            Environment.Exit(0);
+        }
     }
 
     public class OptionSetter
@@ -134,8 +170,6 @@ namespace QRCoderConsole
         {
             switch (value.ToLower())
             {
-                case "png":
-                    return ImageFormat.Png;
                 case "jpg":
                     return ImageFormat.Jpeg;
                 case "jpeg":
@@ -146,9 +180,11 @@ namespace QRCoderConsole
                     return ImageFormat.Bmp;
                 case "tiff":
                     return ImageFormat.Tiff;
+                case "png":
                 default:
                     return ImageFormat.Png;
             }
         }
     }
 }
+
