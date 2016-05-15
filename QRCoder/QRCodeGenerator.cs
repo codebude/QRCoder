@@ -639,18 +639,15 @@ namespace QRCoder
                 messagePolynom.PolyItems[i] = new PolynomItem(messagePolynom.PolyItems[i].Coefficient,
                     messagePolynom.PolyItems[i].Exponent + eccWords);
 
-            var genLeadtermFactor = messagePolynom.PolyItems[0].Exponent - generatorPolynom.PolyItems[0].Exponent;
             for (var i = 0; i < generatorPolynom.PolyItems.Count; i++)
                 generatorPolynom.PolyItems[i] = new PolynomItem(generatorPolynom.PolyItems[i].Coefficient,
-                    generatorPolynom.PolyItems[i].Exponent + genLeadtermFactor);
-
-
-
+                    generatorPolynom.PolyItems[i].Exponent + (messagePolynom.PolyItems.Count-1));
+            
             var leadTermSource = messagePolynom;
-            for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
+            for (var i = 0; i < messagePolynom.PolyItems.Count || (leadTermSource.PolyItems.Count > 0 && leadTermSource.PolyItems[leadTermSource.PolyItems.Count-1].Exponent > 0); i++)
             {
                 if (leadTermSource.PolyItems[0].Coefficient == 0)
-                {   // First coefficient is already 0, simply remove it and continue
+                {   
                     leadTermSource.PolyItems.RemoveAt(0);
                 }
                 else
@@ -716,7 +713,7 @@ namespace QRCoder
             var messagePol = new Polynom();
             for (var i = bitString.Length / 8 - 1; i >= 0; i--)
             {
-                messagePol.PolyItems.Add(new PolynomItem(this.BinToDec(bitString.Substring(0, 8)), 1));
+                messagePol.PolyItems.Add(new PolynomItem(this.BinToDec(bitString.Substring(0, 8)), i));
                 bitString = bitString.Remove(0, 8);
             }
             return messagePol;
@@ -940,6 +937,7 @@ namespace QRCoder
             }
             return resultPolynom;
         }
+      
 
         private Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
         {
