@@ -38,8 +38,8 @@ namespace QRCoder
             var dataInputLength = this.GetDataLength(encoding, plainText, codedText);
             var version = this.GetVersion(dataInputLength, encoding, eccLevel);
 
-            var modeIndicator = this.DecToBin((int)encoding, 4);
-            var countIndicator = this.DecToBin(dataInputLength, this.GetCountIndicatorLength(version, encoding));
+            var modeIndicator = DecToBin((int)encoding, 4);
+            var countIndicator = DecToBin(dataInputLength, this.GetCountIndicatorLength(version, encoding));
             var bitString = modeIndicator + countIndicator;
 
 
@@ -63,13 +63,36 @@ namespace QRCoder
             for (var i = 0; i < eccInfo.BlocksInGroup1; i++)
             {
                 var bitStr = bitString.Substring(i * eccInfo.CodewordsInGroup1 * 8, eccInfo.CodewordsInGroup1 * 8);
-                codeWordWithECC.Add(new CodewordBlock(1, i + 1, bitStr, this.BinaryStringToBitBlockList(bitStr), this.CalculateECCWords(bitStr, eccInfo)));
+                var bitBlockList = this.BinaryStringToBitBlockList(bitStr);
+                var bitBlockListDec = this.BinaryStringListToDecList(bitBlockList);
+                var eccWordList = this.CalculateECCWords(bitStr, eccInfo);
+                var eccWordListDec = this.BinaryStringListToDecList(eccWordList);
+                codeWordWithECC.Add(
+                    new CodewordBlock(1, 
+                                      i + 1, 
+                                      bitStr, 
+                                      bitBlockList,
+                                      eccWordList,
+                                      bitBlockListDec,
+                                      eccWordListDec)
+                                );
             }
             bitString = bitString.Substring(eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8);
             for (var i = 0; i < eccInfo.BlocksInGroup2; i++)
             {
                 var bitStr = bitString.Substring(i * eccInfo.CodewordsInGroup2 * 8, eccInfo.CodewordsInGroup2 * 8);
-                codeWordWithECC.Add(new CodewordBlock(2, i + 1, bitStr, this.BinaryStringToBitBlockList(bitStr), this.CalculateECCWords(bitStr, eccInfo)));
+                var bitBlockList = this.BinaryStringToBitBlockList(bitStr);
+                var bitBlockListDec = this.BinaryStringListToDecList(bitBlockList);
+                var eccWordList = this.CalculateECCWords(bitStr, eccInfo);
+                var eccWordListDec = this.BinaryStringListToDecList(eccWordList);
+                codeWordWithECC.Add(new CodewordBlock(2,
+                                      i + 1,
+                                      bitStr,
+                                      bitBlockList,
+                                      eccWordList,
+                                      bitBlockListDec,
+                                      eccWordListDec)
+                                );
             }
 
 
@@ -103,26 +126,28 @@ namespace QRCoder
             ModulePlacer.PlaceDarkModule(ref qr, version, ref blockedModules);
             ModulePlacer.ReserveVersionAreas(qr.ModuleMatrix.Count, version, ref blockedModules);
             ModulePlacer.PlaceDataWords(ref qr, interleavedData, ref blockedModules);
-            var maskVersion = ModulePlacer.MaskCode(ref qr, version, ref blockedModules);
-            var formatStr = this.GetFormatString(eccLevel, maskVersion);
+            var maskVersion = ModulePlacer.MaskCode(ref qr, version, ref blockedModules, eccLevel);
+            var formatStr = GetFormatString(eccLevel, maskVersion);
 
             ModulePlacer.PlaceFormat(ref qr, formatStr);
             if (version >= 7)
             {
-                var versionString = this.GetVersionString(version);
+                var versionString = GetVersionString(version);
                 ModulePlacer.PlaceVersion(ref qr, versionString);
             }
+
+
             ModulePlacer.AddQuietZone(ref qr);
             return qr;
         }
 
-        private string GetFormatString(ECCLevel level, int maskVersion)
+        private static string GetFormatString(ECCLevel level, int maskVersion)
         {
             var generator = "10100110111";
             var fStrMask = "101010000010010";
 
             var fStr = (level == ECCLevel.L) ? "01" : (level == ECCLevel.M) ? "00" : (level == ECCLevel.Q) ? "11" : "10";
-            fStr += this.DecToBin(maskVersion, 3);
+            fStr += DecToBin(maskVersion, 3);
             var fStrEcc = fStr.PadRight(15, '0').TrimStart('0');
             while (fStrEcc.Length > 10)
             {
@@ -141,11 +166,11 @@ namespace QRCoder
             return sbMask.ToString();
         }
 
-        private string GetVersionString(int version)
+        private static string GetVersionString(int version)
         {
             var generator = "1111100100101";
 
-            var vStr = this.DecToBin(version, 6);
+            var vStr = DecToBin(version, 6);
             var vStrEcc = vStr.PadRight(18, '0').TrimStart('0');
             while (vStrEcc.Length > 12)
             {
@@ -211,7 +236,7 @@ namespace QRCoder
                 }
             }
 
-            public static int MaskCode(ref QRCodeData qrCode, int version, ref List<Rectangle> blockedModules)
+            public static int MaskCode(ref QRCodeData qrCode, int version, ref List<Rectangle> blockedModules, ECCLevel eccLevel)
             {
                 var patternName = string.Empty;
                 var patternScore = 0;
@@ -232,6 +257,13 @@ namespace QRCoder
 
                         }
 
+                        var formatStr = GetFormatString(eccLevel, Convert.ToInt32((pattern.Name.Substring(7, 1)))-1);
+                        ModulePlacer.PlaceFormat(ref qrTemp, formatStr);
+                        if (version >= 7)
+                        {
+                            var versionString = GetVersionString(version);
+                            ModulePlacer.PlaceVersion(ref qrTemp, versionString);
+                        }
 
                         for (var x = 0; x < size; x++)
                         {
@@ -253,6 +285,7 @@ namespace QRCoder
 
                     }
                 }
+
                 var patterMethod = typeof(MaskPattern).GetMethods().First(x => x.Name == patternName);
                 for (var x = 0; x < size; x++)
                 {
@@ -276,7 +309,7 @@ namespace QRCoder
                 data.ToList().ForEach(x => datawords.Enqueue(x != '0'));
                 for (var x = size - 1; x >= 0; x = x - 2)
                 {
-                    if (x == 7 || x == 6)
+                    if (x == 6)
                         x = 5;
                     for (var yMod = 1; yMod <= size; yMod++)
                     {
@@ -448,7 +481,7 @@ namespace QRCoder
 
                 public static bool Pattern5(int x, int y)
                 {
-                    return (y / 2 + x / 3) % 2 == 0;
+                    return ((int)(Math.Floor(y / 2d) + Math.Floor(x / 3d)) % 2) == 0;
                 }
 
                 public static bool Pattern6(int x, int y)
@@ -468,7 +501,10 @@ namespace QRCoder
 
                 public static int Score(ref QRCodeData qrCode)
                 {
-                    var score = 0;
+                    int score1 = 0,
+                        score2 = 0,
+                        score3 = 0,
+                        score4 = 0;
                     var size = qrCode.ModuleMatrix.Count;
 
                     //Penalty 1                   
@@ -485,9 +521,9 @@ namespace QRCoder
                             else
                                 modInRow = 1;
                             if (modInRow == 5)
-                                score += 3;
+                                score1 += 3;
                             else if (modInRow > 5)
-                                score++;
+                                score1++;
                             lastValRow = qrCode.ModuleMatrix[y][x];
 
 
@@ -496,9 +532,9 @@ namespace QRCoder
                             else
                                 modInColumn = 1;
                             if (modInColumn == 5)
-                                score += 3;
+                                score1 += 3;
                             else if (modInColumn > 5)
-                                score++;
+                                score1++;
                             lastValColumn = qrCode.ModuleMatrix[x][y];
                         }
                     }
@@ -512,7 +548,7 @@ namespace QRCoder
                             if (qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y][x + 1] &&
                                 qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y + 1][x] &&
                                 qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y + 1][x + 1])
-                                score += 3;
+                                score2 += 3;
                         }
                     }
 
@@ -544,7 +580,7 @@ namespace QRCoder
                                 !qrCode.ModuleMatrix[y][x + 9] &&
                                 qrCode.ModuleMatrix[y][x + 10]))
                             {
-                                score += 40;
+                                score3 += 40;
                             }
 
                             if ((qrCode.ModuleMatrix[x][y] &&
@@ -570,25 +606,24 @@ namespace QRCoder
                                 !qrCode.ModuleMatrix[x + 9][y] &&
                                 qrCode.ModuleMatrix[x + 10][y]))
                             {
-                                score += 40;
+                                score3 += 40;
                             }
                         }
                     }
 
                     //Penalty 4
-                    var blackModules = 0;
+                    double blackModules = 0;
                     foreach (var row in qrCode.ModuleMatrix)
                         foreach (bool bit in row)
                             if (bit)
                                 blackModules++;
-
+                    
                     var percent = (blackModules / (qrCode.ModuleMatrix.Count * qrCode.ModuleMatrix.Count)) * 100;
-                    if (percent % 5 == 0)
-                        score += Math.Min((Math.Abs(percent - 55) / 5), (Math.Abs(percent - 45) / 5)) * 10;
-                    else
-                        score += Math.Min((Math.Abs((int)Math.Floor((decimal)percent / 5) - 50) / 5), (Math.Abs(((int)Math.Floor((decimal)percent / 5) + 5) - 50) / 5)) * 10;
+                    var prevMultipleOf5 = Math.Abs((int) Math.Floor(percent/5)*5 - 50)/5;
+                    var nextMultipleOf5 = Math.Abs((int)Math.Floor(percent / 5) * 5 -45)/5;
+                    score4 = Math.Min(prevMultipleOf5, nextMultipleOf5)*10;
 
-                    return score;
+                    return score1 + score2 + score3 + score4;
                 }
             }
 
@@ -626,7 +661,7 @@ namespace QRCoder
                     leadTermSource = resPoly;
                 }
             }
-            return leadTermSource.PolyItems.Select(x => this.DecToBin(x.Coefficient, 8)).ToList();
+            return leadTermSource.PolyItems.Select(x => DecToBin(x.Coefficient, 8)).ToList();
         }
 
         private Polynom ConvertToAlphaNotation(Polynom poly)
@@ -717,19 +752,24 @@ namespace QRCoder
                 .ToList();
         }
 
+        private List<int> BinaryStringListToDecList(List<string> binaryStringList)
+        {
+            return binaryStringList.Select(binaryString => this.BinToDec(binaryString)).ToList();
+        }
+
         private int BinToDec(string binStr)
         {
             return Convert.ToInt32(binStr, 2);
         }
 
-        private string DecToBin(int decNum)
+        private static string DecToBin(int decNum)
         {
             return Convert.ToString(decNum, 2);
         }
 
-        private string DecToBin(int decNum, int padLeftUpTo)
+        private static string DecToBin(int decNum, int padLeftUpTo)
         {
-            var binStr = this.DecToBin(decNum);
+            var binStr = DecToBin(decNum);
             return binStr.PadLeft(padLeftUpTo, '0');
         }
 
@@ -803,19 +843,19 @@ namespace QRCoder
             while (plainText.Length >= 3)
             {
                 var dec = Convert.ToInt32(plainText.Substring(0, 3));
-                codeText += this.DecToBin(dec, 10);
+                codeText += DecToBin(dec, 10);
                 plainText = plainText.Substring(3);
 
             }
             if (plainText.Length == 2)
             {
                 var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
-                codeText += this.DecToBin(dec, 7);
+                codeText += DecToBin(dec, 7);
             }
             else if (plainText.Length == 1)
             {
                 var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
-                codeText += this.DecToBin(dec, 4);
+                codeText += DecToBin(dec, 4);
             }
             return codeText;
         }
@@ -827,13 +867,13 @@ namespace QRCoder
             {
                 var token = plainText.Substring(0, 2);
                 var dec = this.alphanumEncDict[token[0]] * 45 + this.alphanumEncDict[token[1]];
-                codeText += this.DecToBin(dec, 11);
+                codeText += DecToBin(dec, 11);
                 plainText = plainText.Substring(2);
 
             }
             if (plainText.Length > 0)
             {
-                codeText += this.DecToBin(this.alphanumEncDict[plainText[0]], 6);
+                codeText += DecToBin(this.alphanumEncDict[plainText[0]], 6);
             }
             return codeText;
         }
@@ -849,7 +889,7 @@ namespace QRCoder
                 codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
 
             foreach (var b in codeBytes)
-                codeText += this.DecToBin(b, 8);
+                codeText += DecToBin(b, 8);
 
             return codeText;
         }
@@ -1138,20 +1178,24 @@ namespace QRCoder
         private struct CodewordBlock
         {
             public CodewordBlock(int groupNumber, int blockNumber, string bitString, List<string> codeWords,
-                List<string> eccWords)
+                List<string> eccWords, List<int> codeWordsInt, List<int> eccWordsInt)
             {
                 this.GroupNumber = groupNumber;
                 this.BlockNumber = blockNumber;
                 this.BitString = bitString;
                 this.CodeWords = codeWords;
                 this.ECCWords = eccWords;
+                this.CodeWordsInt = codeWordsInt;
+                this.ECCWordsInt = eccWordsInt;
             }
 
             public int GroupNumber { get; }
             public int BlockNumber { get; }
             public string BitString { get; }
             public List<string> CodeWords { get; }
+            public List<int> CodeWordsInt { get; }
             public List<string> ECCWords { get; }
+            public List<int> ECCWordsInt { get; }
         }
 
         private struct ECCInfo
