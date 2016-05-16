@@ -14,7 +14,7 @@ if "%nuget%" == "" (
 	set nuget=nuget
 )
 
-%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild QRCoder\QRCoder.csproj /p:Configuration="%config%";VisualStudioVersion=14.0 /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false
+%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild QRCoder\QRCoder.csproj /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false
 
 mkdir Build
 mkdir Build\lib
