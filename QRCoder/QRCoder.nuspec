@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>QRCoder</id>
+    <version>$version$</version>
+    <title>QRCoder</title>
+    <authors>Raffael Herrmann</authors>
+    <owners>Raffael Herrmann</owners>
+    <licenseUrl>https://github.com/codebude/QRCoder/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/codebude/QRCoder/</projectUrl>
+    <iconUrl>http://code-bude.net/downloads/qrcoder-logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>QRCoder is a simple library, written in C#.NET, which enables you to create QR Codes. It's licensed under the MIT-license.</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright &#x00A9; www.code-bude.net / Raffael Herrmann.  All rights reserved.</copyright>
+    <tags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</tags>
+  </metadata>
+  <files>
+	<file src="QRCoder\QRCoder\bin\$configuration$\QRCoder.dll" target="lib\net40\" />
+	<file src="QRCoder\QRCoder\bin\$configuration$\UnityEngine.dll" target="lib\net40\" />
+  </files>
+</package>
