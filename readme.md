@@ -32,6 +32,7 @@ PM> Install-Package QRCoder
 *Note: The NuGet feed only contains stable releases. If you wan't the latest build add one of the following urls to the "Package Sources" of Visual Studio's NuGet Package Manager options.*
 
 *NuGet V3 feed URL (Visual Studio 2015+):* `https://www.myget.org/F/qrcoder/api/v3/index.json`
+
 *NuGet V2 feed URL (Visual Studio 2012+):* `https://www.myget.org/F/qrcoder/api/v2`
 
 
