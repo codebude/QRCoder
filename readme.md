@@ -100,3 +100,4 @@ The PayloadGenerator supports the following types of payloads:
 * SMS
 * URL
 * WiFi
+* Bitcoin Payment Address

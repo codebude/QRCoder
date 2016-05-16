@@ -1,4 +1,9 @@
-﻿namespace QRCoder
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Globalization;
+
+namespace QRCoder
 {
     public static class PayloadGenerator
     {
@@ -242,6 +247,49 @@
             public override string ToString()
             {
                 return $"MEBKM:TITLE:{this.title};URL:{this.url};;";
+            }
+        }
+
+        public class BitcoinAddress
+        {
+            private readonly string address, label, message;
+            private readonly double? amount;
+
+            public BitcoinAddress(string address, double? amount, string label = null, string message = null)
+            {
+                this.address = address;
+
+                if (!string.IsNullOrEmpty(label))
+                {
+                    this.label = Uri.EscapeUriString(label);
+                }
+
+                if (!string.IsNullOrEmpty(message))
+                {
+                    this.message = Uri.EscapeUriString(message);
+                }
+
+                this.amount = amount;
+            }
+
+            public override string ToString()
+            {
+                string query = null;
+
+                var queryValues = new List<Tuple<string,string>>{
+                  new Tuple<string, string>(nameof(label), label),
+                  new Tuple<string, string>(nameof(message), message),
+                  new Tuple<string, string>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########") : null)
+                };
+
+                if (queryValues.Any(keyPair => !string.IsNullOrEmpty(keyPair.Item2)))
+                {
+                    query = "?" + string.Join("&", queryValues
+                        .Where(keyPair => !string.IsNullOrEmpty(keyPair.Item2))
+                        .Select(keyPair => $"{keyPair.Item1}={keyPair.Item2}"));
+                }
+
+                return $"bitcoin:{address}{query}";
             }
         }
       
