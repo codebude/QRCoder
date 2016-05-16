@@ -40,6 +40,7 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+.vs/
 
 # Build results
 
@@ -216,3 +217,4 @@ pip-log.txt
 
 # Xamarin
 *.userprefs
+
