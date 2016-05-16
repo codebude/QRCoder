@@ -9,7 +9,6 @@ if not "%PackageVersion%" == "" (
    set version=%PackageVersion%
 )
 
-
 "C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoder\QRCoder.csproj /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false
 
 mkdir Build
