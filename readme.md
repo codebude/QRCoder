@@ -19,6 +19,23 @@ QRCoder is project by [Raffael Herrmann](http://raffaelherrmann.de) and was firs
 in 10/2013. It's licensed under the MIT license.
 
 
+* * *
+
+
+##Installation
+
+Either checkout this Github repository or install QRCoder via NuGet Package Manager. If you want to use NuGet just search for "QRCoder" or run the following command in the NuGet Package Manager console:
+```
+PM> Install-Package QRCoder
+```
+
+*Note: The NuGet feed only contains stable releases. If you wan't the latest build add one of the following urls to the "Package Sources" of Visual Studio's NuGet Package Manager options.*
+
+*NuGet V3 feed URL (Visual Studio 2015+):* `https://www.myget.org/F/qrcoder/api/v3/index.json`
+*NuGet V2 feed URL (Visual Studio 2012+):* `https://www.myget.org/F/qrcoder/api/v2`
+
+
+
 ##Usage
 
 After referencing the QRCoder.dll in your project, you only need four lines of code, to generate and view your first QR code.
