@@ -16,7 +16,7 @@
     <tags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</tags>
   </metadata>
   <files>
-	<file src="QRCoder\QRCoder\bin\$configuration$\QRCoder.dll" target="lib\net40\" />
-	<file src="QRCoder\QRCoder\bin\$configuration$\UnityEngine.dll" target="lib\net40\" />
+	<file src="bin\$configuration$\QRCoder.dll" target="lib\net40\" />
+	<file src="bin\$configuration$\UnityEngine.dll" target="lib\net40\" />
   </files>
 </package>
