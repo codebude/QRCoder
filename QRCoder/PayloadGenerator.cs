@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 
 namespace QRCoder
 {
@@ -278,7 +279,7 @@ namespace QRCoder
                 var queryValues = new List<Tuple<string,string>>{
                   new Tuple<string, string>(nameof(label), label),
                   new Tuple<string, string>(nameof(message), message),
-                  new Tuple<string, string>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########") : null)
+                  new Tuple<string, string>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
                 };
 
                 if (queryValues.Any(keyPair => !string.IsNullOrEmpty(keyPair.Item2)))
