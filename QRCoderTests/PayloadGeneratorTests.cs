@@ -2,6 +2,9 @@
 using Xunit;
 using QRCoder;
 using Shouldly;
+using System.Globalization;
+using System.Threading;
+
 
 namespace QRCoderTests
 {
@@ -63,6 +66,26 @@ namespace QRCoderTests
             generator
                 .ToString()
                 .ShouldContain("amount=.12345679");
+        }
+
+        [Fact]
+        public void bitcoin_address_generator_disregards_current_culture()
+        {
+            var currentCulture = Thread.CurrentThread.CurrentCulture;
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+
+            var address = "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W";
+            var amount = .123;
+
+
+            var generator = new PayloadGenerator.BitcoinAddress(address, amount);
+
+            generator
+                .ToString()
+                .ShouldBe("bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=.123");
+
+            
+            Thread.CurrentThread.CurrentCulture = currentCulture;
         }
     }
 }
