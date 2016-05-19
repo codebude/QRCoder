@@ -119,3 +119,5 @@ The PayloadGenerator supports the following types of payloads:
 * URL
 * WiFi
 * Bitcoin Payment Address
+* Skype call
+* Calendar events (iCal/vEvent)
