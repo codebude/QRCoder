@@ -217,7 +217,22 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return "tel:"+ this.number;
+                return $"tel:{this.number}";
+            }
+        }
+
+
+        public class SkypeCall
+        {
+            private readonly string skypeUsername;
+            public SkypeCall(string skypeUsername)
+            {
+                this.skypeUsername = skypeUsername;
+            }
+
+            public override string ToString()
+            {
+                return $"skype:{this.skypeUsername}?call";
             }
         }
 
@@ -292,7 +307,54 @@ namespace QRCoder
                 return $"bitcoin:{address}{query}";
             }
         }
-      
+
+
+        public class CalendarEvent
+        {
+            private readonly string subject, description, location, start, end;
+            private readonly bool allDayEvent;
+            private readonly EventEncoding encoding;
+
+            public CalendarEvent(string subject, string description, string location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
+            {
+                this.subject = subject;
+                this.description = description;
+                this.location = location;
+                this.encoding = encoding;
+                string dtFormat = allDayEvent ? "yyyyMMdd" : "yyyyMMddTHHmmss";
+                this.start = start.ToString(dtFormat);
+                this.end = end.ToString(dtFormat);
+            }
+
+            public override string ToString()
+            {
+                string vEvent = this.encoding.Equals(EventEncoding.iCalComplete) ? "BEGIN:VCALENDAR\nVERSION:2.0" : string.Empty;
+                vEvent += "BEGIN:VEVENT\n";
+                vEvent += $"SUMMARY:{this.subject}\n";
+                vEvent += !string.IsNullOrEmpty(this.description) ? $"DESCRIPTION:{this.description}\n" : "";
+                vEvent += !string.IsNullOrEmpty(this.location) ? $"LOCATION:{this.location}\n" : "";
+                vEvent += $"DTSTART:{this.start}\n";
+                vEvent += $"DTEND:{this.end}\n";
+                vEvent += "END:VEVENT";
+
+                if (this.encoding.Equals(EventEncoding.iCalComplete))
+                {
+                    vEvent =
+                    $@"BEGIN:VCALENDAR
+                       VERSION:2.0
+                       {vEvent}
+                       END:VCALENDAR";
+                }
+                return vEvent;
+            }
+
+            public enum EventEncoding
+            {
+                iCalComplete,
+                Universal
+            }
+        }
+
         private static string EscapeInput(string inp, bool simple = false)
         {
             char[] forbiddenChars = { '\\', ';', ',', ':' };
