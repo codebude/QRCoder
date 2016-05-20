@@ -312,7 +312,6 @@ namespace QRCoder
         public class CalendarEvent
         {
             private readonly string subject, description, location, start, end;
-            private readonly bool allDayEvent;
             private readonly EventEncoding encoding;
 
             public CalendarEvent(string subject, string description, string location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
