@@ -327,23 +327,17 @@ namespace QRCoder
 
             public override string ToString()
             {
-                string vEvent = this.encoding.Equals(EventEncoding.iCalComplete) ? "BEGIN:VCALENDAR\nVERSION:2.0" : string.Empty;
-                vEvent += "BEGIN:VEVENT\n";
-                vEvent += $"SUMMARY:{this.subject}\n";
-                vEvent += !string.IsNullOrEmpty(this.description) ? $"DESCRIPTION:{this.description}\n" : "";
-                vEvent += !string.IsNullOrEmpty(this.location) ? $"LOCATION:{this.location}\n" : "";
-                vEvent += $"DTSTART:{this.start}\n";
-                vEvent += $"DTEND:{this.end}\n";
+                var vEvent = $"BEGIN:VEVENT{Environment.NewLine}";
+                vEvent += $"SUMMARY:{this.subject}{Environment.NewLine}";
+                vEvent += !string.IsNullOrEmpty(this.description) ? $"DESCRIPTION:{this.description}{Environment.NewLine}" : "";
+                vEvent += !string.IsNullOrEmpty(this.location) ? $"LOCATION:{this.location}{Environment.NewLine}" : "";
+                vEvent += $"DTSTART:{this.start}{Environment.NewLine}";
+                vEvent += $"DTEND:{this.end}{Environment.NewLine}";
                 vEvent += "END:VEVENT";
 
                 if (this.encoding.Equals(EventEncoding.iCalComplete))
-                {
-                    vEvent =
-                    $@"BEGIN:VCALENDAR
-                       VERSION:2.0
-                       {vEvent}
-                       END:VCALENDAR";
-                }
+                    vEvent = $@"BEGIN:VCALENDAR{Environment.NewLine}VERSION:2.0{Environment.NewLine}{vEvent}{Environment.NewLine}END:VCALENDAR";
+                
                 return vEvent;
             }
 
