@@ -23,31 +23,53 @@ namespace QRCoder
         }
                 
 
-        public string GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true)
+        public string GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
         {
-            return this.GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones);
+            return this.GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones, imgType);
         }
 
-        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
+        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
         {
             Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones);
-            return BitmapToBase64(bmp);
+            return BitmapToBase64(bmp, imgType);
         }
 
-        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true)
+        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
         {
             Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones);
-            return BitmapToBase64(bmp);
+            return BitmapToBase64(bmp, imgType);
         }
-        
 
-        private string BitmapToBase64(Bitmap bmp)
+
+        private string BitmapToBase64(Bitmap bmp, ImageType imgType)
         {
+            ImageFormat iFormat;
+            switch (imgType) {
+                case ImageType.Png: 
+                    iFormat = ImageFormat.Png;
+                    break;
+                case ImageType.Jpeg:
+                    iFormat = ImageFormat.Jpeg;
+                    break;
+                case ImageType.Gif:
+                    iFormat = ImageFormat.Gif;
+                    break;
+                default:
+                    iFormat = ImageFormat.Png;
+                    break;
+            }
             MemoryStream memoryStream = new MemoryStream();
-            bmp.Save(memoryStream, ImageFormat.Png);
+            bmp.Save(memoryStream, iFormat);
             byte[] bitmapBytes = memoryStream.GetBuffer();
-            string bitmapString = Convert.ToBase64String(bitmapBytes, Base64FormattingOptions.InsertLineBreaks);
+            string bitmapString = Convert.ToBase64String(bitmapBytes, Base64FormattingOptions.None);
             return bitmapString;
+        }
+
+        public enum ImageType
+        {
+            Gif,
+            Jpeg,
+            Png
         }
 
         public void Dispose()
