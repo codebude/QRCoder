@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractQRCode.cs" />
+    <Compile Include="Base64QRCode.cs" />
     <Compile Include="PayloadGenerator.cs" />
     <Compile Include="QRCodeData.cs" />
     <Compile Include="QRCode.cs" />
