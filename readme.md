@@ -48,8 +48,15 @@ QRCode qrCode = new QRCode(qrCodeData);
 Bitmap qrCodeImage = qrCode.GetGraphic(20);
 ```
 
-###Overloads
-The GetGraphics-method has 3 more overloads. The first two enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
+###Optional parameters
+
+The CreateQrCode-method has two optional parameters which affect the encoding of the payload. Both have default values. Only use them, if you know what you're doing.
+
+- **forceUtf8** *(bool)*: This parameter enables you to force text encoding in UTF-8. Be default (and as required by QR code ISO/IEC standard) text in Byte mode will be encoded in ISO-8859-1. Only if chars are detected, which can't be encoded in ISO-8859-1, QRCoder will switch to UTF-8. With the parameter you can force the usage of UTF-8 in any case.
+- **utf8BOM** *(bool)*: This parameter enables you to set ByteOrderMark (BOM) when QRCoder uses UTF-8 for text-encoding.
+
+###Overloads - Graphics generation
+The GetGraphics-method has some more overloads. The first two enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
 
 ```
 //Set color by using Color-class types
@@ -59,7 +66,7 @@ Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.DarkRed, Color.PaleGreen);
 Bitmap qrCodeImage = qrCode.GetGraphic(20, "#000ff0", "#0ff000");
 ```
 
-The third overload enables you to render a logo/image in the center of the QR code.
+The another overload enables you to render a logo/image in the center of the QR code.
 
 ```
 Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.Black, Color.White, "C:\\Path\\to\\logo.jpg", 20);
