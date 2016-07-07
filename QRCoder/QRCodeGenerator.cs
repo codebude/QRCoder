@@ -31,11 +31,11 @@ namespace QRCoder
             this.CreateAlignmentPatternTable();
         }
 
-        public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool utf8BOM = false)
+        public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false)
         {
             var encoding = this.GetEncodingFromPlaintext(plainText);
-            var codedText = this.PlainTextToBinary(plainText, encoding, utf8BOM);
-            var dataInputLength = this.GetDataLength(encoding, plainText, codedText);
+            var codedText = this.PlainTextToBinary(plainText, encoding, utf8BOM, forceUtf8);
+            var dataInputLength = this.GetDataLength(encoding, plainText, codedText, forceUtf8);
             var version = this.GetVersion(dataInputLength, encoding, eccLevel);
 
             var modeIndicator = DecToBin((int)encoding, 4);
@@ -805,9 +805,9 @@ namespace QRCoder
             }
         }
 
-        private int GetDataLength(EncodingMode encoding, string plainText, string codedText)
+        private int GetDataLength(EncodingMode encoding, string plainText, string codedText, bool forceUtf8)
         {
-            return this.IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
+            return forceUtf8 || this.IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
         }
 
         private bool IsUtf8(EncodingMode encoding, string plainText)
@@ -822,14 +822,14 @@ namespace QRCoder
             return String.Equals(input, result);
         }
 
-        private string PlainTextToBinary(string plainText, EncodingMode encMode, bool utf8BOM)
+        private string PlainTextToBinary(string plainText, EncodingMode encMode, bool utf8BOM, bool forceUtf8)
         {
             if (encMode.Equals(EncodingMode.Numeric))
                 return this.PlainTextToBinaryNumeric(plainText);
             else if (encMode.Equals(EncodingMode.Alphanumeric))
                 return this.PlainTextToBinaryAlphanumeric(plainText);
             else if (encMode.Equals(EncodingMode.Byte))
-                return this.PlainTextToBinaryByte(plainText, utf8BOM);
+                return this.PlainTextToBinaryByte(plainText, utf8BOM, forceUtf8);
             else
                 return string.Empty;
         }
@@ -875,12 +875,12 @@ namespace QRCoder
             return codeText;
         }
 
-        private string PlainTextToBinaryByte(string plainText, bool utf8BOM)
+        private string PlainTextToBinaryByte(string plainText, bool utf8BOM, bool forceUtf8)
         {
             byte[] codeBytes;
             var codeText = string.Empty;
 
-            if (this.IsValidISO(plainText))
+            if (this.IsValidISO(plainText) && !forceUtf8)
                 codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
             else
                 codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
