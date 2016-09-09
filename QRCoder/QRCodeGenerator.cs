@@ -207,10 +207,22 @@ namespace QRCoder
                 }
             }
 
+            private static string ReverseString(string inp)
+            {
+                string newStr = string.Empty;
+                if (inp.Length > 0)
+                {
+                    for (int i = inp.Length - 1; i > 0; i--)
+                        newStr += inp[i];
+                }
+                return newStr;
+            }
+
             public static void PlaceVersion(ref QRCodeData qrCode, string versionStr)
             {
                 var size = qrCode.ModuleMatrix.Count;
-                var vStr = new string(versionStr.Reverse().ToArray());
+
+                var vStr = ReverseString(versionStr);
 
                 for (var x = 0; x < 6; x++)
                 {
@@ -225,7 +237,7 @@ namespace QRCoder
             public static void PlaceFormat(ref QRCodeData qrCode, string formatStr)
             {
                 var size = qrCode.ModuleMatrix.Count;
-                var fStr = new string(formatStr.Reverse().ToArray());
+                var fStr = ReverseString(formatStr);
                 var modules = new[,] { { 8, 0, size - 1, 8 }, { 8, 1, size - 2, 8 }, { 8, 2, size - 3, 8 }, { 8, 3, size - 4, 8 }, { 8, 4, size - 5, 8 }, { 8, 5, size - 6, 8 }, { 8, 7, size - 7, 8 }, { 8, 8, size - 8, 8 }, { 7, 8, 8, size - 7 }, { 5, 8, 8, size - 6 }, { 4, 8, 8, size - 5 }, { 3, 8, 8, size - 4 }, { 2, 8, 8, size - 3 }, { 1, 8, 8, size - 2 }, { 0, 8, 8, size - 1 } };
                 for (var i = 0; i < 15; i++)
                 {
@@ -306,7 +318,10 @@ namespace QRCoder
                 var size = qrCode.ModuleMatrix.Count;
                 var up = true;
                 var datawords = new Queue<bool>();
-                data.ToList().ForEach(x => datawords.Enqueue(x != '0'));
+                for (int i = 0; i< data.Length; i++)
+                {
+                    datawords.Enqueue(data[i] != '0');
+                }
                 for (var x = size - 1; x >= 0; x = x - 2)
                 {
                     if (x == 6)
