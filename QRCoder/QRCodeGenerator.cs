@@ -734,14 +734,6 @@ namespace QRCoder
 
         private EncodingMode GetEncodingFromPlaintext(string plainText)
         {
-            /*
-            if (plainText.All(c => "0123456789".Contains(c)))
-                return EncodingMode.Numeric;
-            else if (plainText.All(c => this.alphanumEncTable.Contains(c)))
-                return EncodingMode.Alphanumeric;
-            else
-                return EncodingMode.Byte;
-            */
             if (StringAll(plainText, "0123456789"))
                 return EncodingMode.Numeric;
             else if (StringAll(plainText, this.alphanumEncTable.ToString()))
