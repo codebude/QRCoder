@@ -18,6 +18,6 @@
   <files>
 	<file src="bin\$configuration$\net40\QRCoder.dll" target="lib\net40\" />
 	<file src="bin\$configuration$\net40\UnityEngine.dll" target="lib\net40\" />
-	<file src="bin\$configuration$\netcore\QRCoder.dll" target="lib\netcore\" />
+	<file src="bin\$configuration$\netcore\QRCoder.dll" target="lib\portable-net45+netcore45+wpa81+monotouch+monoandroid+xamarinios\" />
   </files>
 </package>
