@@ -16,6 +16,6 @@ if not "%PackageVersion%" == "" (
 mkdir Build
 mkdir Build\lib
 mkdir Build\lib\net40
-mkdir Build\lib\netcore45
+mkdir Build\lib\netcore
 
 %NuGet% pack "QRCoder\QRCoder.nuspec" -NoPackageAnalysis -verbosity detailed -o Build -Version %version% -p Configuration="%config%"
