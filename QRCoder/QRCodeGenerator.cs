@@ -257,12 +257,11 @@ namespace QRCoder
 
                 var size = qrCode.ModuleMatrix.Count;
 
-                //foreach (var pattern in typeof(MaskPattern).GetMethods())
-                MethodInfo[] methods;
+              
                 #if NET40
-                    methods = typeof (MaskPattern).GetMethods();
+                    var methods = typeof (MaskPattern).GetMethods();
                 #else
-                    methods = typeof(MaskPattern).GetTypeInfo().GetDeclaredMethods("Pattern");
+                    var methods = typeof (MaskPattern).GetTypeInfo().DeclaredMethods;
                 #endif
 
                 foreach (var pattern in methods)

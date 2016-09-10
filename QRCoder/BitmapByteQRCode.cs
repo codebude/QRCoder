@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace QRCoder
 {
   
+    // ReSharper disable once InconsistentNaming
     public class BitmapByteQRCode : AbstractQRCode<byte[]>, IDisposable
     {
         public BitmapByteQRCode(QRCodeData data) : base(data) { }
