@@ -14,6 +14,9 @@ if not "%PackageVersion%" == "" (
 mkdir Build
 mkdir Build\lib
 mkdir Build\lib\net40
-mkdir Build\lib\portable-net45+netcore45+wpa81+monotouch+monoandroid+xamarinios
+mkdir Build\lib\portable-net45+netcore45+wpa81
+mkdir Build\lib\xamarinios
+mkdir Build\lib\monoandroid
+mkdir Build\lib\monotouch
 
 %NuGet% pack "QRCoder\QRCoder.nuspec" -NoPackageAnalysis -verbosity detailed -o Build -Version %version% -p Configuration="%config%"
