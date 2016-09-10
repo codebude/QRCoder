@@ -14,20 +14,15 @@ namespace QRCoder
 
         public override byte[] GetGraphic(int pixelsPerModule)
         {
-            List<byte> image = new List<byte>() { 0x42, 0x4d };
-
-            var width = this.QrCodeData.ModuleMatrix.Count;
-            var height = pixelsPerModule * this.QrCodeData.ModuleMatrix.Count;
-           
-             var unitsPerModule = (int)Math.Floor(Convert.ToDouble(Math.Min(width, height)) / this.QrCodeData.ModuleMatrix.Count);
-             var size = this.QrCodeData.ModuleMatrix.Count * unitsPerModule;
-           
-             for (var x = 0; x < size; x = x + unitsPerModule)
+            var sideLength = this.QrCodeData.ModuleMatrix.Count * pixelsPerModule;
+          
+             for (var x = 0; x < sideLength; x = x + pixelsPerModule)
              {
-                 for (var y = 0; y < size; y = y + unitsPerModule)
+                 for (var y = 0; y < sideLength; y = y + pixelsPerModule)
                  {
-                     var module = this.QrCodeData.ModuleMatrix[(y + unitsPerModule) / unitsPerModule - 1][(x + unitsPerModule) / unitsPerModule - 1];
-                     //svgFile.AppendLine(@"<rect x=""" + x + @""" y=""" + y + @""" width=""" + unitsPerModule + @""" height=""" + unitsPerModule + @""" fill=""" + (module ? darkColorHex : lightColorHex) + @""" />");
+                    var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
+                     
+                    //svgFile.AppendLine(@"<rect x=""" + x + @""" y=""" + y + @""" width=""" + unitsPerModule + @""" height=""" + unitsPerModule + @""" fill=""" + (module ? darkColorHex : lightColorHex) + @""" />");
                  }
              }
 
