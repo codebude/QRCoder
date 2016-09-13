@@ -735,7 +735,7 @@ namespace QRCoder
         {
             if (StringAll(plainText, "0123456789"))
                 return EncodingMode.Numeric;
-            else if (StringAll(plainText, this.alphanumEncTable.ToString()))
+            else if (StringAll(plainText, new string(this.alphanumEncTable)))
                 return EncodingMode.Alphanumeric;
             else
                 return EncodingMode.Byte;
