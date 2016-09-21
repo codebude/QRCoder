@@ -291,17 +291,18 @@ namespace QRCoder
             {
                 string query = null;
 
-                var queryValues = new List<Tuple<string,string>>{
-                  new Tuple<string, string>(nameof(label), label),
-                  new Tuple<string, string>(nameof(message), message),
-                  new Tuple<string, string>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
+                var queryValues = new List<KeyValuePair<string,string>>{
+                  new KeyValuePair<string, string>(nameof(label), label),
+                  new KeyValuePair<string, string>(nameof(message), message),
+                  new KeyValuePair<string, string>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
                 };
 
-                if (queryValues.Any(keyPair => !string.IsNullOrEmpty(keyPair.Item2)))
+                if (queryValues.Any(keyPair => !string.IsNullOrEmpty(keyPair.Value)))
                 {
                     query = "?" + string.Join("&", queryValues
-                        .Where(keyPair => !string.IsNullOrEmpty(keyPair.Item2))
-                        .Select(keyPair => $"{keyPair.Item1}={keyPair.Item2}"));
+                        .Where(keyPair => !string.IsNullOrEmpty(keyPair.Value))
+                        .Select(keyPair => $"{keyPair.Key}={keyPair.Value}")
+                        .ToArray());
                 }
 
                 return $"bitcoin:{address}{query}";
