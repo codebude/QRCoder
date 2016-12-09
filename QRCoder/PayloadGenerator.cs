@@ -323,8 +323,22 @@ namespace QRCoder
             private readonly GirocodeVersion version;
             private readonly GirocodeEncoding encoding;
             private readonly TypeOfRemittance typeOfRemittance;
-            
 
+            /// <summary>
+            /// Generates the payload for a Girocode (QR-Code with credit transfer information).
+            /// Attention: When using Girocode payload, QR code must be generated with ECC level M!
+            /// </summary>
+            /// <param name="iban">Account number of the Beneficiary. Only IBAN is allowed.</param>
+            /// <param name="bic">BIC of the Beneficiary Bank.</param>
+            /// <param name="name">Name of the Beneficiary.</param>
+            /// <param name="amount">Amount of the Credit Transfer in Euro.
+            /// (Amount must be more than 0.01 and less than 999999999.99)</param>
+            /// <param name="remittanceInformation">Remittance Information (Purpose-/reference text). (optional)</param>
+            /// <param name="typeOfRemittance">Type of remittance information. Either structured (e.g. ISO 11649 RF Creditor Reference) and max. 35 chars or unstructured and max. 140 chars.</param>
+            /// <param name="purposeOfCreditTransfer">Purpose of the Credit Transfer (optional)</param>
+            /// <param name="messageToGirocodeUser">Beneficiary to originator information. (optional)</param>
+            /// <param name="version">Girocode version. Either 001 or 002. Default: 001.</param>
+            /// <param name="encoding">Encoding of the Girocode payload. Default: ISO-8859-1</param>
             public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", TypeOfRemittance typeOfRemittance = TypeOfRemittance.Unstructured, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", GirocodeVersion version = GirocodeVersion.Version1, GirocodeEncoding encoding = GirocodeEncoding.ISO_8859_1)
             {
                 this.version = version;
