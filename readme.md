@@ -191,3 +191,4 @@ The PayloadGenerator supports the following types of payloads:
 * Bitcoin Payment Address
 * Skype call
 * Calendar events (iCal/vEvent)
+* Girocode
