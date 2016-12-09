@@ -481,7 +481,12 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(message);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-            return iso.GetString(isoBytes);
+            #if NET40
+                return iso.GetString(isoBytes);
+            #else
+                return iso.GetString(isoBytes,0, isoBytes.Length);
+            #endif
+
         }
 
         private static string EscapeInput(string inp, bool simple = false)
