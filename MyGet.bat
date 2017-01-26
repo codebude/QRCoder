@@ -11,10 +11,6 @@ if not "%PackageVersion%" == "" (
 
 "C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoderPackageBuild.sln /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false
 
-certUtil -hashfile bin\$configuration$\net35\QRCoder.dll md5
-certUtil -hashfile bin\$configuration$\net40\QRCoder.dll md5
-certUtil -hashfile bin\$configuration$\netcore\QRCoder.dll md5
-
 mkdir Build
 mkdir Build\lib
 mkdir Build\lib\net35
@@ -24,5 +20,10 @@ mkdir Build\lib\uap10.0
 mkdir Build\lib\xamarinios
 mkdir Build\lib\monoandroid
 mkdir Build\lib\monotouch
+
+certUtil -hashfile "bin\$configuration$\net35\QRCoder.dll" md5
+certUtil -hashfile "bin\$configuration$\net40\QRCoder.dll" md5
+certUtil -hashfile "bin\$configuration$\netcore\QRCoder.dll" md5
+
 
 %NuGet% pack "QRCoder\QRCoder.nuspec" -NoPackageAnalysis -verbosity detailed -o Build -Version %version% -p Configuration="%config%"
