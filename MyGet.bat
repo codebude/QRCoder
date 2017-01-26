@@ -11,9 +11,9 @@ if not "%PackageVersion%" == "" (
 
 "C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoderPackageBuild.sln /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /m /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false
 
-crc32 bin\$configuration$\net35\QRCoder.dll
-crc32 bin\$configuration$\net40\QRCoder.dll
-crc32 bin\$configuration$\netcore\QRCoder.dll
+certUtil -hashfile bin\$configuration$\net35\QRCoder.dll md5
+certUtil -hashfile bin\$configuration$\net40\QRCoder.dll md5
+certUtil -hashfile bin\$configuration$\netcore\QRCoder.dll md5
 
 mkdir Build
 mkdir Build\lib
