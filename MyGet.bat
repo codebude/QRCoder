@@ -16,7 +16,7 @@ mkdir Build
 mkdir Build\lib
 mkdir Build\lib\net35
 mkdir Build\lib\net40
-mkdir Build\lib\portable-net45+netcore45+wpa81
+mkdir Build\lib\portable-net45+netcore45+wpa81+wp81+wp8+uap
 mkdir Build\lib\xamarinios
 mkdir Build\lib\monoandroid
 mkdir Build\lib\monotouch

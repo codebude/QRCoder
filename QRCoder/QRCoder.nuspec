@@ -20,7 +20,7 @@
 	<file src="bin\$configuration$\net35\UnityEngine.dll" target="lib\net35\" />
 	<file src="bin\$configuration$\net40\QRCoder.dll" target="lib\net40\" />
 	<file src="bin\$configuration$\net40\UnityEngine.dll" target="lib\net40\" />
-	<file src="bin\$configuration$\netcore\QRCoder.dll" target="lib\portable-net45+netcore45+wpa81\" />
+	<file src="bin\$configuration$\netcore\QRCoder.dll" target="lib\portable-net45+netcore45+wpa81+wp81+wp8+uap\" />
 	<file src="bin\$configuration$\netcore\QRCoder.dll" target="lib\monotouch\" />
 	<file src="bin\$configuration$\netcore\QRCoder.dll" target="lib\monoandroid\" />
 	<file src="bin\$configuration$\netcore\QRCoder.dll" target="lib\xamarinios\" />
