@@ -31,9 +31,4 @@ powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCode
 powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCoder\bin\Release\net40\QRCoder.dll\").ImageRuntimeVersion"
 powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCoder\bin\Release\netcore\QRCoder.dll\").ImageRuntimeVersion"
 
-powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"C:\Users\RCC-Herrmann\Git\QRCoder\QRCoder\bin\Release\net35\QRCoder.dll\").ImageRuntimeVersion"
-powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"C:\Users\RCC-Herrmann\Git\QRCoder\QRCoder\bin\Release\net40\QRCoder.dll\").ImageRuntimeVersion"
-powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"C:\Users\RCC-Herrmann\Git\QRCoder\QRCoder\bin\Release\netcore\QRCoder.dll\").ImageRuntimeVersion"
-
-
 %NuGet% pack "QRCoder\QRCoder.nuspec" -NoPackageAnalysis -verbosity detailed -o Build -Version %version% -p Configuration="%config%"
