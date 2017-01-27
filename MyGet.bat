@@ -21,9 +21,11 @@ mkdir Build\lib\xamarinios
 mkdir Build\lib\monoandroid
 mkdir Build\lib\monotouch
 
-certUtil -hashfile "bin\Release\net35\QRCoder.dll" md5
-certUtil -hashfile "bin\Release\net40\QRCoder.dll" md5
-certUtil -hashfile "bin\Release\netcore\QRCoder.dll" md5
+echo %cd%
+dir
+certUtil -hashfile "QRCoder\bin\Release\net35\QRCoder.dll" md5
+certUtil -hashfile "QRCoder\bin\Release\net40\QRCoder.dll" md5
+certUtil -hashfile "QRCoder\bin\Release\netcore\QRCoder.dll" md5
 
 
 %NuGet% pack "QRCoder\QRCoder.nuspec" -NoPackageAnalysis -verbosity detailed -o Build -Version %version% -p Configuration="%config%"
