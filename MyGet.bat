@@ -9,9 +9,11 @@ if not "%PackageVersion%" == "" (
    set version=%PackageVersion%
 )
 
-echo "C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoderPackageBuild.sln /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
+echo Compile single projects
 
-"C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoderPackageBuild.sln /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
+"C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoder\QRCoder.csproj /p:Configuration="Release";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
+"C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoder\QRCoder.NET40.csproj /p:Configuration="Release";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
+"C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoder\QRCoderProject.Portable.csproj /p:Configuration="Release";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
 
 mkdir Build
 mkdir Build\lib
