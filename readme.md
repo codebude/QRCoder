@@ -1,5 +1,5 @@
 # QRCoder
-
+[![qrcoder MyGet Build Status](https://www.myget.org/BuildSource/Badge/qrcoder?identifier=10cbdaa5-2dd9-460b-b424-be44e75258ec)](https://www.myget.org/)
 ## Info 
 
 QRCoder is a simple library, written in C#.NET, which enables you to create QR Codes. It's licensed under the MIT-license and available as .NET Framework and .NET Core PCL version on NuGet.
