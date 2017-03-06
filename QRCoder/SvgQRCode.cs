@@ -43,12 +43,18 @@ namespace QRCoder
             var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * unitsPerModule;
             var offset = drawQuietZones ? 0 : 4 * unitsPerModule;
             var drawableSize = size + offset;
+
+            svgFile.AppendLine(@"<rect x=""" + (0 - offset) + @""" y=""" + (0 - offset) + @""" width=""" + (viewBox.Width - offset) + @""" height=""" + (viewBox.Height - offset) + @""" fill=""" + lightColorHex + @""" />");
+
             for (var x = 0; x < drawableSize; x = x + unitsPerModule)
             {
                 for (var y = 0; y < drawableSize; y = y + unitsPerModule)
                 {
                     var module = this.QrCodeData.ModuleMatrix[(y + unitsPerModule) / unitsPerModule - 1][(x + unitsPerModule) / unitsPerModule - 1];
-                    svgFile.AppendLine(@"<rect x="""+(x - offset)+ @""" y=""" + (y - offset) + @""" width=""" + unitsPerModule + @""" height=""" + unitsPerModule + @""" fill=""" + (module ? darkColorHex : lightColorHex) + @""" />");
+                    if (module)
+                    {
+                        svgFile.AppendLine(@"<rect x=""" + (x - offset) + @""" y=""" + (y - offset) + @""" width=""" + unitsPerModule + @""" height=""" + unitsPerModule + @""" fill=""" + (module ? darkColorHex : lightColorHex) + @""" />");
+                    }
                 }
             }
             svgFile.Append(@"</svg>");
