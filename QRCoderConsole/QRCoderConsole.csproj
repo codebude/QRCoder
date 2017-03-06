@@ -45,9 +45,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj">
-      <Project>{AECE5DF3-C379-46CA-BB7D-7BDBE59011FD}</Project>
-      <Name>QRCoder</Name>
+    <ProjectReference Include="..\QRCoder\QRCoder.NET40.csproj">
+      <Project>{a68dd9ca-828e-4908-8352-0a2b53621f37}</Project>
+      <Name>QRCoder.NET40</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
