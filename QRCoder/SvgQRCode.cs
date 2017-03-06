@@ -14,15 +14,21 @@ namespace QRCoder
             var viewBox = new Size(pixelsPerModule*this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
             return this.GetGraphic(viewBox, Color.Black, Color.White);
         }
-
-        public string GetGraphic(Size viewBox)
+        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
         {
-            return this.GetGraphic(viewBox, Color.Black, Color.White);
+            var viewBox = new Size(pixelsPerModule * this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
+            return this.GetGraphic(viewBox, darkColor, lightColor, drawQuietZones);
         }
 
-        public string GetGraphic(Size viewBox, Color darkColor, Color lightColor)
+        public string GetGraphic(int pixelsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true)
         {
-            return this.GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())));
+            var viewBox = new Size(pixelsPerModule * this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
+            return this.GetGraphic(viewBox, darkColorHex, lightColorHex, drawQuietZones);
+        }
+
+        public string GetGraphic(Size viewBox, bool drawQuietZones = true)
+        {
+            return this.GetGraphic(viewBox, Color.Black, Color.White, drawQuietZones);
         }
 
         public string GetGraphic(Size viewBox, Color darkColor, Color lightColor, bool drawQuietZones = true)
