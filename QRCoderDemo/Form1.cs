@@ -144,5 +144,15 @@ namespace QRCoderDemo
         {
             
         }
+
+        private void textBoxQRCode_TextChanged(object sender, EventArgs e)
+        {
+            RenderQrCode();
+        }
+
+        private void comboBoxECC_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RenderQrCode();
+        }
     }
 }
