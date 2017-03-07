@@ -9,7 +9,6 @@ namespace QRCoder
 {
     public static class PayloadGenerator
     {
-
         public class WiFi
         {
             private readonly string ssid, password, authenticationMode;
@@ -38,7 +37,6 @@ namespace QRCoder
             }
         }
 
-
         public class Mail
         {
             private readonly string mailReceiver, subject, message;
@@ -66,7 +64,6 @@ namespace QRCoder
                 this.message = message;
                 this.encoding = encoding;
             }
-
 
             public override string ToString()
             {
@@ -113,11 +110,10 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
-
             public override string ToString()
             {
                 switch (this.encoding)
-                { 
+                {
                     case SMSEncoding.SMS:
                         return $"sms:{this.number}?body={System.Uri.EscapeDataString(this.subject)}";
                     case SMSEncoding.SMS_iOS:
@@ -155,7 +151,7 @@ namespace QRCoder
                 this.subject = subject;
                 this.encoding = encoding;
             }
-            
+
             public override string ToString()
             {
                 switch (this.encoding)
@@ -167,7 +163,6 @@ namespace QRCoder
                     default:
                         return "mms:";
                 }
-                
             }
 
             public enum MMSEncoding
@@ -175,7 +170,6 @@ namespace QRCoder
                 MMS,
                 MMSTO
             }
-
         }
 
         public class Geolocation
@@ -222,7 +216,6 @@ namespace QRCoder
                 return $"tel:{this.number}";
             }
         }
-
 
         public class SkypeCall
         {
@@ -368,12 +361,10 @@ namespace QRCoder
                 if (messageToGirocodeUser.Length > 70)
                     throw new GirocodeException("Message to the Girocode-User reader texts have to shorter than 71 chars.");
                 this.messageToGirocodeUser = messageToGirocodeUser;
-
             }
 
             public override string ToString()
             {
-
                 var girocodePayload = "BCD" + br;
                 girocodePayload += (version.Equals(GirocodeVersion.Version1) ? "001" : "002") + br;
                 girocodePayload += (int)encoding + 1 + br;
@@ -409,7 +400,7 @@ namespace QRCoder
             public enum GirocodeEncoding
             {
                 UTF_8,
-                ISO_8859_1, 
+                ISO_8859_1,
                 ISO_8859_2,
                 ISO_8859_4,
                 ISO_8859_5,
@@ -464,7 +455,7 @@ namespace QRCoder
 
                 if (this.encoding.Equals(EventEncoding.iCalComplete))
                     vEvent = $@"BEGIN:VCALENDAR{Environment.NewLine}VERSION:2.0{Environment.NewLine}{vEvent}{Environment.NewLine}END:VCALENDAR";
-                
+
                 return vEvent;
             }
 
@@ -609,18 +600,20 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(message);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-            #if NET40
-                return iso.GetString(isoBytes);
-            #else
+#if NET40
+            return iso.GetString(isoBytes);
+#else
                 return iso.GetString(isoBytes,0, isoBytes.Length);
             #endif
-
         }
 
         private static string EscapeInput(string inp, bool simple = false)
         {
-            char[] forbiddenChars = { '\\', ';', ',', ':' };
-            if (simple) { forbiddenChars = new char[1] { ':' }; }
+            char[] forbiddenChars = {'\\', ';', ',', ':'};
+            if (simple)
+            {
+                forbiddenChars = new char[1] {':'};
+            }
             foreach (var c in forbiddenChars)
             {
                 inp = inp.Replace(c.ToString(), "\\" + c);
