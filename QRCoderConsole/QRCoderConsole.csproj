@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -38,15 +38,16 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SupportedImageFormat.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj">
-      <Project>{AECE5DF3-C379-46CA-BB7D-7BDBE59011FD}</Project>
-      <Name>QRCoder</Name>
+    <ProjectReference Include="..\QRCoder\QRCoder.NET40.csproj">
+      <Project>{a68dd9ca-828e-4908-8352-0a2b53621f37}</Project>
+      <Name>QRCoder.NET40</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>
