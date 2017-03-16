@@ -976,6 +976,38 @@ namespace QRCoderTests
             Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
             exception.Message.ShouldBe("Message to the Girocode-User reader texts have to shorter than 71 chars.");
         }
+
+        [Fact]
+        [Category("PayloadGenerator/OneTimePassword")]
+        public void one_time_password_generator_time_based_generates_with_standard_options()
+        {
+            var pg = new PayloadGenerator.OneTimePassword
+            {
+                Secret = "pwq6 5q55",
+                Issuer = "Google",
+                Label = "test@google.com",
+            };
+
+            pg.ToString().ShouldBe("otpauth://totp/Google:test@google.com?secret=pwq65q55&issuer=Google");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/OneTimePassword")]
+        public void one_time_password_generator_hmac_based_generates_with_standard_options()
+        {
+            var pg = new PayloadGenerator.OneTimePassword
+            {
+                Secret = "pwq6 5q55",
+                Issuer = "Google",
+                Label = "test@google.com",
+                Type = PayloadGenerator.OneTimePassword.OneTimePasswordAuthType.HOTP,
+                Counter = 500,
+            };
+
+            pg.ToString().ShouldBe("otpauth://hotp/Google:test@google.com?secret=pwq65q55&issuer=Google&counter=500");
+        }
+
+        //TODO: Include more tests for the one time password payload generator
     }
 }
 
