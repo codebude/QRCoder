@@ -9,7 +9,6 @@ namespace QRCoder
 {
     public static class PayloadGenerator
     {
-
         public class WiFi
         {
             private readonly string ssid, password, authenticationMode;
@@ -38,7 +37,6 @@ namespace QRCoder
             }
         }
 
-
         public class Mail
         {
             private readonly string mailReceiver, subject, message;
@@ -66,7 +64,6 @@ namespace QRCoder
                 this.message = message;
                 this.encoding = encoding;
             }
-
 
             public override string ToString()
             {
@@ -113,11 +110,10 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
-
             public override string ToString()
             {
                 switch (this.encoding)
-                { 
+                {
                     case SMSEncoding.SMS:
                         return $"sms:{this.number}?body={System.Uri.EscapeDataString(this.subject)}";
                     case SMSEncoding.SMS_iOS:
@@ -155,7 +151,7 @@ namespace QRCoder
                 this.subject = subject;
                 this.encoding = encoding;
             }
-            
+
             public override string ToString()
             {
                 switch (this.encoding)
@@ -167,7 +163,6 @@ namespace QRCoder
                     default:
                         return "mms:";
                 }
-                
             }
 
             public enum MMSEncoding
@@ -175,7 +170,6 @@ namespace QRCoder
                 MMS,
                 MMSTO
             }
-
         }
 
         public class Geolocation
@@ -222,7 +216,6 @@ namespace QRCoder
                 return $"tel:{this.number}";
             }
         }
-
 
         public class SkypeCall
         {
@@ -368,12 +361,10 @@ namespace QRCoder
                 if (messageToGirocodeUser.Length > 70)
                     throw new GirocodeException("Message to the Girocode-User reader texts have to shorter than 71 chars.");
                 this.messageToGirocodeUser = messageToGirocodeUser;
-
             }
 
             public override string ToString()
             {
-
                 var girocodePayload = "BCD" + br;
                 girocodePayload += (version.Equals(GirocodeVersion.Version1) ? "001" : "002") + br;
                 girocodePayload += (int)encoding + 1 + br;
@@ -409,7 +400,7 @@ namespace QRCoder
             public enum GirocodeEncoding
             {
                 UTF_8,
-                ISO_8859_1, 
+                ISO_8859_1,
                 ISO_8859_2,
                 ISO_8859_4,
                 ISO_8859_5,
@@ -464,7 +455,7 @@ namespace QRCoder
 
                 if (this.encoding.Equals(EventEncoding.iCalComplete))
                     vEvent = $@"BEGIN:VCALENDAR{Environment.NewLine}VERSION:2.0{Environment.NewLine}{vEvent}{Environment.NewLine}END:VCALENDAR";
-                
+
                 return vEvent;
             }
 
@@ -475,24 +466,154 @@ namespace QRCoder
             }
         }
 
+        public class OneTimePassword
+        {
+            //https://github.com/google/google-authenticator/wiki/Key-Uri-Format
+            public OneTimePasswordAuthType Type { get; set; } = OneTimePasswordAuthType.TOTP;
+            public string Secret { get; set; }
+            public OoneTimePasswordAuthAlgorithm Algorithm { get; set; } = OoneTimePasswordAuthAlgorithm.SHA1;
+            public string Issuer { get; set; }
+            public string Label { get; set; }
+            public int Digits { get; set; } = 6;
+            public int? Counter { get; set; } = null;
+            public int? Period { get; set; } = 30;
+
+            public enum OneTimePasswordAuthType
+            {
+                TOTP,
+                HOTP,
+            }
+
+            public enum OoneTimePasswordAuthAlgorithm
+            {
+                SHA1,
+                SHA256,
+                SHA512,
+            }
+
+            public override string ToString()
+            {
+                switch (Type)
+                {
+                    case OneTimePasswordAuthType.TOTP:
+                        return TimeToString();
+                    case OneTimePasswordAuthType.HOTP:
+                        return HMACToString();
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+
+            // Note: Issuer:Label must only contain 1 : if either of the Issuer or the Label has a : then it is invalid.
+            // Defaults are 6 digits and 30 for Period
+
+            private string HMACToString()
+            {
+                var sb = new StringBuilder("otpauth://hotp/");
+                ProcessCommonFields(sb);
+                var actualCounter = Counter ?? 1;
+                sb.Append("&counter=" + actualCounter);
+                return sb.ToString();
+            }
+
+            private string TimeToString()
+            {
+                if (Period == null)
+                {
+                    throw new Exception("Period must be set when using OneTimePasswordAuthType.TOTP");
+                }
+
+                var sb = new StringBuilder("otpauth://totp/");
+
+                ProcessCommonFields(sb);
+
+                if (Period != 30)
+                {
+                    sb.Append("&period=" + Period);
+                }
+
+                return sb.ToString();
+            }
+
+            private void ProcessCommonFields(StringBuilder sb)
+            {
+                if (String40Methods.IsNullOrWhiteSpace(Secret))
+                {
+                    throw new Exception("Secret must be a filled out base32 encoded string");
+                }
+                string strippedSecret = Secret.Replace(" ", "");
+                string escapedIssuer = null;
+                string escapedLabel = null;
+
+                if (!String40Methods.IsNullOrWhiteSpace(Issuer))
+                {
+                    if (Issuer.Contains(":"))
+                    {
+                        throw new Exception("Issuer must not have a ':'");
+                    }
+                    escapedIssuer = Uri.EscapeUriString(Issuer);
+                }
+
+                if (!String40Methods.IsNullOrWhiteSpace(Label))
+                {
+                    if (Label.Contains(":"))
+                    {
+                        throw new Exception("Label must not have a ':'");
+                    }
+                    escapedLabel = Uri.EscapeUriString(Label);
+                }
+
+                if (escapedLabel != null)
+                {
+                    if (escapedIssuer != null)
+                    {
+                        escapedLabel = escapedIssuer + ":" + escapedLabel;
+                    }
+                }
+                else if (escapedIssuer != null)
+                {
+                    escapedLabel = escapedIssuer;
+                }
+
+                if (escapedLabel != null)
+                {
+                    sb.Append(escapedLabel);
+                }
+
+                sb.Append("?secret=" + strippedSecret);
+
+                if (escapedIssuer != null)
+                {
+                    sb.Append("&issuer=" + escapedIssuer);
+                }
+
+                if (Digits != 6)
+                {
+                    sb.Append("&digits=" + Digits);
+                }
+            }
+        }
+
         private static string ConvertStringToEncoding(string message, string encoding)
         {
             Encoding iso = Encoding.GetEncoding(encoding);
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(message);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-            #if NET40
-                return iso.GetString(isoBytes);
-            #else
+#if NET40
+            return iso.GetString(isoBytes);
+#else
                 return iso.GetString(isoBytes,0, isoBytes.Length);
             #endif
-
         }
 
         private static string EscapeInput(string inp, bool simple = false)
         {
-            char[] forbiddenChars = { '\\', ';', ',', ':' };
-            if (simple) { forbiddenChars = new char[1] { ':' }; }
+            char[] forbiddenChars = {'\\', ';', ',', ':'};
+            if (simple)
+            {
+                forbiddenChars = new char[1] {':'};
+            }
             foreach (var c in forbiddenChars)
             {
                 inp = inp.Replace(c.ToString(), "\\" + c);

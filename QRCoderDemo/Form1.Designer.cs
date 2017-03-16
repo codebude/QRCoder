@@ -64,6 +64,7 @@
             this.textBoxQRCode.Size = new System.Drawing.Size(394, 20);
             this.textBoxQRCode.TabIndex = 1;
             this.textBoxQRCode.Text = "1234567890";
+            this.textBoxQRCode.TextChanged += new System.EventHandler(this.textBoxQRCode_TextChanged);
             // 
             // pictureBoxQRCode
             // 
@@ -91,6 +92,7 @@
             this.comboBoxECC.Name = "comboBoxECC";
             this.comboBoxECC.Size = new System.Drawing.Size(125, 21);
             this.comboBoxECC.TabIndex = 3;
+            this.comboBoxECC.SelectedIndexChanged += new System.EventHandler(this.comboBoxECC_SelectedIndexChanged);
             // 
             // labelECC
             // 

@@ -53,6 +53,7 @@
     <Compile Include="QRCode.cs" />
     <Compile Include="QRCodeGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Framework4.0Methods\String4Methods.cs" />
     <Compile Include="SvgQRCode.cs" />
     <Compile Include="UnityQRCode.cs" />
   </ItemGroup>
