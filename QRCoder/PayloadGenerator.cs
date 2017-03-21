@@ -594,6 +594,122 @@ namespace QRCoder
             }
         }
 
+
+        public class ShadowSocksConfig
+        {
+            private readonly string hostname, password, tag, methodStr;
+            private readonly Method method;
+            private readonly int port;
+            private Dictionary<string, string> encryptionTexts = new Dictionary<string, string>() {
+                { "Aes128Cfb", "aes-128-cfb" },
+                { "Aes128Cfb1", "aes-128-cfb1" },
+                { "Aes128Cfb8", "aes-128-cfb8" },
+                { "Aes128Ctr", "aes-128-ctr" },
+                { "Aes128Ofb", "aes-128-ofb" },
+                { "Aes192Cfb", "aes-192-cfb" },
+                { "Aes192Cfb1", "aes-192-cfb1" },
+                { "Aes192Cfb8", "aes-192-cfb8" },
+                { "Aes192Ctr", "aes-192-ctr" },
+                { "Aes192Ofb", "aes-192-ofb" },
+                { "Aes256Cb", "aes-256-cfb" },
+                { "Aes256Cfb1", "aes-256-cfb1" },
+                { "Aes256Cfb8", "aes-256-cfb8" },
+                { "Aes256Ctr", "aes-256-ctr" },
+                { "Aes256Ofb", "aes-256-ofb" },
+                { "BfCfb", "bf-cfb" },
+                { "Camellia128Cfb", "camellia-128-cfb" },
+                { "Camellia192Cfb", "camellia-192-cfb" },
+                { "Camellia256Cfb", "camellia-256-cfb" },
+                { "Cast5Cfb", "cast5-cfb" },
+                { "Chacha20", "chacha20" },
+                { "DesCfb", "des-cfb" },
+                { "IdeaCfb", "idea-cfb" },
+                { "Rc2Cfb", "rc2-cfb" },
+                { "Rc4", "rc4" },
+                { "Rc4Md5", "rc4-md5" },
+                { "Salsa20", "salsa20" },
+                { "Salsa20Ctr", "salsa20-ctr" },
+                { "SeedCfb", "seed-cfb" },
+                { "Table", "table" }
+            };
+
+
+            public ShadowSocksConfig(string hostname, int port, string password, Method method, string tag = null)
+            {
+                this.hostname = hostname;
+                if (port < 1 || port > 65535)
+                    throw new ShadowSocksConfigException("Value of 'port' must be within 0 and 65535.");
+                this.port = port;
+                this.password = password;
+                this.method = method;
+                this.methodStr = encryptionTexts[method.ToString()];
+                this.tag = tag;    
+            }
+
+            public override string ToString()
+            {
+                var connectionString = $"{methodStr}:{password}@{hostname}:{port}";
+                var connectionStringEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(connectionString));
+                return $"ss://{connectionStringEncoded}{(!string.IsNullOrEmpty(tag) ? $"#{tag}" : string.Empty)}";
+            }
+
+            public enum Method
+            {
+                Aes128Cfb,
+                Aes128Cfb1,
+                Aes128Cfb8,
+                Aes128Ctr,
+                Aes128Ofb,
+                Aes192Cfb,
+                Aes192Cfb1,
+                Aes192Cfb8,
+                Aes192Ctr,
+                Aes192Ofb,
+                Aes256Cb,
+                Aes256Cfb1,
+                Aes256Cfb8,
+                Aes256Ctr,
+                Aes256Ofb,
+                BfCfb,
+                Camellia128Cfb,
+                Camellia192Cfb,
+                Camellia256Cfb,
+                Cast5Cfb,
+                Chacha20,
+                DesCfb,
+                IdeaCfb,
+                Rc2Cfb,
+                Rc4,
+                Rc4Md5,
+                Salsa20,
+                Salsa20Ctr,
+                SeedCfb,
+                Table
+            }
+
+            public class ShadowSocksConfigException : Exception
+            {
+                public ShadowSocksConfigException()
+                {
+                }
+
+                public ShadowSocksConfigException(string message)
+                    : base(message)
+                {
+                }
+
+                public ShadowSocksConfigException(string message, Exception inner)
+                    : base(message, inner)
+                {
+                }
+            }
+        }
+
+
+
+
+
+
         private static string ConvertStringToEncoding(string message, string encoding)
         {
             Encoding iso = Encoding.GetEncoding(encoding);
