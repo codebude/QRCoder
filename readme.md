@@ -22,7 +22,7 @@ in 10/2013. It's licensed under the MIT license.
 * * *
 
 
-##Installation
+## Installation
 
 Either checkout this Github repository or install QRCoder via NuGet Package Manager. If you want to use NuGet just search for "QRCoder" or run the following command in the NuGet Package Manager console:
 ```
@@ -37,7 +37,7 @@ PM> Install-Package QRCoder
 
 
 
-##Usage
+## Usage
 
 After referencing the QRCoder.dll in your project, you only need five lines of code, to generate and view your first QR code.
 
@@ -48,14 +48,14 @@ QRCode qrCode = new QRCode(qrCodeData);
 Bitmap qrCodeImage = qrCode.GetGraphic(20);
 ```
 
-###Optional parameters
+### Optional parameters
 
 The CreateQrCode-method has two optional parameters which affect the encoding of the payload. Both have default values. Only use them, if you know what you're doing.
 
 - **forceUtf8** *(bool)*: This parameter enables you to force text encoding in UTF-8. Be default (and as required by QR code ISO/IEC standard) text in Byte mode will be encoded in ISO-8859-1. Only if chars are detected, which can't be encoded in ISO-8859-1, QRCoder will switch to UTF-8. With the parameter you can force the usage of UTF-8 in any case.
 - **utf8BOM** *(bool)*: This parameter enables you to set ByteOrderMark (BOM) when QRCoder uses UTF-8 for text-encoding.
 
-###Overloads - Graphics generation
+### Overloads - Graphics generation
 The GetGraphics-method has some more overloads. The first two enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
 
 ```
@@ -72,7 +72,7 @@ The another overload enables you to render a logo/image in the center of the QR 
 Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.Black, Color.White, "C:\\Path\\to\\logo.jpg", 20);
 ```
 
-###Special rendering types
+### Special rendering types
 
 Besides the normal QRCode class (which is shown in the example above) for creating QR codes in Bitmap format, there are some more QR code rendering classes, each for another special purpose.
 
@@ -85,11 +85,11 @@ Besides the normal QRCode class (which is shown in the example above) for creati
 
 *(&ast;) - Those classes are only available in the .NET Framework version. If you use the PCL version (e.g. for Universal apps), you have to use BitmapByteQRCode.*
 
-####QRCode.cs - standard QR code
+#### QRCode.cs - standard QR code
 
 For an example see the snippet right at the beginning of this documentation.
 
-####Base64QRCode.cs - QR code as base64 string
+#### Base64QRCode.cs - QR code as base64 string
 
 This class helps you to create a QR code as base64 string. It is useful for web- or web-based applications, where you embed the QR code as inline base64.
 
@@ -100,7 +100,7 @@ Base64QRCode qrCode = new Base64QRCode(qrCodeData);
 string qrCodeImageAsBase64 = qrCode.GetGraphic(20);
 ```
 
-####BitmapByteQRCode.cs - QR codes as Bitmap byte-Array
+#### BitmapByteQRCode.cs - QR codes as Bitmap byte-Array
 
 This class helps you to create a QRCode as byte[] which contains a Bitmap. It was implemted for the PCL version of QRCoder because in .NET Core the System.Drawing namespace is missing and so none of the Graphics sugar, which is used in the other QR Code types is available.
 
@@ -132,7 +132,7 @@ using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
 ```
 
 
-####SvgQRCode.cs - vectorized QR code as SVG file
+#### SvgQRCode.cs - vectorized QR code as SVG file
 
 If you want to render QR code in vector format as SVG file, just use SvgQRCode instead of QRCode class.
 
@@ -146,7 +146,7 @@ string qrCodeImageAsSVG = qrCode.GetGraphic(20);
 The string *qrCodeImageAsSVG* contains the QR code as SVG formatted string. Either you pass the string to a control which can render SVG or just save it with FileWriter or StreamWriter class.
 
 
-####UnityQRCode.cs - QR codes in Unity
+#### UnityQRCode.cs - QR codes in Unity
 
 If you want to render QR codes in Unity, just use UnityQRCode instead of QRCode class. It returns the QR code as Texture2D type.
 
@@ -160,7 +160,7 @@ Texture2D qrCodeImage = qrCode.GetGraphic(20);
 
 
 
-##PayloadGenerator.cs - Generate QR code payloads
+## PayloadGenerator.cs - Generate QR code payloads
 
 Technically QR code is just a visual representation of a text/string. Nevertheless most QR code readers can read "special" QR codes which trigger different actions. For example: WiFi-QRcodes which, when scanned by smartphone, let the smartphone join an access point automatically.
 
