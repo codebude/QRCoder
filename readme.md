@@ -180,6 +180,7 @@ QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload.ToString(), QRCodeG
 
 The PayloadGenerator supports the following types of payloads:
 
+* BezahlCode
 * Bitcoin Payment Address
 * Bookmark
 * Calendar events (iCal/vEvent)
@@ -187,7 +188,9 @@ The PayloadGenerator supports the following types of payloads:
 * Girocode
 * Mail
 * MMS
+* Monero address/payment
 * Phonenumber
+* Shadowsocks configuration
 * Skype call
 * SMS
 * URL
