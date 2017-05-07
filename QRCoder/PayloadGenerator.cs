@@ -387,6 +387,293 @@ namespace QRCoder
             }
         }
 
+
+        public class SwissQrCode
+        {
+            //Keep in mind, that the ECC level has to be set to "M" when generating a SwissQrCode!
+            //SwissQrCode specification: https://www.paymentstandards.ch/dam/downloads/ig-qr-bill-de.pdf
+
+            private readonly string br = "\r\n";
+            private readonly Iban iban;
+            private readonly decimal? amount;
+            private readonly Contact creditor, ultimateCreditor, debitor;
+            private readonly Currency currency;
+            private readonly DateTime? requestedDateOfPayment;
+            private readonly Reference reference;
+
+            public SwissQrCode(Iban iban, Currency currency, Contact creditor, Reference reference, Contact debitor = null, decimal? amount = null, DateTime? requestedDateOfPayment = null, Contact ultimateCreditor = null)
+            {
+                this.iban = iban;
+                
+                this.creditor = creditor;
+                this.ultimateCreditor = ultimateCreditor;
+
+                if (amount != null && amount.ToString().Length > 12)
+                    throw new SwissQrCodeException("Amount (including decimals) must be shorter than 13 places.");
+                this.amount = amount;
+
+                this.currency = currency;
+                this.requestedDateOfPayment = requestedDateOfPayment;
+                this.debitor = debitor;
+
+                if (iban.IsQrIban && reference.RefType.Equals(Reference.ReferenceType.NON))
+                    throw new SwissQrCodeException("If QR-IBAN is used, you have to choose \"QRR\" or \"SCOR\" as reference type!");
+                this.reference = reference;
+
+
+            }
+
+            public class Reference
+            {
+                private readonly ReferenceType referenceType;
+                private readonly string reference, unstructuredMessage;
+                private readonly ReferenceTextType? referenceTextType;
+
+                public Reference(ReferenceType referenceType, string reference = null, ReferenceTextType? referenceTextType = null, string unstructuredMessage = null)
+                {
+                    this.referenceType = referenceType;
+
+                    if (referenceType.Equals(ReferenceType.NON) && reference != null)
+                        throw new SwissQrCodeReferenceException("Reference is only allowed when referenceType not equals \"NON\"");
+                    if (!referenceType.Equals(ReferenceType.NON) && reference != null && referenceTextType == null)
+                        throw new SwissQrCodeReferenceException("You have to set an ReferenceTextType when using the reference text.");
+
+                    this.reference = reference;
+
+
+                }
+
+                public ReferenceType RefType {
+                    get { return referenceType; }
+                }
+
+                public string ReferenceText
+                {
+                    get { return reference; }
+                }
+
+                public string UnstructureMessage
+                {
+                    get { return unstructuredMessage; }
+                }
+
+                /// <summary>
+                /// Reference type. When using a QR-IBAN you have to use either "QRR" or "SCOR"
+                /// </summary>
+                public enum ReferenceType
+                {
+                    QRR,
+                    SCOR,
+                    NON
+                }
+
+                public enum ReferenceTextType
+                {
+                    QrReference,
+                    CreditorReferenceIso11649
+                }
+
+                public class SwissQrCodeReferenceException : Exception
+                {
+                    public SwissQrCodeReferenceException()
+                    {
+                    }
+
+                    public SwissQrCodeReferenceException(string message)
+                        : base(message)
+                    {
+                    }
+
+                    public SwissQrCodeReferenceException(string message, Exception inner)
+                        : base(message, inner)
+                    {
+                    }
+                }
+            }
+
+            public class Iban
+            {
+                private string iban;
+                private IbanType ibanType;
+
+                public Iban(string iban, IbanType ibanType)
+                {
+                    if (!IsValidIban(iban))
+                        throw new SwissQrCodeException("The IBAN entered isn't valid.");
+                    if (!iban.StartsWith("CH") && !iban.StartsWith("LI"))
+                        throw new SwissQrCodeException("The IBAN must start with \"CH\" or \"LI\".");
+                    this.iban = iban;
+                    this.ibanType = ibanType;
+                }
+
+                public bool IsQrIban
+                {
+                    get { return ibanType.Equals(IbanType.QrIban); }
+                }
+
+                public override string ToString()
+                {
+                    return iban;
+                }
+
+                public enum IbanType
+                {
+                    Iban,
+                    QrIban
+                }
+            }
+
+            public class Contact
+            {
+                private string br = "\r\n";
+                private string name, street, houseNumber, zipCode, city, country;
+
+                /// <summary>
+                /// Contact type. Can be used for payee, ultimate payee, etc. 
+                /// </summary>
+                /// <param name="name">Last name or company (optional first name)</param>
+                /// <param name="zipCode">Zip-/Postcode</param>
+                /// <param name="city">City name</param>
+                /// <param name="country">Two-letter country code as defined in ISO 3166-1</param>
+                /// <param name="street">Streetname without house number</param>
+                /// <param name="houseNumber">House number</param>
+                public Contact(string name, string zipCode, string city, string country, string street = null, string houseNumber = null)
+                {
+                    if (string.IsNullOrEmpty(name))
+                        throw new SwissQrCodeContactException("Name must not be empty.");
+                    if (name.Length > 70)
+                        throw new SwissQrCodeContactException("Name must be shorter than 71 chars.");
+                    this.name = name;
+
+                    if (!string.IsNullOrEmpty(street) && (street.Length > 70 || !Regex.IsMatch(street, @"^[^0-9]+$")))
+                        throw new SwissQrCodeContactException("Street must be shorter than 71 chars and must not contain a house number.");
+                    this.street = street;
+
+                    if (!string.IsNullOrEmpty(houseNumber) && houseNumber.Length > 16)
+                        throw new SwissQrCodeContactException("House number must be shorter than 17 chars.");
+                    this.houseNumber = houseNumber;
+
+                    if (string.IsNullOrEmpty(zipCode))
+                        throw new SwissQrCodeContactException("Zip code must not be empty.");
+                    if (zipCode.Length > 16 || !Regex.IsMatch(zipCode, @"^[0-9]+$"))
+                        throw new SwissQrCodeContactException("Zip code must be shorter than 17 chars. Only digits are allowed.");
+                    this.zipCode = zipCode;
+
+                    if (string.IsNullOrEmpty(city))
+                        throw new SwissQrCodeContactException("City must not be empty.");
+                    if (city.Length > 35)
+                        throw new SwissQrCodeContactException("City name must be shorter than 36 chars.");
+                    this.city = city;
+
+                    if (!CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(x => new RegionInfo(x.LCID).TwoLetterISORegionName.ToUpper() == country.ToUpper()).Any())
+                        throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't.");
+                    this.country = country;
+                }
+
+                public override string ToString()
+                {
+                    string contactData = name + br; //Name
+                    contactData += (!string.IsNullOrEmpty(street) ? street : string.Empty) + br; //StrtNm
+                    contactData += (!string.IsNullOrEmpty(houseNumber) ? houseNumber : string.Empty) + br; //BldgNb
+                    contactData += zipCode + br; //PstCd
+                    contactData += city + br; //TwnNm
+                    contactData += country + br; //Ctry
+                    return contactData;
+                }
+
+                public class SwissQrCodeContactException : Exception
+                {
+                    public SwissQrCodeContactException()
+                    {
+                    }
+
+                    public SwissQrCodeContactException(string message)
+                        : base(message)
+                    {
+                    }
+
+                    public SwissQrCodeContactException(string message, Exception inner)
+                        : base(message, inner)
+                    {
+                    }
+                }
+            }
+
+            public override string ToString()
+            {
+                //Header "logical" element
+                var SwissQrCodePayload = "SPC" + br; //QRType
+                SwissQrCodePayload += "0100" + br; //Version
+                SwissQrCodePayload += "1" + br; //Coding
+
+                //CdtrInf "logical" element
+                SwissQrCodePayload += iban.ToString() + br; //IBAN
+
+
+                //Cdtr "logical" element
+                SwissQrCodePayload += creditor.ToString();
+
+                //UltmtCdtr "logical" element
+                if (ultimateCreditor != null)
+                    SwissQrCodePayload += ultimateCreditor.ToString();
+                else
+                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6));
+                
+                //CcyAmtDate "logical" element
+                SwissQrCodePayload += (amount != null ? $"{amount:0.00}" : string.Empty) + br; //Amt
+                SwissQrCodePayload += (int)currency + br; //Ccy
+                SwissQrCodePayload += (requestedDateOfPayment != null ?  ((DateTime)requestedDateOfPayment).ToString("yyyy-MM-dd") : string.Empty) + br; //ReqdExctnDt
+
+                //UltmtDbtr "logical" element
+                if (debitor != null)
+                    SwissQrCodePayload += debitor.ToString();
+                else
+                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6));
+
+
+                //RmtInf "logical" element
+                SwissQrCodePayload += reference.RefType.ToString() + br; //Tp
+
+                //AltPmtInf "logical" element               
+
+
+
+                return SwissQrCodePayload;
+            }
+
+            
+
+
+            /// <summary>
+            /// ISO 4217 currency codes 
+            /// </summary>
+            public enum Currency
+            {              
+                CHF = 756,
+                EUR = 978
+            }
+
+            public class SwissQrCodeException : Exception
+            {
+                public SwissQrCodeException()
+                {
+                }
+
+                public SwissQrCodeException(string message)
+                    : base(message)
+                {
+                }
+
+                public SwissQrCodeException(string message, Exception inner)
+                    : base(message, inner)
+                {
+                }
+            }
+        }
+
+
+
+
         public class Girocode
         {
             //Keep in mind, that the ECC level has to be set to "M" when generating a Girocode!
@@ -510,7 +797,6 @@ namespace QRCoder
                 }
             }
         }
-
 
         public class BezahlCode
         {
