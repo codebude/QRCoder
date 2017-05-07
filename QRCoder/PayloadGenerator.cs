@@ -13,6 +13,14 @@ namespace QRCoder
         {
             private readonly string ssid, password, authenticationMode;
             private readonly bool isHiddenSsid;
+
+            /// <summary>
+            /// Generates a WiFi payload. Scanned by a QR Code scanner app, the device will connect to the WiFi.
+            /// </summary>
+            /// <param name="ssid">SSID of the WiFi network</param>
+            /// <param name="password">Password of the WiFi network</param>
+            /// <param name="authenticationMode">Authentification mode (WEP, WPA, WPA2)</param>
+            /// <param name="isHiddenSSID">Set flag, if the WiFi network hides its SSID</param>
             public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false)
             {
                 this.ssid = EscapeInput(ssid);
@@ -42,6 +50,11 @@ namespace QRCoder
             private readonly string mailReceiver, subject, message;
             private readonly MailEncoding encoding;
 
+            /// <summary>
+            /// Creates an empty email payload
+            /// </summary>
+            /// <param name="mailReceiver">Receiver's email address</param>
+            /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
             public Mail(string mailReceiver, MailEncoding encoding = MailEncoding.MAILTO)
             {
                 this.mailReceiver = mailReceiver;
@@ -49,6 +62,12 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
+            /// <summary>
+            /// Creates an email payload with subject
+            /// </summary>
+            /// <param name="mailReceiver">Receiver's email address</param>
+            /// <param name="subject">Subject line of the email</param>
+            /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
             public Mail(string mailReceiver, string subject, MailEncoding encoding = MailEncoding.MAILTO)
             {
                 this.mailReceiver = mailReceiver;
@@ -57,6 +76,13 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
+            /// <summary>
+            /// Creates an email payload with subject and message/text
+            /// </summary>
+            /// <param name="mailReceiver">Receiver's email address</param>
+            /// <param name="subject">Subject line of the email</param>
+            /// <param name="message">Message content of the email</param>
+            /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
             public Mail(string mailReceiver, string subject, string message, MailEncoding encoding = MailEncoding.MAILTO)
             {
                 this.mailReceiver = mailReceiver;
@@ -96,6 +122,11 @@ namespace QRCoder
             private readonly string number, subject;
             private readonly SMSEncoding encoding;
 
+            /// <summary>
+            /// Creates a SMS payload without text
+            /// </summary>
+            /// <param name="number">Receiver phone number</param>
+            /// <param name="encoding">Encoding type</param>
             public SMS(string number, SMSEncoding encoding = SMSEncoding.SMS)
             {
                 this.number = number;
@@ -103,6 +134,12 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
+            /// <summary>
+            /// Creates a SMS payload with text (subject)
+            /// </summary>
+            /// <param name="number">Receiver phone number</param>
+            /// <param name="subject">Text of the SMS</param>
+            /// <param name="encoding">Encoding type</param>        
             public SMS(string number, string subject, SMSEncoding encoding = SMSEncoding.SMS)
             {
                 this.number = number;
@@ -138,6 +175,11 @@ namespace QRCoder
             private readonly string number, subject;
             private readonly MMSEncoding encoding;
 
+            /// <summary>
+            /// Creates a MMS payload without text
+            /// </summary>
+            /// <param name="number">Receiver phone number</param>
+            /// <param name="encoding">Encoding type</param>
             public MMS(string number, MMSEncoding encoding = MMSEncoding.MMS)
             {
                 this.number = number;
@@ -145,6 +187,12 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
+            /// <summary>
+            /// Creates a MMS payload with text (subject)
+            /// </summary>
+            /// <param name="number">Receiver phone number</param>
+            /// <param name="subject">Text of the MMS</param>
+            /// <param name="encoding">Encoding type</param>
             public MMS(string number, string subject, MMSEncoding encoding = MMSEncoding.MMS)
             {
                 this.number = number;
@@ -176,6 +224,13 @@ namespace QRCoder
         {
             private readonly string latitude, longitude;
             private readonly GeolocationEncoding encoding;
+
+            /// <summary>
+            /// Generates a geo location payload. Supports raw location (GEO encoding) or Google Maps link (GoogleMaps encoding)
+            /// </summary>
+            /// <param name="latitude">Latitude with . as splitter</param>
+            /// <param name="longitude">Longitude with . as splitter</param>
+            /// <param name="encoding">Encoding type - GEO or GoogleMaps</param>
             public Geolocation(string latitude, string longitude, GeolocationEncoding encoding = GeolocationEncoding.GEO)
             {
                 this.latitude = latitude.Replace(",",".");
@@ -206,11 +261,16 @@ namespace QRCoder
         public class PhoneNumber
         {
             private readonly string number;
+
+            /// <summary>
+            /// Generates a phone call payload
+            /// </summary>
+            /// <param name="number">Phonenumber of the receiver</param>
             public PhoneNumber(string number)
             {
                 this.number = number;
             }
-
+                        
             public override string ToString()
             {
                 return $"tel:{this.number}";
@@ -220,6 +280,11 @@ namespace QRCoder
         public class SkypeCall
         {
             private readonly string skypeUsername;
+
+            /// <summary>
+            /// Generates a Skype call payload
+            /// </summary>
+            /// <param name="skypeUsername">Skype username which will be called</param>
             public SkypeCall(string skypeUsername)
             {
                 this.skypeUsername = skypeUsername;
@@ -234,6 +299,11 @@ namespace QRCoder
         public class Url
         {
             private readonly string url;
+
+            /// <summary>
+            /// Generates a link. If not given, http/https protocol will be added
+            /// </summary>
+            /// <param name="url">Link url target</param>
             public Url(string url)
             {
                 this.url = url;
@@ -248,6 +318,12 @@ namespace QRCoder
         public class Bookmark
         {
             private readonly string url, title;
+
+            /// <summary>
+            /// Generates a bookmark payload. Scanned by an QR Code reader, this one creates a browser bookmark.
+            /// </summary>
+            /// <param name="url">Url of the bookmark</param>
+            /// <param name="title">Title of the bookmark</param>
             public Bookmark(string url, string title)
             {
                 this.url = EscapeInput(url);
@@ -265,6 +341,13 @@ namespace QRCoder
             private readonly string address, label, message;
             private readonly double? amount;
 
+            /// <summary>
+            /// Generates a Bitcoin payment payload. QR Codes with this payload can open a Bitcoin payment app.
+            /// </summary>
+            /// <param name="address">Bitcoin address of the payment receiver</param>
+            /// <param name="amount">Amount of Bitcoins to transfer</param>
+            /// <param name="label">Reference label</param>
+            /// <param name="message">Referece text aka message</param>
             public BitcoinAddress(string address, double? amount, string label = null, string message = null)
             {
                 this.address = address;
@@ -990,6 +1073,16 @@ namespace QRCoder
             private readonly string subject, description, location, start, end;
             private readonly EventEncoding encoding;
 
+            /// <summary>
+            /// Generates a calender entry/event payload.
+            /// </summary>
+            /// <param name="subject">Subject/title of the calender event</param>
+            /// <param name="description">Description of the event</param>
+            /// <param name="location">Location (lat:long or address) of the event</param>
+            /// <param name="start">Start time of the event</param>
+            /// <param name="end">End time of the event</param>
+            /// <param name="allDayEvent">Is it a full day event?</param>
+            /// <param name="encoding">Type of encoding (universal or iCal)</param>
             public CalendarEvent(string subject, string description, string location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
             {
                 this.subject = subject;
@@ -1064,7 +1157,6 @@ namespace QRCoder
 
             // Note: Issuer:Label must only contain 1 : if either of the Issuer or the Label has a : then it is invalid.
             // Defaults are 6 digits and 30 for Period
-
             private string HMACToString()
             {
                 var sb = new StringBuilder("otpauth://hotp/");
@@ -1190,7 +1282,14 @@ namespace QRCoder
                 { "Table", "table" }
             };
 
-
+            /// <summary>
+            /// Generates a ShadowSocks proxy config payload.
+            /// </summary>
+            /// <param name="hostname">Hostname of the ShadowSocks proxy</param>
+            /// <param name="port">Port of the ShadowSocks proxy</param>
+            /// <param name="password">Password of the SS proxy</param>
+            /// <param name="method">Encryption type</param>
+            /// <param name="tag">Optional tag line</param>
             public ShadowSocksConfig(string hostname, int port, string password, Method method, string tag = null)
             {
                 this.hostname = hostname;
@@ -1267,7 +1366,14 @@ namespace QRCoder
             private readonly string address, txPaymentId, recipientName, txDescription;
             private readonly float? txAmount;
                        
-
+            /// <summary>
+            /// Creates a monero transaction payload
+            /// </summary>
+            /// <param name="address">Receiver's monero address</param>
+            /// <param name="txAmount">Amount to transfer</param>
+            /// <param name="txPaymentId">Payment id</param>
+            /// <param name="recipientName">Receipient's name</param>
+            /// <param name="txDescription">Reference text / payment description</param>
             public MoneroTransaction(string address, float? txAmount = null, string txPaymentId = null, string recipientName = null, string txDescription = null)
             {
                 if (string.IsNullOrEmpty(address))
