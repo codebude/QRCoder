@@ -606,8 +606,14 @@ namespace QRCoder
                         throw new SwissQrCodeContactException("City name must be shorter than 36 chars.");
                     this.city = city;
 
+#if NET40
                     if (!CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(x => new RegionInfo(x.LCID).TwoLetterISORegionName.ToUpper() == country.ToUpper()).Any())
                         throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't.");
+#else
+                    try { var cultureCheck = new CultureInfo(country.ToUpper()); }
+                    catch { throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't."); }
+#endif
+                   
                     this.country = country;
                 }
 
@@ -1783,14 +1789,25 @@ namespace QRCoder
             return inp;
         }
 
+        
+
         public static bool LuhnChecksumMod10(string digits)
         {
+#if NET40
             return digits.All(char.IsDigit) && digits.Reverse()
                 .Select(c => c - 48)
                 .Select((thisNum, i) => i % 2 == 0
                     ? thisNum
                     : ((thisNum *= 2) > 9 ? thisNum - 9 : thisNum)
                 ).Sum() % 10 == 0;
+#else
+            return String40Methods.IsAllDigit(digits) && new List<char>(String40Methods.ReverseString(digits).ToCharArray())
+                .Select(c => c - 48)
+                .Select((thisNum, i) => i % 2 == 0
+                    ? thisNum
+                    : ((thisNum *= 2) > 9 ? thisNum - 9 : thisNum)
+                ).Sum() % 10 == 0;
+#endif
         }
 
         private static bool isHexStyle(string inp)
