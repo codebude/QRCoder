@@ -193,5 +193,6 @@ The PayloadGenerator supports the following types of payloads:
 * Shadowsocks configuration
 * Skype call
 * SMS
+* SwissQrCode (ISO-20022)
 * URL
 * WiFi
