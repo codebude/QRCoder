@@ -467,7 +467,7 @@ namespace QRCoder
                         throw new SwissQrCodeReferenceException("QR-references have to be shorter than 28 chars.");
                     if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !Regex.IsMatch(reference, @"^[^0-9]+$"))
                         throw new SwissQrCodeReferenceException("QR-reference must exist out of digits only.");
-                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !LuhnChecksumMod10(reference))
+                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !ChecksumMod10(reference))
                         throw new SwissQrCodeReferenceException("QR-references is invalid. Checksum error.");
                     if (referenceTextType.Equals(ReferenceTextType.CreditorReferenceIso11649) && reference != null && (reference.Length > 25))
                         throw new SwissQrCodeReferenceException("Creditor references (ISO 11649) have to be shorter than 26 chars.");
@@ -1791,24 +1791,21 @@ namespace QRCoder
 
         
 
-        public static bool LuhnChecksumMod10(string digits)
+        public static bool ChecksumMod10(string digits)
         {
-#if NET40
-            return digits.All(char.IsDigit) && digits.Reverse()
-                .Select(c => c - 48)
-                .Select((thisNum, i) => i % 2 == 0
-                    ? thisNum
-                    : ((thisNum *= 2) > 9 ? thisNum - 9 : thisNum)
-                ).Sum() % 10 == 0;
-#else
-            return String40Methods.IsAllDigit(digits) && new List<char>(String40Methods.ReverseString(digits).ToCharArray())
-                .Select(c => c - 48)
-                .Select((thisNum, i) => i % 2 == 0
-                    ? thisNum
-                    : ((thisNum *= 2) > 9 ? thisNum - 9 : thisNum)
-                ).Sum() % 10 == 0;
-#endif
-        }
+			if (string.IsNullOrEmpty(digits) || digits.Length < 2)
+                return false;
+            int[] mods = new int[] { 0, 9, 4, 6, 8, 2, 7, 1, 3, 5 };
+
+            int remainder = 0;
+            for (int i = 0; i < digits.Length - 1; i++)
+            {
+                var num = Convert.ToInt32(digits[i]) - 48;
+                remainder = mods[(num + remainder) % 10];
+            }
+            var checksum = (10 - remainder) % 10;
+            return remainder == Convert.ToInt32(digits[digits.Length - 1]) - 48;
+		}
 
         private static bool isHexStyle(string inp)
         {
