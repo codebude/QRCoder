@@ -386,14 +386,14 @@ namespace QRCoder
                 return $"bitcoin:{address}{query}";
             }
         }
-
-
+        
         public class SwissQrCode
         {
             //Keep in mind, that the ECC level has to be set to "M" when generating a SwissQrCode!
             //SwissQrCode specification: https://www.paymentstandards.ch/dam/downloads/ig-qr-bill-de.pdf
 
             private readonly string br = "\r\n";
+            private readonly string alternativeProcedure1, alternativeProcedure2;
             private readonly Iban iban;
             private readonly decimal? amount;
             private readonly Contact creditor, ultimateCreditor, debitor;
@@ -401,7 +401,20 @@ namespace QRCoder
             private readonly DateTime? requestedDateOfPayment;
             private readonly Reference reference;
 
-            public SwissQrCode(Iban iban, Currency currency, Contact creditor, Reference reference, Contact debitor = null, decimal? amount = null, DateTime? requestedDateOfPayment = null, Contact ultimateCreditor = null)
+            /// <summary>
+            /// Generates the payload for a SwissQrCode. (Don't forget to use ECC-Level M and set the Swiss flag icon to the final QR code.)
+            /// </summary>
+            /// <param name="iban">IBAN object</param>
+            /// <param name="currency">Currency (either EUR or CHF)</param>
+            /// <param name="creditor">Creditor (payee) information</param>
+            /// <param name="reference">Reference information</param>
+            /// <param name="debitor">Debitor (payer) information</param>
+            /// <param name="amount">Amount</param>
+            /// <param name="requestedDateOfPayment">Requested date of debitor's payment</param>
+            /// <param name="ultimateCreditor">Ultimate creditor information (use only in consultation with your bank!)</param>
+            /// <param name="alternativeProcedure1">Optional command for alternative processing mode - line 1</param>
+            /// <param name="alternativeProcedure2">Optional command for alternative processing mode - line 2</param>
+            public SwissQrCode(Iban iban, Currency currency, Contact creditor, Reference reference, Contact debitor = null, decimal? amount = null, DateTime? requestedDateOfPayment = null, Contact ultimateCreditor = null, string alternativeProcedure1 = null, string alternativeProcedure2 = null)
             {
                 this.iban = iban;
                 
@@ -420,7 +433,12 @@ namespace QRCoder
                     throw new SwissQrCodeException("If QR-IBAN is used, you have to choose \"QRR\" or \"SCOR\" as reference type!");
                 this.reference = reference;
 
-
+                if (alternativeProcedure1 != null && alternativeProcedure1.Length > 100)
+                    throw new SwissQrCodeException("Alternative procedure information block 1 must be shorter than 101 chars.");
+                this.alternativeProcedure1 = alternativeProcedure1;
+                if (alternativeProcedure2 != null && alternativeProcedure2.Length > 100)
+                    throw new SwissQrCodeException("Alternative procedure information block 2 must be shorter than 101 chars.");
+                this.alternativeProcedure2 = alternativeProcedure2;
             }
 
             public class Reference
@@ -429,18 +447,36 @@ namespace QRCoder
                 private readonly string reference, unstructuredMessage;
                 private readonly ReferenceTextType? referenceTextType;
 
+                /// <summary>
+                /// Creates a reference object which must be passed to the SwissQrCode instance
+                /// </summary>
+                /// <param name="referenceType">Type of the reference (QRR, SCOR or NON)</param>
+                /// <param name="reference">Reference text</param>
+                /// <param name="referenceTextType">Type of the reference text (QR-reference or Creditor Reference)</param>
+                /// <param name="unstructuredMessage">Unstructured message</param>
                 public Reference(ReferenceType referenceType, string reference = null, ReferenceTextType? referenceTextType = null, string unstructuredMessage = null)
                 {
                     this.referenceType = referenceType;
+                    this.referenceTextType = referenceTextType;
 
                     if (referenceType.Equals(ReferenceType.NON) && reference != null)
                         throw new SwissQrCodeReferenceException("Reference is only allowed when referenceType not equals \"NON\"");
                     if (!referenceType.Equals(ReferenceType.NON) && reference != null && referenceTextType == null)
                         throw new SwissQrCodeReferenceException("You have to set an ReferenceTextType when using the reference text.");
+                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && (reference.Length > 27))
+                        throw new SwissQrCodeReferenceException("QR-references have to be shorter than 28 chars.");
+                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !Regex.IsMatch(reference, @"^[^0-9]+$"))
+                        throw new SwissQrCodeReferenceException("QR-reference must exist out of digits only.");
+                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !LuhnChecksumMod10(reference))
+                        throw new SwissQrCodeReferenceException("QR-references is invalid. Checksum error.");
+                    if (referenceTextType.Equals(ReferenceTextType.CreditorReferenceIso11649) && reference != null && (reference.Length > 25))
+                        throw new SwissQrCodeReferenceException("Creditor references (ISO 11649) have to be shorter than 26 chars.");
 
                     this.reference = reference;
 
-
+                    if (unstructuredMessage != null && (unstructuredMessage.Length > 140))
+                        throw new SwissQrCodeReferenceException("The unstructured message must be shorter than 141 chars.");
+                    this.unstructuredMessage = unstructuredMessage;
                 }
 
                 public ReferenceType RefType {
@@ -449,12 +485,12 @@ namespace QRCoder
 
                 public string ReferenceText
                 {
-                    get { return reference; }
+                    get { return reference.Replace("\n", ""); }
                 }
 
                 public string UnstructureMessage
                 {
-                    get { return unstructuredMessage; }
+                    get { return unstructuredMessage.Replace("\n", ""); }
                 }
 
                 /// <summary>
@@ -496,6 +532,11 @@ namespace QRCoder
                 private string iban;
                 private IbanType ibanType;
 
+                /// <summary>
+                /// IBAN object with type information
+                /// </summary>
+                /// <param name="iban">IBAN</param>
+                /// <param name="ibanType">Type of IBAN (normal or QR-IBAN)</param>
                 public Iban(string iban, IbanType ibanType)
                 {
                     if (!IsValidIban(iban))
@@ -513,7 +554,7 @@ namespace QRCoder
 
                 public override string ToString()
                 {
-                    return iban;
+                    return iban.Replace("\n", "");
                 }
 
                 public enum IbanType
@@ -572,11 +613,11 @@ namespace QRCoder
 
                 public override string ToString()
                 {
-                    string contactData = name + br; //Name
-                    contactData += (!string.IsNullOrEmpty(street) ? street : string.Empty) + br; //StrtNm
-                    contactData += (!string.IsNullOrEmpty(houseNumber) ? houseNumber : string.Empty) + br; //BldgNb
-                    contactData += zipCode + br; //PstCd
-                    contactData += city + br; //TwnNm
+                    string contactData = name.Replace("\n", "") + br; //Name
+                    contactData += (!string.IsNullOrEmpty(street) ? street.Replace("\n","") : string.Empty) + br; //StrtNm
+                    contactData += (!string.IsNullOrEmpty(houseNumber) ? houseNumber.Replace("\n", "") : string.Empty) + br; //BldgNb
+                    contactData += zipCode.Replace("\n", "") + br; //PstCd
+                    contactData += city.Replace("\n", "") + br; //TwnNm
                     contactData += country + br; //Ctry
                     return contactData;
                 }
@@ -633,9 +674,14 @@ namespace QRCoder
 
                 //RmtInf "logical" element
                 SwissQrCodePayload += reference.RefType.ToString() + br; //Tp
+                SwissQrCodePayload += (!string.IsNullOrEmpty(reference.ReferenceText) ? reference.ReferenceText : string.Empty) + br; //Ref
+                SwissQrCodePayload += (!string.IsNullOrEmpty(reference.UnstructureMessage) ? reference.UnstructureMessage : string.Empty) + br; //Ustrd
 
                 //AltPmtInf "logical" element               
-
+                if (!string.IsNullOrEmpty(alternativeProcedure1))
+                    SwissQrCodePayload += alternativeProcedure1.Replace("\n", "") + br; //AltPmt
+                if (!string.IsNullOrEmpty(alternativeProcedure2))
+                    SwissQrCodePayload += alternativeProcedure2.Replace("\n", "") + br; //AltPmt
 
 
                 return SwissQrCodePayload;
@@ -670,10 +716,7 @@ namespace QRCoder
                 }
             }
         }
-
-
-
-
+        
         public class Girocode
         {
             //Keep in mind, that the ECC level has to be set to "M" when generating a Girocode!
@@ -1738,6 +1781,16 @@ namespace QRCoder
                 inp = inp.Replace(c.ToString(), "\\" + c);
             }
             return inp;
+        }
+
+        public static bool LuhnChecksumMod10(string digits)
+        {
+            return digits.All(char.IsDigit) && digits.Reverse()
+                .Select(c => c - 48)
+                .Select((thisNum, i) => i % 2 == 0
+                    ? thisNum
+                    : ((thisNum *= 2) > 9 ? thisNum - 9 : thisNum)
+                ).Sum() % 10 == 0;
         }
 
         private static bool isHexStyle(string inp)
