@@ -554,7 +554,7 @@ namespace QRCoder
 
                 public override string ToString()
                 {
-                    return iban.Replace("\n", "");
+                    return iban.Replace("\n", "").Replace(" ","");
                 }
 
                 public enum IbanType
