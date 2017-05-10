@@ -465,7 +465,7 @@ namespace QRCoder
                         throw new SwissQrCodeReferenceException("You have to set an ReferenceTextType when using the reference text.");
                     if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && (reference.Length > 27))
                         throw new SwissQrCodeReferenceException("QR-references have to be shorter than 28 chars.");
-                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !Regex.IsMatch(reference, @"^[^0-9]+$"))
+                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !Regex.IsMatch(reference, @"^[0-9]+$"))
                         throw new SwissQrCodeReferenceException("QR-reference must exist out of digits only.");
                     if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !ChecksumMod10(reference))
                         throw new SwissQrCodeReferenceException("QR-references is invalid. Checksum error.");
@@ -485,12 +485,12 @@ namespace QRCoder
 
                 public string ReferenceText
                 {
-                    get { return reference.Replace("\n", ""); }
+                    get { return !string.IsNullOrEmpty(reference) ? reference.Replace("\n", "") : null; }
                 }
 
                 public string UnstructureMessage
                 {
-                    get { return unstructuredMessage.Replace("\n", ""); }
+                    get { return !string.IsNullOrEmpty(unstructuredMessage) ? unstructuredMessage.Replace("\n", "") : null; }
                 }
 
                 /// <summary>
@@ -1804,7 +1804,7 @@ namespace QRCoder
                 remainder = mods[(num + remainder) % 10];
             }
             var checksum = (10 - remainder) % 10;
-            return remainder == Convert.ToInt32(digits[digits.Length - 1]) - 48;
+            return checksum == Convert.ToInt32(digits[digits.Length - 1]) - 48;
 		}
 
         private static bool isHexStyle(string inp)
