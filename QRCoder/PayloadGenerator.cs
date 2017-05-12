@@ -540,9 +540,9 @@ namespace QRCoder
                 public Iban(string iban, IbanType ibanType)
                 {
                     if (!IsValidIban(iban))
-                        throw new SwissQrCodeException("The IBAN entered isn't valid.");
+                        throw new SwissQrCodeIbanException("The IBAN entered isn't valid.");
                     if (!iban.StartsWith("CH") && !iban.StartsWith("LI"))
-                        throw new SwissQrCodeException("The IBAN must start with \"CH\" or \"LI\".");
+                        throw new SwissQrCodeIbanException("The IBAN must start with \"CH\" or \"LI\".");
                     this.iban = iban;
                     this.ibanType = ibanType;
                 }
@@ -561,6 +561,23 @@ namespace QRCoder
                 {
                     Iban,
                     QrIban
+                }
+
+                public class SwissQrCodeIbanException : Exception
+                {
+                    public SwissQrCodeIbanException()
+                    {
+                    }
+
+                    public SwissQrCodeIbanException(string message)
+                        : base(message)
+                    {
+                    }
+
+                    public SwissQrCodeIbanException(string message, Exception inner)
+                        : base(message, inner)
+                    {
+                    }
                 }
             }
 
@@ -664,7 +681,7 @@ namespace QRCoder
                 if (ultimateCreditor != null)
                     SwissQrCodePayload += ultimateCreditor.ToString();
                 else
-                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6));
+                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6).ToArray());
                 
                 //CcyAmtDate "logical" element
                 SwissQrCodePayload += (amount != null ? $"{amount:0.00}" : string.Empty) + br; //Amt
@@ -675,7 +692,7 @@ namespace QRCoder
                 if (debitor != null)
                     SwissQrCodePayload += debitor.ToString();
                 else
-                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6));
+                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6).ToArray());
 
 
                 //RmtInf "logical" element
@@ -1754,12 +1771,12 @@ namespace QRCoder
 
         private static bool IsValidIban(string iban)
         {
-            return Regex.IsMatch(iban.Replace(" ", ""), @"[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}");
+            return Regex.IsMatch(iban.Replace(" ", ""), @"^[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}$");
         }
 
         private static bool IsValidBic(string bic)
         {
-            return Regex.IsMatch(bic.Replace(" ", ""), @"([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)");
+            return Regex.IsMatch(bic.Replace(" ", ""), @"^([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)$");
         }
 
         private static string ConvertStringToEncoding(string message, string encoding)
