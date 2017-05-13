@@ -301,7 +301,7 @@ namespace QRCoder
             private readonly string url;
 
             /// <summary>
-            /// Generates a link. If not given, http/https protocol will be added
+            /// Generates a link. If not given, http/https protocol will be added.
             /// </summary>
             /// <param name="url">Link url target</param>
             public Url(string url)
@@ -314,6 +314,27 @@ namespace QRCoder
                 return (!this.url.StartsWith("http") ? "http://" + this.url : this.url);
             }
         }
+
+
+        public class WhatsAppMessage
+        {
+            private readonly string message;
+
+            /// <summary>
+            /// Let's you compose a WhatApp message. When scanned the user is asked to choose a contact who will receive the message.
+            /// </summary>
+            /// <param name="message">The message</param>
+            public WhatsAppMessage(string message)
+            {
+                this.message = message;
+            }
+
+            public override string ToString()
+            {
+                return ($"whatsapp://send?text={Uri.EscapeDataString(message)}");
+            }
+        }
+
 
         public class Bookmark
         {

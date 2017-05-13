@@ -1152,7 +1152,6 @@ namespace QRCoderTests
             var account = "001194700";
             var bnc = "100205000";
             var name = "Wikimedia Fördergesellschaft";
-            var amount = 10.00m;
 
             var generator = new PayloadGenerator.BezahlCode(AuthorityType.contact, name, account: account, bnc: bnc);
 
@@ -2378,6 +2377,19 @@ namespace QRCoderTests
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>(exception);
             exception.Message.ShouldBe("Value of 'port' must be within 0 and 65535.");
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/WhatsAppMessage")]
+        public void whatsapp_generator_can_generate_payload_simple()
+        {
+            var msg = "This is a sample message with Umlauts: Ä,ö, ü and ß.";
+            var generator = new PayloadGenerator.WhatsAppMessage(msg);
+
+            generator
+                .ToString()
+                .ShouldBe("whatsapp://send?text=This%20is%20a%20sample%20message%20with%20Umlauts%3A%20%C3%84%2C%C3%B6%2C%20%C3%BC%20and%20%C3%9F.");
         }
 
 
