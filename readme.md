@@ -78,7 +78,7 @@ Besides the normal QRCode class (which is shown in the example above) for creati
 
 *(&ast;) - Those classes are only available in the .NET Framework version. If you use the PCL version (e.g. for Universal apps), you have to use BitmapByteQRCode.*
 
-For more information about the different rendering types click on one of the types in the list above or have a look at: [Wiki: Advanced usage - QR-Code renderers] (https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
+For more information about the different rendering types click on one of the types in the list above or have a look at: [Wiki: Advanced usage - QR-Code renderers](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
 
 ## PayloadGenerator.cs - Generate QR code payloads
 
