@@ -104,6 +104,7 @@ The PayloadGenerator supports the following types of payloads:
 * Bitcoin Payment Address
 * Bookmark
 * Calendar events (iCal/vEvent)
+* ContactData (MeCard/vCard)
 * Geolocation
 * Girocode
 * Mail
