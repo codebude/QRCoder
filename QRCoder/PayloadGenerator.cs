@@ -470,17 +470,7 @@ namespace QRCoder
                             payload += $"TYPE=home,voice;VALUE=uri:tel:{phone}";
                         payload += "\r\n";
                     }
-                    if (!string.IsNullOrEmpty(workPhone))
-                    {
-                        payload += $"TEL;";
-                        if (outputType.Equals(ContactOutputType.VCard21))
-                            payload += $"WORK;VOICE:{workPhone}";
-                        else if (outputType.Equals(ContactOutputType.VCard3))
-                            payload += $"TYPE=WORK,VOICE:{workPhone}";
-                        else
-                            payload += $"TYPE=work,voice;VALUE=uri:tel:{workPhone}";
-                        payload += "\r\n";
-                    }
+
                     if (!string.IsNullOrEmpty(mobilePhone))
                     {
                         payload += $"TEL;";
@@ -492,6 +482,19 @@ namespace QRCoder
                             payload += $"TYPE=home,cell;VALUE=uri:tel:{mobilePhone}";
                         payload += "\r\n";
                     }
+
+                    if (!string.IsNullOrEmpty(workPhone))
+                    {
+                        payload += $"TEL;";
+                        if (outputType.Equals(ContactOutputType.VCard21))
+                            payload += $"WORK;VOICE:{workPhone}";
+                        else if (outputType.Equals(ContactOutputType.VCard3))
+                            payload += $"TYPE=WORK,VOICE:{workPhone}";
+                        else
+                            payload += $"TYPE=work,voice;VALUE=uri:tel:{workPhone}";
+                        payload += "\r\n";
+                    }
+                
 
                     payload += "ADR;";
                     if (outputType.Equals(ContactOutputType.VCard21))
