@@ -110,6 +110,7 @@ The PayloadGenerator supports the following types of payloads:
 * Mail
 * MMS
 * Monero address/payment
+* One-Time-Password
 * Phonenumber
 * Shadowsocks configuration
 * Skype call
