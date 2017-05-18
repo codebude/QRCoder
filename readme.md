@@ -101,22 +101,22 @@ You can learn more about the payload generator [in our Wiki](https://github.com/
 
 The PayloadGenerator supports the following types of payloads:
 
-* BezahlCode
-* Bitcoin Payment Address
-* Bookmark
-* Calendar events (iCal/vEvent)
-* ContactData (MeCard/vCard)
-* Geolocation
-* Girocode
-* Mail
-* MMS
-* Monero address/payment
-* One-Time-Password
-* Phonenumber
-* Shadowsocks configuration
-* Skype call
-* SMS
-* SwissQrCode (ISO-20022)
-* URL
-* WhatsAppMessage
-* WiFi
+* [BezahlCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#31-bezahlcode)
+* [Bitcoin Payment Address](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-payment-address)
+* [Bookmark](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#33-bookmark)
+* [Calendar events (iCal/vEvent)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#34-calendar-events-icalvevent)
+* [ContactData (MeCard/vCard)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#35-contactdata-mecardvcard)
+* [Geolocation](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#36-geolocation)
+* [Girocode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#37-girocode)
+* [Mail](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#38-mail)
+* [MMS](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#39-mms)
+* [Monero address/payment](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#310-monero-addresspayment)
+* [One-Time-Password](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#311-one-time-password)
+* [Phonenumber](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#312-phonenumber)
+* [Shadowsocks configuration](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#313-shadowsocks-configuration)
+* [Skype call](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#314-skype-call)
+* [SMS](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#315-sms)
+* [SwissQrCode (ISO-20022)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#316-swissqrcode-iso-20022)
+* [URL](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#317-url)
+* [WhatsAppMessage](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#318-whatsappmessage)
+* [WiFi](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#319-wifi)
