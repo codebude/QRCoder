@@ -11,13 +11,22 @@ namespace QRCoder
     {
         public BitmapByteQRCode(QRCodeData data) : base(data) { }
 
-
         public override byte[] GetGraphic(int pixelsPerModule)
+        {
+            return GetGraphic(pixelsPerModule, new byte[] { 0x00, 0x00, 0x00 }, new byte[] { 0xFF, 0xFF, 0xFF });
+        }
+
+        public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex)
+        {
+            return GetGraphic(pixelsPerModule, HexColorToByteArray(darkColorHtmlHex), HexColorToByteArray(lightColorHtmlHex));
+        }
+
+        public byte[] GetGraphic(int pixelsPerModule, byte[] darkColorRgb, byte[] lightColorRgb)
         {
             var sideLength = this.QrCodeData.ModuleMatrix.Count * pixelsPerModule;
            
-            var moduleDark = new byte[] {0x00, 0x00, 0x00};
-            var moduleLight = new byte[] { 0xFF, 0xFF, 0xFF};
+            var moduleDark = darkColorRgb.Reverse();
+            var moduleLight = lightColorRgb.Reverse();
 
             List<byte> bmp = new List<byte>();
 
@@ -61,6 +70,17 @@ namespace QRCoder
 
             return bmp.ToArray();
         }
+
+        private byte[] HexColorToByteArray(string colorString)
+        {
+            if (colorString.StartsWith("#"))
+                colorString = colorString.Substring(1);
+            byte[] byteColor = new byte[colorString.Length / 2];
+            for (int i = 0; i < byteColor.Length; i++)
+                byteColor[2-i] = byte.Parse(colorString.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);            
+            return byteColor;
+        }
+
         private byte[] IntTo4Byte(int inp)
         {
             byte[] bytes = new byte[2];
