@@ -883,7 +883,7 @@ namespace QRCoder
                 
                 //CcyAmtDate "logical" element
                 SwissQrCodePayload += (amount != null ? $"{amount:0.00}" : string.Empty) + br; //Amt
-                SwissQrCodePayload += (int)currency + br; //Ccy
+                SwissQrCodePayload += currency + br; //Ccy
                 SwissQrCodePayload += (requestedDateOfPayment != null ?  ((DateTime)requestedDateOfPayment).ToString("yyyy-MM-dd") : string.Empty) + br; //ReqdExctnDt
 
                 //UltmtDbtr "logical" element

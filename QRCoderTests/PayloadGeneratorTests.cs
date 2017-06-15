@@ -2159,13 +2159,13 @@ namespace QRCoderTests
             var creditor = new PayloadGenerator.SwissQrCode.Contact("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
             var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
             var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR, "990005000000000320071012303", ReferenceTextType.QrReference);
-            var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+            var currency = PayloadGenerator.SwissQrCode.Currency.EUR;
 
             var generator = new PayloadGenerator.SwissQrCode(iban, currency, creditor, reference);
 
             generator
                 .ToString()
-                .ShouldBe("SPC\r\n0100\r\n1\r\nCH2609000000857666015\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n756\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nQRR\r\n990005000000000320071012303\r\n\r\n");
+                .ShouldBe("SPC\r\n0100\r\n1\r\nCH2609000000857666015\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nEUR\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nQRR\r\n990005000000000320071012303\r\n\r\n");
         }
 
         [Fact]
@@ -2183,7 +2183,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("SPC\r\n0100\r\n1\r\nCH2609000000857666015\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n100,25\r\n756\r\n2017-03-01\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nQRR\r\n990005000000000320071012303\r\n\r\n");
+                .ShouldBe("SPC\r\n0100\r\n1\r\nCH2609000000857666015\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n100,25\r\nCHF\r\n2017-03-01\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nQRR\r\n990005000000000320071012303\r\n\r\n");
         }
 
 
@@ -2202,7 +2202,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("SPC\r\n0100\r\n1\r\nCH2609000000857666015\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n100,25\r\n756\r\n2017-03-01\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nQRR\r\n990005000000000320071012303\r\n\r\nalt1\r\nalt2\r\n");
+                .ShouldBe("SPC\r\n0100\r\n1\r\nCH2609000000857666015\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n100,25\r\nCHF\r\n2017-03-01\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nQRR\r\n990005000000000320071012303\r\n\r\nalt1\r\nalt2\r\n");
         }
 
         [Fact]
