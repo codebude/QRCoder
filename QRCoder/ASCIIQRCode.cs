@@ -25,18 +25,23 @@ namespace QRCoder
         {
             return String.Join(endOfLine, GetLineByLineGraphic(characterPerModule, darkColorString, whiteSpaceString));
         }
+
         /// <summary>
         /// Returns an array of strings that contain each line of the resulting QR code
         /// </summary>
-        /// <param name="characterPerModule">number of characters per module.</param>
-        /// <param name="darkColorString">string or character for use as dark color bits</param>
-        /// <param name="whiteSpaceString">string or character for use as white space bits</param>
+        /// <param name="repeatPerModule">number of repeated string or character per module.</param>
+        /// <param name="darkColorString">string or character for use as dark color bits. In case of string make sure whiteSpaceString has the same length</param>
+        /// <param name="whiteSpaceString">string or character for use as white space bits. In case of string make sure darkColorString has the same length</param>
         /// <returns></returns>
-        public string[] GetLineByLineGraphic(int characterPerModule, string darkColorString, string whiteSpaceString)
+        public string[] GetLineByLineGraphic(int repeatPerModule, string darkColorString, string whiteSpaceString)
         {
             var qrCode = new List<string>();
-            var sideLength = QrCodeData.ModuleMatrix.Count * characterPerModule;
-
+            //We need to adjust the repeatPerModule based on number of characters in darkColorString 
+            //(we assume whiteSpaceString has the same number of characters) 
+            //to keep the QR code as square as possible.
+            var adjustmentValueForNumberOfCharacters = darkColorString.Length / 2 != 1 ? darkColorString.Length / 2 : 0;
+            var verticalNumberOfRepeats = repeatPerModule + adjustmentValueForNumberOfCharacters;
+            var sideLength = QrCodeData.ModuleMatrix.Count * verticalNumberOfRepeats;
             for (var y = 0; y < sideLength; y++)
             {
                 bool emptyLine = true;
@@ -44,9 +49,9 @@ namespace QRCoder
 
                 for (var x = 0; x < QrCodeData.ModuleMatrix.Count; x++)
                 {
-                    var module = QrCodeData.ModuleMatrix[x][(y + characterPerModule) / characterPerModule - 1];
+                    var module = QrCodeData.ModuleMatrix[x][(y + verticalNumberOfRepeats) / verticalNumberOfRepeats - 1];
 
-                    for (var i = 0; i < characterPerModule; i++)
+                    for (var i = 0; i < repeatPerModule; i++)
                     {
                         lineBuilder.Append(module ? darkColorString : whiteSpaceString);
                     }
