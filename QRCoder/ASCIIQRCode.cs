@@ -1,37 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using UnityEngine;
 
 namespace QRCoder
 {
-    public class ASCIIQRCode : AbstractQRCode<String>, IDisposable
+    public class AsciiQRCode : AbstractQRCode<string>, IDisposable
     {
-        public ASCIIQRCode(QRCodeData data) : base(data) { }
-
-        public override string GetGraphic(int characterPerModule)
-        {
-
-            return String.Join("\n", GetLineByLineGraphic(characterPerModule));
-        }
-
-        public string[] GetLineByLineGraphic(int characterPerModule)
-        {
-            return GetLineByLineGraphic(characterPerModule, "██", "  ");
-        }
-
-        public string GetGraphic(int characterPerModule, string darkColorString, string whiteSpaceString, string endOfLine = "\n")
-        {
-            return String.Join(endOfLine, GetLineByLineGraphic(characterPerModule, darkColorString, whiteSpaceString));
-        }
+        public AsciiQRCode(QRCodeData data) : base(data) { }
 
         /// <summary>
-        /// Returns an array of strings that contain each line of the resulting QR code
+        /// Returns a strings that contains the resulting QR code as ASCII chars.
         /// </summary>
-        /// <param name="repeatPerModule">number of repeated string or character per module.</param>
-        /// <param name="darkColorString">string or character for use as dark color bits. In case of string make sure whiteSpaceString has the same length</param>
-        /// <param name="whiteSpaceString">string or character for use as white space bits. In case of string make sure darkColorString has the same length</param>
+        /// <param name="repeatPerModule">Number of repeated darkColorString/whiteSpaceString per module.</param>
+        /// <returns></returns>
+        public override string GetGraphic(int repeatPerModule)
+        {
+            return string.Join("\n", GetLineByLineGraphic(repeatPerModule));
+        }
+                
+
+        /// <summary>
+        /// Returns a strings that contains the resulting QR code as ASCII chars.
+        /// </summary>
+        /// <param name="repeatPerModule">Number of repeated darkColorString/whiteSpaceString per module.</param>
+        /// <param name="darkColorString">String for use as dark color modules. In case of string make sure whiteSpaceString has the same length.</param>
+        /// <param name="whiteSpaceString">String for use as white modules (whitespace). In case of string make sure darkColorString has the same length.</param>
+        /// <param name="endOfLine">End of line separator. (Default: \n)</param>
+        /// <returns></returns>
+        public string GetGraphic(int repeatPerModule, string darkColorString, string whiteSpaceString, string endOfLine = "\n")
+        {
+            return string.Join(endOfLine, GetLineByLineGraphic(repeatPerModule, darkColorString, whiteSpaceString));
+        }
+
+
+        /// <summary>
+        /// Returns an array of strings that contains each line of the resulting QR code as ASCII chars.
+        /// </summary>
+        /// <param name="repeatPerModule">Number of repeated darkColorString/whiteSpaceString per module.</param>
+        /// <returns></returns>
+        public string[] GetLineByLineGraphic(int repeatPerModule)
+        {
+            return GetLineByLineGraphic(repeatPerModule, "██", "  ");
+        }
+
+
+        /// <summary>
+        /// Returns an array of strings that contains each line of the resulting QR code as ASCII chars.
+        /// </summary>
+        /// <param name="repeatPerModule">Number of repeated darkColorString/whiteSpaceString per module.</param>
+        /// <param name="darkColorString">String for use as dark color modules. In case of string make sure whiteSpaceString has the same length.</param>
+        /// <param name="whiteSpaceString">String for use as white modules (whitespace). In case of string make sure darkColorString has the same length.</param>
         /// <returns></returns>
         public string[] GetLineByLineGraphic(int repeatPerModule, string darkColorString, string whiteSpaceString)
         {
