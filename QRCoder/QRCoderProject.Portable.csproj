@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractQRCode.cs" />
+    <Compile Include="AsciiQRCode.cs" />
     <Compile Include="BitmapByteQRCode.cs" />
     <Compile Include="Framework4.0Methods\String4Methods.cs" />
     <Compile Include="PayloadGenerator.cs" />
