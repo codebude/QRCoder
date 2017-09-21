@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NETSTANDARD2_0
+using System.DrawingCore;
+using System.DrawingCore.Imaging;
+#else
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+#endif
 using System.IO;
 using System.Linq;
 using System.Text;

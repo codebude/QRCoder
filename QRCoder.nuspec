@@ -20,11 +20,37 @@
 	<file src="Build\lib\net35\UnityEngine.dll" target="lib\net35\" />
 	<file src="Build\lib\net40\QRCoder.dll" target="lib\net40\" />
 	<file src="Build\lib\net40\UnityEngine.dll" target="lib\net40\" />
-	<file src="Build\lib\netcore\QRCoder.dll" target="lib\portable-net45+netcore45+wpa81+wp81+wp8+uap\" />
-	<file src="Build\lib\netcore\QRCoder.dll" target="lib\uap10.0\" />
-	<file src="Build\lib\netcore\QRCoder.dll" target="lib\netstandard1.6\" />
+	<file src="Build\lib\netcore\QRCoder.dll" target="lib\portable-net45+wpa81+wp81+wp8+uap\" />
+	<file src="Build\lib\netcore\QRCoder.dll" target="lib\uap10.0\" />	
 	<file src="Build\lib\netcore\QRCoder.dll" target="lib\monotouch\" />
 	<file src="Build\lib\netcore\QRCoder.dll" target="lib\monoandroid\" />
 	<file src="Build\lib\netcore\QRCoder.dll" target="lib\xamarinios\" />
+	<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard1.0\" />
+	<file src="Build\lib\net35\UnityEngine.dll" target="lib\netstandard1.0\" />
+	<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard1.1\" />
+	<file src="Build\lib\net35\UnityEngine.dll" target="lib\netstandard1.1\" />
+	<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard1.6\" />
+	<file src="Build\lib\net35\UnityEngine.dll" target="lib\netstandard1.6\" />
+	<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard2.0\" />
+	<file src="Build\lib\net35\UnityEngine.dll" target="lib\netstandard2.0\" />
+	<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netcore\" />
+	<file src="Build\lib\net35\UnityEngine.dll" target="lib\netcore\" />
   </files>
+  <dependencies>
+    <group targetFramework="netstandard1.0">
+        <dependency id="ZKWeb.System.Drawing" version="4.0.0" />
+    </group>	
+	<group targetFramework="netstandard1.1">
+        <dependency id="ZKWeb.System.Drawing" version="4.0.0" />
+    </group>
+	<group targetFramework="netstandard1.6">
+        <dependency id="ZKWeb.System.Drawing" version="4.0.0" />
+    </group>
+	<group targetFramework="netstandard2.0">
+        <dependency id="ZKWeb.System.Drawing" version="4.0.0" />
+    </group>
+	<group targetFramework="netcore">
+        <dependency id="ZKWeb.System.Drawing" version="4.0.0" />
+    </group>
+   </dependencies>
 </package>

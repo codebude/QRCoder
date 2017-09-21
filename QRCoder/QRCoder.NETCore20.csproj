@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <NoWarn />
+  </PropertyGroup>
+
+  <PropertyGroup>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<PackageId>QRCoder.NET</PackageId>
+	<Authors>QRCoder.NET</Authors>
+	<AssemblyName>QRCoder</AssemblyName>
+	<RootNamespace>QRCoder</RootNamespace>
+  </PropertyGroup> 
+  
+  <ItemGroup>
+    <PackageReference Include="ZKWeb.System.Drawing" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>UnityEngine.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
