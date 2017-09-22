@@ -43,23 +43,26 @@ namespace QRCoder
         public string GetGraphic(Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true)
         {
             var svgFile = new StringBuilder(@"<svg version=""1.1"" baseProfile=""full"" width="""+viewBox.Width+ @""" height="""+viewBox.Height+ @""" xmlns=""http://www.w3.org/2000/svg"">");
-            var unitsPerModule = (int)Math.Floor(Convert.ToDouble(Math.Min(viewBox.Width, viewBox.Height)) / this.QrCodeData.ModuleMatrix.Count);
-            var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * unitsPerModule;
-            var offset = drawQuietZones ? 0 : 4 * unitsPerModule;
-            var drawableSize = size + offset;
+            var drawableModulesCount = this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
+            var unitsPerModule = (int)Math.Floor(Convert.ToDouble(Math.Min(viewBox.Width, viewBox.Height)) / drawableModulesCount);            
+            var offset = drawQuietZones ? 4 * unitsPerModule : 0;
+            var offsetModules = drawQuietZones ? 0 : 4;
+            var qrSize = unitsPerModule * drawableModulesCount;
 
-            svgFile.AppendLine(@"<rect x=""" + (0 - offset) + @""" y=""" + (0 - offset) + @""" width=""" + (viewBox.Width - offset) + @""" height=""" + (viewBox.Height - offset) + @""" fill=""" + lightColorHex + @""" />");
-
-            for (var x = 0; x < drawableSize; x = x + unitsPerModule)
+            svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{qrSize}"" height=""{qrSize}"" fill=""" + lightColorHex + @""" />");
+            int xi = 0, yi = 0;
+            for (var x = 0; x < qrSize; x = x + unitsPerModule)
             {
-                for (var y = 0; y < drawableSize; y = y + unitsPerModule)
+                yi = 0;
+                for (var y = 0; y < qrSize; y = y + unitsPerModule)
                 {
-                    var module = this.QrCodeData.ModuleMatrix[(y + unitsPerModule) / unitsPerModule - 1][(x + unitsPerModule) / unitsPerModule - 1];
-                    if (module)
+                    if (this.QrCodeData.ModuleMatrix[yi + offsetModules][xi + offsetModules])
                     {
-                        svgFile.AppendLine(@"<rect x=""" + (x - offset) + @""" y=""" + (y - offset) + @""" width=""" + unitsPerModule + @""" height=""" + unitsPerModule + @""" fill=""" + (module ? darkColorHex : lightColorHex) + @""" />");
+                        svgFile.AppendLine($@"<rect x=""{x}"" y=""{y}"" width=""{unitsPerModule}"" height=""{unitsPerModule}"" fill=""{darkColorHex}"" />");
                     }
+                    yi++;
                 }
+                xi++;
             }
             svgFile.Append(@"</svg>");
             return svgFile.ToString();
