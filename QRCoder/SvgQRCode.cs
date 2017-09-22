@@ -73,7 +73,7 @@ namespace QRCoder
         private string CleanSvgVal(double input)
         {
             //Clean double values for international use/formats
-            return input.ToString().Replace(",", ".");
+            return input.ToString(System.Globalization.CultureInfo.InvariantCulture);
         }
 
         public void Dispose()
