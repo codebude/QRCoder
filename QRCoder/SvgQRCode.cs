@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Text;
 
 namespace QRCoder
@@ -54,8 +55,8 @@ namespace QRCoder
                     var module = this.QrCodeData.ModuleMatrix[y][x];
                     if (module)
                     {
-                        svgFile.AppendLine($"<rect x=\"{(x - matrixOffset) * unitsPerModule}\" y=\"{(y - matrixOffset) * unitsPerModule}\" width=\"{unitsPerModule}\" height=\"{unitsPerModule}\" fill=\"{foregroundColorHex}\" />");
-                    }
+						svgFile.AppendLine($"<rect x=\"{Convert.ToString((x - matrixOffset) * unitsPerModule, CultureInfo.InvariantCulture)}\" y=\"{Convert.ToString((y - matrixOffset) * unitsPerModule, CultureInfo.InvariantCulture)}\" width=\"{Convert.ToString(unitsPerModule, CultureInfo.InvariantCulture)}\" height=\"{Convert.ToString(unitsPerModule, CultureInfo.InvariantCulture)}\" fill=\"{foregroundColorHex}\" />");
+					}
                 }
             }
             svgFile.Append("</svg>");
