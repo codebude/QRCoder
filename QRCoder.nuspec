@@ -27,9 +27,6 @@
 			<group targetFramework="netstandard2.0">
 				<dependency id="ZKWeb.System.Drawing" version="4.0.0" />
 			</group>
-			<group targetFramework="netcore">
-				<dependency id="ZKWeb.System.Drawing" version="4.0.0" />
-			</group>
 		</dependencies>
 	</metadata>
 	<files>
