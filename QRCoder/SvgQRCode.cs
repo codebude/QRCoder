@@ -42,23 +42,25 @@ namespace QRCoder
 
         public string GetGraphic(Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true)
         {
-            var svgFile = new StringBuilder(@"<svg version=""1.1"" baseProfile=""full"" width="""+viewBox.Width+ @""" height="""+viewBox.Height+ @""" xmlns=""http://www.w3.org/2000/svg"">");
+            var svgFile = new StringBuilder(@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" width=""" +viewBox.Width+ @""" height="""+viewBox.Height+ @""" xmlns=""http://www.w3.org/2000/svg"">");
             var drawableModulesCount = this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
-            var unitsPerModule = (int)Math.Floor(Convert.ToDouble(Math.Min(viewBox.Width, viewBox.Height)) / drawableModulesCount);            
+            var unitsPerModule = Math.Round(Convert.ToDouble(Math.Min(viewBox.Width, viewBox.Height)) / drawableModulesCount,4);
+            if (unitsPerModule * drawableModulesCount > viewBox.Width)
+                unitsPerModule -= 0.0001;            
             var offset = drawQuietZones ? 4 * unitsPerModule : 0;
             var offsetModules = drawQuietZones ? 0 : 4;
             var qrSize = unitsPerModule * drawableModulesCount;
 
-            svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{qrSize}"" height=""{qrSize}"" fill=""" + lightColorHex + @""" />");
+            svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{CleanSvgVal(qrSize)}"" height=""{CleanSvgVal(qrSize)}"" fill=""" + lightColorHex + @""" />");
             int xi = 0, yi = 0;
-            for (var x = 0; x < qrSize; x = x + unitsPerModule)
+            for (var x = 0d; x < qrSize; x = x + unitsPerModule)
             {
                 yi = 0;
-                for (var y = 0; y < qrSize; y = y + unitsPerModule)
+                for (var y = 0d; y < qrSize; y = y + unitsPerModule)
                 {
                     if (this.QrCodeData.ModuleMatrix[yi + offsetModules][xi + offsetModules])
                     {
-                        svgFile.AppendLine($@"<rect x=""{x}"" y=""{y}"" width=""{unitsPerModule}"" height=""{unitsPerModule}"" fill=""{darkColorHex}"" />");
+                        svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(unitsPerModule)}"" height=""{CleanSvgVal(unitsPerModule)}"" fill=""{darkColorHex}"" />");
                     }
                     yi++;
                 }
@@ -66,6 +68,12 @@ namespace QRCoder
             }
             svgFile.Append(@"</svg>");
             return svgFile.ToString();
+        }
+
+        private string CleanSvgVal(double input)
+        {
+            //Clean double values for international use/formats
+            return input.ToString().Replace(",", ".");
         }
 
         public void Dispose()
