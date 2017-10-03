@@ -34,7 +34,7 @@ namespace QRCoder
 
         public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false)
         {
-            var encoding = this.GetEncodingFromPlaintext(plainText);
+            var encoding = this.GetEncodingFromPlaintext(plainText, forceUtf8);
             var codedText = this.PlainTextToBinary(plainText, encoding, utf8BOM, forceUtf8);
             var dataInputLength = this.GetDataLength(encoding, plainText, codedText, forceUtf8);
             var version = this.GetVersion(dataInputLength, encoding, eccLevel);
@@ -731,9 +731,12 @@ namespace QRCoder
             return version;
         }
 
-        private EncodingMode GetEncodingFromPlaintext(string plainText)
+        private EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
         {
             EncodingMode result = EncodingMode.Numeric;
+
+            if (forceUtf8)
+                return EncodingMode.Byte;
 
             foreach (char c in plainText)
             {
