@@ -39,25 +39,44 @@ namespace QRCoderDemoUWP
         {
             if (comboBoxECC.SelectedItem != null)
             {
+                //Create generator
                 string level = comboBoxECC.SelectedItem.ToString();
                 QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
 
+                //Create raw qr code data
                 QRCodeGenerator qrGenerator = new QRCodeGenerator();
                 QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", eccLevel);
-                BitmapByteQRCode qrCode = new BitmapByteQRCode(qrCodeData);
-                byte[] qrCodeImage = qrCode.GetGraphic(20);
 
+                //Create byte/raw bitmap qr code
+                BitmapByteQRCode qrCodeBmp = new BitmapByteQRCode(qrCodeData);
+                byte[] qrCodeImageBmp = qrCodeBmp.GetGraphic(20, new byte[] { 118, 126, 152 },new byte[] { 144, 201, 111 });
                 using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
                 {
                     using (DataWriter writer = new DataWriter(stream.GetOutputStreamAt(0)))
                     {
-                        writer.WriteBytes(qrCodeImage);
+                        writer.WriteBytes(qrCodeImageBmp);
                         await writer.StoreAsync();
                     }
                     var image = new BitmapImage();
                     await image.SetSourceAsync(stream);
 
-                    imageViewer.Source = image;
+                    imageViewerBmp.Source = image;                    
+                }
+
+                //Create byte/raw png qr code
+                PngByteQRCode qrCodePng = new PngByteQRCode(qrCodeData);
+                byte[] qrCodeImagePng = qrCodePng.GetGraphic(20, new byte[] { 144, 201, 111 }, new byte[] { 118, 126, 152 });
+                using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
+                {
+                    using (DataWriter writer = new DataWriter(stream.GetOutputStreamAt(0)))
+                    {
+                        writer.WriteBytes(qrCodeImagePng);
+                        await writer.StoreAsync();
+                    }
+                    var image = new BitmapImage();
+                    await image.SetSourceAsync(stream);
+
+                    imageViewerPng.Source = image;
                 }
             }
         }
