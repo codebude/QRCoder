@@ -233,8 +233,11 @@ namespace QRCoder
 
                     // Compressed data.
                     idatStream.Position = 0;
+#if NET35
+                    idatStream.WriteTo(this.stream);
+#else
                     idatStream.CopyTo(this.stream);
-
+#endif
                     // Deflate checksum.
                     var adler = Adler32(scanlines, 0, scanlines.Length);
                     this.WriteIntBigEndian(adler);
@@ -275,7 +278,7 @@ namespace QRCoder
 
             private static void Deflate(Stream output, byte[] bytes)
             {
-                using (var deflateStream = new DeflateStream(output, CompressionLevel.Optimal, leaveOpen: true))
+                using (var deflateStream = new DeflateStream(output, CompressionMode.Compress, leaveOpen: true))
                 {
                     deflateStream.Write(bytes, 0, bytes.Length);
                 }
