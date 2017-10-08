@@ -73,11 +73,12 @@ Besides the normal QRCode class (which is shown in the example above) for creati
 * [AsciiQRCode<sup></sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail)
 * [Base64QRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail)
 * [BitmapByteQRCode<sup></sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail)
-* [SvgQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-svgqrcode-renderer-in-detail)
-* [UnityQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-unityqrcode-renderer-in-detail)
+* [PngByteQRCode<sup></sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail)
+* [SvgQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail)
+* [UnityQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail)
 
 
-*(&ast;) - Those classes are only available in the .NET Framework version. If you use the PCL version (e.g. for Universal apps), you have to use BitmapByteQRCode.*
+*(&ast;) - These classes are only available in the .NET Framework/.NET Standard version. If you use the PCL version (e.g. for Universal apps), you have to use either BitmapByteQRCode or PngByteQRCode classes.*
 
 For more information about the different rendering types click on one of the types in the list above or have a look at: [Wiki: Advanced usage - QR-Code renderers](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
 
