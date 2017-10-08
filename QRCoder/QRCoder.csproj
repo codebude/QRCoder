@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40;NET35</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -50,6 +50,7 @@
     <Compile Include="Base64QRCode.cs" />
     <Compile Include="BitmapByteQRCode.cs" />
     <Compile Include="PayloadGenerator.cs" />
+    <Compile Include="PngByteQRCode.cs" />
     <Compile Include="QRCodeData.cs" />
     <Compile Include="QRCode.cs" />
     <Compile Include="QRCodeGenerator.cs" />
