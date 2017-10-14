@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;PCL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -29,7 +29,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\netcore\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;PCL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -41,6 +41,7 @@
     <Compile Include="AbstractQRCode.cs" />
     <Compile Include="AsciiQRCode.cs" />
     <Compile Include="BitmapByteQRCode.cs" />
+    <Compile Include="Framework4.0Methods\Stream4Methods.cs" />
     <Compile Include="Framework4.0Methods\String4Methods.cs" />
     <Compile Include="PayloadGenerator.cs" />
     <Compile Include="PngByteQRCode.cs" />

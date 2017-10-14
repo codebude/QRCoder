@@ -49,6 +49,7 @@
     <Compile Include="AsciiQRCode.cs" />
     <Compile Include="Base64QRCode.cs" />
     <Compile Include="BitmapByteQRCode.cs" />
+    <Compile Include="Framework4.0Methods\Stream4Methods.cs" />
     <Compile Include="PayloadGenerator.cs" />
     <Compile Include="PngByteQRCode.cs" />
     <Compile Include="QRCodeData.cs" />
