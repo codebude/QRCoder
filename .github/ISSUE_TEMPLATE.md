@@ -35,7 +35,7 @@ Not obligatory, but suggest a fix/reason for the bug or ideas how to implement t
 Provide a link to a live example, or an unambiguous set of steps to reproduce this bug. Include code to reproduce, files or images that explain how to reproduce the bug.
 -->
 
-## Your Environment#
+## Your Environment
 <!--
 Include as many relevant details about the environment you experienced the bug in.  
 
