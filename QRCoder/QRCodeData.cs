@@ -6,6 +6,8 @@ namespace QRCoder
 {
     using QRCoder.Framework4._0Methods;
     using System;
+    using System.IO;
+    using System.IO.Compression;
 
     public class QRCodeData : IDisposable
     {
@@ -20,24 +22,42 @@ namespace QRCoder
                 this.ModuleMatrix.Add(new BitArray(size));
         }
 #if !PCL
-        public QRCodeData(string pathToRawData, bool isRawCompressed) : this(System.IO.File.ReadAllBytes(pathToRawData), isRawCompressed)
+        public QRCodeData(string pathToRawData, Compression compressMode) : this(File.ReadAllBytes(pathToRawData), compressMode)
         {
         }
 #endif
-        public QRCodeData(byte[] rawData, bool isRawCompressed)
+        public QRCodeData(byte[] rawData, Compression compressMode)
         {
             var bytes = new List<byte>(rawData);
 
             //Decompress
-            if (isRawCompressed)
+            if (compressMode.Equals(Compression.Deflate))
             {
-                var input = new System.IO.MemoryStream(bytes.ToArray());
-                var output = new System.IO.MemoryStream();
-                using (var dstream = new System.IO.Compression.DeflateStream(input, System.IO.Compression.CompressionMode.Decompress))
+                using (var input = new MemoryStream(bytes.ToArray()))
                 {
-                    Stream4Methods.CopyTo(dstream, output);
+                    using (var output = new MemoryStream())
+                    {
+                        using (var dstream = new DeflateStream(input, CompressionMode.Decompress))
+                        {
+                            Stream4Methods.CopyTo(dstream, output);
+                        }
+                        bytes = new List<byte>(output.ToArray());
+                    }                    
+                }                    
+            }
+            else if (compressMode.Equals(Compression.GZip))
+            {
+                using (var input = new MemoryStream(bytes.ToArray()))
+                {
+                    using (var output = new MemoryStream())
+                    {
+                        using (var dstream = new GZipStream(input, CompressionMode.Decompress))
+                        {
+                            Stream4Methods.CopyTo(dstream, output);
+                        }
+                        bytes = new List<byte>(output.ToArray());
+                    }
                 }
-                bytes = new List<byte>(output.ToArray());
             }
 
             if (new System.Text.ASCIIEncoding().GetString(bytes.Take(3).ToArray()) != "QRR")
@@ -72,7 +92,7 @@ namespace QRCoder
             
         }
 
-        public byte[] GetRawData(bool compress)
+        public byte[] GetRawData(Compression compressMode)
         {
             var bytes = new List<byte>();
 
@@ -109,22 +129,35 @@ namespace QRCoder
             var rawData = bytes.ToArray();
 
             //Compress stream (optional)
-            if (compress)
+            if (compressMode.Equals(Compression.Deflate))
             {
-                var output = new System.IO.MemoryStream();
-                using (var dstream = new System.IO.Compression.DeflateStream(output, System.IO.Compression.CompressionMode.Compress))
+                using (var output = new MemoryStream())
                 {
-                    dstream.Write(rawData, 0, rawData.Length);
+                    using (var dstream = new DeflateStream(output, CompressionMode.Compress))
+                    {
+                        dstream.Write(rawData, 0, rawData.Length);
+                    }
+                    rawData = output.ToArray();
                 }
-                rawData = output.ToArray();
             }
+            else if (compressMode.Equals(Compression.GZip))
+            {
+                using (var output = new MemoryStream())
+                {
+                    using (GZipStream gzipStream = new GZipStream(output, CompressionMode.Compress, true))
+                    {
+                        gzipStream.Write(rawData, 0, rawData.Length);
+                    }
+                    rawData = output.ToArray();
+                }
+            }           
             return rawData;
         }
 
 #if !PCL
-        public void SaveRawData(string filePath, bool compress)
+        public void SaveRawData(string filePath, Compression compressMode)
         {         
-            System.IO.File.WriteAllBytes(filePath, GetRawData(compress));
+            File.WriteAllBytes(filePath, GetRawData(compressMode));
         }
 #endif
 
@@ -140,6 +173,13 @@ namespace QRCoder
             this.ModuleMatrix = null;
             this.Version = 0;
             
+        }
+
+        public enum Compression
+        {
+            Uncompressed,
+            Deflate,
+            GZip
         }
     }
 }
