@@ -60,8 +60,8 @@ namespace QRCoder
                 }
             }
 
-            if (new System.Text.ASCIIEncoding().GetString(bytes.Take(3).ToArray()) != "QRR")
-                throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\"");            
+            if (bytes[0] != 0x51 || bytes[1] != 0x52 || bytes[2] != 0x52)
+                throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\".");            
 
             //Set QR code version
             var sideLen = (int)bytes[4];
