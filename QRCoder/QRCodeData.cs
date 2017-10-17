@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QRCoder
 {
@@ -39,9 +40,12 @@ namespace QRCoder
                 bytes = new List<byte>(output.ToArray());
             }
 
+            if (new System.Text.ASCIIEncoding().GetString(bytes.Take(3).ToArray()) != "QRR")
+                throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\"");            
+
             //Set QR code version
-            var sideLen = (int)bytes[0];
-            bytes.RemoveAt(0);
+            var sideLen = (int)bytes[4];
+            bytes.RemoveRange(0, 5);
             this.Version = (sideLen - 21 - 8) / 4 + 1;
 
             //Unpack
@@ -72,7 +76,10 @@ namespace QRCoder
         {
             var bytes = new List<byte>();
 
-            //Add header
+            //Add header - signature ("QRR")
+            bytes.AddRange(new byte[]{ 0x51, 0x52, 0x52, 0x00 });
+            
+            //Add header - rowsize
             bytes.Add((byte)ModuleMatrix.Count);
 
             //Build data queue
