@@ -14,5 +14,6 @@ namespace QRCoderConsole
         Bmp,
         Tiff,
         Svg,
+        Xaml,
     }
 }
