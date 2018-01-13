@@ -119,7 +119,7 @@ namespace QRCoderConsole
 
                 if (text != null)
                 {
-                    GenerateQRCode(payload, eccLevel, outputFileName, imageFormat, pixelsPerModule, foregroundColor, backgroundColor);
+                    GenerateQRCode(text, eccLevel, outputFileName, imageFormat, pixelsPerModule, foregroundColor, backgroundColor);
                 }
             }
             catch (Exception oe)
