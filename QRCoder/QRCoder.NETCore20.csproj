@@ -16,7 +16,11 @@
 	<Authors>QRCoder.NET</Authors>
 	<AssemblyName>QRCoder</AssemblyName>
 	<RootNamespace>QRCoder</RootNamespace>
-  </PropertyGroup> 
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="XamlQRCode.cs" />
+  </ItemGroup> 
   
   <ItemGroup>
     <PackageReference Include="ZKWeb.System.Drawing" Version="4.0.0" />
