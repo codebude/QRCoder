@@ -1,9 +1,5 @@
 ﻿using System;
-#if NETSTANDARD2_0
-using System.DrawingCore;
-#else
 using System.Drawing;
-#endif
 using System.Text;
 
 namespace QRCoder

@@ -1,10 +1,6 @@
-#if NETSTANDARD2_0
-using System.DrawingCore;
-using System.DrawingCore.Drawing2D;
-#else
 using System.Drawing;
 using System.Drawing.Drawing2D;
-#endif
+
 
 namespace QRCoder
 {
@@ -55,11 +51,9 @@ namespace QRCoder
         {
             var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
             var offset = drawQuietZones ? 0 : 4 * pixelsPerModule;
-#if NETSTANDARD2_0
-            var bmp = new Bitmap(size, size, System.DrawingCore.Imaging.PixelFormat.Format24bppRgb);
-#else
+
             var bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
-#endif
+
             var gfx = Graphics.FromImage(bmp);
             gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
             gfx.CompositingQuality = CompositingQuality.HighQuality;
