@@ -4,22 +4,22 @@ using System.IO.Compression;
 
 namespace QRCoder
 {
-    public sealed class PngByteQRCode : AbstractQRCode<byte[]>, IDisposable
+    public sealed class PngByteQRCode : AbstractQRCode, IDisposable
     {
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public PngByteQRCode() { }
+
         public PngByteQRCode(QRCodeData data) : base(data)
         {
         }
 
-        public void Dispose()
-        {
-            this.QrCodeData?.Dispose();
-            this.QrCodeData = null;
-        }
 
         /// <summary>
         /// Creates a black &amp; white PNG of the QR code, using 1-bit grayscale.
         /// </summary>
-        public override byte[] GetGraphic(int pixelsPerModule)
+        public byte[] GetGraphic(int pixelsPerModule)
         {
             using (var png = new PngBuilder())
             {

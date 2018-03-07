@@ -6,11 +6,16 @@ namespace QRCoder
 {
     using System;
 
-    public class QRCode : AbstractQRCode<Bitmap>, IDisposable
+    public class QRCode : AbstractQRCode, IDisposable
     {
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public QRCode() { }
+
         public QRCode(QRCodeData data) : base(data) {}
         
-        public override Bitmap GetGraphic(int pixelsPerModule)
+        public Bitmap GetGraphic(int pixelsPerModule)
         {
             return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
         }
@@ -129,11 +134,6 @@ namespace QRCoder
             roundedRect.AddLine(rect.X, rect.Bottom - cornerRadius * 2, rect.X, rect.Y + cornerRadius * 2);
             roundedRect.CloseFigure();
             return roundedRect;
-        }
-
-        public void Dispose()
-        {
-            this.QrCodeData = null;
         }
     }
 }

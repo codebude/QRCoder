@@ -7,11 +7,16 @@ namespace QRCoder
 {
   
     // ReSharper disable once InconsistentNaming
-    public class BitmapByteQRCode : AbstractQRCode<byte[]>, IDisposable
+    public class BitmapByteQRCode : AbstractQRCode, IDisposable
     {
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public BitmapByteQRCode() { }
+
         public BitmapByteQRCode(QRCodeData data) : base(data) { }
 
-        public override byte[] GetGraphic(int pixelsPerModule)
+        public byte[] GetGraphic(int pixelsPerModule)
         {
             return GetGraphic(pixelsPerModule, new byte[] { 0x00, 0x00, 0x00 }, new byte[] { 0xFF, 0xFF, 0xFF });
         }
@@ -90,11 +95,6 @@ namespace QRCoder
                 bytes[0] = (byte)(inp);
             }
             return bytes;
-        }
-
-        public void Dispose()
-        {
-            this.QrCodeData = null;
         }
     }
 }

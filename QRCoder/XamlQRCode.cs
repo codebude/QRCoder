@@ -4,11 +4,16 @@ using System.Windows.Media;
 
 namespace QRCoder
 {
-    public class XamlQRCode : AbstractQRCode<DrawingImage>, IDisposable
+    public class XamlQRCode : AbstractQRCode, IDisposable
     {
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public XamlQRCode() { }
+
         public XamlQRCode(QRCodeData data) : base(data) { }
 
-        public override DrawingImage GetGraphic(int pixelsPerModule)
+        public DrawingImage GetGraphic(int pixelsPerModule)
         {
             return this.GetGraphic(pixelsPerModule, true);
         }
@@ -60,11 +65,6 @@ namespace QRCoder
             drawing.Children.Add(new GeometryDrawing(darkBrush, null, group));
 
             return new DrawingImage(drawing);
-        }
-
-        public void Dispose()
-        {
-            this.QrCodeData = null;
         }
     }
 }

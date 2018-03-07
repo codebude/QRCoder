@@ -4,12 +4,15 @@ using System.Text;
 
 namespace QRCoder
 {
-    public class SvgQRCode : AbstractQRCode<string>, IDisposable
+    public class SvgQRCode : AbstractQRCode, IDisposable
     {
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public SvgQRCode() { }
         public SvgQRCode(QRCodeData data) : base(data) { }
-
-
-        public override string GetGraphic(int pixelsPerModule)
+        
+        public string GetGraphic(int pixelsPerModule)
         {
             var viewBox = new Size(pixelsPerModule*this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
             return this.GetGraphic(viewBox, Color.Black, Color.White);
@@ -70,11 +73,6 @@ namespace QRCoder
         {
             //Clean double values for international use/formats
             return input.ToString(System.Globalization.CultureInfo.InvariantCulture);
-        }
-
-        public void Dispose()
-        {
-            this.QrCodeData = null;
         }
     }
 }

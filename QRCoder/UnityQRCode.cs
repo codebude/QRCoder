@@ -3,11 +3,15 @@ using UnityEngine;
 
 namespace QRCoder
 {
-    public class UnityQRCode : AbstractQRCode<Texture2D>
+    public class UnityQRCode : AbstractQRCode
     {
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public UnityQRCode() { }
         public UnityQRCode(QRCodeData data) : base(data) {}
-
-        public override Texture2D GetGraphic(int pixelsPerModule)
+        
+        public Texture2D GetGraphic(int pixelsPerModule)
         {
             return this.GetGraphic(pixelsPerModule, Color.black, Color.white);
         }
