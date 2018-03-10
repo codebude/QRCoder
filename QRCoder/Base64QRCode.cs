@@ -41,19 +41,28 @@ namespace QRCoder
 
         public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
         {
-            Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones);
-            return BitmapToBase64(bmp, imgType);
+            var base64 = string.Empty;
+            using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones))
+            {
+                base64 = BitmapToBase64(bmp, imgType);
+            }
+            return base64;
         }
 
         public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
         {
-            Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones);
-            return BitmapToBase64(bmp, imgType);
+            var base64 = string.Empty;
+            using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones))
+            {
+                base64 = BitmapToBase64(bmp, imgType);
+            }
+            return base64;
         }
 
 
         private string BitmapToBase64(Bitmap bmp, ImageType imgType)
         {
+            var base64 = string.Empty;
             ImageFormat iFormat;
             switch (imgType) {
                 case ImageType.Png: 
@@ -69,11 +78,12 @@ namespace QRCoder
                     iFormat = ImageFormat.Png;
                     break;
             }
-            MemoryStream memoryStream = new MemoryStream();
-            bmp.Save(memoryStream, iFormat);
-            byte[] bitmapBytes = memoryStream.GetBuffer();
-            string bitmapString = Convert.ToBase64String(bitmapBytes, Base64FormattingOptions.None);
-            return bitmapString;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                bmp.Save(memoryStream, iFormat);
+                base64 = Convert.ToBase64String(memoryStream.ToArray(), Base64FormattingOptions.None);
+            }                
+            return base64;
         }
 
         public enum ImageType
@@ -81,12 +91,7 @@ namespace QRCoder
             Gif,
             Jpeg,
             Png
-        }
-
-        public void Dispose()
-        {
-            this.QrCodeData = null;
-        }
+        }      
 
     }
 }
