@@ -9,15 +9,26 @@ using System.Text;
 
 namespace QRCoder
 {
-    public class Base64QRCode : AbstractQRCode<string>, IDisposable
+    public class Base64QRCode : AbstractQRCode, IDisposable
     {
         private QRCode qr;
+
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public Base64QRCode() {
+            qr = new QRCode();
+        }
 
         public Base64QRCode(QRCodeData data) : base(data) {
             qr = new QRCode(data);
         }
+
+        public override void SetQRCodeData(QRCodeData data) {
+            this.qr.SetQRCodeData(data);
+        }
         
-        public override string GetGraphic(int pixelsPerModule)
+        public string GetGraphic(int pixelsPerModule)
         {
             return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
         }

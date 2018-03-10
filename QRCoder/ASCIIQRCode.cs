@@ -4,8 +4,13 @@ using System.Text;
 
 namespace QRCoder
 {
-    public class AsciiQRCode : AbstractQRCode<string>, IDisposable
+    public class AsciiQRCode : AbstractQRCode, IDisposable
     {
+        /// <summary>
+        /// Constructor without params to be used in COM Objects connections
+        /// </summary>
+        public AsciiQRCode() { }
+
         public AsciiQRCode(QRCodeData data) : base(data) { }
 
         /// <summary>
@@ -13,7 +18,7 @@ namespace QRCoder
         /// </summary>
         /// <param name="repeatPerModule">Number of repeated darkColorString/whiteSpaceString per module.</param>
         /// <returns></returns>
-        public override string GetGraphic(int repeatPerModule)
+        public string GetGraphic(int repeatPerModule)
         {
             return string.Join("\n", GetLineByLineGraphic(repeatPerModule));
         }
@@ -85,10 +90,6 @@ namespace QRCoder
 
             }
             return qrCode.ToArray();
-        }
-        public void Dispose()
-        {
-            this.QrCodeData = null;
         }
     }
 }
