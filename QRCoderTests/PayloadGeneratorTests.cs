@@ -1996,26 +1996,26 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
-            exception.Message.ShouldBe("Street must be shorter than 71 chars and must not contain a house number.");
+            exception.Message.ShouldBe("Street must be shorter than 71 chars.");
         }
 
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode.Contact")]
-        public void swissqrcode_generator_should_throw_street_with_number()
+        public void swissqrcode_generator_should_throw_street_with_illegal_char()
         {
             var name = "John Doe";
             var zip = "3003";
             var city = "Bern";
             var country = "CH";
-            var street = "Parlamentsgebäude 1";
+            var street = "Parlamentsgebäude 1 ♥";
             var houseNumber = "1";
 
             var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Contact(name, zip, city, country, street, houseNumber));
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
-            exception.Message.ShouldBe("Street must be shorter than 71 chars and must not contain a house number.");
+            exception.Message.ShouldBe(@"Street must match the following pattern as defined in pain.001: ^([a-zA-Z0-9\.,;:'\ \-/\(\)?\*\[\]\{\}\\`´~ ]|[!""#%&<>÷=@_$£]|[àáâäçèéêëìíîïñòóôöùúûüýßÀÁÂÄÇÈÉÊËÌÍÎÏÒÓÔÖÙÚÛÜÑ])*$");
         }
 
 
@@ -2071,16 +2071,16 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
-            exception.Message.ShouldBe("Zip code must be shorter than 17 chars. Only digits are allowed.");
+            exception.Message.ShouldBe("Zip code must be shorter than 17 chars.");
         }
 
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode.Contact")]
-        public void swissqrcode_generator_should_throw_zip_has_alphanum()
+        public void swissqrcode_generator_should_throw_zip_has_illegal_char()
         {
             var name = "John Doe";
-            var zip = "3003CHF";
+            var zip = "3003CHF♥";
             var city = "Bern";
             var country = "CH";
             var street = "Parlamentsgebäude";
@@ -2090,7 +2090,7 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
-            exception.Message.ShouldBe("Zip code must be shorter than 17 chars. Only digits are allowed.");
+            exception.Message.ShouldBe(@"Zip code must match the following pattern as defined in pain.001: ^([a-zA-Z0-9\.,;:'\ \-/\(\)?\*\[\]\{\}\\`´~ ]|[!""#%&<>÷=@_$£]|[àáâäçèéêëìíîïñòóôöùúûüýßÀÁÂÄÇÈÉÊËÌÍÎÏÒÓÔÖÙÚÛÜÑ])*$");
         }
 
 

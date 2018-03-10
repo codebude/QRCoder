@@ -795,14 +795,21 @@ namespace QRCoder
                 /// <param name="houseNumber">House number</param>
                 public Contact(string name, string zipCode, string city, string country, string street = null, string houseNumber = null)
                 {
+                    //Pattern extracted from https://qr-validation.iso-payments.ch as explained in https://github.com/codebude/QRCoder/issues/97
+                    var charsetPattern = @"^([a-zA-Z0-9\.,;:'\ \-/\(\)?\*\[\]\{\}\\`´~ ]|[!""#%&<>÷=@_$£]|[àáâäçèéêëìíîïñòóôöùúûüýßÀÁÂÄÇÈÉÊËÌÍÎÏÒÓÔÖÙÚÛÜÑ])*$";
+
                     if (string.IsNullOrEmpty(name))
                         throw new SwissQrCodeContactException("Name must not be empty.");
                     if (name.Length > 70)
                         throw new SwissQrCodeContactException("Name must be shorter than 71 chars.");
+                    if (!Regex.IsMatch(name, charsetPattern))
+                        throw new SwissQrCodeContactException($"Name must match the following pattern as defined in pain.001: {charsetPattern}");
                     this.name = name;
 
-                    if (!string.IsNullOrEmpty(street) && (street.Length > 70 || !Regex.IsMatch(street, @"^[^0-9]+$")))
-                        throw new SwissQrCodeContactException("Street must be shorter than 71 chars and must not contain a house number.");
+                    if (!string.IsNullOrEmpty(street) && (street.Length > 70))
+                        throw new SwissQrCodeContactException("Street must be shorter than 71 chars.");
+                    if (!string.IsNullOrEmpty(street) && !Regex.IsMatch(street, charsetPattern))
+                        throw new SwissQrCodeContactException($"Street must match the following pattern as defined in pain.001: {charsetPattern}");
                     this.street = street;
 
                     if (!string.IsNullOrEmpty(houseNumber) && houseNumber.Length > 16)
@@ -811,14 +818,18 @@ namespace QRCoder
 
                     if (string.IsNullOrEmpty(zipCode))
                         throw new SwissQrCodeContactException("Zip code must not be empty.");
-                    if (zipCode.Length > 16 || !Regex.IsMatch(zipCode, @"^[0-9]+$"))
-                        throw new SwissQrCodeContactException("Zip code must be shorter than 17 chars. Only digits are allowed.");
+                    if (zipCode.Length > 16)
+                        throw new SwissQrCodeContactException("Zip code must be shorter than 17 chars.");
+                    if (!Regex.IsMatch(zipCode, charsetPattern))
+                        throw new SwissQrCodeContactException($"Zip code must match the following pattern as defined in pain.001: {charsetPattern}");
                     this.zipCode = zipCode;
 
                     if (string.IsNullOrEmpty(city))
                         throw new SwissQrCodeContactException("City must not be empty.");
                     if (city.Length > 35)
                         throw new SwissQrCodeContactException("City name must be shorter than 36 chars.");
+                    if (!Regex.IsMatch(city, charsetPattern))
+                        throw new SwissQrCodeContactException($"City name must match the following pattern as defined in pain.001: {charsetPattern}");
                     this.city = city;
 
 #if NET40
