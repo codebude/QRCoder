@@ -22,6 +22,13 @@ namespace QRCoder
         private List<Antilog> galoisField;
         private Dictionary<char, int> alphanumEncDict;
 
+        public enum EciMode
+        {
+            Default = 0,
+            Iso8859_1 = 3,
+            Iso8859_2 = 4,
+            Utf8 = 26
+        }
 
         public QRCodeGenerator()
         {
@@ -32,17 +39,27 @@ namespace QRCoder
             this.CreateAlignmentPatternTable();
         }
 
-        public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false)
+        public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
         {
-            var encoding = this.GetEncodingFromPlaintext(plainText, forceUtf8);
-            var codedText = this.PlainTextToBinary(plainText, encoding, utf8BOM, forceUtf8);
+            EncodingMode encoding = (eciMode == EciMode.Default) ? GetEncodingFromPlaintext(plainText, forceUtf8) : EncodingMode.ECI;
+            encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
+            var codedText = this.PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
             var dataInputLength = this.GetDataLength(encoding, plainText, codedText, forceUtf8);
-            var version = this.GetVersion(dataInputLength, encoding, eccLevel);
+            int version = requestedVersion;
+            if (version == -1)
+            {
+                version = this.GetVersion(dataInputLength, encoding, eccLevel);
+            }
 
-            var modeIndicator = DecToBin((int)encoding, 4);
+            string modeIndicator = String.Empty;
+            if (eciMode != EciMode.Default)
+            {
+                modeIndicator = DecToBin((int)EncodingMode.ECI, 4);
+                modeIndicator += DecToBin((int)eciMode, 8);
+            }
+            modeIndicator += DecToBin((int)encoding, 4);
             var countIndicator = DecToBin(dataInputLength, this.GetCountIndicatorLength(version, encoding));
             var bitString = modeIndicator + countIndicator;
-
 
             bitString += codedText;
 
@@ -867,16 +884,26 @@ namespace QRCoder
             return String.Equals(input, result);
         }
 
-        private string PlainTextToBinary(string plainText, EncodingMode encMode, bool utf8BOM, bool forceUtf8)
+        private string PlainTextToBinary(string plainText, EncodingMode encMode, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
-            if (encMode.Equals(EncodingMode.Numeric))
-                return this.PlainTextToBinaryNumeric(plainText);
-            else if (encMode.Equals(EncodingMode.Alphanumeric))
-                return this.PlainTextToBinaryAlphanumeric(plainText);
-            else if (encMode.Equals(EncodingMode.Byte))
-                return this.PlainTextToBinaryByte(plainText, utf8BOM, forceUtf8);
-            else
-                return string.Empty;
+            switch(encMode)
+            {
+                case EncodingMode.Alphanumeric:
+                    return PlainTextToBinaryAlphanumeric(plainText);
+                case EncodingMode.Numeric:
+                    return PlainTextToBinaryNumeric(plainText);
+                case EncodingMode.Byte:
+                    //if(eciMode == EciMode.Default)
+                        return PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8);
+                    //else
+                    //    return PlainTextToBinaryECI(plainText);
+                case EncodingMode.ECI:
+                    return PlainTextToBinaryECI(plainText);
+                case EncodingMode.Kanji:
+                    return string.Empty;
+                default:
+                    return string.Empty;
+            }
         }
 
         private string PlainTextToBinaryNumeric(string plainText)
@@ -920,7 +947,27 @@ namespace QRCoder
             return codeText;
         }
 
-        private string PlainTextToBinaryByte(string plainText, bool utf8BOM, bool forceUtf8)
+        private string PlainTextToBinaryECI(string plainText)
+        {
+            var codeText = string.Empty;
+            byte[] _bytes = Encoding.ASCII.GetBytes(plainText);
+            foreach(byte _byte in _bytes)
+            {
+                codeText += DecToBin(_byte, 8);
+            }
+            return codeText;
+        }
+
+        private string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
+        {
+            Encoding iso = Encoding.GetEncoding(Iso);
+            Encoding utf8 = Encoding.UTF8;
+            byte[] utfBytes = utf8.GetBytes(value);
+            byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
+            return iso.GetString(isoBytes);
+        }
+
+        private string PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
             byte[] codeBytes;
             var codeText = string.Empty;
@@ -928,7 +975,22 @@ namespace QRCoder
             if (this.IsValidISO(plainText) && !forceUtf8)
                 codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
             else
-                codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
+            {
+                switch(eciMode)
+                {
+                    case EciMode.Iso8859_1:
+                        codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(ConvertToIso8859(plainText, "ISO-8859-1"));
+                        break;
+                    case EciMode.Iso8859_2:
+                        codeBytes = Encoding.GetEncoding("ISO-8859-2").GetBytes(ConvertToIso8859(plainText, "ISO-8859-2"));
+                        break;
+                    case EciMode.Default:
+                    case EciMode.Utf8:
+                    default:
+                        codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
+                        break;
+                }
+            }
 
             foreach (var b in codeBytes)
                 codeText += DecToBin(b, 8);
