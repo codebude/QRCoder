@@ -2017,7 +2017,7 @@ namespace QRCoder
                 this(payerName, payerAddress, payerPlace, recipientName, recipientAddress, recipientPlace, recipientIban, description, amount, null, recipientSiModel, recipientSiReference, code)
             { }
 
-            public SlovenianUpnQr(string payerName, string payerAddress, string payerPlace, string recipientName, string recipientAddress, string recipientPlace, string recipientIban, string description, double amount, DateTime? deadline, string recipientSiModel = "SI00", string recipientSiReference = "", string code = "OTHR")
+            public SlovenianUpnQr(string payerName, string payerAddress, string payerPlace, string recipientName, string recipientAddress, string recipientPlace, string recipientIban, string description, double amount, DateTime? deadline, string recipientSiModel = "SI99", string recipientSiReference = "", string code = "OTHR")
             {
                 _payerName = LimitLength(payerName.Trim(), 33);
                 _payerAddress = LimitLength(payerAddress.Trim(), 33);
@@ -2101,7 +2101,7 @@ namespace QRCoder
             return iso.GetString(isoBytes);
 #else
                 return iso.GetString(isoBytes,0, isoBytes.Length);
-            #endif
+#endif
         }
 
         private static string EscapeInput(string inp, bool simple = false)
