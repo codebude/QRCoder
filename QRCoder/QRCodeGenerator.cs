@@ -39,10 +39,19 @@ namespace QRCoder
             this.CreateAlignmentPatternTable();
         }
 
+        public QRCodeData CreateQrCode(PayloadGenerator.Payload payload)
+        {
+            return CreateQrCode(payload.ToString(), payload.EccLevel, false, false, payload.EciMode, payload.Version);
+        }
+
+        public QRCodeData CreateQrCode(PayloadGenerator.Payload payload, ECCLevel eccLevel)
+        {
+            return CreateQrCode(payload.ToString(), eccLevel, false, false, payload.EciMode, payload.Version);
+        }
+
         public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
         {
-            EncodingMode encoding = (eciMode == EciMode.Default) ? GetEncodingFromPlaintext(plainText, forceUtf8) : EncodingMode.ECI;
-            encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
+            EncodingMode encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
             var codedText = this.PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
             var dataInputLength = this.GetDataLength(encoding, plainText, codedText, forceUtf8);
             int version = requestedVersion;
@@ -893,14 +902,10 @@ namespace QRCoder
                 case EncodingMode.Numeric:
                     return PlainTextToBinaryNumeric(plainText);
                 case EncodingMode.Byte:
-                    //if(eciMode == EciMode.Default)
-                        return PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8);
-                    //else
-                    //    return PlainTextToBinaryECI(plainText);
-                case EncodingMode.ECI:
-                    return PlainTextToBinaryECI(plainText);
+                    return PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8);
                 case EncodingMode.Kanji:
                     return string.Empty;
+                case EncodingMode.ECI:
                 default:
                     return string.Empty;
             }
