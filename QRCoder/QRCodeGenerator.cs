@@ -955,7 +955,7 @@ namespace QRCoder
         private string PlainTextToBinaryECI(string plainText)
         {
             var codeText = string.Empty;
-            byte[] _bytes = Encoding.ASCII.GetBytes(plainText);
+            byte[] _bytes = Encoding.GetEncoding("ascii").GetBytes(plainText);
             foreach(byte _byte in _bytes)
             {
                 codeText += DecToBin(_byte, 8);
@@ -969,7 +969,11 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(value);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
+#if !PCL
             return iso.GetString(isoBytes);
+#else
+            return iso.GetString(isoBytes, 0, isoBytes.Length);
+#endif
         }
 
         private string PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
