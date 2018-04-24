@@ -101,6 +101,24 @@ To generate a QR code from this payload, just call the "ToString()"-method and p
 QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload.ToString(), QRCodeGenerator.ECCLevel.Q);
 //[...]
 ```
+
+You can also use overloaded method that accepts Payload as parameter. Payload generator can have QR Code Version set (default is auto set), ECC Level (default is M) and ECI mode (default is automatic detection).
+
+```csharp
+//[...]
+QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload);
+//[...]
+```
+
+Or if you want to override ECC Level set by Payload generator, you can use overloaded method, that allows setting ECC Level.
+
+```csharp
+//[...]
+QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload, QRCodeGenerator.ECCLevel.Q);
+//[...]
+```
+
+
 You can learn more about the payload generator [in our Wiki](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators).
 
 The PayloadGenerator supports the following types of payloads:
