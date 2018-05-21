@@ -63,13 +63,13 @@
     <Compile Include="PayloadGeneratorTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj">
-      <Project>{AECE5DF3-C379-46CA-BB7D-7BDBE59011FD}</Project>
-      <Name>QRCoder</Name>
-    </ProjectReference>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+    <ProjectReference Include="..\QRCoder\QRCoder.NET40.csproj">
+      <Project>{a68dd9ca-828e-4908-8352-0a2b53621f37}</Project>
+      <Name>QRCoder.NET40</Name>
+    </ProjectReference>
   </ItemGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
