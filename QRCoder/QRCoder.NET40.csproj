@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>QRCoder</RootNamespace>
     <AssemblyName>QRCoder</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractQRCode.cs" />
+    <Compile Include="ASCIIQRCode.cs" />
     <Compile Include="Base64QRCode.cs" />
     <Compile Include="BitmapByteQRCode.cs" />
     <Compile Include="Framework4.0Methods\Stream4Methods.cs" />
