@@ -1691,7 +1691,16 @@ namespace QRCoder
             //https://github.com/google/google-authenticator/wiki/Key-Uri-Format
             public OneTimePasswordAuthType Type { get; set; } = OneTimePasswordAuthType.TOTP;
             public string Secret { get; set; }
-            public OoneTimePasswordAuthAlgorithm Algorithm { get; set; } = OoneTimePasswordAuthAlgorithm.SHA1;
+
+            public OneTimePasswordAuthAlgorithm AuthAlgorithm { get; set; } = OneTimePasswordAuthAlgorithm.SHA1;
+
+            [Obsolete("This property is obsolete, use " + nameof(AuthAlgorithm) + " instead", false)]
+            public OoneTimePasswordAuthAlgorithm Algorithm
+            {
+                get { return (OoneTimePasswordAuthAlgorithm)Enum.Parse(typeof(OoneTimePasswordAuthAlgorithm), AuthAlgorithm.ToString()); }
+                set { AuthAlgorithm = (OneTimePasswordAuthAlgorithm)Enum.Parse(typeof(OneTimePasswordAuthAlgorithm), value.ToString()); }
+            }
+
             public string Issuer { get; set; }
             public string Label { get; set; }
             public int Digits { get; set; } = 6;
@@ -1704,6 +1713,14 @@ namespace QRCoder
                 HOTP,
             }
 
+            public enum OneTimePasswordAuthAlgorithm
+            {
+                SHA1,
+                SHA256,
+                SHA512,
+            }
+
+            [Obsolete("This enum is obsolete, use " + nameof(OneTimePasswordAuthAlgorithm) + " instead", false)]
             public enum OoneTimePasswordAuthAlgorithm
             {
                 SHA1,
