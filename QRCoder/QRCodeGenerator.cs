@@ -1257,16 +1257,22 @@ namespace QRCoder
 
             for (var i = 0; i < 256; i++)
             {
-                var gfItem = (int)Math.Pow(2, i);
+                int gfItem;
 
                 if (i > 7)
                 {
                     gfItem = this.galoisField[i - 1].IntegerValue * 2;
                 }
+                else
+                {
+                    gfItem = (int)Math.Pow(2, i);
+                }
+
                 if (gfItem > 255)
                 {
                     gfItem = gfItem ^ 285;
                 }
+
                 this.galoisField.Add(new Antilog(i, gfItem));
             }
         }
