@@ -57,6 +57,7 @@
     <Compile Include="Framework4.0Methods\String4Methods.cs" />
     <Compile Include="PayloadGenerator.cs" />
     <Compile Include="PngByteQRCode.cs" />
+    <Compile Include="PostscriptQRCode.cs" />
     <Compile Include="QRCodeData.cs" />
     <Compile Include="QRCode.cs" />
     <Compile Include="QRCodeGenerator.cs" />
