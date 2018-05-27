@@ -49,8 +49,8 @@ namespace QRCoder
                 epsFormat ? "EPSF-3.0" : string.Empty
             });
             psFile += string.Format(psFunctions, new object[] {
-                CleanSvgVal(darkColor.R /255), CleanSvgVal(darkColor.G /255), CleanSvgVal(darkColor.B /255),
-                CleanSvgVal(lightColor.R /255), CleanSvgVal(lightColor.G /255), CleanSvgVal(lightColor.B /255),
+                CleanSvgVal(darkColor.R /255.0), CleanSvgVal(darkColor.G /255.0), CleanSvgVal(darkColor.B /255.0),
+                CleanSvgVal(lightColor.R /255.0), CleanSvgVal(lightColor.G /255.0), CleanSvgVal(lightColor.B /255.0),
                 drawableModulesCount
             });
 
