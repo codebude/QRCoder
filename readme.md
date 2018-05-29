@@ -77,7 +77,7 @@ Besides the normal QRCode class (which is shown in the example above) for creati
 * [PostscriptQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#29-postscriptqrcode-renderer-in-detail)
 * [SvgQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail)
 * [UnityQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail)
-* [XamlQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-xamlqrcode-renderer-in-detail)
+* [XamlQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail)
 
 *(&ast;) - These classes are only available in the .NET Framework/.NET Standard version. If you use the PCL version (e.g. for Universal apps), you have to use either BitmapByteQRCode or PngByteQRCode classes.*
 
