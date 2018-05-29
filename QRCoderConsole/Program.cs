@@ -35,7 +35,7 @@ namespace QRCoderConsole
                     value => eccLevel = setter.GetECCLevel(value)
                 },
                 {   "f|output-format=",
-                    "Image format for outputfile. Possible values: png, jpg, gif, bmp, tiff, svg, xaml (default: png)",
+                    "Image format for outputfile. Possible values: png, jpg, gif, bmp, tiff, svg, xaml, ps, eps (default: png)",
                     value => { Enum.TryParse(value, true, out imageFormat); }
                 },
                 {
@@ -168,6 +168,19 @@ namespace QRCoderConsole
                             using (var code = new XamlQRCode(data))
                             {
                                 var test = XamlWriter.Save(code.GetGraphic(pixelsPerModule, foreground, background, true));
+                                using (var f = File.CreateText(outputFileName))
+                                {
+                                    f.Write(test);
+                                    f.Flush();
+                                }
+                            }
+                            break;
+                        case SupportedImageFormat.Ps:
+                        case SupportedImageFormat.Eps:
+                            using (var code = new PostscriptQRCode(data))
+                            {
+                                var test = code.GetGraphic(pixelsPerModule, foreground, background, true, 
+                                    imgFormat == SupportedImageFormat.Eps);
                                 using (var f = File.CreateText(outputFileName))
                                 {
                                     f.Write(test);
