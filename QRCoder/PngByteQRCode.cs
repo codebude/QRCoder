@@ -315,4 +315,15 @@ namespace QRCoder
             }
         }
     }
+    
+    public sealed class PngByteQrCodeUtility
+    {
+        public static byte[] GetPngQrCode(string txt, QRCodeGenerator.ECCLevel eccLevel, int size)
+        {
+            using (var qrGen = new QRCodeGenerator())
+            using (var qrCode = qrGen.CreateQrCode(txt, eccLevel))
+            using (var qrPng = new PngByteQRCode(qrCode))
+                return qrPng.GetGraphic(size);
+        }
+    }    
 }
