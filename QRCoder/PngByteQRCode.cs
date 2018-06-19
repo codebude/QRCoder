@@ -316,7 +316,7 @@ namespace QRCoder
         }
     }
     
-    public sealed class PngByteQrCodeUtility
+    public static class PngByteQrCodeUtility
     {
         public static byte[] GetPngQrCode(string txt, QRCodeGenerator.ECCLevel eccLevel, int size)
         {
