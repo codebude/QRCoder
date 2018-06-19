@@ -99,7 +99,7 @@ namespace QRCoder
     }
     
   
-    public sealed class BitmapByteQrCodeUtility
+    public static class BitmapByteQrCodeUtility
     {
         public static byte[] GetBmpQrCode(string txt, QRCodeGenerator.ECCLevel eccLevel, int size)
         {
