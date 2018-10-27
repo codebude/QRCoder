@@ -48,19 +48,19 @@ namespace QRCoder
             drawing.Children.Add(new GeometryDrawing(lightBrush, null, new RectangleGeometry(new Rect(new Point(0, 0), new Size(qrSize, qrSize)))));
 
             var group = new GeometryGroup();
-            int xi = 0, yi = 0;
-            for (var x = 0d; x < qrSize; x = x + unitsPerModule)
+            double x = 0d, y = 0d;
+            for (int xi = offsetModules; xi < drawableModulesCount; xi++)
             {
-                yi = 0;
-                for (var y = 0d; y < qrSize; y = y + unitsPerModule)
+                y = 0d;
+                for (int yi = offsetModules; yi < drawableModulesCount; yi++)
                 {
-                    if (this.QrCodeData.ModuleMatrix[yi + offsetModules][xi + offsetModules])
+                    if (this.QrCodeData.ModuleMatrix[yi][xi])
                     {
                         group.Children.Add(new RectangleGeometry(new Rect(x, y, unitsPerModule, unitsPerModule)));
                     }
-                    yi++;
+                    y += unitsPerModule;
                 }
-                xi++;
+                x += unitsPerModule;
             }
             drawing.Children.Add(new GeometryDrawing(darkBrush, null, group));
 
