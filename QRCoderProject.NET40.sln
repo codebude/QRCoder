@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoder", "QRCoder\QRCoder.NET40.csproj", "{A68DD9CA-828E-4908-8352-0A2B53621F37}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoder.NET40", "QRCoder\QRCoder.NET40.csproj", "{A68DD9CA-828E-4908-8352-0A2B53621F37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderDemo", "QRCoderDemo\QRCoderDemo.csproj", "{CA6DB0F5-DB6C-4DDD-8B5F-EF82FBB963E9}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderConsole", "QRCoderConsole\QRCoderConsole.csproj", "{014F04C6-6099-4552-9A4F-D09C6E39D576}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderTests", "QRCoderTests\QRCoderTests.csproj", "{1B51624B-9915-4ED6-8FC1-1B7C472246E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleApp", "TestConsoleApp\TestConsoleApp.csproj", "{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,8 +71,23 @@ Global
 		{1B51624B-9915-4ED6-8FC1-1B7C472246E5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{1B51624B-9915-4ED6-8FC1-1B7C472246E5}.Release|x86.ActiveCfg = Release|Any CPU
 		{1B51624B-9915-4ED6-8FC1-1B7C472246E5}.Release|x86.Build.0 = Release|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Debug|x86.Build.0 = Debug|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Release|x86.ActiveCfg = Release|Any CPU
+		{D2E71091-AB73-47FB-A0A4-D5C78BAAC12E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {09048E75-225E-482C-8EB8-DB169ACA1BEC}
 	EndGlobalSection
 EndGlobal
