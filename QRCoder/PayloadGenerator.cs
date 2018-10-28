@@ -380,6 +380,7 @@ namespace QRCoder
             private readonly string houseNumber;
             private readonly string city;
             private readonly string zipCode;
+            private readonly string stateRegion;
             private readonly string country;
             private readonly string note;
             private readonly ContactOutputType outputType;
@@ -401,10 +402,11 @@ namespace QRCoder
             /// <param name="street">Street</param>
             /// <param name="houseNumber">Housenumber</param>
             /// <param name="city">City</param>
+            /// <param name="stateRegion">State or Region</param>
             /// <param name="zipCode">Zip code</param>
             /// <param name="country">Country</param>
             /// <param name="note">Memo text / notes</param>            
-            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null)
+            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string stateRegion = null, string zipCode = null, string country = null, string note = null)
             {             
                 this.firstname = firstname;
                 this.lastname = lastname;
@@ -418,6 +420,7 @@ namespace QRCoder
                 this.street = street;
                 this.houseNumber = houseNumber;
                 this.city = city;
+                this.stateRegion = stateRegion;
                 this.zipCode = zipCode;
                 this.country = country;
                 this.note = note;
@@ -446,7 +449,7 @@ namespace QRCoder
                         payload += $"NOTE:{note}\r\n";
                     if (birthday != null)
                         payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";                    
-                    payload += $"ADR:,,{(!string.IsNullOrEmpty(street) ? street+" " : "")}{(!string.IsNullOrEmpty(houseNumber)?houseNumber:"")},{(!string.IsNullOrEmpty(city) ? city : "")},,{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    payload += $"ADR:,,{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")} {(!string.IsNullOrEmpty(street) ? street+" " : "")},{(!string.IsNullOrEmpty(city) ? city : "")},{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")},{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
                     if (!string.IsNullOrEmpty(phone))
                         payload += $"URL:{website}\r\n";
                     if (!string.IsNullOrEmpty(nickname))
@@ -511,7 +514,7 @@ namespace QRCoder
                         payload += "TYPE=HOME,PREF:";
                     else
                         payload += "TYPE=home,pref:";
-                    payload += $";;{(!string.IsNullOrEmpty(street) ? street + " " : "")}{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")};{(!string.IsNullOrEmpty(city) ? city : "")};;{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    payload += $";;{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")} {(!string.IsNullOrEmpty(street) ? street + " " : "")};{(!string.IsNullOrEmpty(city) ? city : "")};{(!string.IsNullOrEmpty(stateRegion) ? stateRegion: "")};{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
                     
                     if (birthday != null)
                         payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";
