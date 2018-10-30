@@ -1255,25 +1255,13 @@ namespace QRCoder
         {
             this.galoisField = new List<Antilog>();
 
+            int gfItem = 1;
             for (var i = 0; i < 256; i++)
             {
-                int gfItem;
-
-                if (i > 7)
-                {
-                    gfItem = this.galoisField[i - 1].IntegerValue * 2;
-                }
-                else
-                {
-                    gfItem = (int)Math.Pow(2, i);
-                }
-
-                if (gfItem > 255)
-                {
-                    gfItem = gfItem ^ 285;
-                }
-
                 this.galoisField.Add(new Antilog(i, gfItem));
+                gfItem *= 2;
+                if (gfItem > 255)
+                    gfItem ^= 285;
             }
         }
 
