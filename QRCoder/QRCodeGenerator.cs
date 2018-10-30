@@ -775,21 +775,13 @@ namespace QRCoder
         private EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
         {
             EncodingMode result = EncodingMode.Numeric;
-
-            if (forceUtf8)
-                return EncodingMode.Byte;
-
             foreach (char c in plainText)
             {
-                if (numTable.Contains(c))
-                    continue;
-
-                result = EncodingMode.Alphanumeric;
-
-                if (!alphanumEncTable.Contains(c))
+                if (forceUtf8 || !alphanumEncTable.Contains(c))
                     return EncodingMode.Byte;
+                if (!numTable.Contains(c))
+                    result = EncodingMode.Alphanumeric;
             }
-
             return result;
         }
 
