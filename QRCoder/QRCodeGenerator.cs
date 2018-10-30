@@ -265,7 +265,22 @@ namespace QRCoder
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var fStr = ReverseString(formatStr);
-                var modules = new[,] { { 8, 0, size - 1, 8 }, { 8, 1, size - 2, 8 }, { 8, 2, size - 3, 8 }, { 8, 3, size - 4, 8 }, { 8, 4, size - 5, 8 }, { 8, 5, size - 6, 8 }, { 8, 7, size - 7, 8 }, { 8, 8, size - 8, 8 }, { 7, 8, 8, size - 7 }, { 5, 8, 8, size - 6 }, { 4, 8, 8, size - 5 }, { 3, 8, 8, size - 4 }, { 2, 8, 8, size - 3 }, { 1, 8, 8, size - 2 }, { 0, 8, 8, size - 1 } };
+                var modules = new[,] {
+                    { 8, 0, size - 1, 8 },
+                    { 8, 1, size - 2, 8 },
+                    { 8, 2, size - 3, 8 },
+                    { 8, 3, size - 4, 8 },
+                    { 8, 4, size - 5, 8 },
+                    { 8, 5, size - 6, 8 },
+                    { 8, 7, size - 7, 8 },
+                    { 8, 8, size - 8, 8 },
+                    { 7, 8, 8, size - 7 },
+                    { 5, 8, 8, size - 6 },
+                    { 4, 8, 8, size - 5 },
+                    { 3, 8, 8, size - 4 },
+                    { 2, 8, 8, size - 3 },
+                    { 1, 8, 8, size - 2 },
+                    { 0, 8, 8, size - 1 } };
                 for (var i = 0; i < 15; i++)
                 {
                     var p1 = new Point(modules[i, 0], modules[i, 1]);
