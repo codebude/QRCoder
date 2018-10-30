@@ -5,7 +5,7 @@ using System.Text;
 
 namespace QRCoder
 {
-  
+
     // ReSharper disable once InconsistentNaming
     public class BitmapByteQRCode : AbstractQRCode, IDisposable
     {
@@ -29,7 +29,7 @@ namespace QRCoder
         public byte[] GetGraphic(int pixelsPerModule, byte[] darkColorRgb, byte[] lightColorRgb)
         {
             var sideLength = this.QrCodeData.ModuleMatrix.Count * pixelsPerModule;
-           
+
             var moduleDark = darkColorRgb.Reverse();
             var moduleLight = lightColorRgb.Reverse();
 
@@ -37,15 +37,15 @@ namespace QRCoder
 
             //header
             bmp.AddRange(new byte[] { 0x42, 0x4D, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1A, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00 });
-            
+
             //width
             bmp.AddRange(IntTo4Byte(sideLength));
             //height
             bmp.AddRange(IntTo4Byte(sideLength));
-            
+
             //header end
             bmp.AddRange(new byte[] { 0x01, 0x00, 0x18, 0x00 });
-           
+
             //draw qr code
             for (var x = sideLength-1; x >= 0; x = x - pixelsPerModule)
             {
@@ -82,7 +82,7 @@ namespace QRCoder
                 colorString = colorString.Substring(1);
             byte[] byteColor = new byte[colorString.Length / 2];
             for (int i = 0; i < byteColor.Length; i++)
-                byteColor[2-i] = byte.Parse(colorString.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);            
+                byteColor[2-i] = byte.Parse(colorString.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
             return byteColor;
         }
 

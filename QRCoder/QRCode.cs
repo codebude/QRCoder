@@ -14,17 +14,17 @@ namespace QRCoder
         public QRCode() { }
 
         public QRCode(QRCodeData data) : base(data) {}
-        
+
         public Bitmap GetGraphic(int pixelsPerModule)
         {
             return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
         }
-    
+
         public Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true)
         {
             return this.GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones);
         }
-    
+
         public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
         {
             var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
@@ -47,11 +47,11 @@ namespace QRCoder
                     }
                 }
             }
-    
+
             gfx.Save();
             return bmp;
         }
-    
+
         public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon=null, int iconSizePercent=15, int iconBorderWidth = 6, bool drawQuietZones = true)
         {
             var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
@@ -63,32 +63,32 @@ namespace QRCoder
             gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
             gfx.CompositingQuality = CompositingQuality.HighQuality;
             gfx.Clear(lightColor);
-    
+
             var drawIconFlag = icon != null && iconSizePercent>0 && iconSizePercent<=100;
-    
+
             GraphicsPath iconPath = null;
             float iconDestWidth=0, iconDestHeight=0, iconX=0, iconY=0;
-    
+
             if (drawIconFlag)
             {
                 iconDestWidth = iconSizePercent * bmp.Width / 100f;
                 iconDestHeight = drawIconFlag ? iconDestWidth * icon.Height / icon.Width : 0;
                 iconX = (bmp.Width - iconDestWidth) / 2;
                 iconY = (bmp.Height - iconDestHeight) / 2;
-    
+
                 var centerDest = new RectangleF(iconX - iconBorderWidth, iconY - iconBorderWidth, iconDestWidth + iconBorderWidth * 2, iconDestHeight + iconBorderWidth * 2);
                 iconPath = this.CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
             }
-    
+
             var lightBrush = new SolidBrush(lightColor);
             var darkBrush = new SolidBrush(darkColor);
 
-            
+
             for (var x = 0; x < size+offset; x = x + pixelsPerModule)
             {
                 for (var y = 0; y < size + offset; y = y + pixelsPerModule)
                 {
-                    
+
                     var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule)/pixelsPerModule - 1][(x + pixelsPerModule)/pixelsPerModule - 1];
                     if (module)
                     {
@@ -107,10 +107,10 @@ namespace QRCoder
                     }
                     else
                         gfx.FillRectangle(lightBrush, new Rectangle(x-offset, y-offset, pixelsPerModule, pixelsPerModule));
-                    
+
                 }
             }
-        
+
             if (drawIconFlag)
             {
                 var iconDestRect = new RectangleF(iconX, iconY, iconDestWidth, iconDestHeight);
@@ -120,7 +120,7 @@ namespace QRCoder
             gfx.Save();
             return bmp;
         }
-    
+
         internal GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
         {
             var roundedRect = new GraphicsPath();

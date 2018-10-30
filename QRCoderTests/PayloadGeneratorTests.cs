@@ -11,10 +11,10 @@ using static QRCoder.PayloadGenerator.SwissQrCode.Reference;
 
 namespace QRCoderTests
 {
-   
+
     public class PayloadGeneratorTests
     {
-        
+
         [Fact]
         [Category("PayloadGenerator/BitcoinAddress")]
         public void bitcoin_address_generator_can_generate_address()
@@ -93,7 +93,7 @@ namespace QRCoderTests
             generator
                 .ToString()
                 .ShouldBe("bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=.123");
-                        
+
             Thread.CurrentThread.CurrentCulture = currentCulture;
         }
 
@@ -230,7 +230,7 @@ namespace QRCoderTests
             generator.ToString().ShouldBe($"WIFI:T:WPA;S:\"0XA9B7F18CCE\";P:\"0X00105F0E6\";H:true;");
         }
 
-        
+
         [Fact]
         [Category("PayloadGenerator/Mail")]
         public void mail_should_build_type_mailto()
@@ -256,7 +256,7 @@ namespace QRCoderTests
             var encoding = PayloadGenerator.Mail.MailEncoding.MATMSG;
 
             var generator = new PayloadGenerator.Mail(receiver, subject, message, encoding);
-            
+
             generator.ToString().ShouldBe("MATMSG:TO:john@doe.com;SUB:A test mail;BODY:Just see if it works!;;");
         }
 
@@ -399,7 +399,7 @@ namespace QRCoderTests
             generator.ToString().ShouldBe("mmsto:01601234567?subject=A%20tiny%20SMS");
         }
 
-                
+
         [Fact]
         [Category("PayloadGenerator/MMS")]
         public void mms_should_add_unused_params()
@@ -444,7 +444,7 @@ namespace QRCoderTests
         [Category("PayloadGenerator/Geolocation")]
         public void geolocation_should_escape_input()
         {
-            var latitude = "51,227741"; 
+            var latitude = "51,227741";
             var longitude = "6,773456";
             var encoding = PayloadGenerator.Geolocation.GeolocationEncoding.GEO;
 
@@ -460,7 +460,7 @@ namespace QRCoderTests
         {
             var latitude = "51.227741";
             var longitude = "6.773456";
-         
+
             var generator = new PayloadGenerator.Geolocation(latitude, longitude);
 
             generator.ToString().ShouldBe("geo:51.227741,6.773456");
@@ -776,7 +776,7 @@ namespace QRCoderTests
             var purposeOfCreditTransfer = "1234";
             var messageToGirocodeUser = "Thanks for using Girocode";
 
-          
+
             var exception = Record.Exception(() => new PayloadGenerator.Girocode(iban, bic, name, amount, remittanceInformation,
                 PayloadGenerator.Girocode.TypeOfRemittance.Unstructured, purposeOfCreditTransfer, messageToGirocodeUser));
 
@@ -1098,7 +1098,7 @@ namespace QRCoderTests
                 .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
         }
 
-        
+
         [Fact]
         [Category("PayloadGenerator/BezahlCode")]
         public void bezahlcode_generator_can_generate_payload_singledirectdebitsepa()
@@ -1336,7 +1336,7 @@ namespace QRCoderTests
             var iban = "DE33100205000001194700";
             var bic = "BFSWDE33BER";
             var name = "Wikimedia Fördergesellschaft";
-                  
+
             var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban: iban, bic: bic));
 
             Assert.NotNull(exception);
@@ -1353,7 +1353,7 @@ namespace QRCoderTests
             var bnc = "100205000";
             var name = "Wikimedia Fördergesellschaft";
             var amount = 10;
-            
+
             var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, account: account, bnc: bnc, amount: amount));
 
             Assert.NotNull(exception);
@@ -1393,7 +1393,7 @@ namespace QRCoderTests
             var bic = "BFSWDE33BER";
             var name = "Wikimedia Fördergesellschaft";
             var amount = 10.00m;
-                  
+
             var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, iban: iban, bic: bic, amount: amount));
 
             Assert.NotNull(exception);
@@ -1417,7 +1417,7 @@ namespace QRCoderTests
             var periodicFirstExecutionDate = DateTime.Now;
             var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
             Currency currency = Currency.USD;
-            
+
             var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
             Assert.NotNull(exception);
@@ -1565,7 +1565,7 @@ namespace QRCoderTests
             var sepaReference = "Fake SEPA reference which is also much to long for the reference field.";
             var amount = 10.00m;
             Currency currency = Currency.USD;
-            
+
             var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
             Assert.NotNull(exception);
@@ -1666,7 +1666,7 @@ namespace QRCoderTests
             var postingKey = 69;
             var executionDate = new DateTime(2017, 1, 1);
             Currency currency = Currency.USD;
-            
+
 
             var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, executionDate));
 
@@ -1691,7 +1691,7 @@ namespace QRCoderTests
             var periodicFirstExecutionDate = DateTime.Now;
             var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
             Currency currency = Currency.USD;
-                        
+
             var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
             Assert.NotNull(exception);
@@ -1723,8 +1723,8 @@ namespace QRCoderTests
             exception.Message.ShouldBe("The periodicTimeunitRotation must be 1 or greater. (It means repeat the payment every 'periodicTimeunitRotation' weeks/months.");
         }
 
-        
-        
+
+
         [Fact]
         [Category("PayloadGenerator/SwissQrCode.Reference")]
         public void swissqrcode_generator_should_throw_reference_not_allowed()
@@ -1785,7 +1785,7 @@ namespace QRCoderTests
             Assert.IsType<SwissQrCodeReferenceException>(exception);
             exception.Message.ShouldBe("QR-reference must exist out of digits only.");
         }
-        
+
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode.Reference")]
@@ -1801,7 +1801,7 @@ namespace QRCoderTests
             Assert.IsType<SwissQrCodeReferenceException>(exception);
             exception.Message.ShouldBe("QR-references is invalid. Checksum error.");
         }
-        
+
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode.Reference")]
@@ -1834,7 +1834,7 @@ namespace QRCoderTests
             exception.Message.ShouldBe("The unstructured message must be shorter than 141 chars.");
         }
 
-        
+
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode.Iban")]
@@ -1884,7 +1884,7 @@ namespace QRCoderTests
         {
             var iban = "CHC2609000000857666015";
             var ibanType = PayloadGenerator.SwissQrCode.Iban.IbanType.Iban;
-                     
+
             var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
 
             Assert.NotNull(exception);
@@ -1916,7 +1916,7 @@ namespace QRCoderTests
             var zip = "3003";
             var city = "Bern";
             var country = "CH";
-           
+
             var generator = new PayloadGenerator.SwissQrCode.Contact(name, zip, city, country);
 
             generator
@@ -2150,7 +2150,7 @@ namespace QRCoderTests
             exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't.");
         }
 
-           
+
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode")]
@@ -2178,7 +2178,7 @@ namespace QRCoderTests
             var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
             var amount = 100.25m;
             var reqDateOfPayment = new DateTime(2017, 03, 01);
-           
+
             var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, contactGeneral, amount, reqDateOfPayment, contactGeneral);
 
             generator
@@ -2312,7 +2312,7 @@ namespace QRCoderTests
             pg.ToString().ShouldBe("otpauth://hotp/Google:test@google.com?secret=pwq65q55&issuer=Google&counter=500");
         }
         //TODO: Include more tests for the one time password payload generator
-        
+
 
         [Fact]
         [Category("PayloadGenerator/ShadowSocksConfig")]
@@ -2339,13 +2339,13 @@ namespace QRCoderTests
             var method = PayloadGenerator.ShadowSocksConfig.Method.Rc4Md5;
             var tag = "server42";
             var generator = new PayloadGenerator.ShadowSocksConfig(host, port, password, method, tag);
-           
+
             generator
                 .ToString()
                 .ShouldBe("ss://cmM0LW1kNTpzM2NyM3RAMTkyLjE2OC4yLjU6NjU1MzU=#server42");
         }
 
-        
+
         [Fact]
         [Category("PayloadGenerator/ShadowSocksConfig")]
         public void shadowsocks_generator_should_throw_portrange_low_exception()
@@ -2354,7 +2354,7 @@ namespace QRCoderTests
             var port = 0;
             var password = "s3cr3t";
             var method = PayloadGenerator.ShadowSocksConfig.Method.Rc4Md5;
-            
+
             var exception = Record.Exception(() => new PayloadGenerator.ShadowSocksConfig(host, port, password, method));
 
             Assert.NotNull(exception);
