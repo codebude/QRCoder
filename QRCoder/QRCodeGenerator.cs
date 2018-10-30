@@ -307,7 +307,7 @@ namespace QRCoder
 
                 foreach (var pattern in methods)
                 {
-                    if (pattern.Name.Length == 8 && pattern.Name.Substring(0, 7) == "Pattern")
+                    if (pattern.Name.Length == 8 && pattern.Name.StartsWith("Pattern"))
                     {
                         var qrTemp = new QRCodeData(version);
                         for (var y = 0; y < size; y++)
@@ -930,12 +930,12 @@ namespace QRCoder
             }
             if (plainText.Length == 2)
             {
-                var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
+                var dec = Convert.ToInt32(plainText);
                 codeText += DecToBin(dec, 7);
             }
             else if (plainText.Length == 1)
             {
-                var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
+                var dec = Convert.ToInt32(plainText);
                 codeText += DecToBin(dec, 4);
             }
             return codeText;
@@ -1112,12 +1112,8 @@ namespace QRCoder
         private void CreateAlphanumEncDict()
         {
             this.alphanumEncDict = new Dictionary<char, int>();
-            //alphanumEncTable.ToList().Select((x, i) => new { Chr = x, Index = i }).ToList().ForEach(x => this.alphanumEncDict.Add(x.Chr, x.Index));
-            var resList = alphanumEncTable.ToList().Select((x, i) => new { Chr = x, Index = i }).ToList();
-            foreach (var res in resList)
-            {
-                this.alphanumEncDict.Add(res.Chr, res.Index);
-            }
+            for (int i = 0; i < alphanumEncTable.Length; i++)
+                this.alphanumEncDict.Add(alphanumEncTable[i], i);
         }
 
         private void CreateAlignmentPatternTable()
