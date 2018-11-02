@@ -82,7 +82,7 @@ namespace QRCoder
                 colorString = colorString.Substring(1);
             byte[] byteColor = new byte[colorString.Length / 2];
             for (int i = 0; i < byteColor.Length; i++)
-                byteColor[2-i] = byte.Parse(colorString.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);            
+                byteColor[i] = byte.Parse(colorString.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);            
             return byteColor;
         }
 
