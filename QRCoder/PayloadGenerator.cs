@@ -384,6 +384,7 @@ namespace QRCoder
             private readonly string country;
             private readonly string note;
             private readonly ContactOutputType outputType;
+            private readonly AddressOrder addressOrder;
 
 
             /// <summary>
@@ -405,8 +406,9 @@ namespace QRCoder
             /// <param name="stateRegion">State or Region</param>
             /// <param name="zipCode">Zip code</param>
             /// <param name="country">Country</param>
+            /// <param name="addressOrder">The address order format to use</param>
             /// <param name="note">Memo text / notes</param>            
-            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string stateRegion = null, string zipCode = null, string country = null, string note = null)
+            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default)
             {             
                 this.firstname = firstname;
                 this.lastname = lastname;
@@ -423,6 +425,7 @@ namespace QRCoder
                 this.stateRegion = stateRegion;
                 this.zipCode = zipCode;
                 this.country = country;
+                this.addressOrder = addressOrder;
                 this.note = note;
                 this.outputType = outputType;
             }
@@ -448,9 +451,17 @@ namespace QRCoder
                     if (!string.IsNullOrEmpty(note))
                         payload += $"NOTE:{note}\r\n";
                     if (birthday != null)
-                        payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";                    
-                    payload += $"ADR:,,{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")} {(!string.IsNullOrEmpty(street) ? street+" " : "")},{(!string.IsNullOrEmpty(city) ? city : "")},{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")},{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
-                    if (!string.IsNullOrEmpty(phone))
+                        payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";
+                    string addressString = string.Empty;
+                    if(addressOrder == AddressOrder.Default)
+                    {
+                        addressString = $"ADR:,,{(!string.IsNullOrEmpty(street) ? street + " " : "")} {(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")},{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(city) ? city : "")},{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    }
+                    else
+                    {
+                        addressString = $"ADR:,,{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")} {(!string.IsNullOrEmpty(street) ? street + " " : "")},{(!string.IsNullOrEmpty(city) ? city : "")},{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")},{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    }
+                    payload += addressString;
                         payload += $"URL:{website}\r\n";
                     if (!string.IsNullOrEmpty(nickname))
                         payload += $"NICKNAME:{nickname}\r\n";
@@ -514,7 +525,16 @@ namespace QRCoder
                         payload += "TYPE=HOME,PREF:";
                     else
                         payload += "TYPE=home,pref:";
-                    payload += $";;{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")} {(!string.IsNullOrEmpty(street) ? street + " " : "")};{(!string.IsNullOrEmpty(city) ? city : "")};{(!string.IsNullOrEmpty(stateRegion) ? stateRegion: "")};{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    string addressString = string.Empty;
+                    if(addressOrder == AddressOrder.Default)
+                    {
+                        addressString = $";;{(!string.IsNullOrEmpty(street) ? street + " " : "")} {(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")};{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(city) ? city : "")};{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    }
+                    else
+                    {
+                        addressString = $";;{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")} {(!string.IsNullOrEmpty(street) ? street + " " : "")};{(!string.IsNullOrEmpty(city) ? city : "")};{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")};{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    }
+                    payload += addressString;
                     
                     if (birthday != null)
                         payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";
@@ -542,6 +562,18 @@ namespace QRCoder
                 VCard21,
                 VCard3,
                 VCard4
+            }
+
+
+            /// <summary>
+            /// define the address format
+            /// Default: European format, ([Street] [House Number] and [Postal Code] [City]
+            /// Reversed: North American and others format ([House Number] [Street] and [City] [Postal Code])
+            /// </summary>
+            public enum AddressOrder
+            {
+                Default,
+                Reversed
             }
         }
 
