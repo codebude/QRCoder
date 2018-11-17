@@ -147,7 +147,7 @@ namespace QRCoder
             /// </summary>
             /// <param name="number">Receiver phone number</param>
             /// <param name="subject">Text of the SMS</param>
-            /// <param name="encoding">Encoding type</param>        
+            /// <param name="encoding">Encoding type</param>
             public SMS(string number, string subject, SMSEncoding encoding = SMSEncoding.SMS)
             {
                 this.number = number;
@@ -278,7 +278,7 @@ namespace QRCoder
             {
                 this.number = number;
             }
-                        
+
             public override string ToString()
             {
                 return $"tel:{this.number}";
@@ -481,7 +481,7 @@ namespace QRCoder
 
                     payload += $"N:{(!string.IsNullOrEmpty(lastname) ? lastname : "")};{(!string.IsNullOrEmpty(firstname) ? firstname : "")};;;\r\n";
                     payload += $"FN:{(!string.IsNullOrEmpty(firstname) ? firstname + " " : "")}{(!string.IsNullOrEmpty(lastname) ? lastname : "")}\r\n";
-                    
+
                     if (!string.IsNullOrEmpty(phone))
                     {
                         payload += $"TEL;";
@@ -517,7 +517,7 @@ namespace QRCoder
                             payload += $"TYPE=work,voice;VALUE=uri:tel:{workPhone}";
                         payload += "\r\n";
                     }
-                
+
 
                     payload += "ADR;";
                     if (outputType.Equals(ContactOutputType.VCard21))
@@ -546,11 +546,11 @@ namespace QRCoder
                     if (!string.IsNullOrEmpty(note))
                         payload += $"NOTE:{note}\r\n";
                     if (!outputType.Equals(ContactOutputType.VCard21) && !string.IsNullOrEmpty(nickname))
-                        payload += $"NICKNAME:{nickname}\r\n";                    
+                        payload += $"NICKNAME:{nickname}\r\n";
 
                     payload += "END:VCARD";
                 }
-                
+
                 return payload;
             }
 
@@ -829,7 +829,7 @@ namespace QRCoder
                 private string name, street, houseNumber, zipCode, city, country;
 
                 /// <summary>
-                /// Contact type. Can be used for payee, ultimate payee, etc. 
+                /// Contact type. Can be used for payee, ultimate payee, etc.
                 /// </summary>
                 /// <param name="name">Last name or company (optional first name)</param>
                 /// <param name="zipCode">Zip-/Postcode</param>
@@ -883,7 +883,7 @@ namespace QRCoder
                     try { var cultureCheck = new CultureInfo(country.ToUpper()); }
                     catch { throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't."); }
 #endif
-                   
+
                     this.country = country;
                 }
 
@@ -935,7 +935,7 @@ namespace QRCoder
                     SwissQrCodePayload += ultimateCreditor.ToString();
                 else
                     SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6).ToArray());
-                
+
                 //CcyAmtDate "logical" element
                 SwissQrCodePayload += (amount != null ? $"{amount:0.00}" : string.Empty) + br; //Amt
                 SwissQrCodePayload += currency + br; //Ccy
@@ -953,7 +953,7 @@ namespace QRCoder
                 SwissQrCodePayload += (!string.IsNullOrEmpty(reference.ReferenceText) ? reference.ReferenceText : string.Empty) + br; //Ref
                 SwissQrCodePayload += (!string.IsNullOrEmpty(reference.UnstructureMessage) ? reference.UnstructureMessage : string.Empty) + br; //Ustrd
 
-                //AltPmtInf "logical" element               
+                //AltPmtInf "logical" element
                 if (!string.IsNullOrEmpty(alternativeProcedure1))
                     SwissQrCodePayload += alternativeProcedure1.Replace("\n", "") + br; //AltPmt
                 if (!string.IsNullOrEmpty(alternativeProcedure2))
@@ -963,14 +963,14 @@ namespace QRCoder
                 return SwissQrCodePayload;
             }
 
-            
+
 
 
             /// <summary>
-            /// ISO 4217 currency codes 
+            /// ISO 4217 currency codes
             /// </summary>
             public enum Currency
-            {              
+            {
                 CHF = 756,
                 EUR = 978
             }
@@ -992,7 +992,7 @@ namespace QRCoder
                 }
             }
         }
-        
+
         public class Girocode : Payload
         {
             //Keep in mind, that the ECC level has to be set to "M" when generating a Girocode!
@@ -1004,7 +1004,7 @@ namespace QRCoder
             private readonly GirocodeVersion version;
             private readonly GirocodeEncoding encoding;
             private readonly TypeOfRemittance typeOfRemittance;
-                       
+
 
             /// <summary>
             /// Generates the payload for a Girocode (QR-Code with credit transfer information).
@@ -1140,8 +1140,8 @@ namespace QRCoder
             /// <param name="bic">BIC</param>
             /// <param name="reason">Reason (Verwendungszweck)</param>
             public BezahlCode(AuthorityType authority, string name, string account = "", string bnc = "", string iban = "", string bic = "", string reason = "") : this(authority, name, account, bnc, iban, bic, 0, string.Empty, 0, null, null, string.Empty, string.Empty, null, reason, 0, string.Empty, Currency.EUR, null, 1)
-            {                                
-            }           
+            {
+            }
 
 
             /// <summary>
@@ -1276,7 +1276,7 @@ namespace QRCoder
                         if (postingKey < 0 || postingKey >= 100)
                             throw new BezahlCodeException("PostingKey must be within 0 and 99.");
                         this.postingKey = postingKey;
-                    }                  
+                    }
                 }
 
                 //SEPA payment types
@@ -1314,7 +1314,7 @@ namespace QRCoder
                     if (amount < 0.01m || amount > 999999999.99m)
                         throw new BezahlCodeException("Amount has to at least 0.01 and must be smaller or equal to 999999999.99.");
                     this.amount = amount;
-                    
+
                     this.currency = currency;
 
                     if (executionDate == null)
@@ -1341,15 +1341,15 @@ namespace QRCoder
                     }
 
                 }
-                
-                
-                
+
+
+
             }
 
             public override string ToString()
             {
                 var bezahlCodePayload = $"bank://{authority}?";
-                
+
                 bezahlCodePayload += $"name={Uri.EscapeDataString(name)}&";
 
                 if (!authority.Equals(AuthorityType.contact) && !authority.Equals(AuthorityType.contact_v2))
@@ -1361,7 +1361,7 @@ namespace QRCoder
                         bezahlCodePayload += $"account={account}&";
                         bezahlCodePayload += $"bnc={bnc}&";
                         if (postingKey > 0)
-                            bezahlCodePayload += $"postingkey={postingKey}&";     
+                            bezahlCodePayload += $"postingkey={postingKey}&";
                     }
                     else
                     {
@@ -1428,7 +1428,7 @@ namespace QRCoder
             }
 
             /// <summary>
-            /// ISO 4217 currency codes 
+            /// ISO 4217 currency codes
             /// </summary>
             public enum Currency
             {
@@ -1633,7 +1633,7 @@ namespace QRCoder
                 [Obsolete]
                 singledirectdebit,
                 /// <summary>
-                /// Single SEPA debit (SEPA-Lastschrift)                
+                /// Single SEPA debit (SEPA-Lastschrift)
                 /// </summary>
                 singledirectdebitsepa,
                 /// <summary>
@@ -1865,7 +1865,7 @@ namespace QRCoder
                 }
             }
         }
-        
+
         public class ShadowSocksConfig : Payload
         {
             private readonly string hostname, password, tag, methodStr;
@@ -1921,7 +1921,7 @@ namespace QRCoder
                 this.password = password;
                 this.method = method;
                 this.methodStr = encryptionTexts[method.ToString()];
-                this.tag = tag;    
+                this.tag = tag;
             }
 
             public override string ToString()
@@ -1982,12 +1982,12 @@ namespace QRCoder
                 }
             }
         }
-        
+
         public class MoneroTransaction : Payload
         {
             private readonly string address, txPaymentId, recipientName, txDescription;
             private readonly float? txAmount;
-                       
+
             /// <summary>
             /// Creates a monero transaction payload
             /// </summary>
@@ -2018,7 +2018,7 @@ namespace QRCoder
                 moneroUri += (!string.IsNullOrEmpty(txDescription) ? $"tx_description={Uri.EscapeDataString(txDescription)}" : string.Empty);
                 return moneroUri.TrimEnd('&');
             }
-                        
+
 
             public class MoneroTransactionException : Exception
             {
@@ -2171,7 +2171,7 @@ namespace QRCoder
             return inp;
         }
 
-        
+
 
         public static bool ChecksumMod10(string digits)
         {

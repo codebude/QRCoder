@@ -53,7 +53,7 @@ namespace QRCoderDemo
                 }
             }
         }
-        
+
         private Bitmap GetIconBitmap()
         {
             Bitmap img = null;
@@ -63,8 +63,8 @@ namespace QRCoderDemo
                 {
                     img = new Bitmap(iconPath.Text);
                 }
-                catch (Exception) 
-                { 
+                catch (Exception)
+                {
                 }
             }
             return img;
@@ -89,7 +89,7 @@ namespace QRCoderDemo
                 iconPath.Text = "";
             }
         }
-        
+
 
         private void btn_save_Click(object sender, EventArgs e)
         {
@@ -142,7 +142,7 @@ namespace QRCoderDemo
 
         public void ExportToBmp(string path)
         {
-            
+
         }
 
         private void textBoxQRCode_TextChanged(object sender, EventArgs e)

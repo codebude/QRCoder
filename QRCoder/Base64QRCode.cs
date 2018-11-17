@@ -27,12 +27,12 @@ namespace QRCoder
         public override void SetQRCodeData(QRCodeData data) {
             this.qr.SetQRCodeData(data);
         }
-        
+
         public string GetGraphic(int pixelsPerModule)
         {
             return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
         }
-                
+
 
         public string GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
         {
@@ -65,7 +65,7 @@ namespace QRCoder
             var base64 = string.Empty;
             ImageFormat iFormat;
             switch (imgType) {
-                case ImageType.Png: 
+                case ImageType.Png:
                     iFormat = ImageFormat.Png;
                     break;
                 case ImageType.Jpeg:
@@ -82,7 +82,7 @@ namespace QRCoder
             {
                 bmp.Save(memoryStream, iFormat);
                 base64 = Convert.ToBase64String(memoryStream.ToArray(), Base64FormattingOptions.None);
-            }                
+            }
             return base64;
         }
 
@@ -91,7 +91,7 @@ namespace QRCoder
             Gif,
             Jpeg,
             Png
-        }      
+        }
 
     }
 }
