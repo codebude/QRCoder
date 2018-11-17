@@ -25,9 +25,7 @@
 	</metadata>
 	<files>
 		<file src="Build\lib\net35\QRCoder.dll" target="lib\net35\" />
-		<file src="Build\lib\net35\UnityEngine.dll" target="lib\net35\" />
 		<file src="Build\lib\net40\QRCoder.dll" target="lib\net40\" />
-		<file src="Build\lib\net40\UnityEngine.dll" target="lib\net40\" />
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\portable-net45+wpa81+wp81+wp8+uap\" />
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\portable-net45+win8+wpa81\" />
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\uap\" />	
@@ -37,8 +35,6 @@
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\monoandroid\" />
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\xamarinios\" />
 		<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard1.6\" />
-		<file src="Build\lib\net35\UnityEngine.dll" target="lib\netstandard1.6\" />
 		<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard2.0\" />
-		<file src="Build\lib\net35\UnityEngine.dll" target="lib\netstandard2.0\" />
 	</files>
 </package>
