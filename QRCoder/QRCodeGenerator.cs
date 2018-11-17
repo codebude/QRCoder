@@ -95,9 +95,9 @@ namespace QRCoder
                 var eccWordList = this.CalculateECCWords(bitStr, eccInfo);
                 var eccWordListDec = this.BinaryStringListToDecList(eccWordList);
                 codeWordWithECC.Add(
-                    new CodewordBlock(1, 
-                                      i + 1, 
-                                      bitStr, 
+                    new CodewordBlock(1,
+                                      i + 1,
+                                      bitStr,
                                       bitBlockList,
                                       eccWordList,
                                       bitBlockListDec,
@@ -265,7 +265,22 @@ namespace QRCoder
             {
                 var size = qrCode.ModuleMatrix.Count;
                 var fStr = ReverseString(formatStr);
-                var modules = new[,] { { 8, 0, size - 1, 8 }, { 8, 1, size - 2, 8 }, { 8, 2, size - 3, 8 }, { 8, 3, size - 4, 8 }, { 8, 4, size - 5, 8 }, { 8, 5, size - 6, 8 }, { 8, 7, size - 7, 8 }, { 8, 8, size - 8, 8 }, { 7, 8, 8, size - 7 }, { 5, 8, 8, size - 6 }, { 4, 8, 8, size - 5 }, { 3, 8, 8, size - 4 }, { 2, 8, 8, size - 3 }, { 1, 8, 8, size - 2 }, { 0, 8, 8, size - 1 } };
+                var modules = new[,] {
+                    { 8, 0, size - 1, 8 },
+                    { 8, 1, size - 2, 8 },
+                    { 8, 2, size - 3, 8 },
+                    { 8, 3, size - 4, 8 },
+                    { 8, 4, size - 5, 8 },
+                    { 8, 5, size - 6, 8 },
+                    { 8, 7, size - 7, 8 },
+                    { 8, 8, size - 8, 8 },
+                    { 7, 8, 8, size - 7 },
+                    { 5, 8, 8, size - 6 },
+                    { 4, 8, 8, size - 5 },
+                    { 3, 8, 8, size - 4 },
+                    { 2, 8, 8, size - 3 },
+                    { 1, 8, 8, size - 2 },
+                    { 0, 8, 8, size - 1 } };
                 for (var i = 0; i < 15; i++)
                 {
                     var p1 = new Point(modules[i, 0], modules[i, 1]);
@@ -274,7 +289,7 @@ namespace QRCoder
                     qrCode.ModuleMatrix[p2.Y][p2.X] = fStr[i] == '1';
                 }
             }
-            
+
 
             public static int MaskCode(ref QRCodeData qrCode, int version, ref List<Rectangle> blockedModules, ECCLevel eccLevel)
             {
@@ -283,7 +298,7 @@ namespace QRCoder
 
                 var size = qrCode.ModuleMatrix.Count;
 
-              
+
                 #if NET40
                     var methods = typeof (MaskPattern).GetMethods();
                 #else
@@ -292,7 +307,7 @@ namespace QRCoder
 
                 foreach (var pattern in methods)
                 {
-                    if (pattern.Name.Length == 8 && pattern.Name.Substring(0, 7) == "Pattern")
+                    if (pattern.Name.Length == 8 && pattern.Name.StartsWith("Pattern"))
                     {
                         var qrTemp = new QRCodeData(version);
                         for (var y = 0; y < size; y++)
@@ -565,7 +580,7 @@ namespace QRCoder
                         score4 = 0;
                     var size = qrCode.ModuleMatrix.Count;
 
-                    //Penalty 1                   
+                    //Penalty 1
                     for (var y = 0; y < size; y++)
                     {
                         var modInRow = 0;
@@ -675,7 +690,7 @@ namespace QRCoder
                         foreach (bool bit in row)
                             if (bit)
                                 blackModules++;
-                    
+
                     var percent = (blackModules / (qrCode.ModuleMatrix.Count * qrCode.ModuleMatrix.Count)) * 100;
                     var prevMultipleOf5 = Math.Abs((int) Math.Floor(percent/5)*5 - 50)/5;
                     var nextMultipleOf5 = Math.Abs((int)Math.Floor(percent / 5) * 5 -45)/5;
@@ -700,12 +715,12 @@ namespace QRCoder
             for (var i = 0; i < generatorPolynom.PolyItems.Count; i++)
                 generatorPolynom.PolyItems[i] = new PolynomItem(generatorPolynom.PolyItems[i].Coefficient,
                     generatorPolynom.PolyItems[i].Exponent + (messagePolynom.PolyItems.Count-1));
-            
+
             var leadTermSource = messagePolynom;
             for (var i = 0; (leadTermSource.PolyItems.Count > 0 && leadTermSource.PolyItems[leadTermSource.PolyItems.Count - 1].Exponent > 0); i++)
             {
                 if (leadTermSource.PolyItems[0].Coefficient == 0)
-                {   
+                {
                     leadTermSource.PolyItems.RemoveAt(0);
                     leadTermSource.PolyItems.Add(new PolynomItem(0, leadTermSource.PolyItems[leadTermSource.PolyItems.Count - 1].Exponent - 1));
                 }
@@ -760,21 +775,13 @@ namespace QRCoder
         private EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
         {
             EncodingMode result = EncodingMode.Numeric;
-
-            if (forceUtf8)
-                return EncodingMode.Byte;
-
             foreach (char c in plainText)
             {
-                if (numTable.Contains(c))
-                    continue;
-
-                result = EncodingMode.Alphanumeric;
-
-                if (!alphanumEncTable.Contains(c))
+                if (forceUtf8 || !alphanumEncTable.Contains(c))
                     return EncodingMode.Byte;
+                if (!numTable.Contains(c))
+                    result = EncodingMode.Alphanumeric;
             }
-
             return result;
         }
 
@@ -812,7 +819,7 @@ namespace QRCoder
         }
 
         private List<string> BinaryStringToBitBlockList(string bitString)
-        { 
+        {
             return new List<char>(bitString.ToCharArray()).Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / 8)
                 .Select(x => String.Join("", x.Select(v => v.Value.ToString()).ToArray()))
@@ -923,12 +930,12 @@ namespace QRCoder
             }
             if (plainText.Length == 2)
             {
-                var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
+                var dec = Convert.ToInt32(plainText);
                 codeText += DecToBin(dec, 7);
             }
             else if (plainText.Length == 1)
             {
-                var dec = Convert.ToInt32(plainText.Substring(0, plainText.Length));
+                var dec = Convert.ToInt32(plainText);
                 codeText += DecToBin(dec, 4);
             }
             return codeText;
@@ -1053,7 +1060,7 @@ namespace QRCoder
             }
             return resultPolynom;
         }
-      
+
 
         private Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
         {
@@ -1105,12 +1112,8 @@ namespace QRCoder
         private void CreateAlphanumEncDict()
         {
             this.alphanumEncDict = new Dictionary<char, int>();
-            //alphanumEncTable.ToList().Select((x, i) => new { Chr = x, Index = i }).ToList().ForEach(x => this.alphanumEncDict.Add(x.Chr, x.Index));
-            var resList = alphanumEncTable.ToList().Select((x, i) => new { Chr = x, Index = i }).ToList();
-            foreach (var res in resList)
-            {
-                this.alphanumEncDict.Add(res.Chr, res.Index);
-            }
+            for (int i = 0; i < alphanumEncTable.Length; i++)
+                this.alphanumEncDict.Add(alphanumEncTable[i], i);
         }
 
         private void CreateAlignmentPatternTable()
@@ -1255,25 +1258,13 @@ namespace QRCoder
         {
             this.galoisField = new List<Antilog>();
 
+            int gfItem = 1;
             for (var i = 0; i < 256; i++)
             {
-                int gfItem;
-
-                if (i > 7)
-                {
-                    gfItem = this.galoisField[i - 1].IntegerValue * 2;
-                }
-                else
-                {
-                    gfItem = (int)Math.Pow(2, i);
-                }
-
-                if (gfItem > 255)
-                {
-                    gfItem = gfItem ^ 285;
-                }
-
                 this.galoisField.Add(new Antilog(i, gfItem));
+                gfItem *= 2;
+                if (gfItem > 255)
+                    gfItem ^= 285;
             }
         }
 

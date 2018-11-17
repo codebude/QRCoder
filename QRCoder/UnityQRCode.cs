@@ -10,7 +10,7 @@ namespace QRCoder
         /// </summary>
         public UnityQRCode() { }
         public UnityQRCode(QRCodeData data) : base(data) {}
-        
+
         public Texture2D GetGraphic(int pixelsPerModule)
         {
             return this.GetGraphic(pixelsPerModule, Color.black, Color.white);

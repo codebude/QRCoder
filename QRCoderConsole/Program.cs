@@ -179,7 +179,7 @@ namespace QRCoderConsole
                         case SupportedImageFormat.Eps:
                             using (var code = new PostscriptQRCode(data))
                             {
-                                var test = code.GetGraphic(pixelsPerModule, foreground, background, true, 
+                                var test = code.GetGraphic(pixelsPerModule, foreground, background, true,
                                     imgFormat == SupportedImageFormat.Eps);
                                 using (var f = File.CreateText(outputFileName))
                                 {

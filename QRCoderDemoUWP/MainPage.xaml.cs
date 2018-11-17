@@ -60,7 +60,7 @@ namespace QRCoderDemoUWP
                     var image = new BitmapImage();
                     await image.SetSourceAsync(stream);
 
-                    imageViewerBmp.Source = image;                    
+                    imageViewerBmp.Source = image;
                 }
 
                 //Create byte/raw png qr code
