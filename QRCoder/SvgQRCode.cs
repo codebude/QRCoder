@@ -52,7 +52,7 @@ namespace QRCoder
             {
                 for (int yi = offset; yi < offset + drawableModulesCount; yi++)
                 {
-                    if (this.QrCodeData.ModuleMatrix[xi][yi])
+                    if (this.QrCodeData.ModuleMatrix[yi][xi])
                     {
                         var x = (xi - offset) * pixelsPerModule;
                         var y = (yi - offset) * pixelsPerModule;
