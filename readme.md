@@ -80,7 +80,7 @@ Besides the normal QRCode class (which is shown in the example above) for creati
 * [XamlQRCode<sup>*</sup>](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail)
 
 *(&ast;) - These classes are only available in the .NET Framework/.NET Standard version. If you use the PCL version (e.g. for Universal apps), you have to use either BitmapByteQRCode or PngByteQRCode classes.*  
-*(&ast;&ast;) - This class is hosted in an [own package](https://github.com/codebude/QRCoder.Unity), since it brings an additional DLLs with it.*
+*(&ast;&ast;) - This class is hosted in an own package ([QRCoder.Unity](https://github.com/codebude/QRCoder.Unity) or [QRCoder.Unity.Light](https://www.nuget.org/packages/QRCoder.Unity.Light/)), since it brings an additional DLLs with it.*
 
 
 For more information about the different rendering types click on one of the types in the list above or have a look at: [Wiki: Advanced usage - QR-Code renderers](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
