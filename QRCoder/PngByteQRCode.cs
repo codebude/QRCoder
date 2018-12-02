@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder
 {
@@ -313,6 +314,17 @@ namespace QRCoder
 
                 return c ^ 0xffffffff;
             }
+        }
+    }
+
+    public static class PngByteQRCodeHelper
+    {
+        public static byte[] GetQRCode(string plainText, int pixelsPerModule, byte[] darkColorRgba, byte[] lightColorRgba, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
+        {
+            using (var qrGenerator = new QRCodeGenerator())
+            using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
+            using (var qrCode = new PngByteQRCode(qrCodeData))
+                return qrCode.GetGraphic(pixelsPerModule, darkColorRgba, lightColorRgba);
         }
     }
 }
