@@ -937,7 +937,9 @@ namespace QRCoder
                     SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6).ToArray());
 
                 //CcyAmtDate "logical" element
-                SwissQrCodePayload += (amount != null ? $"{amount:0.00}" : string.Empty) + br; //Amt
+                var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+                nfi.NumberGroupSeparator = " ";
+                SwissQrCodePayload += (amount != null ? $"{amount.Value.ToString("#,0.00", nfi)}" : string.Empty) + br; //Amt
                 SwissQrCodePayload += currency + br; //Ccy
                 SwissQrCodePayload += (requestedDateOfPayment != null ?  ((DateTime)requestedDateOfPayment).ToString("yyyy-MM-dd") : string.Empty) + br; //ReqdExctnDt
 
