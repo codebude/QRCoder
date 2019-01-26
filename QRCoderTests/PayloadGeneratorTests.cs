@@ -2567,12 +2567,25 @@ namespace QRCoderTests
         [Category("PayloadGenerator/WhatsAppMessage")]
         public void whatsapp_generator_can_generate_payload_simple()
         {
+            var number = "01601234567";
+            var msg = "This is a sample message with Umlauts: Ä,ö, ü and ß.";
+            var generator = new PayloadGenerator.WhatsAppMessage(number, msg);
+
+            generator
+                .ToString()
+                .ShouldBe("whatsapp://send?phone=01601234567&text=This%20is%20a%20sample%20message%20with%20Umlauts%3A%20%C3%84%2C%C3%B6%2C%20%C3%BC%20and%20%C3%9F.");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/WhatsAppMessage")]
+        public void whatsapp_should_add_unused_params()
+        {
             var msg = "This is a sample message with Umlauts: Ä,ö, ü and ß.";
             var generator = new PayloadGenerator.WhatsAppMessage(msg);
 
             generator
                 .ToString()
-                .ShouldBe("whatsapp://send?text=This%20is%20a%20sample%20message%20with%20Umlauts%3A%20%C3%84%2C%C3%B6%2C%20%C3%BC%20and%20%C3%9F.");
+                .ShouldBe("whatsapp://send?phone=&text=This%20is%20a%20sample%20message%20with%20Umlauts%3A%20%C3%84%2C%C3%B6%2C%20%C3%BC%20and%20%C3%9F.");
         }
 
 
