@@ -72,6 +72,27 @@ namespace QRCoder
 
             bitString += codedText;
 
+            return CreateQrCode(bitString, eccLevel, version);
+        }
+
+        public QRCodeData CreateQrCode(byte[] binaryData, ECCLevel eccLevel)
+        {
+            int version = this.GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
+
+            string modeIndicator = DecToBin((int)EncodingMode.Byte, 4);
+            string countIndicator = DecToBin(binaryData.Length, this.GetCountIndicatorLength(version, EncodingMode.Byte));
+
+            string bitString = modeIndicator + countIndicator;
+            foreach (byte b in binaryData)
+            {
+                bitString += DecToBin(b, 8);
+            }
+
+            return CreateQrCode(bitString, eccLevel, version);
+        }
+
+        private QRCodeData CreateQrCode(string bitString, ECCLevel eccLevel, int version)
+        {
             //Fill up data code word
             var eccInfo = this.capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel.Equals(eccLevel));
             var dataLength = eccInfo.TotalDataCodewords * 8;
