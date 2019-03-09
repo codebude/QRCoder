@@ -551,7 +551,7 @@ namespace QRCoder
                     
                     if (birthday != null)
                         payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";
-                    if (!string.IsNullOrEmpty(phone))
+                    if (!string.IsNullOrEmpty(website))
                         payload += $"URL:{website}\r\n";
                     if (!string.IsNullOrEmpty(email))
                         payload += $"EMAIL:{email}\r\n";
