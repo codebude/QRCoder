@@ -49,10 +49,10 @@ namespace QRCoder
 
             var group = new GeometryGroup();
             double x = 0d, y = 0d;
-            for (int xi = offsetModules; xi < drawableModulesCount; xi++)
+            for (int xi = offsetModules; xi < drawableModulesCount + offsetModules; xi++)
             {
                 y = 0d;
-                for (int yi = offsetModules; yi < drawableModulesCount; yi++)
+                for (int yi = offsetModules; yi < drawableModulesCount + offsetModules; yi++)
                 {
                     if (this.QrCodeData.ModuleMatrix[yi][xi])
                     {
