@@ -20,7 +20,7 @@ namespace QRCoderTests
             var gen = new QRCodeGenerator();
 
             var checkString = string.Empty;
-            var gField = gen.GetType().GetField("galoisField", BindingFlags.NonPublic | BindingFlags.Instance);         
+            var gField = gen.GetType().GetField("galoisField", BindingFlags.NonPublic | BindingFlags.Static);         
             foreach (var listitem in (System.Collections.IEnumerable)gField.GetValue(gen))
             {
                 foreach (PropertyInfo prop in listitem.GetType().GetProperties())
@@ -37,7 +37,7 @@ namespace QRCoderTests
             var gen = new QRCodeGenerator();
 
             var checkString = string.Empty;
-            var gField = gen.GetType().GetField("alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Instance);
+            var gField = gen.GetType().GetField("alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Static);
             foreach (var listitem in (Dictionary<char, int>)gField.GetValue(gen))
             {
                 checkString += $"{listitem.Key},{listitem.Value}:";
