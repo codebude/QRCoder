@@ -36,23 +36,43 @@ namespace QRCoder
 
         public QRCodeData CreateQrCode(PayloadGenerator.Payload payload)
         {
-            return CreateQrCode(payload.ToString(), payload.EccLevel, false, false, payload.EciMode, payload.Version);
+            return GenerateQrCode(payload);
         }
 
         public QRCodeData CreateQrCode(PayloadGenerator.Payload payload, ECCLevel eccLevel)
         {
-            return CreateQrCode(payload.ToString(), eccLevel, false, false, payload.EciMode, payload.Version);
+            return GenerateQrCode(payload, eccLevel);
         }
 
         public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
         {
+            return GenerateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion);
+        }
+
+        public QRCodeData CreateQrCode(byte[] binaryData, ECCLevel eccLevel)
+        {
+            return GenerateQrCode(binaryData, eccLevel);
+        }
+        
+        public static QRCodeData GenerateQrCode(PayloadGenerator.Payload payload)
+        {
+            return GenerateQrCode(payload.ToString(), payload.EccLevel, false, false, payload.EciMode, payload.Version);
+        }
+
+        public static QRCodeData GenerateQrCode(PayloadGenerator.Payload payload, ECCLevel eccLevel)
+        {
+            return GenerateQrCode(payload.ToString(), eccLevel, false, false, payload.EciMode, payload.Version);
+        }
+
+        public static QRCodeData GenerateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
+        {
             EncodingMode encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
-            var codedText = this.PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
-            var dataInputLength = this.GetDataLength(encoding, plainText, codedText, forceUtf8);
+            var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
+            var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
             int version = requestedVersion;
             if (version == -1)
             {
-                version = this.GetVersion(dataInputLength, encoding, eccLevel);
+                version = GetVersion(dataInputLength, encoding, eccLevel);
             }
 
             string modeIndicator = String.Empty;
@@ -62,20 +82,20 @@ namespace QRCoder
                 modeIndicator += DecToBin((int)eciMode, 8);
             }
             modeIndicator += DecToBin((int)encoding, 4);
-            var countIndicator = DecToBin(dataInputLength, this.GetCountIndicatorLength(version, encoding));
+            var countIndicator = DecToBin(dataInputLength, GetCountIndicatorLength(version, encoding));
             var bitString = modeIndicator + countIndicator;
 
             bitString += codedText;
 
-            return CreateQrCode(bitString, eccLevel, version);
+            return GenerateQrCode(bitString, eccLevel, version);
         }
 
-        public QRCodeData CreateQrCode(byte[] binaryData, ECCLevel eccLevel)
+        public static QRCodeData GenerateQrCode(byte[] binaryData, ECCLevel eccLevel)
         {
-            int version = this.GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
+            int version = GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
             string modeIndicator = DecToBin((int)EncodingMode.Byte, 4);
-            string countIndicator = DecToBin(binaryData.Length, this.GetCountIndicatorLength(version, EncodingMode.Byte));
+            string countIndicator = DecToBin(binaryData.Length, GetCountIndicatorLength(version, EncodingMode.Byte));
 
             string bitString = modeIndicator + countIndicator;
             foreach (byte b in binaryData)
@@ -83,10 +103,10 @@ namespace QRCoder
                 bitString += DecToBin(b, 8);
             }
 
-            return CreateQrCode(bitString, eccLevel, version);
+            return GenerateQrCode(bitString, eccLevel, version);
         }
 
-        private QRCodeData CreateQrCode(string bitString, ECCLevel eccLevel, int version)
+        private static QRCodeData GenerateQrCode(string bitString, ECCLevel eccLevel, int version)
         {
             //Fill up data code word
             var eccInfo = capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel.Equals(eccLevel));
@@ -106,10 +126,10 @@ namespace QRCoder
             for (var i = 0; i < eccInfo.BlocksInGroup1; i++)
             {
                 var bitStr = bitString.Substring(i * eccInfo.CodewordsInGroup1 * 8, eccInfo.CodewordsInGroup1 * 8);
-                var bitBlockList = this.BinaryStringToBitBlockList(bitStr);
-                var bitBlockListDec = this.BinaryStringListToDecList(bitBlockList);
-                var eccWordList = this.CalculateECCWords(bitStr, eccInfo);
-                var eccWordListDec = this.BinaryStringListToDecList(eccWordList);
+                var bitBlockList = BinaryStringToBitBlockList(bitStr);
+                var bitBlockListDec = BinaryStringListToDecList(bitBlockList);
+                var eccWordList = CalculateECCWords(bitStr, eccInfo);
+                var eccWordListDec = BinaryStringListToDecList(eccWordList);
                 codeWordWithECC.Add(
                     new CodewordBlock(1,
                                       i + 1,
@@ -124,10 +144,10 @@ namespace QRCoder
             for (var i = 0; i < eccInfo.BlocksInGroup2; i++)
             {
                 var bitStr = bitString.Substring(i * eccInfo.CodewordsInGroup2 * 8, eccInfo.CodewordsInGroup2 * 8);
-                var bitBlockList = this.BinaryStringToBitBlockList(bitStr);
-                var bitBlockListDec = this.BinaryStringListToDecList(bitBlockList);
-                var eccWordList = this.CalculateECCWords(bitStr, eccInfo);
-                var eccWordListDec = this.BinaryStringListToDecList(eccWordList);
+                var bitBlockList = BinaryStringToBitBlockList(bitStr);
+                var bitBlockListDec = BinaryStringListToDecList(bitBlockList);
+                var eccWordList = CalculateECCWords(bitStr, eccInfo);
+                var eccWordListDec = BinaryStringListToDecList(eccWordList);
                 codeWordWithECC.Add(new CodewordBlock(2,
                                       i + 1,
                                       bitStr,
@@ -718,11 +738,11 @@ namespace QRCoder
 
         }
 
-        private List<string> CalculateECCWords(string bitString, ECCInfo eccInfo)
+        private static List<string> CalculateECCWords(string bitString, ECCInfo eccInfo)
         {
             var eccWords = eccInfo.ECCPerBlock;
-            var messagePolynom = this.CalculateMessagePolynom(bitString);
-            var generatorPolynom = this.CalculateGeneratorPolynom(eccWords);
+            var messagePolynom = CalculateMessagePolynom(bitString);
+            var generatorPolynom = CalculateGeneratorPolynom(eccWords);
 
             for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
                 messagePolynom.PolyItems[i] = new PolynomItem(messagePolynom.PolyItems[i].Coefficient,
@@ -742,36 +762,36 @@ namespace QRCoder
                 }
                 else
                 {
-                    var resPoly = this.MultiplyGeneratorPolynomByLeadterm(generatorPolynom, this.ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
-                    resPoly = this.ConvertToDecNotation(resPoly);
-                    resPoly = this.XORPolynoms(leadTermSource, resPoly);
+                    var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
+                    resPoly = ConvertToDecNotation(resPoly);
+                    resPoly = XORPolynoms(leadTermSource, resPoly);
                     leadTermSource = resPoly;
                 }
             }
             return leadTermSource.PolyItems.Select(x => DecToBin(x.Coefficient, 8)).ToList();
         }
 
-        private Polynom ConvertToAlphaNotation(Polynom poly)
+        private static Polynom ConvertToAlphaNotation(Polynom poly)
         {
             var newPoly = new Polynom();
             for (var i = 0; i < poly.PolyItems.Count; i++)
                 newPoly.PolyItems.Add(
                     new PolynomItem(
                         (poly.PolyItems[i].Coefficient != 0
-                            ? this.GetAlphaExpFromIntVal(poly.PolyItems[i].Coefficient)
+                            ? GetAlphaExpFromIntVal(poly.PolyItems[i].Coefficient)
                             : 0), poly.PolyItems[i].Exponent));
             return newPoly;
         }
 
-        private Polynom ConvertToDecNotation(Polynom poly)
+        private static Polynom ConvertToDecNotation(Polynom poly)
         {
             var newPoly = new Polynom();
             for (var i = 0; i < poly.PolyItems.Count; i++)
-                newPoly.PolyItems.Add(new PolynomItem(this.GetIntValFromAlphaExp(poly.PolyItems[i].Coefficient), poly.PolyItems[i].Exponent));
+                newPoly.PolyItems.Add(new PolynomItem(GetIntValFromAlphaExp(poly.PolyItems[i].Coefficient), poly.PolyItems[i].Exponent));
             return newPoly;
         }
 
-        private int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
+        private static int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
             var version = capacityTable.Where(
                 x => x.Details.Count(
@@ -788,7 +808,7 @@ namespace QRCoder
             return version;
         }
 
-        private EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
+        private static EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
         {
             EncodingMode result = EncodingMode.Numeric;
             foreach (char c in plainText)
@@ -801,19 +821,19 @@ namespace QRCoder
             return result;
         }
 
-        private Polynom CalculateMessagePolynom(string bitString)
+        private static Polynom CalculateMessagePolynom(string bitString)
         {
             var messagePol = new Polynom();
             for (var i = bitString.Length / 8 - 1; i >= 0; i--)
             {
-                messagePol.PolyItems.Add(new PolynomItem(this.BinToDec(bitString.Substring(0, 8)), i));
+                messagePol.PolyItems.Add(new PolynomItem(BinToDec(bitString.Substring(0, 8)), i));
                 bitString = bitString.Remove(0, 8);
             }
             return messagePol;
         }
 
 
-        private Polynom CalculateGeneratorPolynom(int numEccWords)
+        private static Polynom CalculateGeneratorPolynom(int numEccWords)
         {
             var generatorPolynom = new Polynom();
             generatorPolynom.PolyItems.AddRange(new[]{
@@ -828,13 +848,13 @@ namespace QRCoder
                 new PolynomItem(i,0)
                 });
 
-                generatorPolynom = this.MultiplyAlphaPolynoms(generatorPolynom, multiplierPolynom);
+                generatorPolynom = MultiplyAlphaPolynoms(generatorPolynom, multiplierPolynom);
             }
 
             return generatorPolynom;
         }
 
-        private List<string> BinaryStringToBitBlockList(string bitString)
+        private static List<string> BinaryStringToBitBlockList(string bitString)
         {
             return new List<char>(bitString.ToCharArray()).Select((x, i) => new { Index = i, Value = x })
                 .GroupBy(x => x.Index / 8)
@@ -842,12 +862,12 @@ namespace QRCoder
                 .ToList();
         }
 
-        private List<int> BinaryStringListToDecList(List<string> binaryStringList)
+        private static List<int> BinaryStringListToDecList(List<string> binaryStringList)
         {
-            return binaryStringList.Select(binaryString => this.BinToDec(binaryString)).ToList();
+            return binaryStringList.Select(binaryString => BinToDec(binaryString)).ToList();
         }
 
-        private int BinToDec(string binStr)
+        private static int BinToDec(string binStr)
         {
             return Convert.ToInt32(binStr, 2);
         }
@@ -863,7 +883,7 @@ namespace QRCoder
             return binStr.PadLeft(padLeftUpTo, '0');
         }
 
-        private int GetCountIndicatorLength(int version, EncodingMode encMode)
+        private static int GetCountIndicatorLength(int version, EncodingMode encMode)
         {
             if (version < 10)
             {
@@ -898,17 +918,17 @@ namespace QRCoder
             }
         }
 
-        private int GetDataLength(EncodingMode encoding, string plainText, string codedText, bool forceUtf8)
+        private static int GetDataLength(EncodingMode encoding, string plainText, string codedText, bool forceUtf8)
         {
-            return forceUtf8 || this.IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
+            return forceUtf8 || IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
         }
 
-        private bool IsUtf8(EncodingMode encoding, string plainText)
+        private static bool IsUtf8(EncodingMode encoding, string plainText)
         {
-            return (encoding == EncodingMode.Byte && !this.IsValidISO(plainText));
+            return (encoding == EncodingMode.Byte && !IsValidISO(plainText));
         }
 
-        private bool IsValidISO(string input)
+        private static bool IsValidISO(string input)
         {
             var bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
             //var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
@@ -916,7 +936,7 @@ namespace QRCoder
             return String.Equals(input, result);
         }
 
-        private string PlainTextToBinary(string plainText, EncodingMode encMode, EciMode eciMode, bool utf8BOM, bool forceUtf8)
+        private static string PlainTextToBinary(string plainText, EncodingMode encMode, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
             switch(encMode)
             {
@@ -934,7 +954,7 @@ namespace QRCoder
             }
         }
 
-        private string PlainTextToBinaryNumeric(string plainText)
+        private static string PlainTextToBinaryNumeric(string plainText)
         {
             var codeText = string.Empty;
             while (plainText.Length >= 3)
@@ -957,7 +977,7 @@ namespace QRCoder
             return codeText;
         }
 
-        private string PlainTextToBinaryAlphanumeric(string plainText)
+        private static string PlainTextToBinaryAlphanumeric(string plainText)
         {
             var codeText = string.Empty;
             while (plainText.Length >= 2)
@@ -986,7 +1006,7 @@ namespace QRCoder
             return codeText;
         }
 
-        private string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
+        private static string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
         {
             Encoding iso = Encoding.GetEncoding(Iso);
             Encoding utf8 = Encoding.UTF8;
@@ -999,12 +1019,12 @@ namespace QRCoder
 #endif
         }
 
-        private string PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
+        private static string PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
             byte[] codeBytes;
             var codeText = string.Empty;
 
-            if (this.IsValidISO(plainText) && !forceUtf8)
+            if (IsValidISO(plainText) && !forceUtf8)
                 codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
             else
             {
@@ -1031,7 +1051,7 @@ namespace QRCoder
         }
 
 
-        private Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
+        private static Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
         {
             var resultPolynom = new Polynom();
             Polynom longPoly, shortPoly;
@@ -1062,7 +1082,7 @@ namespace QRCoder
         }
 
 
-        private Polynom MultiplyGeneratorPolynomByLeadterm(Polynom genPolynom, PolynomItem leadTerm, int lowerExponentBy)
+        private static Polynom MultiplyGeneratorPolynomByLeadterm(Polynom genPolynom, PolynomItem leadTerm, int lowerExponentBy)
         {
             var resultPolynom = new Polynom();
             foreach (var polItemBase in genPolynom.PolyItems)
@@ -1078,7 +1098,7 @@ namespace QRCoder
         }
 
 
-        private Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
+        private static Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
         {
             var resultPolynom = new Polynom();
             foreach (var polItemBase in polynomMultiplier.PolyItems)
@@ -1099,8 +1119,8 @@ namespace QRCoder
             foreach (var exponent in toGlue)
             {
                 var coefficient = resultPolynom.PolyItems.Where(x => x.Exponent == exponent).Aggregate(0, (current, polynomOld)
-                    => current ^ this.GetIntValFromAlphaExp(polynomOld.Coefficient));
-                var polynomFixed = new PolynomItem(this.GetAlphaExpFromIntVal(coefficient), exponent);
+                    => current ^ GetIntValFromAlphaExp(polynomOld.Coefficient));
+                var polynomFixed = new PolynomItem(GetAlphaExpFromIntVal(coefficient), exponent);
                 gluedPolynoms.Add(polynomFixed);
             }
             resultPolynom.PolyItems.RemoveAll(x => toGlue.Contains(x.Exponent));
@@ -1109,12 +1129,12 @@ namespace QRCoder
             return resultPolynom;
         }
 
-        private int GetIntValFromAlphaExp(int exp)
+        private static int GetIntValFromAlphaExp(int exp)
         {
             return galoisField.Where(alog => alog.ExponentAlpha == exp).Select(alog => alog.IntegerValue).First();
         }
 
-        private int GetAlphaExpFromIntVal(int intVal)
+        private static int GetAlphaExpFromIntVal(int intVal)
         {
             return galoisField.Where(alog => alog.IntegerValue == intVal).Select(alog => alog.ExponentAlpha).First();
         }
