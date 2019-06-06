@@ -50,7 +50,7 @@ namespace QRCoderTests
         public void can_recognize_econding_numeric()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789", false });
 
             result.ShouldBe(1);
@@ -62,7 +62,7 @@ namespace QRCoderTests
         public void can_recognize_econding_alphanumeric()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789ABC", false });
 
             result.ShouldBe(2);
@@ -74,7 +74,7 @@ namespace QRCoderTests
         public void can_recognize_econding_forced_bytemode()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789", true });
 
             result.ShouldBe(4);
@@ -86,7 +86,7 @@ namespace QRCoderTests
         public void can_recognize_econding_byte()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789äöüß", false });
 
             result.ShouldBe(4);
