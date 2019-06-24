@@ -101,12 +101,17 @@ namespace QRCoder
 
     public static class BitmapByteQRCodeHelper
     {
-        public static byte[] GetQRCode(string plainText, int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
+        public static byte[] GetQRCode(string plainText, int pixelsPerModule, string darkColorHtmlHex,
+            string lightColorHtmlHex, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false,
+            EciMode eciMode = EciMode.Default, int requestedVersion = -1)
         {
             using (var qrGenerator = new QRCodeGenerator())
-            using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
+            using (
+                var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode,
+                    requestedVersion))
             using (var qrCode = new BitmapByteQRCode(qrCodeData))
                 return qrCode.GetGraphic(pixelsPerModule, darkColorHtmlHex, lightColorHtmlHex);
+        }
 
         public static byte[] GetQRCode(string txt, QRCodeGenerator.ECCLevel eccLevel, int size)
         {
