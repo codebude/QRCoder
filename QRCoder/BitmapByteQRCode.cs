@@ -97,4 +97,16 @@ namespace QRCoder
             return bytes;
         }
     }
+    
+  
+    public static class BitmapByteQrCodeUtility
+    {
+        public static byte[] GetBmpQrCode(string txt, QRCodeGenerator.ECCLevel eccLevel, int size)
+        {
+            using (var qrGen = new QRCodeGenerator())
+            using (var qrCode = qrGen.CreateQrCode(txt, eccLevel))
+            using (var qrBmp = new BitmapByteQRCode(qrCode))
+                return qrBmp.GetGraphic(size);
+        }
+    }
 }
