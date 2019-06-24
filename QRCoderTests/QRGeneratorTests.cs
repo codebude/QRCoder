@@ -23,7 +23,7 @@ namespace QRCoderTests
             var gen = new QRCodeGenerator();
 
             var checkString = string.Empty;
-            var gField = gen.GetType().GetField("galoisField", BindingFlags.NonPublic | BindingFlags.Instance);         
+            var gField = gen.GetType().GetField("galoisField", BindingFlags.NonPublic | BindingFlags.Static);         
             foreach (var listitem in (System.Collections.IEnumerable)gField.GetValue(gen))
             {
                 foreach (PropertyInfo prop in listitem.GetType().GetProperties())
@@ -40,7 +40,7 @@ namespace QRCoderTests
             var gen = new QRCodeGenerator();
 
             var checkString = string.Empty;
-            var gField = gen.GetType().GetField("alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Instance);
+            var gField = gen.GetType().GetField("alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Static);
             foreach (var listitem in (Dictionary<char, int>)gField.GetValue(gen))
             {
                 checkString += $"{listitem.Key},{listitem.Value}:";
@@ -53,7 +53,7 @@ namespace QRCoderTests
         public void can_recognize_enconding_numeric()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789", false });
 
             result.ShouldBe(1);
@@ -65,7 +65,7 @@ namespace QRCoderTests
         public void can_recognize_enconding_alphanumeric()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789ABC", false });
 
             result.ShouldBe(2);
@@ -77,7 +77,7 @@ namespace QRCoderTests
         public void can_recognize_enconding_forced_bytemode()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789", true });
 
             result.ShouldBe(4);
@@ -89,7 +89,7 @@ namespace QRCoderTests
         public void can_recognize_enconding_byte()
         {
             var gen = new QRCodeGenerator();
-            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (int)method.Invoke(gen, new object[] { "0123456789äöüß", false });
 
             result.ShouldBe(4);
