@@ -30,24 +30,30 @@ namespace QRCoder
             var offset = drawQuietZones ? 0 : 4 * pixelsPerModule;
 
             var bmp = new Bitmap(size, size);
-            var gfx = Graphics.FromImage(bmp);
-            for (var x = 0; x < size + offset; x = x + pixelsPerModule)
+            using (var gfx = Graphics.FromImage(bmp))
+            using (var lightBrush = new SolidBrush(lightColor))
+            using (var darkBrush = new SolidBrush(darkColor))
             {
-                for (var y = 0; y < size + offset; y = y + pixelsPerModule)
+                for (var x = 0; x < size + offset; x = x + pixelsPerModule)
                 {
-                    var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule)/pixelsPerModule - 1][(x + pixelsPerModule)/pixelsPerModule - 1];
-                    if (module)
+                    for (var y = 0; y < size + offset; y = y + pixelsPerModule)
                     {
-                        gfx.FillRectangle(new SolidBrush(darkColor), new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
-                    }
-                    else
-                    {
-                        gfx.FillRectangle(new SolidBrush(lightColor), new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
+                        var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
+
+                        if (module)
+                        {
+                            gfx.FillRectangle(darkBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
+                        }
+                        else
+                        {
+                            gfx.FillRectangle(lightBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
+                        }
                     }
                 }
+
+                gfx.Save();
             }
 
-            gfx.Save();
             return bmp;
         }
 
@@ -58,65 +64,67 @@ namespace QRCoder
 
             var bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-            var gfx = Graphics.FromImage(bmp);
-            gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            gfx.CompositingQuality = CompositingQuality.HighQuality;
-            gfx.Clear(lightColor);
-
-            var drawIconFlag = icon != null && iconSizePercent>0 && iconSizePercent<=100;
-
-            GraphicsPath iconPath = null;
-            float iconDestWidth=0, iconDestHeight=0, iconX=0, iconY=0;
-
-            if (drawIconFlag)
+            using (var gfx = Graphics.FromImage(bmp))
+            using (var lightBrush = new SolidBrush(lightColor))
+            using (var darkBrush = new SolidBrush(darkColor))
             {
-                iconDestWidth = iconSizePercent * bmp.Width / 100f;
-                iconDestHeight = drawIconFlag ? iconDestWidth * icon.Height / icon.Width : 0;
-                iconX = (bmp.Width - iconDestWidth) / 2;
-                iconY = (bmp.Height - iconDestHeight) / 2;
+                gfx.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                gfx.CompositingQuality = CompositingQuality.HighQuality;
+                gfx.Clear(lightColor);
 
-                var centerDest = new RectangleF(iconX - iconBorderWidth, iconY - iconBorderWidth, iconDestWidth + iconBorderWidth * 2, iconDestHeight + iconBorderWidth * 2);
-                iconPath = this.CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
-            }
+                var drawIconFlag = icon != null && iconSizePercent > 0 && iconSizePercent <= 100;
 
-            var lightBrush = new SolidBrush(lightColor);
-            var darkBrush = new SolidBrush(darkColor);
+                GraphicsPath iconPath = null;
+                float iconDestWidth = 0, iconDestHeight = 0, iconX = 0, iconY = 0;
 
-
-            for (var x = 0; x < size+offset; x = x + pixelsPerModule)
-            {
-                for (var y = 0; y < size + offset; y = y + pixelsPerModule)
+                if (drawIconFlag)
                 {
+                    iconDestWidth = iconSizePercent * bmp.Width / 100f;
+                    iconDestHeight = drawIconFlag ? iconDestWidth * icon.Height / icon.Width : 0;
+                    iconX = (bmp.Width - iconDestWidth) / 2;
+                    iconY = (bmp.Height - iconDestHeight) / 2;
 
-                    var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule)/pixelsPerModule - 1][(x + pixelsPerModule)/pixelsPerModule - 1];
-                    if (module)
+                    var centerDest = new RectangleF(iconX - iconBorderWidth, iconY - iconBorderWidth, iconDestWidth + iconBorderWidth * 2, iconDestHeight + iconBorderWidth * 2);
+                    iconPath = this.CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
+                }
+
+                for (var x = 0; x < size + offset; x = x + pixelsPerModule)
+                {
+                    for (var y = 0; y < size + offset; y = y + pixelsPerModule)
                     {
-                        var r = new Rectangle(x-offset, y-offset, pixelsPerModule, pixelsPerModule);
+                        var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
 
-                        if (drawIconFlag)
+                        if (module)
                         {
-                            var region = new Region(r);
-                            region.Exclude(iconPath);
-                            gfx.FillRegion(darkBrush, region);
+                            var r = new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule);
+
+                            if (drawIconFlag)
+                            {
+                                var region = new Region(r);
+                                region.Exclude(iconPath);
+                                gfx.FillRegion(darkBrush, region);
+                            }
+                            else
+                            {
+                                gfx.FillRectangle(darkBrush, r);
+                            }
                         }
                         else
                         {
-                            gfx.FillRectangle(darkBrush, r);
+                            gfx.FillRectangle(lightBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
                         }
                     }
-                    else
-                        gfx.FillRectangle(lightBrush, new Rectangle(x-offset, y-offset, pixelsPerModule, pixelsPerModule));
-
                 }
+
+                if (drawIconFlag)
+                {
+                    var iconDestRect = new RectangleF(iconX, iconY, iconDestWidth, iconDestHeight);
+                    gfx.DrawImage(icon, iconDestRect, new RectangleF(0, 0, icon.Width, icon.Height), GraphicsUnit.Pixel);
+                }
+
+                gfx.Save();
             }
 
-            if (drawIconFlag)
-            {
-                var iconDestRect = new RectangleF(iconX, iconY, iconDestWidth, iconDestHeight);
-                gfx.DrawImage(icon, iconDestRect, new RectangleF(0, 0, icon.Width, icon.Height), GraphicsUnit.Pixel);
-            }
-
-            gfx.Save();
             return bmp;
         }
 

@@ -7,6 +7,9 @@ using System.Threading;
 using QRCoderTests.XUnitExtenstions;
 using System.Collections.Generic;
 using System.Reflection;
+using System.IO;
+using System.Drawing.Imaging;
+using System.Security.Cryptography;
 
 namespace QRCoderTests
 {
@@ -47,7 +50,7 @@ namespace QRCoderTests
 
         [Fact]
         [Category("QRGenerator/TextEncoding")]
-        public void can_recognize_econding_numeric()
+        public void can_recognize_enconding_numeric()
         {
             var gen = new QRCodeGenerator();
             MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -59,7 +62,7 @@ namespace QRCoderTests
 
         [Fact]
         [Category("QRGenerator/TextEncoding")]
-        public void can_recognize_econding_alphanumeric()
+        public void can_recognize_enconding_alphanumeric()
         {
             var gen = new QRCodeGenerator();
             MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -71,7 +74,7 @@ namespace QRCoderTests
 
         [Fact]
         [Category("QRGenerator/TextEncoding")]
-        public void can_recognize_econding_forced_bytemode()
+        public void can_recognize_enconding_forced_bytemode()
         {
             var gen = new QRCodeGenerator();
             MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -83,13 +86,33 @@ namespace QRCoderTests
         
         [Fact]
         [Category("QRGenerator/TextEncoding")]
-        public void can_recognize_econding_byte()
+        public void can_recognize_enconding_byte()
         {
             var gen = new QRCodeGenerator();
             MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Instance);
             var result = (int)method.Invoke(gen, new object[] { "0123456789äöüß", false });
 
             result.ShouldBe(4);
+        }
+
+
+        [Fact]
+        [Category("QRGenerator/TextEncoding")]
+        public void can_create_standard_qrcode_graphic()
+        {
+            var gen = new QRCodeGenerator();
+            var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
+            var bmp = new QRCode(data).GetGraphic(10);
+
+            var ms = new MemoryStream();
+            bmp.Save(ms, ImageFormat.Bmp);
+            var imgBytes = ms.ToArray();
+            var md5 = new MD5CryptoServiceProvider();
+            var hash = md5.ComputeHash(imgBytes);
+            var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
+            ms.Dispose();
+
+            result.ShouldBe("41d3313c10d84034d67d476eec04163f");
         }
     }
 }
