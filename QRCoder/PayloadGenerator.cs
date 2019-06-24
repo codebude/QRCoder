@@ -949,7 +949,8 @@ namespace QRCoder
                     SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6).ToArray());
 
                 //CcyAmtDate "logical" element
-                SwissQrCodePayload += (amount != null ? $"{amount:0.00}" : string.Empty) + br; //Amt
+                //Amoutn has to use . as decimal seperator in any case. See https://www.paymentstandards.ch/dam/downloads/ig-qr-bill-en.pdf page 27.
+                SwissQrCodePayload += (amount != null ? $"{amount:0.00}".Replace(",", ".") : string.Empty) + br; //Amt
                 SwissQrCodePayload += currency + br; //Ccy
                 SwissQrCodePayload += (requestedDateOfPayment != null ?  ((DateTime)requestedDateOfPayment).ToString("yyyy-MM-dd") : string.Empty) + br; //ReqdExctnDt
 

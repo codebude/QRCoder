@@ -21,6 +21,7 @@
 
         public void Dispose()
         {
+            this.QrCodeData?.Dispose();
             this.QrCodeData = null;
         }
     }
