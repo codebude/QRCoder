@@ -1,11 +1,10 @@
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-
+using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder
 {
-    using System;
-
     public class QRCode : AbstractQRCode, IDisposable
     {
         /// <summary>
@@ -142,6 +141,17 @@ namespace QRCoder
             roundedRect.AddLine(rect.X, rect.Bottom - cornerRadius * 2, rect.X, rect.Y + cornerRadius * 2);
             roundedRect.CloseFigure();
             return roundedRect;
+        }
+    }
+
+    public static class QRCodeHelper
+    {
+        public static Bitmap GetQRCode(string plainText, int pixelsPerModule, Color darkColor, Color lightColor, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap icon = null, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true)
+        {
+            using (var qrGenerator = new QRCodeGenerator())
+            using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
+            using (var qrCode = new QRCode(qrCodeData))
+                return qrCode.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones);
         }
     }
 }
