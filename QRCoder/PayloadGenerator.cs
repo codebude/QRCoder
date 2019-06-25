@@ -2149,7 +2149,19 @@ namespace QRCoder
 
         private static bool IsValidIban(string iban)
         {
-            return Regex.IsMatch(iban.Replace(" ", ""), @"^[a-zA-Z]{2}[0-9]{2}[a-zA-Z0-9]{4}[0-9]{7}([a-zA-Z0-9]?){0,16}$");
+            //Clean IBAN
+            var ibanCleared = iban.ToUpper().Replace(" ", "").Replace("-", "");
+
+            //Check for general structure
+            var structurallyValid = Regex.IsMatch(ibanCleared, @"^[a-zA-Z]{2}[0-9]{2}([a-zA-Z0-9]?){16,30}$");
+                                         
+            //Check IBAN checksum
+            var sum = $"{ibanCleared.Substring(4)}{ibanCleared.Substring(0, 4)}".Aggregate("", (current, c) => current + (char.IsLetter(c) ? (c - 55).ToString() : c.ToString()));
+            if (!decimal.TryParse(sum, out decimal sumDec))
+                return false;
+            var checksumValid = (sumDec % 97) == 1;
+            
+            return structurallyValid && checksumValid;
         }
 
         private static bool IsValidBic(string bic)

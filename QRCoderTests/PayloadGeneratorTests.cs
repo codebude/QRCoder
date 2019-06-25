@@ -7,7 +7,7 @@ using System.Threading;
 using QRCoderTests.XUnitExtenstions;
 using static QRCoder.PayloadGenerator.BezahlCode;
 using static QRCoder.PayloadGenerator.SwissQrCode.Reference;
-
+using System.Reflection;
 
 namespace QRCoderTests
 {
@@ -640,6 +640,46 @@ namespace QRCoderTests
 
             generator.ToString().ShouldBe($"BEGIN:VEVENT{Environment.NewLine}SUMMARY:Release party{Environment.NewLine}DESCRIPTION:A small party for the new QRCoder. Bring some beer!{Environment.NewLine}LOCATION:Programmer's paradise, Beachtown, Paradise{Environment.NewLine}DTSTART:20160103T120000{Environment.NewLine}DTEND:20160103T143000{Environment.NewLine}END:VEVENT");
         }
+
+
+        [Fact]
+        [Category("PayloadGenerator/IbanValidator")]
+        public void iban_validator_validate_german_iban()
+        {
+            var iban = "DE15268500010154131577";
+            
+            MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
+            var result = (bool)method.Invoke(null, new object[] { iban });
+
+            result.ShouldBe<bool>(true);
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/IbanValidator")]
+        public void iban_validator_validate_swiss_iban()
+        {
+            var iban = "CH1900767000U00121977";
+
+            MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
+            var result = (bool)method.Invoke(null, new object[] { iban });
+
+            result.ShouldBe<bool>(true);
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/IbanValidator")]
+        public void iban_validator_invalidates_iban()
+        {
+            var iban = "DE29268500010154131577";
+
+            MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
+            var result = (bool)method.Invoke(null, new object[] { iban });
+
+            result.ShouldBe<bool>(false);
+        }
+
 
         [Fact]
         [Category("PayloadGenerator/Girocode")]
