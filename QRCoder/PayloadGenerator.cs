@@ -644,7 +644,10 @@ namespace QRCoder
         public class SwissQrCode : Payload
         {
             //Keep in mind, that the ECC level has to be set to "M" when generating a SwissQrCode!
-            //SwissQrCode specification: https://www.paymentstandards.ch/dam/downloads/ig-qr-bill-de.pdf
+            //SwissQrCode specification: 
+            //    - (de) https://www.paymentstandards.ch/dam/downloads/ig-qr-bill-de.pdf
+            //    - (en) https://www.paymentstandards.ch/dam/downloads/ig-qr-bill-en.pdf
+            //Changes between version 1.0 and 2.0: https://www.paymentstandards.ch/dam/downloads/change-documentation-qrr-de.pdf
 
             private readonly string br = "\r\n";
             private readonly string alternativeProcedure1, alternativeProcedure2;
@@ -654,9 +657,10 @@ namespace QRCoder
             private readonly Currency currency;
             private readonly DateTime? requestedDateOfPayment;
             private readonly Reference reference;
+            private readonly AdditionalInformation additionalInformation;
 
             /// <summary>
-            /// Generates the payload for a SwissQrCode. (Don't forget to use ECC-Level M and set the Swiss flag icon to the final QR code.)
+            /// Generates the payload for a SwissQrCode v2.0. (Don't forget to use ECC-Level=M, EncodingMode=UTF-8 and to set the Swiss flag icon to the final QR code.)
             /// </summary>
             /// <param name="iban">IBAN object</param>
             /// <param name="currency">Currency (either EUR or CHF)</param>
@@ -665,15 +669,17 @@ namespace QRCoder
             /// <param name="debitor">Debitor (payer) information</param>
             /// <param name="amount">Amount</param>
             /// <param name="requestedDateOfPayment">Requested date of debitor's payment</param>
-            /// <param name="ultimateCreditor">Ultimate creditor information (use only in consultation with your bank!)</param>
+            /// <param name="ultimateCreditor">Ultimate creditor information (use only in consultation with your bank - for future use only!)</param>
             /// <param name="alternativeProcedure1">Optional command for alternative processing mode - line 1</param>
             /// <param name="alternativeProcedure2">Optional command for alternative processing mode - line 2</param>
-            public SwissQrCode(Iban iban, Currency currency, Contact creditor, Reference reference, Contact debitor = null, decimal? amount = null, DateTime? requestedDateOfPayment = null, Contact ultimateCreditor = null, string alternativeProcedure1 = null, string alternativeProcedure2 = null)
+            public SwissQrCode(Iban iban, Currency currency, Contact creditor, Reference reference, AdditionalInformation additionalInformation = null, Contact debitor = null, decimal? amount = null, DateTime? requestedDateOfPayment = null, Contact ultimateCreditor = null, string alternativeProcedure1 = null, string alternativeProcedure2 = null)
             {
                 this.iban = iban;
 
                 this.creditor = creditor;
                 this.ultimateCreditor = ultimateCreditor;
+
+                this.additionalInformation = additionalInformation != null ? additionalInformation : new AdditionalInformation();
 
                 if (amount != null && amount.ToString().Length > 12)
                     throw new SwissQrCodeException("Amount (including decimals) must be shorter than 13 places.");
@@ -683,8 +689,10 @@ namespace QRCoder
                 this.requestedDateOfPayment = requestedDateOfPayment;
                 this.debitor = debitor;
 
-                if (iban.IsQrIban && reference.RefType.Equals(Reference.ReferenceType.NON))
-                    throw new SwissQrCodeException("If QR-IBAN is used, you have to choose \"QRR\" or \"SCOR\" as reference type!");
+                if (iban.IsQrIban && !reference.RefType.Equals(Reference.ReferenceType.QRR))
+                    throw new SwissQrCodeException("If QR-IBAN is used, you have to choose \"QRR\" as reference type!");
+                if (!iban.IsQrIban && reference.RefType.Equals(Reference.ReferenceType.QRR))
+                    throw new SwissQrCodeException("If non QR-IBAN is used, you have to choose either \"SCOR\" or \"NON\" as reference type!");
                 this.reference = reference;
 
                 if (alternativeProcedure1 != null && alternativeProcedure1.Length > 100)
@@ -695,10 +703,62 @@ namespace QRCoder
                 this.alternativeProcedure2 = alternativeProcedure2;
             }
 
+            public class AdditionalInformation
+            {
+                private readonly string unstructuredMessage, billInformation, trailer;
+
+               /// <summary>
+               /// Creates an additional information object. Both parameters are optional and must be shorter than 141 chars in combination.
+               /// </summary>
+               /// <param name="unstructuredMessage">Unstructured text message</param>
+               /// <param name="billInformation">Bill information</param>
+                public AdditionalInformation(string unstructuredMessage = null, string billInformation = null)
+                {
+                    if (((unstructuredMessage != null ? unstructuredMessage.Length : 0) + (billInformation != null ? billInformation.Length : 0)) > 140)
+                        throw new SwissQrCodeAdditionalInformationException("Unstructured message and bill information must be shorter than 141 chars in total/combined.");
+                    this.unstructuredMessage = unstructuredMessage;
+                    this.billInformation = billInformation;
+                    this.trailer = "EPD";
+                }
+
+                public string UnstructureMessage
+                {
+                    get { return !string.IsNullOrEmpty(unstructuredMessage) ? unstructuredMessage.Replace("\n", "") : null; }
+                }
+                
+                public string BillInformation
+                {
+                    get { return !string.IsNullOrEmpty(billInformation) ? billInformation.Replace("\n", "") : null; }
+                }
+                
+                public string Trailer
+                {
+                    get { return trailer; }
+                }
+
+
+                public class SwissQrCodeAdditionalInformationException : Exception
+                {
+                    public SwissQrCodeAdditionalInformationException()
+                    {
+                    }
+
+                    public SwissQrCodeAdditionalInformationException(string message)
+                        : base(message)
+                    {
+                    }
+
+                    public SwissQrCodeAdditionalInformationException(string message, Exception inner)
+                        : base(message, inner)
+                    {
+                    }
+                }
+            }
+
             public class Reference
             {
                 private readonly ReferenceType referenceType;
-                private readonly string reference, unstructuredMessage;
+                private readonly string reference;
                 private readonly ReferenceTextType? referenceTextType;
 
                 /// <summary>
@@ -706,9 +766,8 @@ namespace QRCoder
                 /// </summary>
                 /// <param name="referenceType">Type of the reference (QRR, SCOR or NON)</param>
                 /// <param name="reference">Reference text</param>
-                /// <param name="referenceTextType">Type of the reference text (QR-reference or Creditor Reference)</param>
-                /// <param name="unstructuredMessage">Unstructured message</param>
-                public Reference(ReferenceType referenceType, string reference = null, ReferenceTextType? referenceTextType = null, string unstructuredMessage = null)
+                /// <param name="referenceTextType">Type of the reference text (QR-reference or Creditor Reference)</param>                
+                public Reference(ReferenceType referenceType, string reference = null, ReferenceTextType? referenceTextType = null)
                 {
                     this.referenceType = referenceType;
                     this.referenceTextType = referenceTextType;
@@ -726,11 +785,7 @@ namespace QRCoder
                     if (referenceTextType.Equals(ReferenceTextType.CreditorReferenceIso11649) && reference != null && (reference.Length > 25))
                         throw new SwissQrCodeReferenceException("Creditor references (ISO 11649) have to be shorter than 26 chars.");
 
-                    this.reference = reference;
-
-                    if (unstructuredMessage != null && (unstructuredMessage.Length > 140))
-                        throw new SwissQrCodeReferenceException("The unstructured message must be shorter than 141 chars.");
-                    this.unstructuredMessage = unstructuredMessage;
+                    this.reference = reference;                   
                 }
 
                 public ReferenceType RefType {
@@ -741,12 +796,7 @@ namespace QRCoder
                 {
                     get { return !string.IsNullOrEmpty(reference) ? reference.Replace("\n", "") : null; }
                 }
-
-                public string UnstructureMessage
-                {
-                    get { return !string.IsNullOrEmpty(unstructuredMessage) ? unstructuredMessage.Replace("\n", "") : null; }
-                }
-
+                
                 /// <summary>
                 /// Reference type. When using a QR-IBAN you have to use either "QRR" or "SCOR"
                 /// </summary>
@@ -808,7 +858,7 @@ namespace QRCoder
 
                 public override string ToString()
                 {
-                    return iban.Replace("\n", "").Replace(" ","");
+                    return iban.Replace("-", "").Replace("\n", "").Replace(" ","");
                 }
 
                 public enum IbanType
@@ -838,10 +888,11 @@ namespace QRCoder
             public class Contact
             {
                 private string br = "\r\n";
-                private string name, street, houseNumber, zipCode, city, country;
+                private string name, streetOrAddressline1, houseNumberOrAddressline2, zipCode, city, country;
+                private AddressType adrType;
 
                 /// <summary>
-                /// Contact type. Can be used for payee, ultimate payee, etc.
+                /// Contact type. Can be used for payee, ultimate payee, etc. with address in structured mode (S).
                 /// </summary>
                 /// <param name="name">Last name or company (optional first name)</param>
                 /// <param name="zipCode">Zip-/Postcode</param>
@@ -849,10 +900,30 @@ namespace QRCoder
                 /// <param name="country">Two-letter country code as defined in ISO 3166-1</param>
                 /// <param name="street">Streetname without house number</param>
                 /// <param name="houseNumber">House number</param>
-                public Contact(string name, string zipCode, string city, string country, string street = null, string houseNumber = null)
+                public Contact(string name, string zipCode, string city, string country, string street = null, string houseNumber = null) : this (name, zipCode, city, country, street, houseNumber, AddressType.StructuredAddress)
+                {
+                }
+
+
+                /// <summary>
+                /// Contact type. Can be used for payee, ultimate payee, etc. with address in combined mode (K).
+                /// </summary>
+                /// <param name="name">Last name or company (optional first name)</param>
+                /// <param name="country">Two-letter country code as defined in ISO 3166-1</param>
+                /// <param name="addressLine1">Adress line 1</param>
+                /// <param name="addressLine2">Adress line 2</param>
+                public Contact(string name, string country, string addressLine1, string addressLine2) : this(name, null, null, country, addressLine1, addressLine2, AddressType.CombinedAddress)
+                {
+                }
+
+
+
+                private Contact(string name, string zipCode, string city, string country, string streetOrAddressline1, string houseNumberOrAddressline2, AddressType addressType)
                 {
                     //Pattern extracted from https://qr-validation.iso-payments.ch as explained in https://github.com/codebude/QRCoder/issues/97
                     var charsetPattern = @"^([a-zA-Z0-9\.,;:'\ \-/\(\)?\*\[\]\{\}\\`´~ ]|[!""#%&<>÷=@_$£]|[àáâäçèéêëìíîïñòóôöùúûüýßÀÁÂÄÇÈÉÊËÌÍÎÏÒÓÔÖÙÚÛÜÑ])*$";
+
+                    this.adrType = addressType;
 
                     if (string.IsNullOrEmpty(name))
                         throw new SwissQrCodeContactException("Name must not be empty.");
@@ -862,31 +933,56 @@ namespace QRCoder
                         throw new SwissQrCodeContactException($"Name must match the following pattern as defined in pain.001: {charsetPattern}");
                     this.name = name;
 
-                    if (!string.IsNullOrEmpty(street) && (street.Length > 70))
-                        throw new SwissQrCodeContactException("Street must be shorter than 71 chars.");
-                    if (!string.IsNullOrEmpty(street) && !Regex.IsMatch(street, charsetPattern))
-                        throw new SwissQrCodeContactException($"Street must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this.street = street;
+                    if (AddressType.StructuredAddress.Equals(this.adrType))
+                    {
+                        if (!string.IsNullOrEmpty(streetOrAddressline1) && (streetOrAddressline1.Length > 70))
+                            throw new SwissQrCodeContactException("Street must be shorter than 71 chars.");
+                        if (!string.IsNullOrEmpty(streetOrAddressline1) && !Regex.IsMatch(streetOrAddressline1, charsetPattern))
+                            throw new SwissQrCodeContactException($"Street must match the following pattern as defined in pain.001: {charsetPattern}");
+                        this.streetOrAddressline1 = streetOrAddressline1;
 
-                    if (!string.IsNullOrEmpty(houseNumber) && houseNumber.Length > 16)
-                        throw new SwissQrCodeContactException("House number must be shorter than 17 chars.");
-                    this.houseNumber = houseNumber;
+                        if (!string.IsNullOrEmpty(houseNumberOrAddressline2) && houseNumberOrAddressline2.Length > 16)
+                            throw new SwissQrCodeContactException("House number must be shorter than 17 chars.");
+                        this.houseNumberOrAddressline2 = houseNumberOrAddressline2;
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(streetOrAddressline1) && (streetOrAddressline1.Length > 70))
+                            throw new SwissQrCodeContactException("Address line 1 must be shorter than 71 chars.");
+                        if (!string.IsNullOrEmpty(streetOrAddressline1) && !Regex.IsMatch(streetOrAddressline1, charsetPattern))
+                            throw new SwissQrCodeContactException($"Address line 1 must match the following pattern as defined in pain.001: {charsetPattern}");
+                        this.streetOrAddressline1 = streetOrAddressline1;
 
-                    if (string.IsNullOrEmpty(zipCode))
-                        throw new SwissQrCodeContactException("Zip code must not be empty.");
-                    if (zipCode.Length > 16)
-                        throw new SwissQrCodeContactException("Zip code must be shorter than 17 chars.");
-                    if (!Regex.IsMatch(zipCode, charsetPattern))
-                        throw new SwissQrCodeContactException($"Zip code must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this.zipCode = zipCode;
+                        if (string.IsNullOrEmpty(houseNumberOrAddressline2))
+                            throw new SwissQrCodeContactException("Address line 2 must be provided for combined addresses (address line-based addresses).");
+                        if (!string.IsNullOrEmpty(houseNumberOrAddressline2) && (houseNumberOrAddressline2.Length > 70))
+                            throw new SwissQrCodeContactException("Address line 2 must be shorter than 71 chars.");
+                        if (!string.IsNullOrEmpty(houseNumberOrAddressline2) && !Regex.IsMatch(houseNumberOrAddressline2, charsetPattern))
+                            throw new SwissQrCodeContactException($"Address line 2 must match the following pattern as defined in pain.001: {charsetPattern}");
+                        this.houseNumberOrAddressline2 = houseNumberOrAddressline2;
+                    }
 
-                    if (string.IsNullOrEmpty(city))
-                        throw new SwissQrCodeContactException("City must not be empty.");
-                    if (city.Length > 35)
-                        throw new SwissQrCodeContactException("City name must be shorter than 36 chars.");
-                    if (!Regex.IsMatch(city, charsetPattern))
-                        throw new SwissQrCodeContactException($"City name must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this.city = city;
+                    if (AddressType.StructuredAddress.Equals(this.adrType)) {
+                        if (string.IsNullOrEmpty(zipCode))
+                            throw new SwissQrCodeContactException("Zip code must not be empty.");
+                        if (zipCode.Length > 16)
+                            throw new SwissQrCodeContactException("Zip code must be shorter than 17 chars.");
+                        if (!Regex.IsMatch(zipCode, charsetPattern))
+                            throw new SwissQrCodeContactException($"Zip code must match the following pattern as defined in pain.001: {charsetPattern}");
+                        this.zipCode = zipCode;
+
+                        if (string.IsNullOrEmpty(city))
+                            throw new SwissQrCodeContactException("City must not be empty.");
+                        if (city.Length > 35)
+                            throw new SwissQrCodeContactException("City name must be shorter than 36 chars.");
+                        if (!Regex.IsMatch(city, charsetPattern))
+                            throw new SwissQrCodeContactException($"City name must match the following pattern as defined in pain.001: {charsetPattern}");
+                        this.city = city;
+                    }
+                    else
+                    {
+                        this.zipCode = this.city = string.Empty;
+                    }
 
 #if NET40
                     if (!CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(x => new RegionInfo(x.LCID).TwoLetterISORegionName.ToUpper() == country.ToUpper()).Any())
@@ -901,13 +997,20 @@ namespace QRCoder
 
                 public override string ToString()
                 {
-                    string contactData = name.Replace("\n", "") + br; //Name
-                    contactData += (!string.IsNullOrEmpty(street) ? street.Replace("\n","") : string.Empty) + br; //StrtNm
-                    contactData += (!string.IsNullOrEmpty(houseNumber) ? houseNumber.Replace("\n", "") : string.Empty) + br; //BldgNb
+                    string contactData = $"{(AddressType.StructuredAddress.Equals(adrType) ? "S" : "K")}{br}"; //AdrTp
+                    contactData += name.Replace("\n", "") + br; //Name
+                    contactData += (!string.IsNullOrEmpty(streetOrAddressline1) ? streetOrAddressline1.Replace("\n","") : string.Empty) + br; //StrtNmOrAdrLine1
+                    contactData += (!string.IsNullOrEmpty(houseNumberOrAddressline2) ? houseNumberOrAddressline2.Replace("\n", "") : string.Empty) + br; //BldgNbOrAdrLine2
                     contactData += zipCode.Replace("\n", "") + br; //PstCd
                     contactData += city.Replace("\n", "") + br; //TwnNm
                     contactData += country + br; //Ctry
                     return contactData;
+                }
+
+                public enum AddressType
+                {
+                    StructuredAddress,
+                    CombinedAddress
                 }
 
                 public class SwissQrCodeContactException : Exception
@@ -932,7 +1035,7 @@ namespace QRCoder
             {
                 //Header "logical" element
                 var SwissQrCodePayload = "SPC" + br; //QRType
-                SwissQrCodePayload += "0100" + br; //Version
+                SwissQrCodePayload += "0200" + br; //Version
                 SwissQrCodePayload += "1" + br; //Coding
 
                 //CdtrInf "logical" element
@@ -943,28 +1046,32 @@ namespace QRCoder
                 SwissQrCodePayload += creditor.ToString();
 
                 //UltmtCdtr "logical" element
-                if (ultimateCreditor != null)
-                    SwissQrCodePayload += ultimateCreditor.ToString();
-                else
-                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6).ToArray());
+                //Since version 2.0 ultimate creditor was marked as "for future use" and has to be delivered empty in any case!
+                SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 7).ToArray());
 
                 //CcyAmtDate "logical" element
                 //Amoutn has to use . as decimal seperator in any case. See https://www.paymentstandards.ch/dam/downloads/ig-qr-bill-en.pdf page 27.
                 SwissQrCodePayload += (amount != null ? $"{amount:0.00}".Replace(",", ".") : string.Empty) + br; //Amt
-                SwissQrCodePayload += currency + br; //Ccy
-                SwissQrCodePayload += (requestedDateOfPayment != null ?  ((DateTime)requestedDateOfPayment).ToString("yyyy-MM-dd") : string.Empty) + br; //ReqdExctnDt
+                SwissQrCodePayload += currency + br; //Ccy                
+                //Removed in S-QR version 2.0
+                //SwissQrCodePayload += (requestedDateOfPayment != null ?  ((DateTime)requestedDateOfPayment).ToString("yyyy-MM-dd") : string.Empty) + br; //ReqdExctnDt
 
                 //UltmtDbtr "logical" element
                 if (debitor != null)
                     SwissQrCodePayload += debitor.ToString();
                 else
-                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 6).ToArray());
+                    SwissQrCodePayload += string.Concat(Enumerable.Repeat(br, 7).ToArray());
 
 
                 //RmtInf "logical" element
                 SwissQrCodePayload += reference.RefType.ToString() + br; //Tp
                 SwissQrCodePayload += (!string.IsNullOrEmpty(reference.ReferenceText) ? reference.ReferenceText : string.Empty) + br; //Ref
-                SwissQrCodePayload += (!string.IsNullOrEmpty(reference.UnstructureMessage) ? reference.UnstructureMessage : string.Empty) + br; //Ustrd
+                               
+
+                //AddInf "logical" element
+                SwissQrCodePayload += (!string.IsNullOrEmpty(additionalInformation.UnstructureMessage) ? additionalInformation.UnstructureMessage : string.Empty) + br; //Ustrd
+                SwissQrCodePayload += additionalInformation.Trailer + br; //Trailer
+                SwissQrCodePayload += (!string.IsNullOrEmpty(additionalInformation.BillInformation) ? additionalInformation.BillInformation : string.Empty) + br; //StrdBkgInf
 
                 //AltPmtInf "logical" element
                 if (!string.IsNullOrEmpty(alternativeProcedure1))
@@ -972,6 +1079,9 @@ namespace QRCoder
                 if (!string.IsNullOrEmpty(alternativeProcedure2))
                     SwissQrCodePayload += alternativeProcedure2.Replace("\n", "") + br; //AltPmt
 
+                //S-QR specification 2.0, chapter 4.2.3
+                if (SwissQrCodePayload.EndsWith(br))
+                    SwissQrCodePayload = SwissQrCodePayload.Trim(br.ToCharArray());
 
                 return SwissQrCodePayload;
             }
