@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
-using System.Reflection;
-using QRCoder.Exceptions;
 
 namespace QRCoder
 {
@@ -882,7 +880,7 @@ namespace QRCoder
                 x => x.Details.Any(
                     y => (y.ErrorCorrectionLevel == eccLevel))
                 ).Select(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]).Max();
-            throw new DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
+            throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
         }
 
         private static EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
