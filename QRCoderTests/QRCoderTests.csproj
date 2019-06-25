@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CategoryDiscoverer.cs" />
+    <Compile Include="QRCodeRendererTests.cs" />
     <Compile Include="QRGeneratorTests.cs" />
     <Compile Include="PayloadGeneratorTests.cs" />
   </ItemGroup>
