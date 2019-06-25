@@ -22,17 +22,17 @@ mkdir Build\lib\netstandard2.0
 
 echo Compile single projects
 
-"C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoder\QRCoder.csproj /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe" QRCoder\QRCoder.csproj /p:Configuration="%config%";VisualStudioVersion=15.0 /tv:15.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
 copy "QRCoder\bin\%config%\net35\*.dll" "Build\lib\net35"
 del /F /S /Q "QRCoder\bin"
 del /F /S /Q "QRCoder\obj"
 
-"C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoder\QRCoder.NET40.csproj /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe" QRCoder\QRCoder.NET40.csproj /p:Configuration="%config%";VisualStudioVersion=15.0 /tv:15.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
 copy "QRCoder\bin\%config%\net40\*.dll" "Build\lib\net40"
 del /F /S /Q "QRCoder\bin"
 del /F /S /Q "QRCoder\obj"
 
-"C:\Program Files (x86)\MSBuild\14.0\bin\msbuild" QRCoder\QRCoderProject.Portable.csproj /p:Configuration="%config%";VisualStudioVersion=14.0 /tv:14.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
+"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\MSBuild.exe" QRCoder\QRCoderProject.Portable.csproj /p:Configuration="%config%";VisualStudioVersion=15.0 /tv:15.0 /v:M /fl /flp:LogFile=msbuild.log;Verbosity=diag /nr:false /t:Rebuild
 copy "QRCoder\bin\%config%\netcore\*.dll" "Build\lib\netcore"
 del /F /S /Q "QRCoder\bin"
 del /F /S /Q "QRCoder\obj"
