@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETSTANDARD1_1
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -104,3 +105,5 @@ namespace QRCoder
         }
     }
 }
+
+#endif

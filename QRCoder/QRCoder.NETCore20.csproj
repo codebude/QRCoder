@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>net35;net40;netstandard1.1;netstandard2.0</TargetFrameworks>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
@@ -11,25 +11,26 @@
   </PropertyGroup>
 
   <PropertyGroup>
-	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<PackageId>QRCoder.NET</PackageId>
-	<Authors>QRCoder.NET</Authors>
-	<AssemblyName>QRCoder</AssemblyName>
-	<RootNamespace>QRCoder</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>QRCoder</PackageId>
+    <Authors>Raffael Herrmann</Authors>
+    <AssemblyName>QRCoder</AssemblyName>
+    <RootNamespace>QRCoder</RootNamespace>
+    <PackageLicenseUrl>https://github.com/codebude/QRCoder/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/codebude/QRCoder/</PackageProjectUrl>
+    <PackageIconUrl>http://code-bude.net/downloads/qrcoder-logo.png</PackageIconUrl>
+    <PackageTags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</PackageTags>
+    <RepositoryUrl>https://github.com/codebude/QRCoder.git</RepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="XamlQRCode.cs" />
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
-
-  <ItemGroup>
+  
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="UnityEngine">
-      <HintPath>UnityEngine.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>
