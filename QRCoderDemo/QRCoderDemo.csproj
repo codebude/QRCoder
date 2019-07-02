@@ -80,9 +80,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj">
-      <Project>{aece5df3-c379-46ca-bb7d-7bdbe59011fd}</Project>
-      <Name>QRCoder</Name>
+    <ProjectReference Include="..\QRCoder\QRCoder.NETCore20.csproj">
+      <Project>{aa6be23a-7813-4d2a-835e-b673631ae9f1}</Project>
+      <Name>QRCoder.NETCore20</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
