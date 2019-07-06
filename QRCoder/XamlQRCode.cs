@@ -1,4 +1,4 @@
-﻿#if NET35 || NET40
+﻿#if NETFRAMEWORK
 using System;
 using System.Windows;
 using System.Windows.Media;

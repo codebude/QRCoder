@@ -402,7 +402,7 @@ namespace QRCoder
                 var size = qrCode.ModuleMatrix.Count;
 
 
-                #if NET35 || NET40
+                #if NETFRAMEWORK
                     var methods = typeof (MaskPattern).GetMethods();
                 #else
                     var methods = typeof (MaskPattern).GetTypeInfo().DeclaredMethods;
@@ -453,7 +453,7 @@ namespace QRCoder
 
 
 
-                #if NET35 || NET40
+                #if NETFRAMEWORK
                     var patterMethod = typeof(MaskPattern).GetMethods().First(x => x.Name == patternName);
                 #else
                     var patterMethod = typeof(MaskPattern).GetTypeInfo().GetDeclaredMethod(patternName);
