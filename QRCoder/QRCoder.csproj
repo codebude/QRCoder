@@ -13,6 +13,8 @@
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>QRCoder</PackageId>
+    <Version>1.3.7</Version>
+    <PackageVersion>1.3.7</PackageVersion>
     <Authors>Raffael Herrmann</Authors>
     <AssemblyName>QRCoder</AssemblyName>
     <RootNamespace>QRCoder</RootNamespace>
@@ -23,7 +25,7 @@
     <RepositoryUrl>https://github.com/codebude/QRCoder.git</RepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40'  or '$(TargetFramework)' == 'net45' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
@@ -33,4 +35,8 @@
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+  </PropertyGroup>
+  
 </Project>
