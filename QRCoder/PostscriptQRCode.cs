@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD1_1
+﻿#if NETFRAMEWORK || NETSTANDARD2_0
 using System;
 using System.Drawing;
 using static QRCoder.QRCodeGenerator;

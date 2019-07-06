@@ -1088,7 +1088,7 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(value);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-#if !NETSTANDARD1_1
+#if NETFRAMEWORK || NETSTANDARD2_0
             return iso.GetString(isoBytes);
 #else
             return iso.GetString(isoBytes, 0, isoBytes.Length);
