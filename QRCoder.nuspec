@@ -15,11 +15,8 @@
 		<copyright>Copyright &#x00A9; www.code-bude.net / Raffael Herrmann.  All rights reserved.</copyright>
 		<tags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</tags>
 		<dependencies>			
-			<group targetFramework="netstandard1.6">
-				<dependency id="System.Drawing.Common" version="4.5.0-preview1-25914-04" />
-			</group>
 			<group targetFramework="netstandard2.0">
-				<dependency id="System.Drawing.Common" version="4.5.0-preview1-25914-04" />
+				<dependency id="System.Drawing.Common" version="4.5.1" />
 			</group>
 		</dependencies>
 	</metadata>
@@ -34,7 +31,6 @@
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\monotouch\" />
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\monoandroid\" />
 		<file src="Build\lib\netcore\QRCoder.dll" target="lib\xamarinios\" />
-		<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard1.6\" />
 		<file src="Build\lib\netstandard2.0\QRCoder.dll" target="lib\netstandard2.0\" />
 	</files>
 </package>
