@@ -18,13 +18,10 @@ certUtil -hashfile "QRCoder\bin\%config%\net35\QRCoder.dll" md5
 powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCoder\bin\%config%\net40\QRCoder.dll\").ImageRuntimeVersion"
 certUtil -hashfile "QRCoder\bin\%config%\net40\QRCoder.dll" md5
 
-powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCoder\bin\%config%\net45\QRCoder.dll\").ImageRuntimeVersion"
-certUtil -hashfile "QRCoder\bin\%config%\net45\QRCoder.dll" md5
-
 powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCoder\bin\%config%\netstandard1.1\QRCoder.dll\").ImageRuntimeVersion"
 certUtil -hashfile "QRCoder\bin\%config%\netstandard1.1\QRCoder.dll" md5
 
 powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCoder\bin\%config%\netstandard2.0\QRCoder.dll\").ImageRuntimeVersion"
 certUtil -hashfile "QRCoder\bin\%config%\netstandard2.0\QRCoder.dll" md5
 
-dotnet pack -c %config% --no-build
+dotnet pack QRCoder\QRCoder.csproj -c %config% --no-build

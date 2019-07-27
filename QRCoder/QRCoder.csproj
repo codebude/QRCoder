@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;net45;netstandard1.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netstandard1.1;netstandard2.0</TargetFrameworks>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
@@ -14,18 +14,17 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>QRCoder</PackageId>
     <Version>1.3.7</Version>
-    <PackageVersion>1.3.7</PackageVersion>
     <Authors>Raffael Herrmann</Authors>
     <AssemblyName>QRCoder</AssemblyName>
     <RootNamespace>QRCoder</RootNamespace>
-    <PackageLicenseUrl>https://github.com/codebude/QRCoder/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/codebude/QRCoder/</PackageProjectUrl>
     <PackageIconUrl>http://code-bude.net/downloads/qrcoder-logo.png</PackageIconUrl>
     <PackageTags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</PackageTags>
     <RepositoryUrl>https://github.com/codebude/QRCoder.git</RepositoryUrl>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40'  or '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
