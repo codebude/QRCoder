@@ -82,8 +82,13 @@ namespace QRCoderTests
         [Category("PayloadGenerator/BitcoinAddress")]
         public void bitcoin_address_generator_disregards_current_culture()
         {
+#if NETCOREAPP1_1
+            var currentCulture = CultureInfo.DefaultThreadCurrentCulture;
+            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");
+#else
             var currentCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
+#endif
 
             var address = "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W";
             var amount = .123;
@@ -95,7 +100,11 @@ namespace QRCoderTests
                 .ToString()
                 .ShouldBe("bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=.123");
 
+#if NETCOREAPP1_1
+            CultureInfo.DefaultThreadCurrentCulture = currentCulture;
+#else
             Thread.CurrentThread.CurrentCulture = currentCulture;
+#endif
         }
 
 
@@ -562,8 +571,8 @@ namespace QRCoderTests
             var description = "A small party for the new QRCoder. Bring some beer!";
             var location = "Programmer's paradise, Beachtown, Paradise";
             var alldayEvent = false;
-            var begin = new DateTime(2016,01,03,12,00,00);
-            var end = new DateTime(2016,01,03,14,30,0);
+            var begin = new DateTime(2016, 01, 03, 12, 00, 00);
+            var end = new DateTime(2016, 01, 03, 14, 30, 0);
             var encoding = PayloadGenerator.CalendarEvent.EventEncoding.Universal;
 
             var generator = new PayloadGenerator.CalendarEvent(subject, description, location, begin, end, alldayEvent, encoding);
@@ -648,7 +657,7 @@ namespace QRCoderTests
         public void iban_validator_validate_german_iban()
         {
             var iban = "DE15268500010154131577";
-            
+
             MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
             var result = (bool)method.Invoke(null, new object[] { iban });
 
@@ -1035,7 +1044,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1055,7 +1064,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1075,7 +1084,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singledirectdebit?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singledirectdebit?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1116,7 +1125,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1132,11 +1141,11 @@ namespace QRCoderTests
             var amount = 10.00m;
             Currency currency = Currency.USD;
 
-            var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban, bic, amount, "", 0, null, null, "", "", new DateTime(2017,03,01), reason, sepaReference, currency, DateTime.Now);
+            var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban, bic, amount, "", 0, null, null, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now);
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1154,11 +1163,11 @@ namespace QRCoderTests
             var amount = 10.00m;
             Currency currency = Currency.USD;
 
-            var generator = new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017,03,01), reason, sepaReference, currency, DateTime.Now);
+            var generator = new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now);
 
             generator
                 .ToString()
-                .ShouldBe("bank://singledirectdebitsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&creditorid=DE%2002%20TSV%2001234567890&mandateid=987543CB2&dateofsignature=01032017&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singledirectdebitsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&creditorid=DE%2002%20TSV%2001234567890&mandateid=987543CB2&dateofsignature=01032017&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1182,7 +1191,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://periodicsinglepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"&periodictimeunit=M&periodictimeunitrotation=1&periodicfirstexecutiondate=" + periodicFirstExecutionDate.ToString("ddMMyyyy") + "&periodiclastexecutiondate=" + periodicLastExecutionDate.ToString("ddMMyyyy"));
+                .ShouldBe("bank://periodicsinglepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "&periodictimeunit=M&periodictimeunitrotation=1&periodicfirstexecutiondate=" + periodicFirstExecutionDate.ToString("ddMMyyyy") + "&periodiclastexecutiondate=" + periodicLastExecutionDate.ToString("ddMMyyyy"));
         }
 
 
@@ -1282,7 +1291,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=01194700&bnc=100205000&amount=10,00&currency=EUR&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=01194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1299,7 +1308,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1316,7 +1325,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1333,7 +1342,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -1350,7 +1359,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate="+DateTime.Now.ToString("ddMMyyyy")+"");
+                .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
         }
 
 
@@ -2214,7 +2223,7 @@ namespace QRCoderTests
             var contactGeneral = new PayloadGenerator.SwissQrCode.Contact("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
             var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban);
             var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR, "990005000000000320071012303", ReferenceTextType.QrReference);
-            var currency = PayloadGenerator.SwissQrCode.Currency.CHF;            
+            var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
             var additionalInformation = new PayloadGenerator.SwissQrCode.AdditionalInformation("This is my unstructured message.", "Some bill information here...");
             var amount = 100.25m;
             var reqDateOfPayment = new DateTime(2017, 03, 01);
@@ -2470,7 +2479,7 @@ namespace QRCoderTests
             var mobilePhone = "+421701234567";
             var workPhone = "+4253211337";
             var email = "me@john.doe";
-            var birthday = new DateTime(1970,02,01);
+            var birthday = new DateTime(1970, 02, 01);
             var website = "http://john.doe";
             var street = "Long street";
             var houseNumber = "42";
