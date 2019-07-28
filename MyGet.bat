@@ -8,7 +8,7 @@ echo Working dir: %cd%
 
 dotnet clean -c %config%
 
-dotnet build -c %config%
+dotnet build -c %config% || EXIT /B 1
 
 echo Assembly information
 
@@ -24,6 +24,6 @@ certUtil -hashfile "QRCoder\bin\%config%\netstandard1.1\QRCoder.dll" md5
 powershell -Command "[Reflection.Assembly]::ReflectionOnlyLoadFrom(\"%cd%\QRCoder\bin\%config%\netstandard2.0\QRCoder.dll\").ImageRuntimeVersion"
 certUtil -hashfile "QRCoder\bin\%config%\netstandard2.0\QRCoder.dll" md5
 
-dotnet test QRCoderTests\QRCoderTests.csproj
+dotnet test QRCoderTests\QRCoderTests.csproj || EXIT /B 1
 
 dotnet pack QRCoder\QRCoder.csproj -c %config% --no-build
