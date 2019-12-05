@@ -12,7 +12,7 @@
 
   <PropertyGroup>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<PackageId>Anduin.QRCoder.NET</PackageId>
+	<PackageId>QRCoder.NET</PackageId>
 	<Authors>QRCoder.NET</Authors>
 	<AssemblyName>QRCoder</AssemblyName>
 	<RootNamespace>QRCoder</RootNamespace>
