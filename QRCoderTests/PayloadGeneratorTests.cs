@@ -2445,6 +2445,24 @@ namespace QRCoderTests
 
 
         [Fact]
+        [Category("PayloadGenerator/ShadowSocksConfig")]
+        public void shadowsocks_generator_can_generate_payload_with_plugin()
+        {
+            var host = "192.168.100.1";
+            var port = 8888;
+            var password = "test";
+            var method = PayloadGenerator.ShadowSocksConfig.Method.BfCfb;
+            var plugin = "obfs-local";
+            var pluginOption = "obfs=http;obfs-host=google.com";
+            var generator = new PayloadGenerator.ShadowSocksConfig(host, port, password, method, plugin, pluginOption);
+
+            generator
+                .ToString()
+                .ShouldBe("ss://YmYtY2ZiOnRlc3Q@192.168.100.1:8888/?plugin=obfs-local%3bobfs%3dhttp%3bobfs-host%3dgoogle.com");
+        }
+
+
+        [Fact]
         [Category("PayloadGenerator/ContactData")]
         public void contactdata_generator_can_generate_payload_simple_mecard()
         {
