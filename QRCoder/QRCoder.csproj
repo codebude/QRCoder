@@ -33,6 +33,10 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Drawing.Common" Version="4.5.1" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="ISO3166" Version="1.0.3" />
+  </ItemGroup>
 
   <PropertyGroup>
     <FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
