@@ -984,8 +984,8 @@ namespace QRCoder
                         this.zipCode = this.city = string.Empty;
                     }
 
-#if NET40
-                    if (!CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(x => new RegionInfo(x.LCID).TwoLetterISORegionName.ToUpper() == country.ToUpper()).Any())
+#if !NETSTANDARD1_1
+                    if (!CultureInfo.GetCultures(CultureTypes.SpecificCultures).Any(x => string.Equals(new RegionInfo(x.LCID).TwoLetterISORegionName, country, StringComparison.OrdinalIgnoreCase)))
                         throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't.");
 #else
                     try { var cultureCheck = new CultureInfo(country.ToUpper()); }
@@ -2286,7 +2286,7 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(message);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-#if NET40
+#if !NETSTANDARD1_1
             return iso.GetString(isoBytes);
 #else
                 return iso.GetString(isoBytes,0, isoBytes.Length);
