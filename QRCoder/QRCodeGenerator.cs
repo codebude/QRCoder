@@ -402,7 +402,7 @@ namespace QRCoder
                 var size = qrCode.ModuleMatrix.Count;
 
 
-                #if NET40
+                #if NETFRAMEWORK
                     var methods = typeof (MaskPattern).GetMethods();
                 #else
                     var methods = typeof (MaskPattern).GetTypeInfo().DeclaredMethods;
@@ -453,7 +453,7 @@ namespace QRCoder
 
 
 
-                #if NET40
+                #if NETFRAMEWORK
                     var patterMethod = typeof(MaskPattern).GetMethods().First(x => x.Name == patternName);
                 #else
                     var patterMethod = typeof(MaskPattern).GetTypeInfo().GetDeclaredMethod(patternName);
@@ -1088,7 +1088,7 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(value);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-#if !PCL
+#if NETFRAMEWORK || NETSTANDARD2_0
             return iso.GetString(isoBytes);
 #else
             return iso.GetString(isoBytes, 0, isoBytes.Length);

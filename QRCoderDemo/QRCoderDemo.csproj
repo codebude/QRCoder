@@ -81,7 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QRCoder\QRCoder.csproj">
-      <Project>{aece5df3-c379-46ca-bb7d-7bdbe59011fd}</Project>
+      <Project>{aa6be23a-7813-4d2a-835e-b673631ae9f1}</Project>
       <Name>QRCoder</Name>
     </ProjectReference>
   </ItemGroup>
