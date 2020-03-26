@@ -31,7 +31,7 @@ namespace QRCoder
             var bytes = new List<byte>(rawData);
 
             //Decompress
-            if (compressMode.Equals(Compression.Deflate))
+            if (compressMode == Compression.Deflate)
             {
                 using (var input = new MemoryStream(bytes.ToArray()))
                 {
@@ -45,7 +45,7 @@ namespace QRCoder
                     }
                 }
             }
-            else if (compressMode.Equals(Compression.GZip))
+            else if (compressMode == Compression.GZip)
             {
                 using (var input = new MemoryStream(bytes.ToArray()))
                 {
@@ -129,7 +129,7 @@ namespace QRCoder
             var rawData = bytes.ToArray();
 
             //Compress stream (optional)
-            if (compressMode.Equals(Compression.Deflate))
+            if (compressMode == Compression.Deflate)
             {
                 using (var output = new MemoryStream())
                 {
@@ -140,7 +140,7 @@ namespace QRCoder
                     rawData = output.ToArray();
                 }
             }
-            else if (compressMode.Equals(Compression.GZip))
+            else if (compressMode == Compression.GZip)
             {
                 using (var output = new MemoryStream())
                 {

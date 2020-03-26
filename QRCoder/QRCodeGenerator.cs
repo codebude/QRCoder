@@ -174,7 +174,7 @@ namespace QRCoder
         private static QRCodeData GenerateQrCode(string bitString, ECCLevel eccLevel, int version)
         {
             //Fill up data code word
-            var eccInfo = capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel.Equals(eccLevel));
+            var eccInfo = capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel == eccLevel);
             var dataLength = eccInfo.TotalDataCodewords * 8;
             var lengthDiff = dataLength - bitString.Length;
             if (lengthDiff > 0)
@@ -953,31 +953,31 @@ namespace QRCoder
         {
             if (version < 10)
             {
-                if (encMode.Equals(EncodingMode.Numeric))
+                if (encMode == EncodingMode.Numeric)
                     return 10;
-                else if (encMode.Equals(EncodingMode.Alphanumeric))
+                else if (encMode == EncodingMode.Alphanumeric)
                     return 9;
                 else
                     return 8;
             }
             else if (version < 27)
             {
-                if (encMode.Equals(EncodingMode.Numeric))
+                if (encMode == EncodingMode.Numeric)
                     return 12;
-                else if (encMode.Equals(EncodingMode.Alphanumeric))
+                else if (encMode == EncodingMode.Alphanumeric)
                     return 11;
-                else if (encMode.Equals(EncodingMode.Byte))
+                else if (encMode == EncodingMode.Byte)
                     return 16;
                 else
                     return 10;
             }
             else
             {
-                if (encMode.Equals(EncodingMode.Numeric))
+                if (encMode == EncodingMode.Numeric)
                     return 14;
-                else if (encMode.Equals(EncodingMode.Alphanumeric))
+                else if (encMode == EncodingMode.Alphanumeric)
                     return 13;
-                else if (encMode.Equals(EncodingMode.Byte))
+                else if (encMode == EncodingMode.Byte)
                     return 16;
                 else
                     return 12;

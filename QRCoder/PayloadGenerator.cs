@@ -445,7 +445,7 @@ namespace QRCoder
             public override string ToString()
             {
                 string payload = string.Empty;
-                if (outputType.Equals(ContactOutputType.MeCard))
+                if (outputType == ContactOutputType.MeCard)
                 {
                     payload += "MECARD+\r\n";
                     if (!string.IsNullOrEmpty(firstname) && !string.IsNullOrEmpty(lastname))
@@ -497,9 +497,9 @@ namespace QRCoder
                     if (!string.IsNullOrEmpty(phone))
                     {
                         payload += $"TEL;";
-                        if (outputType.Equals(ContactOutputType.VCard21))
+                        if (outputType == ContactOutputType.VCard21)
                             payload += $"HOME;VOICE:{phone}";
-                        else if (outputType.Equals(ContactOutputType.VCard3))
+                        else if (outputType == ContactOutputType.VCard3)
                             payload += $"TYPE=HOME,VOICE:{phone}";
                         else
                             payload += $"TYPE=home,voice;VALUE=uri:tel:{phone}";
@@ -509,9 +509,9 @@ namespace QRCoder
                     if (!string.IsNullOrEmpty(mobilePhone))
                     {
                         payload += $"TEL;";
-                        if (outputType.Equals(ContactOutputType.VCard21))
+                        if (outputType == ContactOutputType.VCard21)
                             payload += $"HOME;CELL:{mobilePhone}";
-                        else if (outputType.Equals(ContactOutputType.VCard3))
+                        else if (outputType == ContactOutputType.VCard3)
                             payload += $"TYPE=HOME,CELL:{mobilePhone}";
                         else
                             payload += $"TYPE=home,cell;VALUE=uri:tel:{mobilePhone}";
@@ -521,9 +521,9 @@ namespace QRCoder
                     if (!string.IsNullOrEmpty(workPhone))
                     {
                         payload += $"TEL;";
-                        if (outputType.Equals(ContactOutputType.VCard21))
+                        if (outputType == ContactOutputType.VCard21)
                             payload += $"WORK;VOICE:{workPhone}";
-                        else if (outputType.Equals(ContactOutputType.VCard3))
+                        else if (outputType == ContactOutputType.VCard3)
                             payload += $"TYPE=WORK,VOICE:{workPhone}";
                         else
                             payload += $"TYPE=work,voice;VALUE=uri:tel:{workPhone}";
@@ -532,9 +532,9 @@ namespace QRCoder
 
 
                     payload += "ADR;";
-                    if (outputType.Equals(ContactOutputType.VCard21))
+                    if (outputType == ContactOutputType.VCard21)
                         payload += "HOME;PREF:";
-                    else if (outputType.Equals(ContactOutputType.VCard3))
+                    else if (outputType == ContactOutputType.VCard3)
                         payload += "TYPE=HOME,PREF:";
                     else
                         payload += "TYPE=home,pref:";
@@ -557,7 +557,7 @@ namespace QRCoder
                         payload += $"EMAIL:{email}\r\n";
                     if (!string.IsNullOrEmpty(note))
                         payload += $"NOTE:{note}\r\n";
-                    if (!outputType.Equals(ContactOutputType.VCard21) && !string.IsNullOrEmpty(nickname))
+                    if (outputType != ContactOutputType.VCard21 && !string.IsNullOrEmpty(nickname))
                         payload += $"NICKNAME:{nickname}\r\n";
 
                     payload += "END:VCARD";
@@ -689,9 +689,9 @@ namespace QRCoder
                 this.requestedDateOfPayment = requestedDateOfPayment;
                 this.debitor = debitor;
 
-                if (iban.IsQrIban && !reference.RefType.Equals(Reference.ReferenceType.QRR))
+                if (iban.IsQrIban && reference.RefType != Reference.ReferenceType.QRR)
                     throw new SwissQrCodeException("If QR-IBAN is used, you have to choose \"QRR\" as reference type!");
-                if (!iban.IsQrIban && reference.RefType.Equals(Reference.ReferenceType.QRR))
+                if (!iban.IsQrIban && reference.RefType == Reference.ReferenceType.QRR)
                     throw new SwissQrCodeException("If non QR-IBAN is used, you have to choose either \"SCOR\" or \"NON\" as reference type!");
                 this.reference = reference;
 
@@ -772,17 +772,17 @@ namespace QRCoder
                     this.referenceType = referenceType;
                     this.referenceTextType = referenceTextType;
 
-                    if (referenceType.Equals(ReferenceType.NON) && reference != null)
+                    if (referenceType == ReferenceType.NON && reference != null)
                         throw new SwissQrCodeReferenceException("Reference is only allowed when referenceType not equals \"NON\"");
-                    if (!referenceType.Equals(ReferenceType.NON) && reference != null && referenceTextType == null)
+                    if (referenceType != ReferenceType.NON && reference != null && referenceTextType == null)
                         throw new SwissQrCodeReferenceException("You have to set an ReferenceTextType when using the reference text.");
-                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && (reference.Length > 27))
+                    if (referenceTextType == ReferenceTextType.QrReference && reference != null && (reference.Length > 27))
                         throw new SwissQrCodeReferenceException("QR-references have to be shorter than 28 chars.");
-                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !Regex.IsMatch(reference, @"^[0-9]+$"))
+                    if (referenceTextType == ReferenceTextType.QrReference && reference != null && !Regex.IsMatch(reference, @"^[0-9]+$"))
                         throw new SwissQrCodeReferenceException("QR-reference must exist out of digits only.");
-                    if (referenceTextType.Equals(ReferenceTextType.QrReference) && reference != null && !ChecksumMod10(reference))
+                    if (referenceTextType == ReferenceTextType.QrReference && reference != null && !ChecksumMod10(reference))
                         throw new SwissQrCodeReferenceException("QR-references is invalid. Checksum error.");
-                    if (referenceTextType.Equals(ReferenceTextType.CreditorReferenceIso11649) && reference != null && (reference.Length > 25))
+                    if (referenceTextType == ReferenceTextType.CreditorReferenceIso11649 && reference != null && (reference.Length > 25))
                         throw new SwissQrCodeReferenceException("Creditor references (ISO 11649) have to be shorter than 26 chars.");
 
                     this.reference = reference;                   
@@ -843,9 +843,9 @@ namespace QRCoder
                 /// <param name="ibanType">Type of IBAN (normal or QR-IBAN)</param>
                 public Iban(string iban, IbanType ibanType)
                 {
-                    if (ibanType.Equals(IbanType.Iban) && !IsValidIban(iban))
+                    if (ibanType == IbanType.Iban && !IsValidIban(iban))
                         throw new SwissQrCodeIbanException("The IBAN entered isn't valid.");
-                    if (ibanType.Equals(IbanType.QrIban) && !IsValidQRIban(iban))
+                    if (ibanType == IbanType.QrIban && !IsValidQRIban(iban))
                         throw new SwissQrCodeIbanException("The QR-IBAN entered isn't valid.");
                     if (!iban.StartsWith("CH") && !iban.StartsWith("LI"))
                         throw new SwissQrCodeIbanException("The IBAN must start with \"CH\" or \"LI\".");
@@ -855,7 +855,7 @@ namespace QRCoder
 
                 public bool IsQrIban
                 {
-                    get { return ibanType.Equals(IbanType.QrIban); }
+                    get { return ibanType == IbanType.QrIban; }
                 }
 
                 public override string ToString()
@@ -935,7 +935,7 @@ namespace QRCoder
                         throw new SwissQrCodeContactException($"Name must match the following pattern as defined in pain.001: {charsetPattern}");
                     this.name = name;
 
-                    if (AddressType.StructuredAddress.Equals(this.adrType))
+                    if (AddressType.StructuredAddress == this.adrType)
                     {
                         if (!string.IsNullOrEmpty(streetOrAddressline1) && (streetOrAddressline1.Length > 70))
                             throw new SwissQrCodeContactException("Street must be shorter than 71 chars.");
@@ -964,7 +964,7 @@ namespace QRCoder
                         this.houseNumberOrAddressline2 = houseNumberOrAddressline2;
                     }
 
-                    if (AddressType.StructuredAddress.Equals(this.adrType)) {
+                    if (AddressType.StructuredAddress == this.adrType) {
                         if (string.IsNullOrEmpty(zipCode))
                             throw new SwissQrCodeContactException("Zip code must not be empty.");
                         if (zipCode.Length > 16)
@@ -994,7 +994,7 @@ namespace QRCoder
 
                 public override string ToString()
                 {
-                    string contactData = $"{(AddressType.StructuredAddress.Equals(adrType) ? "S" : "K")}{br}"; //AdrTp
+                    string contactData = $"{(AddressType.StructuredAddress == adrType ? "S" : "K")}{br}"; //AdrTp
                     contactData += name.Replace("\n", "") + br; //Name
                     contactData += (!string.IsNullOrEmpty(streetOrAddressline1) ? streetOrAddressline1.Replace("\n","") : string.Empty) + br; //StrtNmOrAdrLine1
                     contactData += (!string.IsNullOrEmpty(houseNumberOrAddressline2) ? houseNumberOrAddressline2.Replace("\n", "") : string.Empty) + br; //BldgNbOrAdrLine2
@@ -1162,9 +1162,9 @@ namespace QRCoder
                 if (purposeOfCreditTransfer.Length > 4)
                     throw new GirocodeException("Purpose of credit transfer can only have 4 chars at maximum.");
                 this.purposeOfCreditTransfer = purposeOfCreditTransfer;
-                if (typeOfRemittance.Equals(TypeOfRemittance.Unstructured) && remittanceInformation.Length > 140)
+                if (typeOfRemittance == TypeOfRemittance.Unstructured && remittanceInformation.Length > 140)
                     throw new GirocodeException("Unstructured reference texts have to shorter than 141 chars.");
-                if (typeOfRemittance.Equals(TypeOfRemittance.Structured) && remittanceInformation.Length > 35)
+                if (typeOfRemittance == TypeOfRemittance.Structured && remittanceInformation.Length > 35)
                     throw new GirocodeException("Structured reference texts have to shorter than 36 chars.");
                 this.typeOfRemittance = typeOfRemittance;
                 this.remittanceInformation = remittanceInformation;
@@ -1176,7 +1176,7 @@ namespace QRCoder
             public override string ToString()
             {
                 var girocodePayload = "BCD" + br;
-                girocodePayload += (version.Equals(GirocodeVersion.Version1) ? "001" : "002") + br;
+                girocodePayload += ((version == GirocodeVersion.Version1) ? "001" : "002") + br;
                 girocodePayload += (int)encoding + 1 + br;
                 girocodePayload += "SCT" + br;
                 girocodePayload += bic + br;
@@ -1184,10 +1184,10 @@ namespace QRCoder
                 girocodePayload += iban + br;
                 girocodePayload += $"EUR{amount:0.00}".Replace(",",".") + br;
                 girocodePayload += purposeOfCreditTransfer + br;
-                girocodePayload += (typeOfRemittance.Equals(TypeOfRemittance.Structured)
+                girocodePayload += ((typeOfRemittance == TypeOfRemittance.Structured)
                     ? remittanceInformation
                     : string.Empty) + br;
-                girocodePayload += (typeOfRemittance.Equals(TypeOfRemittance.Unstructured)
+                girocodePayload += ((typeOfRemittance == TypeOfRemittance.Unstructured)
                     ? remittanceInformation
                     : string.Empty) + br;
                 girocodePayload += messageToGirocodeUser;
@@ -1339,12 +1339,12 @@ namespace QRCoder
                 //Loaded via "contact-constructor"
                 if (internalMode == 1)
                 {
-                    if (!authority.Equals(AuthorityType.contact) && !authority.Equals(AuthorityType.contact_v2))
+                    if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                         throw new BezahlCodeException("The constructor without an amount may only ne used with authority types 'contact' and 'contact_v2'.");
-                    if (authority.Equals(AuthorityType.contact) && (string.IsNullOrEmpty(account) || string.IsNullOrEmpty(bnc)))
+                    if (authority == AuthorityType.contact && (string.IsNullOrEmpty(account) || string.IsNullOrEmpty(bnc)))
                         throw new BezahlCodeException("When using authority type 'contact' the parameters 'account' and 'bnc' must be set.");
 
-                    if (!authority.Equals(AuthorityType.contact_v2))
+                    if (authority != AuthorityType.contact_v2)
                     {
                         var oldFilled = (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc));
                         var newFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
@@ -1354,17 +1354,17 @@ namespace QRCoder
                 }
                 else if (internalMode == 2)
                 {
-                    if (!authority.Equals(AuthorityType.periodicsinglepayment) && !authority.Equals(AuthorityType.singledirectdebit) && !authority.Equals(AuthorityType.singlepayment))
+                    if (authority != AuthorityType.periodicsinglepayment && authority != AuthorityType.singledirectdebit && authority != AuthorityType.singlepayment)
                         throw new BezahlCodeException("The constructor with 'account' and 'bnc' may only be used with 'non SEPA' authority types. Either choose another authority type or switch constructor.");
-                    if (authority.Equals(AuthorityType.periodicsinglepayment) && (string.IsNullOrEmpty(periodicTimeunit) || periodicTimeunitRotation == 0))
+                    if (authority == AuthorityType.periodicsinglepayment && (string.IsNullOrEmpty(periodicTimeunit) || periodicTimeunitRotation == 0))
                         throw new BezahlCodeException("When using 'periodicsinglepayment' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
 
                 }
                 else if (internalMode == 3)
                 {
-                    if (!authority.Equals(AuthorityType.periodicsinglepaymentsepa) && !authority.Equals(AuthorityType.singledirectdebitsepa) && !authority.Equals(AuthorityType.singlepaymentsepa))
+                    if (authority != AuthorityType.periodicsinglepaymentsepa && authority != AuthorityType.singledirectdebitsepa && authority != AuthorityType.singlepaymentsepa)
                         throw new BezahlCodeException("The constructor with 'iban' and 'bic' may only be used with 'SEPA' authority types. Either choose another authority type or switch constructor.");
-                    if (authority.Equals(AuthorityType.periodicsinglepaymentsepa) && (string.IsNullOrEmpty(periodicTimeunit) || periodicTimeunitRotation == 0))
+                    if (authority == AuthorityType.periodicsinglepaymentsepa && (string.IsNullOrEmpty(periodicTimeunit) || periodicTimeunitRotation == 0))
                         throw new BezahlCodeException("When using 'periodicsinglepaymentsepa' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
                 }
 
@@ -1382,7 +1382,7 @@ namespace QRCoder
                 var newWayFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
 
                 //Non-SEPA payment types
-                if (authority.Equals(AuthorityType.periodicsinglepayment) || authority.Equals(AuthorityType.singledirectdebit) || authority.Equals(AuthorityType.singlepayment) || authority.Equals(AuthorityType.contact) || (authority.Equals(AuthorityType.contact_v2) && oldWayFilled))
+                if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment || authority == AuthorityType.contact || (authority == AuthorityType.contact_v2 && oldWayFilled))
                 {
                     if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                         throw new BezahlCodeException("The account entered isn't valid.");
@@ -1391,7 +1391,7 @@ namespace QRCoder
                         throw new BezahlCodeException("The bnc entered isn't valid.");
                     this.bnc = bnc.Replace(" ", "").ToUpper();
 
-                    if (!authority.Equals(AuthorityType.contact) && !authority.Equals(AuthorityType.contact_v2))
+                    if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                     {
                         if (postingKey < 0 || postingKey >= 100)
                             throw new BezahlCodeException("PostingKey must be within 0 and 99.");
@@ -1400,7 +1400,7 @@ namespace QRCoder
                 }
 
                 //SEPA payment types
-                if (authority.Equals(AuthorityType.periodicsinglepaymentsepa) || authority.Equals(AuthorityType.singledirectdebitsepa) || authority.Equals(AuthorityType.singlepaymentsepa) || (authority.Equals(AuthorityType.contact_v2) && newWayFilled))
+                if (authority == AuthorityType.periodicsinglepaymentsepa || authority == AuthorityType.singledirectdebitsepa || authority == AuthorityType.singlepaymentsepa || (authority == AuthorityType.contact_v2 && newWayFilled))
                 {
                     if (!IsValidIban(iban))
                         throw new BezahlCodeException("The IBAN entered isn't valid.");
@@ -1409,7 +1409,7 @@ namespace QRCoder
                         throw new BezahlCodeException("The BIC entered isn't valid.");
                     this.bic = bic.Replace(" ", "").ToUpper();
 
-                    if (!authority.Equals(AuthorityType.contact_v2))
+                    if (authority != AuthorityType.contact_v2)
                     {
                         if (sepaReference.Length > 35)
                             throw new BezahlCodeException("SEPA reference texts have to be shorter than 36 chars.");
@@ -1427,7 +1427,7 @@ namespace QRCoder
                 }
 
                 //Checks for all payment types
-                if (!authority.Equals(AuthorityType.contact) && !authority.Equals(AuthorityType.contact_v2))
+                if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                 {
                     if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",", ".").Split('.')[1].TrimEnd('0').Length > 2)
                         throw new BezahlCodeException("Amount must have less than 3 digits after decimal point.");
@@ -1446,7 +1446,7 @@ namespace QRCoder
                         this.executionDate = (DateTime)executionDate;
                     }
 
-                    if (authority.Equals(AuthorityType.periodicsinglepayment) || authority.Equals(AuthorityType.periodicsinglepaymentsepa))
+                    if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
                     {
                         if (periodicTimeunit.ToUpper() != "M" && periodicTimeunit.ToUpper() != "W")
                             throw new BezahlCodeException("The periodicTimeunit must be either 'M' (monthly) or 'W' (weekly).");
@@ -1472,11 +1472,11 @@ namespace QRCoder
 
                 bezahlCodePayload += $"name={Uri.EscapeDataString(name)}&";
 
-                if (!authority.Equals(AuthorityType.contact) && !authority.Equals(AuthorityType.contact_v2))
+                if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                 {
                     //Handle what is same for all payments
 
-                    if (authority.Equals(AuthorityType.periodicsinglepayment) || authority.Equals(AuthorityType.singledirectdebit) || authority.Equals(AuthorityType.singlepayment))
+                    if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment)
                     {
                         bezahlCodePayload += $"account={account}&";
                         bezahlCodePayload += $"bnc={bnc}&";
@@ -1491,7 +1491,7 @@ namespace QRCoder
                         if (!string.IsNullOrEmpty(sepaReference))
                             bezahlCodePayload += $"separeference={ Uri.EscapeDataString(sepaReference)}&";
 
-                        if (authority.Equals(AuthorityType.singledirectdebitsepa))
+                        if (authority == AuthorityType.singledirectdebitsepa)
                         {
                             if (!string.IsNullOrEmpty(creditorId))
                                 bezahlCodePayload += $"creditorid={ Uri.EscapeDataString(creditorId)}&";
@@ -1508,7 +1508,7 @@ namespace QRCoder
                     bezahlCodePayload += $"currency={currency}&";
                     bezahlCodePayload += $"executiondate={executionDate.ToString("ddMMyyyy")}&";
 
-                    if (authority.Equals(AuthorityType.periodicsinglepayment) || authority.Equals(AuthorityType.periodicsinglepaymentsepa))
+                    if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
                     {
                         bezahlCodePayload += $"periodictimeunit={periodicTimeunit}&";
                         bezahlCodePayload += $"periodictimeunitrotation={periodicTimeunitRotation}&";
@@ -1521,12 +1521,12 @@ namespace QRCoder
                 else
                 {
                     //Handle what is same for all contacts
-                    if (authority.Equals(AuthorityType.contact))
+                    if (authority == AuthorityType.contact)
                     {
                         bezahlCodePayload += $"account={account}&";
                         bezahlCodePayload += $"bnc={bnc}&";
                     }
-                    else if (authority.Equals(AuthorityType.contact_v2))
+                    else if (authority == AuthorityType.contact_v2)
                     {
                         if (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc))
                         {
@@ -1829,7 +1829,7 @@ namespace QRCoder
                 vEvent += $"DTEND:{this.end}{Environment.NewLine}";
                 vEvent += "END:VEVENT";
 
-                if (this.encoding.Equals(EventEncoding.iCalComplete))
+                if (this.encoding == EventEncoding.iCalComplete)
                     vEvent = $@"BEGIN:VCALENDAR{Environment.NewLine}VERSION:2.0{Environment.NewLine}{vEvent}{Environment.NewLine}END:VCALENDAR";
 
                 return vEvent;
