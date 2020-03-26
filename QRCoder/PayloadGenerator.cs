@@ -623,7 +623,7 @@ namespace QRCoder
             {
                 string query = null;
 
-                var queryValues = new List<KeyValuePair<string,string>>{
+                var queryValues = new KeyValuePair<string,string>[]{
                   new KeyValuePair<string, string>(nameof(label), label),
                   new KeyValuePair<string, string>(nameof(message), message),
                   new KeyValuePair<string, string>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)

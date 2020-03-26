@@ -69,7 +69,7 @@ namespace QRCoder
             this.Version = (sideLen - 21 - 8) / 4 + 1;
 
             //Unpack
-            var modules = new Queue<bool>();
+            var modules = new Queue<bool>(8 * bytes.Count);
             foreach (var b in bytes)
             {
                 var bArr = new BitArray(new byte[] { b });
@@ -80,7 +80,7 @@ namespace QRCoder
             }
 
             //Build module matrix
-            this.ModuleMatrix = new List<BitArray>();
+            this.ModuleMatrix = new List<BitArray>(sideLen);
             for (int y = 0; y < sideLen; y++)
             {
                 this.ModuleMatrix.Add(new BitArray(sideLen));

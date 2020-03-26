@@ -187,7 +187,7 @@ namespace QRCoder
                 bitString = bitString.Substring(0, dataLength);
 
             //Calculate error correction words
-            var codeWordWithECC = new List<CodewordBlock>();
+            var codeWordWithECC = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
             for (var i = 0; i < eccInfo.BlocksInGroup1; i++)
             {
                 var bitStr = bitString.Substring(i * eccInfo.CodewordsInGroup1 * 8, eccInfo.CodewordsInGroup1 * 8);
@@ -399,7 +399,7 @@ namespace QRCoder
 
                 var size = qrCode.ModuleMatrix.Count;
 
-                var methods = new Dictionary<int, Func<int, int, bool>>() {
+                var methods = new Dictionary<int, Func<int, int, bool>>(8) {
                     { 1, MaskPattern.Pattern1 }, {2, MaskPattern.Pattern2 }, {3, MaskPattern.Pattern3 }, {4, MaskPattern.Pattern4 },
                     {5,  MaskPattern.Pattern5 }, {6, MaskPattern.Pattern6 }, {7, MaskPattern.Pattern7 }, {8, MaskPattern.Pattern8 }
                 };
@@ -1180,8 +1180,8 @@ namespace QRCoder
                 }
             }
             var exponentsToGlue = resultPolynom.PolyItems.GroupBy(x => x.Exponent).Where(x => x.Count() > 1).Select(x => x.First().Exponent);
-            var gluedPolynoms = new List<PolynomItem>();
             var toGlue = exponentsToGlue as IList<int> ?? exponentsToGlue.ToList();
+            var gluedPolynoms = new List<PolynomItem>(toGlue.Count);
             foreach (var exponent in toGlue)
             {
                 var coefficient = resultPolynom.PolyItems.Where(x => x.Exponent == exponent).Aggregate(0, (current, polynomOld)
@@ -1213,7 +1213,7 @@ namespace QRCoder
 
         private static Dictionary<char, int> CreateAlphanumEncDict()
         {
-            var localAlphanumEncDict = new Dictionary<char, int>();
+            var localAlphanumEncDict = new Dictionary<char, int>(alphanumEncTable.Length);
             for (int i = 0; i < alphanumEncTable.Length; i++)
                 localAlphanumEncDict.Add(alphanumEncTable[i], i);
             return localAlphanumEncDict;
@@ -1221,7 +1221,7 @@ namespace QRCoder
 
         private static List<AlignmentPattern> CreateAlignmentPatternTable()
         {
-            var localAlignmentPatternTable = new List<AlignmentPattern>();
+            var localAlignmentPatternTable = new List<AlignmentPattern>(40);
 
             for (var i = 0; i < (7 * 40); i = i + 7)
             {
@@ -1255,7 +1255,7 @@ namespace QRCoder
 
         private static List<ECCInfo> CreateCapacityECCTable()
         {
-            var localCapacityECCTable = new List<ECCInfo>();
+            var localCapacityECCTable = new List<ECCInfo>(160);
             for (var i = 0; i < (4 * 6 * 40); i = i + (4 * 6))
             {
                 localCapacityECCTable.AddRange(
@@ -1310,13 +1310,13 @@ namespace QRCoder
 
         private static List<VersionInfo> CreateCapacityTable()
         {
-            var localCapacityTable = new List<VersionInfo>();
+            var localCapacityTable = new List<VersionInfo>(40);
             for (var i = 0; i < (16 * 40); i = i + 16)
             {
                 localCapacityTable.Add(new VersionInfo(
 
                     (i + 16) / 16,
-                    new List<VersionInfoDetails>
+                    new List<VersionInfoDetails>(4)
                     {
                         new VersionInfoDetails(
                              ECCLevel.L,
@@ -1362,7 +1362,7 @@ namespace QRCoder
 
         private static List<Antilog> CreateAntilogTable()
         {
-            var localGaloisField = new List<Antilog>();
+            var localGaloisField = new List<Antilog>(256);
 
             int gfItem = 1;
             for (var i = 0; i < 256; i++)
