@@ -922,10 +922,16 @@ namespace QRCoder
 
         private static List<string> BinaryStringToBitBlockList(string bitString)
         {
-            return new List<char>(bitString.ToCharArray()).Select((x, i) => new { Index = i, Value = x })
-                .GroupBy(x => x.Index / 8)
-                .Select(x => String.Join("", x.Select(v => v.Value.ToString()).ToArray()))
-                .ToList();
+            const int blockSize = 8;
+            var numberOfBlocks = (int)Math.Ceiling(bitString.Length / (double)blockSize);
+            var blocklist = new List<string>(numberOfBlocks);
+
+            for (int i = 0; i < bitString.Length; i += blockSize)
+            {
+                blocklist.Add(bitString.Substring(i, blockSize));
+            }
+
+            return blocklist;
         }
 
         private static List<int> BinaryStringListToDecList(List<string> binaryStringList)
