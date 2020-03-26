@@ -846,11 +846,11 @@ namespace QRCoder
         {
 
             var fittingVersions = capacityTable.Where(
-                x => x.Details.Count(
+                x => x.Details.Any(
                     y => (y.ErrorCorrectionLevel == eccLevel
                           && y.CapacityDict[encMode] >= Convert.ToInt32(length)
                           )
-                    ) > 0
+                    )
               ).Select(x => new
               {
                   version = x.Version,
@@ -864,7 +864,7 @@ namespace QRCoder
             var maxSizeByte = capacityTable.Where(
                 x => x.Details.Any(
                     y => (y.ErrorCorrectionLevel == eccLevel))
-                ).Select(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]).Max();
+                ).Max(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]);
             throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
         }
 
