@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if NETFRAMEWORK || NETSTANDARD2_0
+using System;
 using System.Drawing;
 using System.Text;
 using static QRCoder.QRCodeGenerator;
@@ -90,3 +91,5 @@ namespace QRCoder
         }
     }
 }
+
+#endif

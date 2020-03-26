@@ -984,13 +984,8 @@ namespace QRCoder
                         this.zipCode = this.city = string.Empty;
                     }
 
-#if NET40
-                    if (!CultureInfo.GetCultures(CultureTypes.SpecificCultures).Where(x => new RegionInfo(x.LCID).TwoLetterISORegionName.ToUpper() == country.ToUpper()).Any())
+                    if (!ISO3166.Country.List.Any(x => x.TwoLetterCode == country.ToUpper()))
                         throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't.");
-#else
-                    try { var cultureCheck = new CultureInfo(country.ToUpper()); }
-                    catch { throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't."); }
-#endif
 
                     this.country = country;
                 }

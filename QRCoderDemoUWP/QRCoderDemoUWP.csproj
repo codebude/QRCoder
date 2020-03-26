@@ -127,10 +127,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoderProject.Portable.csproj">
-      <Project>{B2709734-9F32-4750-9CEC-10C5915B23FB}</Project>
-      <Name>QRCoderProject.Portable</Name>
-    </ProjectReference>
+    <Reference Include="QRCoder">
+      <HintPath>..\QRCoder\bin\Debug\netstandard1.1\QRCoder.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

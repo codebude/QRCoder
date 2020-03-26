@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+#if !NET35
 using Xunit.Abstractions;
+#endif
 using Xunit.Sdk;
 
 namespace QRCoderTests.XUnitExtenstions
 {
+#if NET35
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public class CategoryAttribute : Attribute
+    {
+        public CategoryAttribute(string category) { }
+    }
+#else
     public class CategoryDiscoverer : ITraitDiscoverer
     {
         public const string KEY = "Category";
@@ -26,4 +33,5 @@ namespace QRCoderTests.XUnitExtenstions
     {
         public CategoryAttribute(string category) { }
     }
+#endif
 }
