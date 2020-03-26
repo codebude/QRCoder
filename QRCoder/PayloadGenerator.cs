@@ -843,8 +843,10 @@ namespace QRCoder
                 /// <param name="ibanType">Type of IBAN (normal or QR-IBAN)</param>
                 public Iban(string iban, IbanType ibanType)
                 {
-                    if (!IsValidIban(iban))
+                    if (ibanType.Equals(IbanType.Iban) && !IsValidIban(iban))
                         throw new SwissQrCodeIbanException("The IBAN entered isn't valid.");
+                    if (ibanType.Equals(IbanType.QrIban) && !IsValidQRIban(iban))
+                        throw new SwissQrCodeIbanException("The QR-IBAN entered isn't valid.");
                     if (!iban.StartsWith("CH") && !iban.StartsWith("LI"))
                         throw new SwissQrCodeIbanException("The IBAN must start with \"CH\" or \"LI\".");
                     this.iban = iban;
@@ -2371,6 +2373,18 @@ namespace QRCoder
             var checksumValid = (sumDec % 97) == 1;
             
             return structurallyValid && checksumValid;
+        }
+
+        private static bool IsValidQRIban(string iban)
+        {
+            var foundQrIid = false;
+            try
+            {
+                var ibanCleared = iban.ToUpper().Replace(" ", "").Replace("-", "");
+                var possibleQrIid = Convert.ToInt32(ibanCleared.Substring(4, 5));
+                foundQrIid = possibleQrIid >= 30000 && possibleQrIid <= 31999;
+            } catch { }
+            return IsValidIban(iban) && foundQrIid;
         }
 
         private static bool IsValidBic(string bic)

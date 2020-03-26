@@ -692,6 +692,31 @@ namespace QRCoderTests
 
 
         [Fact]
+        [Category("PayloadGenerator/QrIbanValidator")]
+        public void qriban_validator_validates_iban()
+        {
+            var iban = "CH2430043000000789012";
+
+            MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidQRIban", BindingFlags.NonPublic | BindingFlags.Static);
+            var result = (bool)method.Invoke(null, new object[] { iban });
+
+            result.ShouldBe<bool>(true);
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/QrIbanValidator")]
+        public void qriban_validator_invalidates_iban()
+        {
+            var iban = "CH3908704016075473007";
+
+            MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidQRIban", BindingFlags.NonPublic | BindingFlags.Static);
+            var result = (bool)method.Invoke(null, new object[] { iban });
+
+            result.ShouldBe<bool>(false);
+        }
+
+
+        [Fact]
         [Category("PayloadGenerator/Girocode")]
         public void girocode_generator_can_generate_payload_minimal()
         {
@@ -1938,6 +1963,20 @@ namespace QRCoderTests
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(exception);
             exception.Message.ShouldBe("The IBAN entered isn't valid.");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/SwissQrCode.Iban")]
+        public void swissqrcode_generator_should_throw_invalid_qriban()
+        {
+            var iban = "CHC2609000000857666015";
+            var ibanType = PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban;
+
+            var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
+
+            Assert.NotNull(exception);
+            Assert.IsType<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(exception);
+            exception.Message.ShouldBe("The QR-IBAN entered isn't valid.");
         }
 
         [Fact]
