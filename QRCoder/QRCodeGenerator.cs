@@ -426,15 +426,20 @@ namespace QRCoder
 
                     for (var x = 0; x < size; x++)
                     {
-                        for (var y = 0; y < size; y++)
+                        for (var y = 0; y < x; y++)
                         {
                             if (!IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                             {
                                 qrTemp.ModuleMatrix[y][x] ^= pattern.Value(x, y);
+                                qrTemp.ModuleMatrix[x][y] ^= pattern.Value(y, x);
                             }
                         }
-                    }
 
+                        if (!IsBlocked(new Rectangle(x, x, 1, 1), blockedModules))
+                        {
+                            qrTemp.ModuleMatrix[x][x] ^= pattern.Value(x, x);
+                        }
+                    }
 
                     var score = MaskPattern.Score(ref qrTemp);
                     if (!selectedPattern.HasValue || patternScore > score)
@@ -446,12 +451,18 @@ namespace QRCoder
 
                 for (var x = 0; x < size; x++)
                 {
-                    for (var y = 0; y < size; y++)
+                    for (var y = 0; y < x; y++)
                     {
                         if (!IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                         {
                             qrCode.ModuleMatrix[y][x] ^= methods[selectedPattern.Value](x, y);
+                            qrCode.ModuleMatrix[x][y] ^= methods[selectedPattern.Value](y, x);
                         }
+                    }
+
+                    if (!IsBlocked(new Rectangle(x, x, 1, 1), blockedModules))
+                    {
+                        qrCode.ModuleMatrix[x][x] ^= methods[selectedPattern.Value](x, x);
                     }
                 }
                 return selectedPattern.Value - 1;
@@ -608,13 +619,12 @@ namespace QRCoder
 
             private static bool IsBlocked(Rectangle r1, List<Rectangle> blockedModules)
             {
-                var isBlocked = false;
                 foreach (var blockedMod in blockedModules)
                 {
                     if (Intersects(blockedMod, r1))
-                        isBlocked = true;
+                        return true;
                 }
-                return isBlocked;
+                return false;
             }
 
             private static class MaskPattern
@@ -1197,18 +1207,18 @@ namespace QRCoder
             }
             resultPolynom.PolyItems.RemoveAll(x => toGlue.Contains(x.Exponent));
             resultPolynom.PolyItems.AddRange(gluedPolynoms);
-            resultPolynom.PolyItems = resultPolynom.PolyItems.OrderByDescending(x => x.Exponent).ToList();
+            resultPolynom.PolyItems.Sort((x, y) => -x.Exponent.CompareTo(y.Exponent));
             return resultPolynom;
         }
 
         private static int GetIntValFromAlphaExp(int exp)
         {
-            return galoisField.Where(alog => alog.ExponentAlpha == exp).Select(alog => alog.IntegerValue).First();
+            return galoisField.Find(alog => alog.ExponentAlpha == exp).IntegerValue;
         }
 
         private static int GetAlphaExpFromIntVal(int intVal)
         {
-            return galoisField.Where(alog => alog.IntegerValue == intVal).Select(alog => alog.ExponentAlpha).First();
+            return galoisField.Find(alog => alog.IntegerValue == intVal).ExponentAlpha;
         }
 
         private static int ShrinkAlphaExp(int alphaExp)
