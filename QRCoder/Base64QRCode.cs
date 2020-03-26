@@ -1,4 +1,4 @@
-﻿#if NETFRAMEWORK || NETSTANDARD2_0 || NETSTANDARD2_1
+﻿#if NETFRAMEWORK || NETSTANDARD2_0
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.1;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netstandard1.1;netstandard2.0</TargetFrameworks>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
@@ -30,7 +30,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
   
