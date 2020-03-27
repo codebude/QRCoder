@@ -31,7 +31,7 @@ namespace QRCoder
             var bytes = new List<byte>(rawData);
 
             //Decompress
-            if (compressMode.Equals(Compression.Deflate))
+            if (compressMode == Compression.Deflate)
             {
                 using (var input = new MemoryStream(bytes.ToArray()))
                 {
@@ -45,7 +45,7 @@ namespace QRCoder
                     }
                 }
             }
-            else if (compressMode.Equals(Compression.GZip))
+            else if (compressMode == Compression.GZip)
             {
                 using (var input = new MemoryStream(bytes.ToArray()))
                 {
@@ -69,7 +69,7 @@ namespace QRCoder
             this.Version = (sideLen - 21 - 8) / 4 + 1;
 
             //Unpack
-            var modules = new Queue<bool>();
+            var modules = new Queue<bool>(8 * bytes.Count);
             foreach (var b in bytes)
             {
                 var bArr = new BitArray(new byte[] { b });
@@ -80,7 +80,7 @@ namespace QRCoder
             }
 
             //Build module matrix
-            this.ModuleMatrix = new List<BitArray>();
+            this.ModuleMatrix = new List<BitArray>(sideLen);
             for (int y = 0; y < sideLen; y++)
             {
                 this.ModuleMatrix.Add(new BitArray(sideLen));
@@ -129,7 +129,7 @@ namespace QRCoder
             var rawData = bytes.ToArray();
 
             //Compress stream (optional)
-            if (compressMode.Equals(Compression.Deflate))
+            if (compressMode == Compression.Deflate)
             {
                 using (var output = new MemoryStream())
                 {
@@ -140,7 +140,7 @@ namespace QRCoder
                     rawData = output.ToArray();
                 }
             }
-            else if (compressMode.Equals(Compression.GZip))
+            else if (compressMode == Compression.GZip)
             {
                 using (var output = new MemoryStream())
                 {
