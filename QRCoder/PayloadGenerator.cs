@@ -1078,7 +1078,7 @@ namespace QRCoder
 
                 //S-QR specification 2.0, chapter 4.2.3
                 if (SwissQrCodePayload.EndsWith(br))
-                    SwissQrCodePayload = SwissQrCodePayload.Trim(br.ToCharArray());
+                    SwissQrCodePayload = SwissQrCodePayload.Remove(SwissQrCodePayload.Length - br.Length);
 
                 return SwissQrCodePayload;
             }
