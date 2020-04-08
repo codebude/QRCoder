@@ -1229,9 +1229,16 @@ namespace QRCoder
 
         private static Dictionary<char, int> CreateAlphanumEncDict()
         {
-            var localAlphanumEncDict = new Dictionary<char, int>(alphanumEncTable.Length);
+            var localAlphanumEncDict = new Dictionary<char, int>(45);
+            //Add numbers
+            for (int i = 0; i < 10; i++)
+                localAlphanumEncDict.Add($"{i}"[0], i);
+            //Add chars
+            for (char c = 'A'; c <= 'Z'; c++)
+                localAlphanumEncDict.Add(c, localAlphanumEncDict.Count());
+            //Add special chars
             for (int i = 0; i < alphanumEncTable.Length; i++)
-                localAlphanumEncDict.Add(alphanumEncTable[i], i);
+                localAlphanumEncDict.Add(alphanumEncTable[i], localAlphanumEncDict.Count());
             return localAlphanumEncDict;
         }
 
