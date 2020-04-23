@@ -86,7 +86,7 @@ namespace QRCoder
                     iconY = (bmp.Height - iconDestHeight) / 2;
 
                     var centerDest = new RectangleF(iconX - iconBorderWidth, iconY - iconBorderWidth, iconDestWidth + iconBorderWidth * 2, iconDestHeight + iconBorderWidth * 2);
-                   if (drawRoundedCorners)
+                    if (drawRoundedCorners)
                     {
                         iconPath = this.CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
                     }
@@ -148,7 +148,6 @@ namespace QRCoder
             return bmp;
         }
 
-
         internal GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
         {
             var roundedRect = new GraphicsPath();
@@ -163,6 +162,7 @@ namespace QRCoder
             roundedRect.CloseFigure();
             return roundedRect;
         }
+
         internal GraphicsPath CreateRectanglePath(RectangleF rect)
         {
             var angularRect = new GraphicsPath();
