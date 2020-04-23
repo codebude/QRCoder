@@ -57,6 +57,24 @@ namespace QRCoder
             }
             return base64;
         }
+        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true, ImageType imgType = ImageType.Png, bool drawRoundedCorners=true)
+        {
+            var base64 = string.Empty;
+            using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones,drawRoundedCorners))
+            {
+                base64 = BitmapToBase64(bmp, imgType);
+            }
+            return base64;
+        }
+        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true, ImageType imgType = ImageType.Png, bool drawRoundedCorners = true, bool renderPartlyHiddenModule = true)
+        {
+            var base64 = string.Empty;
+            using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones, drawRoundedCorners, renderPartlyHiddenModule))
+            {
+                base64 = BitmapToBase64(bmp, imgType);
+            }
+            return base64;
+        }
 
 
         private string BitmapToBase64(Bitmap bmp, ImageType imgType)
