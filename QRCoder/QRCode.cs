@@ -58,7 +58,7 @@ namespace QRCoder
             return bmp;
         }
 
-        public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon=null, int iconSizePercent=15, int iconBorderWidth = 6, bool drawQuietZones = true)
+        public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon=null, int iconSizePercent=15, int iconBorderWidth = 6, bool drawQuietZones = true, bool drawRoundedCorners = true, bool renderPartlyHiddenModule = true)
         {
             var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
             var offset = drawQuietZones ? 0 : 4 * pixelsPerModule;
@@ -86,7 +86,15 @@ namespace QRCoder
                     iconY = (bmp.Height - iconDestHeight) / 2;
 
                     var centerDest = new RectangleF(iconX - iconBorderWidth, iconY - iconBorderWidth, iconDestWidth + iconBorderWidth * 2, iconDestHeight + iconBorderWidth * 2);
-                    iconPath = this.CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
+                   if (drawRoundedCorners)
+                    {
+                        iconPath = this.CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
+                    }
+                    else
+                    {
+                        iconPath = this.CreateRectanglePath(centerDest);
+                    }
+                   
                 }
 
                 for (var x = 0; x < size + offset; x = x + pixelsPerModule)
@@ -101,9 +109,20 @@ namespace QRCoder
 
                             if (drawIconFlag)
                             {
-                                var region = new Region(r);
-                                region.Exclude(iconPath);
-                                gfx.FillRegion(darkBrush, region);
+                                if (renderPartlyHiddenModule)
+                                {
+                                    var region = new Region(r);
+                                    region.Exclude(iconPath);
+                                    gfx.FillRegion(darkBrush, region);
+                                }
+                                else
+                                {
+                                    if (!iconPath.GetBounds().IntersectsWith(r))
+                                    {
+                                        gfx.FillRectangle(darkBrush,r);
+                                    }
+                                }
+
                             }
                             else
                             {
@@ -129,6 +148,7 @@ namespace QRCoder
             return bmp;
         }
 
+
         internal GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
         {
             var roundedRect = new GraphicsPath();
@@ -142,6 +162,16 @@ namespace QRCoder
             roundedRect.AddLine(rect.X, rect.Bottom - cornerRadius * 2, rect.X, rect.Y + cornerRadius * 2);
             roundedRect.CloseFigure();
             return roundedRect;
+        }
+        internal GraphicsPath CreateRectanglePath(RectangleF rect)
+        {
+            var angularRect = new GraphicsPath();
+            angularRect.AddLine(rect.X, rect.Y, rect.Right, rect.Y);
+            angularRect.AddLine(rect.Right, rect.Y, rect.Right, rect.Y + rect.Height);
+            angularRect.AddLine(rect.Right, rect.Bottom, rect.X, rect.Bottom);
+            angularRect.AddLine(rect.X, rect.Bottom, rect.X, rect.Y);
+            angularRect.CloseFigure();
+            return angularRect;
         }
     }
 
