@@ -903,6 +903,7 @@ namespace QRCoder
                 /// <param name="country">Two-letter country code as defined in ISO 3166-1</param>
                 /// <param name="street">Streetname without house number</param>
                 /// <param name="houseNumber">House number</param>
+                [Obsolete("This constructor is deprecated. Use WithStructuredAddress instead.")]
                 public Contact(string name, string zipCode, string city, string country, string street = null, string houseNumber = null) : this (name, zipCode, city, country, street, houseNumber, AddressType.StructuredAddress)
                 {
                 }
@@ -915,10 +916,20 @@ namespace QRCoder
                 /// <param name="country">Two-letter country code as defined in ISO 3166-1</param>
                 /// <param name="addressLine1">Adress line 1</param>
                 /// <param name="addressLine2">Adress line 2</param>
+                [Obsolete("This constructor is deprecated. Use WithCombinedAddress instead.")]
                 public Contact(string name, string country, string addressLine1, string addressLine2) : this(name, null, null, country, addressLine1, addressLine2, AddressType.CombinedAddress)
                 {
                 }
 
+                public static Contact WithStructuredAddress(string name, string zipCode, string city, string country, string street = null, string houseNumber = null)
+                {
+                    return new Contact(name, zipCode, city, country, street, houseNumber, AddressType.StructuredAddress);
+                }
+
+                public static Contact WithCombinedAddress(string name, string country, string addressLine1, string addressLine2)
+                {
+                    return new Contact(name, null, null, country, addressLine1, addressLine2, AddressType.CombinedAddress);
+                }
 
 
                 private Contact(string name, string zipCode, string city, string country, string streetOrAddressline1, string houseNumberOrAddressline2, AddressType addressType)
