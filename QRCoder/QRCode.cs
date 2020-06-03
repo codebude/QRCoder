@@ -102,7 +102,6 @@ namespace QRCoder
                             if (drawIconFlag)
                             {
                                 var region = new Region(r);
-                                region.Exclude(iconPath);
                                 gfx.FillRegion(darkBrush, region);
                             }
                             else
