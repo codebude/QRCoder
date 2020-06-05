@@ -98,16 +98,7 @@ namespace QRCoder
                         if (module)
                         {
                             var r = new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule);
-
-                            if (drawIconFlag)
-                            {
-                                var region = new Region(r);
-                                gfx.FillRegion(darkBrush, region);
-                            }
-                            else
-                            {
-                                gfx.FillRectangle(darkBrush, r);
-                            }
+                            gfx.FillRectangle(darkBrush, r);
                         }
                         else
                         {
