@@ -590,20 +590,22 @@ namespace QRCoder
             }
         }
 
-        public class BitcoinAddress : Payload
+        public class BitcoinLikeCryptoCurrencyAddress : Payload
         {
-            private readonly string address, label, message;
+            private readonly string currencyName, address, label, message;
             private readonly double? amount;
 
             /// <summary>
-            /// Generates a Bitcoin payment payload. QR Codes with this payload can open a Bitcoin payment app.
+            /// Generates a Bitcoin like cryptocurrency payment payload. QR Codes with this payload can open a payment app.
             /// </summary>
-            /// <param name="address">Bitcoin address of the payment receiver</param>
-            /// <param name="amount">Amount of Bitcoins to transfer</param>
+            /// <param name="currencyName">Bitcoin like cryptocurrency address of the payment receiver</param>
+            /// <param name="address">Bitcoin like cryptocurrency address of the payment receiver</param>
+            /// <param name="amount">Amount of coins to transfer</param>
             /// <param name="label">Reference label</param>
             /// <param name="message">Referece text aka message</param>
-            public BitcoinAddress(string address, double? amount, string label = null, string message = null)
+            public BitcoinLikeCryptoCurrencyAddress(string currencyName, string address, double? amount, string label = null, string message = null)
             {
+                this.currencyName = currencyName;
                 this.address = address;
 
                 if (!string.IsNullOrEmpty(label))
@@ -637,8 +639,20 @@ namespace QRCoder
                         .ToArray());
                 }
 
-                return $"bitcoin:{address}{query}";
+                return $"{currencyName}:{address}{query}";
             }
+        }
+
+        public class BitcoinAddress : BitcoinLikeCryptoCurrencyAddress
+        {
+            public BitcoinAddress(string address, double? amount, string label = null, string message = null)
+                : base("bitcoin", address, amount, label, message) { }
+        }
+
+        public class LitecoinAddress : BitcoinLikeCryptoCurrencyAddress
+        {
+            public LitecoinAddress(string address, double? amount, string label = null, string message = null)
+                : base("litecoin", address, amount, label, message) { }
         }
 
         public class SwissQrCode : Payload
