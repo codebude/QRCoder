@@ -649,6 +649,12 @@ namespace QRCoder
                 : base("bitcoin", address, amount, label, message) { }
         }
 
+        public class BitcoinCashAddress : BitcoinLikeCryptoCurrencyAddress
+        {
+            public BitcoinCashAddress(string address, double? amount, string label = null, string message = null)
+                : base("bitcoincash", address, amount, label, message) { }
+        }
+
         public class LitecoinAddress : BitcoinLikeCryptoCurrencyAddress
         {
             public LitecoinAddress(string address, double? amount, string label = null, string message = null)
