@@ -127,7 +127,7 @@ You can learn more about the payload generator [in our Wiki](https://github.com/
 The PayloadGenerator supports the following types of payloads:
 
 * [BezahlCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#31-bezahlcode)
-* [Bitcoin Payment Address](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-payment-address)
+* [Bitcoin-Like cryptocurrency (Bitcoin, Bitcoin Cash, Litecoin) payment address](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-like-cryptocurrency-payment-address)
 * [Bookmark](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#33-bookmark)
 * [Calendar events (iCal/vEvent)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#34-calendar-events-icalvevent)
 * [ContactData (MeCard/vCard)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#35-contactdata-mecardvcard)
