@@ -40,8 +40,7 @@ namespace QRCoderDemo
                 {
                     using (QRCode qrCode = new QRCode(qrCodeData))
                     {
-
-                        pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, Color.Black, Color.White,
+                        pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, GetPrimaryColor(), GetBackgroundColor(),
                             GetIconBitmap(), (int) iconSize.Value);
 
                          this.pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
@@ -153,6 +152,34 @@ namespace QRCoderDemo
         private void comboBoxECC_SelectedIndexChanged(object sender, EventArgs e)
         {
             RenderQrCode();
+        }
+
+        private void panelPreviewPrimaryColor_Click(object sender, EventArgs e)
+        {
+            if (colorDialogPrimaryColor.ShowDialog() == DialogResult.OK)
+            {
+                panelPreviewPrimaryColor.BackColor = colorDialogPrimaryColor.Color;
+                RenderQrCode();
+            }
+        }
+
+        private void panelPreviewBackgroundColor_Click(object sender, EventArgs e)
+        {
+            if (colorDialogBackgroundColor.ShowDialog() == DialogResult.OK)
+            {
+                panelPreviewBackgroundColor.BackColor = colorDialogBackgroundColor.Color;
+                RenderQrCode();
+            }
+        }
+
+        private Color GetPrimaryColor()
+        {
+            return panelPreviewPrimaryColor.BackColor;
+        }
+
+        private Color GetBackgroundColor()
+        {
+            return panelPreviewBackgroundColor.BackColor;
         }
     }
 }
