@@ -40,6 +40,12 @@
             this.labelIconsize = new System.Windows.Forms.Label();
             this.iconSize = new System.Windows.Forms.NumericUpDown();
             this.buttonSave = new System.Windows.Forms.Button();
+            this.colorDialogPrimaryColor = new System.Windows.Forms.ColorDialog();
+            this.labelPreviewPrimaryColor = new System.Windows.Forms.Label();
+            this.panelPreviewPrimaryColor = new System.Windows.Forms.Panel();
+            this.labelPreviewBackgroundColor = new System.Windows.Forms.Label();
+            this.panelPreviewBackgroundColor = new System.Windows.Forms.Panel();
+            this.colorDialogBackgroundColor = new System.Windows.Forms.ColorDialog();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxQRCode)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.iconSize)).BeginInit();
             this.SuspendLayout();
@@ -73,9 +79,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxQRCode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.pictureBoxQRCode.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBoxQRCode.Location = new System.Drawing.Point(40, 77);
+            this.pictureBoxQRCode.Location = new System.Drawing.Point(40, 106);
             this.pictureBoxQRCode.Name = "pictureBoxQRCode";
-            this.pictureBoxQRCode.Size = new System.Drawing.Size(462, 397);
+            this.pictureBoxQRCode.Size = new System.Drawing.Size(462, 418);
             this.pictureBoxQRCode.TabIndex = 2;
             this.pictureBoxQRCode.TabStop = false;
             // 
@@ -107,7 +113,7 @@
             // 
             this.labelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelIcon.AutoSize = true;
-            this.labelIcon.Location = new System.Drawing.Point(249, 486);
+            this.labelIcon.Location = new System.Drawing.Point(249, 537);
             this.labelIcon.Name = "labelIcon";
             this.labelIcon.Size = new System.Drawing.Size(31, 13);
             this.labelIcon.TabIndex = 5;
@@ -116,7 +122,7 @@
             // iconPath
             // 
             this.iconPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.iconPath.Location = new System.Drawing.Point(286, 483);
+            this.iconPath.Location = new System.Drawing.Point(286, 534);
             this.iconPath.Name = "iconPath";
             this.iconPath.Size = new System.Drawing.Size(148, 20);
             this.iconPath.TabIndex = 6;
@@ -124,7 +130,7 @@
             // selectIconBtn
             // 
             this.selectIconBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.selectIconBtn.Location = new System.Drawing.Point(440, 482);
+            this.selectIconBtn.Location = new System.Drawing.Point(441, 531);
             this.selectIconBtn.Name = "selectIconBtn";
             this.selectIconBtn.Size = new System.Drawing.Size(61, 25);
             this.selectIconBtn.TabIndex = 7;
@@ -136,7 +142,7 @@
             // 
             this.labelIconsize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.labelIconsize.AutoSize = true;
-            this.labelIconsize.Location = new System.Drawing.Point(41, 486);
+            this.labelIconsize.Location = new System.Drawing.Point(42, 537);
             this.labelIconsize.Name = "labelIconsize";
             this.labelIconsize.Size = new System.Drawing.Size(52, 13);
             this.labelIconsize.TabIndex = 8;
@@ -145,7 +151,7 @@
             // iconSize
             // 
             this.iconSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.iconSize.Location = new System.Drawing.Point(101, 482);
+            this.iconSize.Location = new System.Drawing.Point(100, 534);
             this.iconSize.Name = "iconSize";
             this.iconSize.Size = new System.Drawing.Size(125, 20);
             this.iconSize.TabIndex = 9;
@@ -153,7 +159,7 @@
             // buttonSave
             // 
             this.buttonSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSave.Location = new System.Drawing.Point(409, 513);
+            this.buttonSave.Location = new System.Drawing.Point(410, 561);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(92, 25);
             this.buttonSave.TabIndex = 10;
@@ -161,11 +167,53 @@
             this.buttonSave.UseVisualStyleBackColor = true;
             this.buttonSave.Click += new System.EventHandler(this.btn_save_Click);
             // 
+            // labelPreviewPrimaryColor
+            // 
+            this.labelPreviewPrimaryColor.AutoSize = true;
+            this.labelPreviewPrimaryColor.Location = new System.Drawing.Point(37, 82);
+            this.labelPreviewPrimaryColor.Name = "labelPreviewPrimaryColor";
+            this.labelPreviewPrimaryColor.Size = new System.Drawing.Size(67, 13);
+            this.labelPreviewPrimaryColor.TabIndex = 12;
+            this.labelPreviewPrimaryColor.Text = "Primary color";
+            // 
+            // panelPreviewPrimaryColor
+            // 
+            this.panelPreviewPrimaryColor.BackColor = System.Drawing.Color.Black;
+            this.panelPreviewPrimaryColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelPreviewPrimaryColor.Location = new System.Drawing.Point(174, 76);
+            this.panelPreviewPrimaryColor.Name = "panelPreviewPrimaryColor";
+            this.panelPreviewPrimaryColor.Size = new System.Drawing.Size(48, 24);
+            this.panelPreviewPrimaryColor.TabIndex = 13;
+            this.panelPreviewPrimaryColor.Click += new System.EventHandler(this.panelPreviewPrimaryColor_Click);
+            // 
+            // labelPreviewBackgroundColor
+            // 
+            this.labelPreviewBackgroundColor.AutoSize = true;
+            this.labelPreviewBackgroundColor.Location = new System.Drawing.Point(249, 82);
+            this.labelPreviewBackgroundColor.Name = "labelPreviewBackgroundColor";
+            this.labelPreviewBackgroundColor.Size = new System.Drawing.Size(91, 13);
+            this.labelPreviewBackgroundColor.TabIndex = 14;
+            this.labelPreviewBackgroundColor.Text = "Background color";
+            // 
+            // panelPreviewBackgroundColor
+            // 
+            this.panelPreviewBackgroundColor.BackColor = System.Drawing.Color.White;
+            this.panelPreviewBackgroundColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelPreviewBackgroundColor.Location = new System.Drawing.Point(386, 76);
+            this.panelPreviewBackgroundColor.Name = "panelPreviewBackgroundColor";
+            this.panelPreviewBackgroundColor.Size = new System.Drawing.Size(48, 24);
+            this.panelPreviewBackgroundColor.TabIndex = 15;
+            this.panelPreviewBackgroundColor.Click += new System.EventHandler(this.panelPreviewBackgroundColor_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(543, 563);
+            this.ClientSize = new System.Drawing.Size(543, 598);
+            this.Controls.Add(this.panelPreviewBackgroundColor);
+            this.Controls.Add(this.labelPreviewBackgroundColor);
+            this.Controls.Add(this.panelPreviewPrimaryColor);
+            this.Controls.Add(this.labelPreviewPrimaryColor);
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.iconSize);
             this.Controls.Add(this.labelIconsize);
@@ -202,6 +250,12 @@
         private System.Windows.Forms.Label labelIconsize;
         private System.Windows.Forms.NumericUpDown iconSize;
         private System.Windows.Forms.Button buttonSave;
+        private System.Windows.Forms.ColorDialog colorDialogPrimaryColor;
+        private System.Windows.Forms.Label labelPreviewPrimaryColor;
+        private System.Windows.Forms.Panel panelPreviewPrimaryColor;
+        private System.Windows.Forms.Label labelPreviewBackgroundColor;
+        private System.Windows.Forms.Panel panelPreviewBackgroundColor;
+        private System.Windows.Forms.ColorDialog colorDialogBackgroundColor;
     }
 }
 
