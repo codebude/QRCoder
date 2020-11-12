@@ -57,7 +57,7 @@ Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.DarkRed, Color.PaleGreen, true)
 Bitmap qrCodeImage = qrCode.GetGraphic(20, "#000ff0", "#0ff000");
 ```
 
-The another overload enables you to render a logo/image in the center of the QR code.
+The other overload enables you to render a logo/image in the center of the QR code.
 
 ```csharp
 Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.Black, Color.White, (Bitmap)Bitmap.FromFile("C:\\myimage.png"));
