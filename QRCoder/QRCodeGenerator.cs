@@ -129,7 +129,7 @@ namespace QRCoder
             int version = requestedVersion;
             if (version == -1)
             {
-                version = GetVersion(dataInputLength, encoding, eccLevel);
+                version = GetVersion(dataInputLength+(eciMode != EciMode.Default?2:0), encoding, eccLevel);
             }
 
             string modeIndicator = String.Empty;
@@ -1002,12 +1002,12 @@ namespace QRCoder
 
         private static int GetDataLength(EncodingMode encoding, string plainText, string codedText, bool forceUtf8)
         {
-            return forceUtf8 || IsUtf8(encoding, plainText) ? (codedText.Length / 8) : plainText.Length;
+            return forceUtf8 || IsUtf8(encoding, plainText, forceUtf8) ? (codedText.Length / 8) : plainText.Length;
         }
 
-        private static bool IsUtf8(EncodingMode encoding, string plainText)
+        private static bool IsUtf8(EncodingMode encoding, string plainText, bool forceUtf8)
         {
-            return (encoding == EncodingMode.Byte && !IsValidISO(plainText));
+            return (encoding == EncodingMode.Byte && (!IsValidISO(plainText) || forceUtf8));
         }
 
         private static bool IsValidISO(string input)
