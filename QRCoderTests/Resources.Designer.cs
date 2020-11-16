@@ -25,7 +25,7 @@ namespace QRCoderTests {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
 
-#if !NETCOREAPP1_1
+#if !NETCOREAPP1_1 && !NETCOREAPP2_0
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;

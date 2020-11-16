@@ -13,7 +13,7 @@
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>QRCoder</PackageId>
-    <Version>1.3.7</Version>
+    <Version>1.4.1</Version>
     <Authors>Raffael Herrmann</Authors>
     <AssemblyName>QRCoder</AssemblyName>
     <RootNamespace>QRCoder</RootNamespace>

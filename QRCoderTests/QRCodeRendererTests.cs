@@ -33,7 +33,10 @@ namespace QRCoderTests
 
             result.ShouldBe("41d3313c10d84034d67d476eec04163f");
         }
+#endif
 
+
+#if !NETCOREAPP1_1 && !NETCOREAPP2_0
         [Fact]
         [Category("QRRenderer/QRCode")]
         public void can_create_qrcode_with_transparent_logo_graphic()
