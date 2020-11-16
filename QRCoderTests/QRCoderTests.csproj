@@ -10,13 +10,13 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
   </ItemGroup>
     
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net35' " >
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net35' ">
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
     <PackageReference Include="shouldly" Version="3.0.2" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' " >
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
     <PackageReference Include="xunit" Version="1.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.0.1" />
     <PackageReference Include="shouldly" Version="2.8.3" />
@@ -24,6 +24,21 @@
 
   <ItemGroup>
     <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <PropertyGroup>

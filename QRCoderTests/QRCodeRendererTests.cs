@@ -37,19 +37,12 @@ namespace QRCoderTests
         [Fact]
         [Category("QRRenderer/QRCode")]
         public void can_create_qrcode_with_transparent_logo_graphic()
-        {
-            //Create dummy logo
-            var logo = new Bitmap(32, 32);
-            var gfx = Graphics.FromImage(logo);
-            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            gfx.FillRectangle(Brushes.Transparent, new Rectangle(0, 0, 32, 32));
-            gfx.FillEllipse(Brushes.Red, new Rectangle(0, 0, 32, 32));
-            gfx.Save();
-
+        {        
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
-            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: logo);
+            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: Resources.noun_software_engineer_2909346);
+            //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
             var ms = new MemoryStream();
             bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
@@ -59,25 +52,18 @@ namespace QRCoderTests
             var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
             ms.Dispose();
 
-            result.ShouldBe("8f03d2c3fc5998cebb46658c3e6293b1");
+            result.ShouldBe("ee65d96c3013f6032b561cc768251eef");
         }
 
         [Fact]
         [Category("QRRenderer/QRCode")]
         public void can_create_qrcode_with_non_transparent_logo_graphic()
         {
-            //Create dummy logo
-            var logo = new Bitmap(32, 32);
-            var gfx = Graphics.FromImage(logo);
-            gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            gfx.FillRectangle(Brushes.White, new Rectangle(0, 0, 32, 32));
-            gfx.FillEllipse(Brushes.Red, new Rectangle(0, 0, 32, 32));
-            gfx.Save();
-
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
-            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: logo);
+            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: Resources.noun_software_engineer_2909346);
+            //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
             var ms = new MemoryStream();
             bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
@@ -87,7 +73,7 @@ namespace QRCoderTests
             var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
             ms.Dispose();
 
-            result.ShouldBe("c2aae3658c7fa20cb5d22948d859c614");
+            result.ShouldBe("1d718f06f904af4a46748f02af2d4eec");
         }
 #endif
     }
