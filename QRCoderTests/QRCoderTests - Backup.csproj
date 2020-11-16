@@ -19,7 +19,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\QRCoder\QRCoder.csproj" />
-	</ItemGroup>
+	</ItemGroup>	
 	<ItemGroup>
 	  <None Update="assets\noun_software engineer_2909346.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
