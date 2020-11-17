@@ -18,7 +18,7 @@ namespace QRCoder
 
 
         /// <summary>
-        /// Creates a black &amp; white PNG of the QR code, using 1-bit grayscale.
+        /// Creates a black & white PNG of the QR code, using 1-bit grayscale.
         /// </summary>
         public byte[] GetGraphic(int pixelsPerModule)
         {
