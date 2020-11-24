@@ -131,6 +131,16 @@ namespace QRCoder
             {
                 version = GetVersion(dataInputLength+(eciMode != EciMode.Default?2:0), encoding, eccLevel);
             }
+            else
+            {
+                //Version was passed as fixed version via parameter. Thus let's check if chosen version is valid.
+                var minVersion = GetVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
+                if (minVersion > version)
+                {
+                    var maxSizeByte = capacityTable[version - 1].Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
+                    throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
+                }                    
+            }
 
             string modeIndicator = String.Empty;
             if (eciMode != EciMode.Default)
