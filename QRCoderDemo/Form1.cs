@@ -35,38 +35,34 @@ namespace QRCoderDemo
             string level = comboBoxECC.SelectedItem.ToString();
             QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
             using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel))
+            using (QRCode qrCode = new QRCode(qrCodeData))
             {
-                using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel))
-                {
-                    using (QRCode qrCode = new QRCode(qrCodeData))
-                    {
-                        pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, GetPrimaryColor(), GetBackgroundColor(),
-                            GetIconBitmap(), (int) iconSize.Value);
+                pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, GetPrimaryColor(), GetBackgroundColor(),
+                    GetIconBitmap(), (int)iconSize.Value);
 
-                         this.pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
-                        //Set the SizeMode to center the image.
-                        this.pictureBoxQRCode.SizeMode = PictureBoxSizeMode.CenterImage;
+                this.pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
+                //Set the SizeMode to center the image.
+                this.pictureBoxQRCode.SizeMode = PictureBoxSizeMode.CenterImage;
 
-                        pictureBoxQRCode.SizeMode = PictureBoxSizeMode.StretchImage;
-                    }
-                }
+                pictureBoxQRCode.SizeMode = PictureBoxSizeMode.StretchImage;
             }
         }
 
         private Bitmap GetIconBitmap()
         {
-            Bitmap img = null;
-            if (iconPath.Text.Length > 0)
+            if (iconPath.Text.Length == 0)
             {
-                try
-                {
-                    img = new Bitmap(iconPath.Text);
-                }
-                catch (Exception)
-                {
-                }
+                return null;
             }
-            return img;
+            try
+            {
+                return new Bitmap(iconPath.Text);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         private void selectIconBtn_Click(object sender, EventArgs e)
