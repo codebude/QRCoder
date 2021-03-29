@@ -121,21 +121,20 @@ namespace QRCoder
 
         private GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
         {
-            var roundedRect = new GraphicsPath();
-            
+            var path = new GraphicsPath();
+
             if (cornerRadius == 0)
             {
-                roundedRect.AddRectangle(rect);
-                return roundedRect;
+                path.AddRectangle(rect);
+                return path;
             }
-            
-            roundedRect.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);
-            roundedRect.AddArc(rect.Right - cornerRadius * 2, rect.Y, cornerRadius * 2, cornerRadius * 2, 270, 90);
-            roundedRect.AddArc(rect.Right - cornerRadius * 2, rect.Bottom - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 0, 90);
-            roundedRect.AddArc(rect.X, rect.Bottom - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 90, 90);
-            roundedRect.CloseFigure();
-            
-            return roundedRect;
+
+            path.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);
+            path.AddArc(rect.Right - cornerRadius * 2, rect.Y, cornerRadius * 2, cornerRadius * 2, 270, 90);
+            path.AddArc(rect.Right - cornerRadius * 2, rect.Bottom - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 0, 90);
+            path.AddArc(rect.X, rect.Bottom - cornerRadius * 2, cornerRadius * 2, cornerRadius * 2, 90, 90);
+            path.CloseFigure();
+            return path;
         }
     }
 
