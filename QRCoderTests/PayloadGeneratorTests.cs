@@ -2748,7 +2748,7 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.MeCard;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, org, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
@@ -2777,7 +2777,7 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.MeCard;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, org, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed, org: org);
 
             generator
                 .ToString()
@@ -2806,7 +2806,7 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard21;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, org, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
@@ -2835,7 +2835,7 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard3;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, org, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
@@ -2864,7 +2864,7 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard4;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, org, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
@@ -2893,7 +2893,7 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard4;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, org, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed, org: org);
 
             generator
                 .ToString()

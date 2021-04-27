@@ -421,7 +421,7 @@ namespace QRCoder
             /// <param name="country">Country</param>
             /// <param name="addressOrder">The address order format to use</param>
             /// <param name="note">Memo text / notes</param>            
-            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string org = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default)
+            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string org = null)
             {             
                 this.firstname = firstname;
                 this.lastname = lastname;
