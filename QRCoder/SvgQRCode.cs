@@ -1,5 +1,6 @@
-﻿#if NETFRAMEWORK || NETSTANDARD2_0
+#if NETFRAMEWORK || NETSTANDARD2_0
 using System;
+using System.Collections;
 using System.Drawing;
 using System.Text;
 using static QRCoder.QRCodeGenerator;
@@ -44,22 +45,76 @@ namespace QRCoder
 
         public string GetGraphic(Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute)
         {
-            var offset = drawQuietZones ? 0 : 4;
-            var drawableModulesCount = this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
-            var pixelsPerModule = (double)Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
-            var qrSize = drawableModulesCount * pixelsPerModule;
-            var svgSizeAttributes = (sizingMode == SizingMode.WidthHeightAttribute) ? $@"width=""{viewBox.Width}"" height=""{viewBox.Height}""" : $@"viewBox=""0 0 {viewBox.Width} {viewBox.Height}""";
-            var svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"">");
-            svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{CleanSvgVal(qrSize)}"" height=""{CleanSvgVal(qrSize)}"" fill=""{lightColorHex}"" />");
-            for (int xi = offset; xi < offset + drawableModulesCount; xi++)
+            int offset = drawQuietZones ? 0 : 4;
+            int drawableModulesCount = this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
+            double pixelsPerModule = Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
+            double qrSize = drawableModulesCount * pixelsPerModule;
+            string svgSizeAttributes = (sizingMode == SizingMode.WidthHeightAttribute) ? $@"width=""{viewBox.Width}"" height=""{viewBox.Height}""" : $@"viewBox=""0 0 {viewBox.Width} {viewBox.Height}""";
+
+            // Merge horizontal rectangles
+            int[,] matrix = new int[drawableModulesCount, drawableModulesCount];
+            for (int yi = 0; yi < drawableModulesCount; yi += 1)
             {
-                for (int yi = offset; yi < offset + drawableModulesCount; yi++)
+                BitArray bitArray = this.QrCodeData.ModuleMatrix[yi];
+
+                int x0 = -1;
+                int xL = 0;
+                for (int xi = 0; xi < drawableModulesCount; xi += 1)
                 {
-                    if (this.QrCodeData.ModuleMatrix[yi][xi])
+                    matrix[yi, xi] = 0;
+                    if (bitArray[xi])
                     {
-                        var x = (xi - offset) * pixelsPerModule;
-                        var y = (yi - offset) * pixelsPerModule;
-                        svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(pixelsPerModule)}"" height=""{CleanSvgVal(pixelsPerModule)}"" fill=""{darkColorHex}"" />");
+                        if(x0 == -1)
+                        {
+                            x0 = xi;
+                        }
+                        xL += 1;
+                    }
+                    else
+                    {
+                        if(xL > 0)
+                        {
+                            matrix[yi, x0] = xL;
+                            x0 = -1;
+                            xL = 0;
+                        }
+                    }
+                }
+
+                if (xL > 0)
+                {
+                    matrix[yi, x0] = xL;
+                }
+            }
+
+            StringBuilder svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"">");
+            svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{CleanSvgVal(qrSize)}"" height=""{CleanSvgVal(qrSize)}"" fill=""{lightColorHex}"" />");
+            for (int yi = 0; yi < drawableModulesCount; yi += 1)
+            {
+                double y = yi * pixelsPerModule;
+                for (int xi = 0; xi < drawableModulesCount; xi += 1)
+                {
+                    int xL = matrix[yi, xi];
+                    if(xL > 0)
+                    {
+                        // Merge vertical rectangles
+                        int yL = 1;
+                        for (int y2 = yi + 1; y2 < drawableModulesCount; y2 += 1)
+                        {
+                            if(matrix[y2, xi] == xL)
+                            {
+                                matrix[y2, xi] = 0;
+                                yL += 1;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+
+                        // Output SVG rectangles
+                        double x = xi * pixelsPerModule;
+                        svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");
                     }
                 }
             }
