@@ -382,6 +382,7 @@ namespace QRCoder
             private readonly string firstname;
             private readonly string lastname;
             private readonly string nickname;
+            private readonly string org;
             private readonly string phone;
             private readonly string mobilePhone;
             private readonly string workPhone;
@@ -420,11 +421,12 @@ namespace QRCoder
             /// <param name="country">Country</param>
             /// <param name="addressOrder">The address order format to use</param>
             /// <param name="note">Memo text / notes</param>            
-            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default)
+            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string org = null)
             {             
                 this.firstname = firstname;
                 this.lastname = lastname;
                 this.nickname = nickname;
+                this.org = org;
                 this.phone = phone;
                 this.mobilePhone = mobilePhone;
                 this.workPhone = workPhone;
@@ -452,6 +454,8 @@ namespace QRCoder
                         payload += $"N:{lastname}, {firstname}\r\n";
                     else if (!string.IsNullOrEmpty(firstname) || !string.IsNullOrEmpty(lastname))
                         payload += $"N:{firstname}{lastname}\r\n";
+                    if (!string.IsNullOrEmpty(org))
+                        payload += $"ORG:{org}\r\n";
                     if (!string.IsNullOrEmpty(phone))
                         payload += $"TEL:{phone}\r\n";
                     if (!string.IsNullOrEmpty(mobilePhone))
@@ -493,7 +497,10 @@ namespace QRCoder
 
                     payload += $"N:{(!string.IsNullOrEmpty(lastname) ? lastname : "")};{(!string.IsNullOrEmpty(firstname) ? firstname : "")};;;\r\n";
                     payload += $"FN:{(!string.IsNullOrEmpty(firstname) ? firstname + " " : "")}{(!string.IsNullOrEmpty(lastname) ? lastname : "")}\r\n";
-
+                    if (!string.IsNullOrEmpty(org))
+                    {
+                        payload += $"ORG:" + org + "\r\n";
+                    }
                     if (!string.IsNullOrEmpty(phone))
                     {
                         payload += $"TEL;";
