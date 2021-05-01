@@ -125,14 +125,8 @@ namespace QRCoderDemo
                     }
 
                     pictureBoxQRCode.BackgroundImage.Save(fs, imageFormat);
-                    fs.Close();
                 }
             }
-
-
-
-
-
         }
 
         public void ExportToBmp(string path)
