@@ -2106,6 +2106,20 @@ namespace QRCoderTests
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode.Iban")]
+        public void swissqrcode_generator_should_generate_iban_2()
+        {
+            var iban = "CH47048350000GABRIELS";
+            var ibanType = PayloadGenerator.SwissQrCode.Iban.IbanType.Iban;
+
+            var generator = new PayloadGenerator.SwissQrCode.Iban(iban, ibanType);
+
+            generator
+                .ToString()
+                .ShouldBe("CH47048350000GABRIELS");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/SwissQrCode.Iban")]
         public void swissqrcode_generator_should_generate_iban_qr()
         {
             var iban = "CH2430043000000789012";
