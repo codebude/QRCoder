@@ -55,14 +55,14 @@ namespace QRCoder
             int[,] matrix = new int[drawableModulesCount, drawableModulesCount];
             for (int yi = 0; yi < drawableModulesCount; yi += 1)
             {
-                BitArray bitArray = this.QrCodeData.ModuleMatrix[yi];
+                BitArray bitArray = this.QrCodeData.ModuleMatrix[yi+offset];
 
                 int x0 = -1;
                 int xL = 0;
                 for (int xi = 0; xi < drawableModulesCount; xi += 1)
                 {
                     matrix[yi, xi] = 0;
-                    if (bitArray[xi])
+                    if (bitArray[xi+offset])
                     {
                         if(x0 == -1)
                         {
