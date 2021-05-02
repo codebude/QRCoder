@@ -23,13 +23,17 @@ namespace QRCoder
         }
         public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute)
         {
-            var viewBox = new Size(pixelsPerModule * this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
+            var offset = drawQuietZones ? 0 : 4;
+            var edgeSize = this.QrCodeData.ModuleMatrix.Count * pixelsPerModule - (offset * 2 * pixelsPerModule);
+            var viewBox = new Size(edgeSize, edgeSize);
             return this.GetGraphic(viewBox, darkColor, lightColor, drawQuietZones, sizingMode);
         }
 
         public string GetGraphic(int pixelsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute)
         {
-            var viewBox = new Size(pixelsPerModule * this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
+            var offset = drawQuietZones ? 0 : 4;
+            var edgeSize = this.QrCodeData.ModuleMatrix.Count * pixelsPerModule - (offset * 2 * pixelsPerModule);
+            var viewBox = new Size(edgeSize, edgeSize);
             return this.GetGraphic(viewBox, darkColorHex, lightColorHex, drawQuietZones, sizingMode);
         }
 
