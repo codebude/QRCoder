@@ -21,6 +21,9 @@
 		<ProjectReference Include="..\QRCoder\QRCoder.csproj" />
 	</ItemGroup>
 	<ItemGroup>
+	  <None Update="assets\noun_Scientist_2909361.svg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="assets\noun_software engineer_2909346.png">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
