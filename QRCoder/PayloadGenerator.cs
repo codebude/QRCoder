@@ -1409,11 +1409,12 @@ namespace QRCoder
                 }
                 else if (internalMode == 2)
                 {
+#pragma warning disable CS0612
                     if (authority != AuthorityType.periodicsinglepayment && authority != AuthorityType.singledirectdebit && authority != AuthorityType.singlepayment)
                         throw new BezahlCodeException("The constructor with 'account' and 'bnc' may only be used with 'non SEPA' authority types. Either choose another authority type or switch constructor.");
                     if (authority == AuthorityType.periodicsinglepayment && (string.IsNullOrEmpty(periodicTimeunit) || periodicTimeunitRotation == 0))
                         throw new BezahlCodeException("When using 'periodicsinglepayment' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
-
+#pragma warning restore CS0612
                 }
                 else if (internalMode == 3)
                 {
@@ -1437,8 +1438,10 @@ namespace QRCoder
                 var newWayFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
 
                 //Non-SEPA payment types
+#pragma warning disable CS0612
                 if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment || authority == AuthorityType.contact || (authority == AuthorityType.contact_v2 && oldWayFilled))
                 {
+#pragma warning restore CS0612
                     if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                         throw new BezahlCodeException("The account entered isn't valid.");
                     this.account = account.Replace(" ", "").ToUpper();
@@ -1500,8 +1503,9 @@ namespace QRCoder
                             throw new BezahlCodeException("Execution date must be today or in future.");
                         this.executionDate = (DateTime)executionDate;
                     }
-
+#pragma warning disable CS0612
                     if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
+#pragma warning restore CS0612
                     {
                         if (periodicTimeunit.ToUpper() != "M" && periodicTimeunit.ToUpper() != "W")
                             throw new BezahlCodeException("The periodicTimeunit must be either 'M' (monthly) or 'W' (weekly).");
@@ -1530,8 +1534,9 @@ namespace QRCoder
                 if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                 {
                     //Handle what is same for all payments
-
+#pragma warning disable CS0612
                     if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment)
+#pragma warning restore CS0612
                     {
                         bezahlCodePayload += $"account={account}&";
                         bezahlCodePayload += $"bnc={bnc}&";
@@ -1552,7 +1557,7 @@ namespace QRCoder
                                 bezahlCodePayload += $"creditorid={ Uri.EscapeDataString(creditorId)}&";
                             if (!string.IsNullOrEmpty(mandateId))
                                 bezahlCodePayload += $"mandateid={ Uri.EscapeDataString(mandateId)}&";
-                            if (dateOfSignature != null)
+                            if (dateOfSignature != DateTime.MinValue)
                                 bezahlCodePayload += $"dateofsignature={dateOfSignature.ToString("ddMMyyyy")}&";
                         }
                     }
@@ -1562,16 +1567,17 @@ namespace QRCoder
                         bezahlCodePayload += $"reason={ Uri.EscapeDataString(reason)}&";
                     bezahlCodePayload += $"currency={currency}&";
                     bezahlCodePayload += $"executiondate={executionDate.ToString("ddMMyyyy")}&";
-
+#pragma warning disable CS0612
                     if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
                     {
                         bezahlCodePayload += $"periodictimeunit={periodicTimeunit}&";
                         bezahlCodePayload += $"periodictimeunitrotation={periodicTimeunitRotation}&";
-                        if (periodicFirstExecutionDate != null)
+                        if (periodicFirstExecutionDate != DateTime.MinValue)
                             bezahlCodePayload += $"periodicfirstexecutiondate={periodicFirstExecutionDate.ToString("ddMMyyyy")}&";
-                        if (periodicLastExecutionDate != null)
+                        if (periodicLastExecutionDate != DateTime.MinValue)
                             bezahlCodePayload += $"periodiclastexecutiondate={periodicLastExecutionDate.ToString("ddMMyyyy")}&";
                     }
+#pragma warning restore CS0612
                 }
                 else
                 {

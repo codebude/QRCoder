@@ -1,4 +1,4 @@
-﻿#if NETFRAMEWORK
+﻿#if NETFRAMEWORK || NET5_0_WINDOWS
 using System;
 using System.Windows;
 using System.Windows.Media;

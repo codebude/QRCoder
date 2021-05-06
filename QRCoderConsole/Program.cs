@@ -164,6 +164,7 @@ namespace QRCoderConsole
                                 }
                             }
                             break;
+#if !NET5_0 && !NET5_0_WINDOWS
                         case SupportedImageFormat.Xaml:
                             using (var code = new XamlQRCode(data))
                             {
@@ -175,6 +176,7 @@ namespace QRCoderConsole
                                 }
                             }
                             break;
+#endif
                         case SupportedImageFormat.Ps:
                         case SupportedImageFormat.Eps:
                             using (var code = new PostscriptQRCode(data))
