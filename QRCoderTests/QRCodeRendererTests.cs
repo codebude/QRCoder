@@ -14,6 +14,7 @@ namespace QRCoderTests
 
     public class QRCodeRendererTests
     {
+
 #if !NETCOREAPP1_1
         [Fact]
         [Category("QRRenderer/QRCode")]
@@ -24,14 +25,14 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10);
 
             var ms = new MemoryStream();
-            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
             var imgBytes = ms.ToArray();
             var md5 = new MD5CryptoServiceProvider();
             var hash = md5.ComputeHash(imgBytes);
             var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
             ms.Dispose();
 
-            result.ShouldBe("41d3313c10d84034d67d476eec04163f");
+            result.ShouldBe("a76c8a72e95df3368717663c6be41b3e");
         }
 #endif 
 
@@ -42,7 +43,7 @@ namespace QRCoderTests
         {
             return
 #if NET5_0
-                System.Reflection.Assembly.GetExecutingAssembly().Location;
+                AppDomain.CurrentDomain.BaseDirectory;
 #else
                 Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
 #endif
@@ -59,15 +60,12 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: (Bitmap)Image.FromFile(GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
-            var ms = new MemoryStream();
-            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            var imgBytes = ms.ToArray();
+            var imgBytes = PixelsToAveragedByteArray(bmp);
             var md5 = new MD5CryptoServiceProvider();
             var hash = md5.ComputeHash(imgBytes);
             var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
-            ms.Dispose();
 
-            result.ShouldBe("ee65d96c3013f6032b561cc768251eef");
+            result.ShouldBe("33c250bf306b7cbbd3dd71b6029b8784");
         }
 
         [Fact]
@@ -80,16 +78,36 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: (Bitmap)Bitmap.FromFile(GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
-            var ms = new MemoryStream();
-            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            var imgBytes = ms.ToArray();
+            var imgBytes = PixelsToAveragedByteArray(bmp);
             var md5 = new MD5CryptoServiceProvider();
             var hash = md5.ComputeHash(imgBytes);
             var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
-            ms.Dispose();
 
-            result.ShouldBe("1d718f06f904af4a46748f02af2d4eec");
+            result.ShouldBe("33c250bf306b7cbbd3dd71b6029b8784");
         }
+
+
+        private static byte[] PixelsToAveragedByteArray(Bitmap bmp)
+        {
+            //Re-color
+            var bmpTmp = new Bitmap(bmp.Width, bmp.Height, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            using (var gr = Graphics.FromImage(bmp))
+                gr.DrawImage(bmp, new Rectangle(0, 0, bmp.Width, bmp.Height));
+            
+            //Downscale
+            var bmpSmall = new Bitmap(bmpTmp, new Size(16, 16));
+
+            var bytes = new System.Collections.Generic.List<byte>();
+            for (int x = 0; x < bmpSmall.Width; x++)
+            {
+                for (int y = 0; y < bmpSmall.Height; y++)
+                {
+                    bytes.AddRange(new byte[] { bmpSmall.GetPixel(x, y).R, bmpSmall.GetPixel(x, y).G, bmpSmall.GetPixel(x, y).B });
+                }
+            }
+            return bytes.ToArray();
+        }
+
 #endif
     }
 }
