@@ -5,29 +5,26 @@
 		<UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWPF>
 		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
 		<IsPackable>false</IsPackable>
-		<IsTestProject>true</IsTestProject>		
+		<IsTestProject>true</IsTestProject>
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 	</PropertyGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />		
-	</ItemGroup>	
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net5.0-windows' ">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net5.0-windows' ">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
 		<PackageReference Include="xunit" Version="2.4.1" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
 		<PackageReference Include="shouldly" Version="4.0.3" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
 	</ItemGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net452' ">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
 		<PackageReference Include="xunit" Version="1.9.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="2.0.1" />
 		<PackageReference Include="shouldly" Version="2.8.3" />
 	</ItemGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
-		<PackageReference Include="xunit" Version="2.2.0" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
-		<PackageReference Include="shouldly" Version="2.8.3" />
-		<PackageReference Include="MSTest.TestAdapter" Version="2.2.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.2.3" />
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' or '$(TargetFramework)' == 'netcoreapp2.0'">
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+		<PackageReference Include="xunit" Version="2.4.1" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />		
+		<PackageReference Include="shouldly" Version="3.0.2" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\QRCoder\QRCoder.csproj" />
@@ -42,5 +39,6 @@
 	</ItemGroup>
 	<PropertyGroup>
 		<FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+		<AutomaticallyUseReferenceAssemblyPackages Condition=" '$(TargetFramework)' == 'net35' ">false</AutomaticallyUseReferenceAssemblyPackages>
 	</PropertyGroup>
 </Project>
