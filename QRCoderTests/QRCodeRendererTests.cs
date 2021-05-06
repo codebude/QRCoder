@@ -44,7 +44,7 @@ namespace QRCoderTests
 #if NET5_0
                 System.Reflection.Assembly.GetExecutingAssembly().Location;
 #else
-                System.Reflection.Assembly.GetExecutingAssembly().CodeBase.Replace("file:\\", "");
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
 #endif
         }
 

@@ -15,8 +15,17 @@ namespace QRCoderTests
     public class SvgQRCodeRendererTests
     {
 
-
 #if !NETCOREAPP1_1 && !NETCOREAPP2_0
+
+        private string GetAssemblyPath()
+        {
+            return
+#if NET5_0
+                System.Reflection.Assembly.GetExecutingAssembly().Location;
+#else
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
+#endif
+        }
 
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
@@ -59,7 +68,7 @@ namespace QRCoderTests
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
-            var logoBitmap = (Bitmap)Bitmap.FromFile(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "") + "\\assets\\noun_software engineer_2909346.png");
+            var logoBitmap = (Bitmap)Bitmap.FromFile(GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png");
             var logoObj = new SvgQRCode.SvgLogo(logoBitmap, 15);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
@@ -80,7 +89,7 @@ namespace QRCoderTests
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909361
-            var logoSvg = File.ReadAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "") + "\\assets\\noun_Scientist_2909361.svg");
+            var logoSvg = File.ReadAllText(GetAssemblyPath() + "\\assets\\noun_Scientist_2909361.svg");
             var logoObj = new SvgQRCode.SvgLogo(logoSvg, 30);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);

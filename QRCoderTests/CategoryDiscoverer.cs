@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-#if !NET35
+#if !NET35 && !NET452
 using Xunit.Abstractions;
 #endif
 using Xunit.Sdk;
 
 namespace QRCoderTests.XUnitExtenstions
 {
-#if NET35
+#if NET35 || NET452
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class CategoryAttribute : Attribute
     {
