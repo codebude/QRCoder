@@ -1,3 +1,5 @@
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0
+
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -50,7 +52,7 @@ namespace QRCoder
                         {
                             for (int y = 0; y < numModules; y += 1)
                             {
-                                var solidBrush = (Brush)(qrCodeData.ModuleMatrix[offset + y][offset + x] ? darkBrush : lightBrush);
+                                var solidBrush = (System.Drawing.Brush)(qrCodeData.ModuleMatrix[offset + y][offset + x] ? darkBrush : lightBrush);
 
                                 if (IsPartOfRetical(x, y, numModules, offset))
                                     if (reticalImage == null)
@@ -110,3 +112,5 @@ namespace QRCoder
         }
     }
 }
+
+#endif
