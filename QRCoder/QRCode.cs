@@ -93,17 +93,9 @@ namespace QRCoder
                 {
                     for (var y = 0; y < size + offset; y = y + pixelsPerModule)
                     {
-                        var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
+                        var moduleBrush = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1] ? darkBrush : lightBrush;
 
-                        if (module)
-                        {
-                            var r = new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule);
-                            gfx.FillRectangle(darkBrush, r);
-                        }
-                        else
-                        {
-                            gfx.FillRectangle(lightBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
-                        }
+                        gfx.FillRectangle(moduleBrush , new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
                     }
                 }
 
