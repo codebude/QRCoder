@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
+// pull request raised to extend library used. 
 namespace QRCoder
 {
     public class LogoQRCode : AbstractQRCode, IDisposable
@@ -15,17 +16,25 @@ namespace QRCoder
 
         public LogoQRCode(QRCodeData data) : base(data) { }
 
-        public Bitmap GetGraphic(QRCodeData qrCodeData,
-            int pixelsPerModule,
+        public Bitmap GetGraphic(Bitmap backgroundImage = null)
+        {
+            return this.GetGraphic(10, 7, Color.Black, Color.White, backgroundImage: backgroundImage);
+        }
+
+        public Bitmap GetGraphic(int pixelsPerModule, Bitmap backgroundImage = null)
+        {
+            return this.GetGraphic(pixelsPerModule, (pixelsPerModule * 8) / 10, Color.Black, Color.White, backgroundImage: backgroundImage);
+        }
+
+        public Bitmap GetGraphic(int pixelsPerModule,
             int pixelSize,
             Color darkColor,
             Color lightColor,
+            Bitmap backgroundImage = null,
             bool drawQuietZones = false,
-            Bitmap reticalImage = null,
-            Base64QRCode.ImageType imgType = Base64QRCode.ImageType.Png,
-            Bitmap backgroundImage = null)
+            Bitmap reticleImage = null)
         {
-            int numModules = qrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
+            int numModules = this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
             var offset = (drawQuietZones ? 0 : 4);
             int size = numModules * pixelsPerModule;
             var moduleMargin = pixelsPerModule - pixelSize;
@@ -52,22 +61,26 @@ namespace QRCoder
                         {
                             for (int y = 0; y < numModules; y += 1)
                             {
-                                var solidBrush = (System.Drawing.Brush)(qrCodeData.ModuleMatrix[offset + y][offset + x] ? darkBrush : lightBrush);
+                                var solidBrush = (Brush)(this.QrCodeData.ModuleMatrix[offset + y][offset + x] ? darkBrush : lightBrush);
 
-                                if (IsPartOfRetical(x, y, numModules, offset))
-                                    if (reticalImage == null)
+                                if (IsPartOfReticle(x, y, numModules, offset))
+                                {
+                                    if (reticleImage == null)
+                                    {
                                         graphics.FillRectangle(solidBrush, new Rectangle(x * pixelsPerModule, y * pixelsPerModule, pixelsPerModule, pixelsPerModule));
-                                    else
-                                        graphics.FillEllipse(solidBrush, new Rectangle(x * pixelsPerModule + moduleMargin, y * pixelsPerModule + moduleMargin, pixelSize, pixelSize));
+                                    }
+                                }
+                                else
+                                    graphics.FillEllipse(solidBrush, new Rectangle(x * pixelsPerModule + moduleMargin, y * pixelsPerModule + moduleMargin, pixelSize, pixelSize));
                             }
                         }
 
-                        if (reticalImage != null)
+                        if (reticleImage != null)
                         {
                             var reticleSize = 7 * pixelsPerModule;
-                            graphics.DrawImage(reticalImage, new Rectangle(0, 0, reticleSize, reticleSize));
-                            graphics.DrawImage(reticalImage, new Rectangle(size - reticleSize, 0, reticleSize, reticleSize));
-                            graphics.DrawImage(reticalImage, new Rectangle(0, size - reticleSize, reticleSize, reticleSize));
+                            graphics.DrawImage(reticleImage, new Rectangle(0, 0, reticleSize, reticleSize));
+                            graphics.DrawImage(reticleImage, new Rectangle(size - reticleSize, 0, reticleSize, reticleSize));
+                            graphics.DrawImage(reticleImage, new Rectangle(0, size - reticleSize, reticleSize, reticleSize));
                         }
 
                         graphics.Save();
@@ -77,13 +90,13 @@ namespace QRCoder
             return bitmap;
         }
 
-        private bool IsPartOfRetical(int x, int y, int numModules, int offset)
+        private bool IsPartOfReticle(int x, int y, int numModules, int offset)
         {
-            var cornerSize = 7 + offset;
+            var cornerSize = 11 - offset;
             return
                 (x < cornerSize && y < cornerSize) ||
-                (x > (numModules - cornerSize) && y < cornerSize) ||
-                (x < cornerSize && y < (numModules - cornerSize));
+                (x > (numModules - cornerSize - 1) && y < cornerSize) ||
+                (x < cornerSize && y > (numModules - cornerSize - 1));
         }
 
         private Bitmap Resize(Bitmap image, int size)
