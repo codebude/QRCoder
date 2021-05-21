@@ -12471,11 +12471,10 @@
       ]
     },
     "Microsoft.NETCore.UniversalWindowsPlatform/5.0.0": {
-      "sha512": "D0nsAm+yTk0oSSC7E6PcmuuEewBAQbGgIXNcCnRqQ4qLPdQLMjMHg8cilGs3xZgwTRQmMtEn45TAatrU1otWPQ==",
+      "sha512": "SA8wZRApSyRp6vGwF8FY+tk9+NpbOrQIpSAk1koMhEAaohLTOms8XYVhtoqN2wx1ZatR1TPukdJ9demH6BaFAA==",
       "type": "package",
       "path": "microsoft.netcore.universalwindowsplatform/5.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "_._",
         "microsoft.netcore.universalwindowsplatform.5.0.0.nupkg.sha512",
@@ -13016,11 +13015,10 @@
       ]
     },
     "System.Collections.Specialized/4.0.0": {
-      "sha512": "poJFwQCUOoXqvdoGxx+3p8Z63yawcYKPBSFP67Z2jICeOINvEIQZN7mVOAnC7gsVF0WU+A2wtVwfhagC7UCgAg==",
+      "sha512": "I2BQp3DSXThiG2EGfVSvJCKNnZkFnPHZRfVDa1ah8Cf+iuegfDaNUEUH4gdNNJggynQxWtplqMk5OfCp9ymKDA==",
       "type": "package",
       "path": "system.collections.specialized/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -13143,11 +13141,10 @@
       ]
     },
     "System.Data.Common/4.0.0": {
-      "sha512": "SA7IdoTWiImVr0exDM68r0mKmR4f/qFGxZUrJQKu4YS7F+3afWzSOCezHxWdevQ0ONi4WRQsOiv+Zf9p8H0Feg==",
+      "sha512": "ALikPnkeUNlJc/4IZsajYP+5K8+9OebyAeFc2waUWCdDFY1toicKjZiUpkyuEv8Z23RlGoCiUccqizJcrjzhRg==",
       "type": "package",
       "path": "system.data.common/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -13671,11 +13668,10 @@
       ]
     },
     "System.IO.IsolatedStorage/4.0.0": {
-      "sha512": "d5KimUbZ49Ki6A/uwU+Iodng+nhJvpRs7hr/828cfeXC02LxUiggnRnAu+COtWcKvJ2YbBmAGOcO4GLK4fX1+w==",
+      "sha512": "YyGYqYxbqd8drjaCALFIsED7aMV04NzWACUYlcn/qTsSyJ7Nt3abj7Sdm51ZWlqsewsyiqMYx7IFbZScZEJIlg==",
       "type": "package",
       "path": "system.io.isolatedstorage/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -13891,11 +13887,10 @@
       ]
     },
     "System.Net.Http.Rtc/4.0.0": {
-      "sha512": "PlE+oJgXdbxPmZYR6GBywRkyIPovjB1Y0SYHizj2Iflgu80uJQC4szl9gue4rKI2FgXiEbj9JL7wL5K3mp9HAQ==",
+      "sha512": "mZiaMWNsimIwleHrwog7EhThKiXq/6v65nMIoUBI70yeBSs0a6pmOmYazUzMGvwWYO9krDrXosO5CtJG3QraEA==",
       "type": "package",
       "path": "system.net.http.rtc/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/netcore50/System.Net.Http.Rtc.dll",
         "lib/win8/_._",
@@ -13989,11 +13984,10 @@
       ]
     },
     "System.Net.Requests/4.0.10": {
-      "sha512": "A6XBR7TztiIQg6hx7VGfbBKmRTAavUERm2E7pmNz/gZeGvwyP0lcKHZxylJtNVKj7DPwr91bD87oLY6zZYntcg==",
+      "sha512": "mZlzHiWVH3LQ+nUOnM813lbGSANzE0QF7azWfIpBlPotpffRnYBc3DLj31HV8IQ97Bp95LABtXHCzQgRd7mStw==",
       "type": "package",
       "path": "system.net.requests/4.0.10",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -14022,11 +14016,10 @@
       ]
     },
     "System.Net.Sockets/4.0.0": {
-      "sha512": "7bBNLdO6Xw0BGyFVSxjloGXMvsc3qQmW+70bYMLwHEAVivMK8zx+E7XO8CeJnAko2mFj6R402E798EGYUksFcQ==",
+      "sha512": "ulZDwtAxYPo4XTKXodzTZEYDuX7tKXe2dK7RHnPJpge66vS9uswwn+uXlhjIhF7Kge9nbTnff0NkbGq8pY/gGA==",
       "type": "package",
       "path": "system.net.sockets/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -14055,11 +14048,10 @@
       ]
     },
     "System.Net.WebHeaderCollection/4.0.0": {
-      "sha512": "IsIZAsHm/yK7R/XASnEc4EMffFLIMgYchG3/zJv6B4LwMnXZwrVlSPpNbPgEVb0lSXyztsn7A6sIPAACQQ2vTQ==",
+      "sha512": "bZ4b7ZdhX0ZQ9unxmzU+3tKf7RjRCBm+45tmuoarZOyAHb79D0T6VrbC42U/EV40a0zC79NJX7rp0JtYB/Z4Kw==",
       "type": "package",
       "path": "system.net.webheadercollection/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -14109,11 +14101,10 @@
       ]
     },
     "System.Numerics.Vectors.WindowsRuntime/4.0.0": {
-      "sha512": "Ly7GvoPFZq6GyfZpfS0E7uCk1cinl5BANAngXVuau3lD2QqZJMHitzlPv6n1FlIn6krfv99X2IPkIaVzUwDHXA==",
+      "sha512": "n0BXnQKuCWmwxrOOstqypa+50Rxg5rDojNWWrYZsTm3UIA4bo7/hM6VUXCvi4Zi1dkHt3iEzpm8WwxsVlVqT+A==",
       "type": "package",
       "path": "system.numerics.vectors.windowsruntime/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/dotnet/System.Numerics.Vectors.WindowsRuntime.dll",
         "system.numerics.vectors.windowsruntime.4.0.0.nupkg.sha512",
@@ -14152,11 +14143,10 @@
       ]
     },
     "System.Private.DataContractSerialization/4.0.0": {
-      "sha512": "uQvzoXHXHn/9YqUmPtgD8ZPJIlBuuL3QHegbuik97W/umoI28fOnGLnvjRHhju1VMWvFLRQoh7uZkBaoZ+KpVQ==",
+      "sha512": "gh7YjlADQcdNl++BPyrAX+xKwJ5BztiPiNxyH0/DefQ+Jk81aXcDlEASU6DT3T76QWKcDAnA1l2ml/SbvkpHrQ==",
       "type": "package",
       "path": "system.private.datacontractserialization/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.Private.DataContractSerialization.dll",
         "lib/netcore50/System.Private.DataContractSerialization.dll",
@@ -14182,11 +14172,10 @@
       ]
     },
     "System.Private.ServiceModel/4.0.0": {
-      "sha512": "cm2wEa1f9kuUq/2k8uIwepgZJi5HdxXSnjGQIeXmAb7RaWfZPEC/iamv9GJ67b5LPnCZHR0KvtFqh82e8AAYSw==",
+      "sha512": "fKy2QlUjyBN/pTRyTitJ1UF7HP0tyJsJN/M4rHpUS6dhz5cKu3SOvcP7+WDSbi1eHP9DYWYorejFYPz0Ylutqw==",
       "type": "package",
       "path": "system.private.servicemodel/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.Private.ServiceModel.dll",
         "lib/netcore50/System.Private.ServiceModel.dll",
@@ -14244,11 +14233,10 @@
       ]
     },
     "System.Reflection.Context/4.0.0": {
-      "sha512": "Gz4sUHHFd/52RjHccSHbOXdujJEWKfL3gIaA+ekxvQaQfJGbI2tPzA0Uv3WTCTDRGHgtoNq5WS9E007Dt4P/VQ==",
+      "sha512": "b3KytIh2/chlqGQ8TxxvZBoiJWXt3vVk7eXAKBY4nrFt1Ierx402ocKqpwEzJHjMfBWrVDEwW6UjtCeZKcl0eg==",
       "type": "package",
       "path": "system.reflection.context/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/net45/_._",
         "lib/netcore50/System.Reflection.Context.dll",
@@ -14725,11 +14713,10 @@
       ]
     },
     "System.Runtime.Serialization.Json/4.0.0": {
-      "sha512": "emhWMQP3sdtkAhD0TOeP3FfjS57sfQMQ2sqA6f2Yj5Gd9jkHV4KsQ2TsoJjghca6d8fur7+REQ6ILBXVdGf/0g==",
+      "sha512": "y6VHylbwAXUaj1wJrnVlxeC2AfLAAtqmo8FP3BgI32rdi5Mob0naW9jvN1lgRCwoqDOn3pIg9tN+6T4ruHXClg==",
       "type": "package",
       "path": "system.runtime.serialization.json/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.Runtime.Serialization.Json.dll",
         "lib/net45/_._",
@@ -14760,11 +14747,10 @@
       ]
     },
     "System.Runtime.Serialization.Primitives/4.0.10": {
-      "sha512": "NPc8DZIomf5tGjYtz/KTHI01IPcVlypfhCux32AbLPDjTotdvL8TpKRwMyQJ6Kh08yprRVH7uBD1PdJiuoFzag==",
+      "sha512": "rsJYStcytNx7x6iFhXPX61oSwlEu/mP0/9hBbhuevHR9CAcIWJB5xUYUxf+pRQONT0Nc84N0wg8I27Rv8BaK1Q==",
       "type": "package",
       "path": "system.runtime.serialization.primitives/4.0.10",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -14793,11 +14779,10 @@
       ]
     },
     "System.Runtime.Serialization.Xml/4.0.10": {
-      "sha512": "xsy7XbH8RTpKoDPNcibSGCOpujsmwUmOWAby3PssqkZFpLBXUbDO2s6JKITRjxejET2g0PK8t+mdIvu3xmUuKA==",
+      "sha512": "CQR/X6Y0oOkXU4bY66OdLARwR2RBX0weoAxklN9UOOaF7DV8w8Ty006KKJiexxK+dzklHFcVe9K3iedb1C7KxA==",
       "type": "package",
       "path": "system.runtime.serialization.xml/4.0.10",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.Runtime.Serialization.Xml.dll",
         "lib/MonoAndroid10/_._",
@@ -14856,11 +14841,10 @@
       ]
     },
     "System.Runtime.WindowsRuntime.UI.Xaml/4.0.0": {
-      "sha512": "2GY3fkXBMQOyyO9ovaH46CN6MD2ck/Gvk4VNAgVDvtmfO3HXYFNd+bB05WhVcJrHKbfKZNwfwZKpYZ+OsVFsLw==",
+      "sha512": "NHok9nrNJlTdLtE7eJNDDI39g3rKBExzHFSGr33YoMrXpDB41SS7Q7uJ9lPa7Abk35vNtReTdpk0HFFkh+o7tw==",
       "type": "package",
       "path": "system.runtime.windowsruntime.ui.xaml/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/netcore50/System.Runtime.WindowsRuntime.UI.Xaml.dll",
         "lib/win8/_._",
@@ -14948,11 +14932,10 @@
       ]
     },
     "System.ServiceModel.Duplex/4.0.0": {
-      "sha512": "JFeDn+IsiwAVJkNNnM7MLefJOnzYhovaHnjk3lzEnUWkYZJeAKrcgLdK6GE2GNjb5mEV8Pad/E0JcA8eCr3eWQ==",
+      "sha512": "GWrLFlxpXOevTgvOrEWZG28EG65saxqWmk/8AsR257Xp95VjqgWGoTEDJD1tpCjvcwSFZpuEAcSWojN8Kgew3A==",
       "type": "package",
       "path": "system.servicemodel.duplex/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.ServiceModel.Duplex.dll",
         "lib/net45/_._",
@@ -14978,11 +14961,10 @@
       ]
     },
     "System.ServiceModel.Http/4.0.10": {
-      "sha512": "Vyl7lmvMlXJamtnDugoXuAgAQGSqtA7omK3zDBYByhbYeBC2hRBchgyXox7e5vEO+29TeB1IpoLWQGb7tO9h6A==",
+      "sha512": "OQrCcQ4wUKxBZpsG/VK6YPkuLEkZlU4Bzdg6u/04w35IrkkkI9Etd/pVFDAwQ6oHgo7NUvGKN49aFCwM11gBfw==",
       "type": "package",
       "path": "system.servicemodel.http/4.0.10",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.ServiceModel.Http.dll",
         "lib/MonoAndroid10/_._",
@@ -15012,11 +14994,10 @@
       ]
     },
     "System.ServiceModel.NetTcp/4.0.0": {
-      "sha512": "lV2Cdcso9jOS0KBtgHZHzTLe/Lx/ERdPcvF4dlepUie6/+BOMYTOgg2C7OdpIjp3fwUNXq8nhU+IilmEyjuf/A==",
+      "sha512": "rGeqlIzuodfLcNMY9gXfT6H8Jqod6hsVlNFO6mEjdeX5nmzYtf2nvtlzaEqoNQeM99E9CxAGr8iuhNVe+WMVIQ==",
       "type": "package",
       "path": "system.servicemodel.nettcp/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.ServiceModel.NetTcp.dll",
         "lib/net45/_._",
@@ -15042,11 +15023,10 @@
       ]
     },
     "System.ServiceModel.Primitives/4.0.0": {
-      "sha512": "uF5VYQWR07LgiZkzUr8qjwvqOaIAfwU566MneD4WuC14d8FLJNsAgCJUYhBGB7COjH7HTqnP9ZFmr6c+L83Stg==",
+      "sha512": "D5zmvq44EYiaPayd/6QrQSTQ2FwOls7PLGDSlf8omKMLwKQ4oEMOI1B+av2oyX+YRhyZaffn3tYES/t6XN/Cpw==",
       "type": "package",
       "path": "system.servicemodel.primitives/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.ServiceModel.Primitives.dll",
         "lib/net45/_._",
@@ -15072,11 +15052,10 @@
       ]
     },
     "System.ServiceModel.Security/4.0.0": {
-      "sha512": "sPVzsnd8w/TJsW/4sYA9eIGP+RtlpN0AhKLGKf9ywdGGmHPi0kkuX2mx412dM3GN0e4oifuISwvZqby/sI8Feg==",
+      "sha512": "2eYrBgRlkn0C2u0TpRrkbslAyQZX1xckdxcUccrrcceA69weccRMrPCPOOD77a4qS2Xn1Ez15scMqRR7mk7abg==",
       "type": "package",
       "path": "system.servicemodel.security/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.ServiceModel.Security.dll",
         "lib/net45/_._",
@@ -15135,11 +15114,10 @@
       ]
     },
     "System.Text.Encoding.CodePages/4.0.0": {
-      "sha512": "ZHBTr1AXLjY9OuYR7pKx5xfN6QFye1kgd5QAbGrvfCOu7yxRnJs3VUaxERe1fOlnF0mi/xD/Dvb3T3x3HNuPWQ==",
+      "sha512": "hStor74+c4dsd+rl79B+YGKBC+dX4+LzrnOq1uD4jm8mH4QhI4LSKPg/0qCnvs4SPl9g3ZyR/IGc1c8M3ZtbPw==",
       "type": "package",
       "path": "system.text.encoding.codepages/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -15458,11 +15436,10 @@
       ]
     },
     "System.Xml.XmlDocument/4.0.0": {
-      "sha512": "H5qTx2+AXgaKE5wehU1ZYeYPFpp/rfFh69/937NvwCrDqbIkvJRmIFyKKpkoMI6gl9hGfuVizfIudVTMyowCXw==",
+      "sha512": "65Y0wI4npOOoKYB3Pc18ymgkWSqmMY9aaIylyUnOORyBfWy+pgwjrh0DA/m2NTXzXcTwOpaZn+ke4nA1lp3qdA==",
       "type": "package",
       "path": "system.xml.xmldocument/4.0.0",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -15491,11 +15468,10 @@
       ]
     },
     "System.Xml.XmlSerializer/4.0.10": {
-      "sha512": "OKhE6vruk88z/hl0lmfrMvXteTASgJUagu6PT6S10i9uLbvDR3pTwB6jVgiwa2D2qtTB+eneZbS9jljhPXhTtg==",
+      "sha512": "hnfEHOzjdjPOh1kUlOghJ2N2WR6OjR6IFvUZDVOqLHwJmE6CxDYWL+uj7ScpgNN9ckl49dYWZee+LfmCm80U8w==",
       "type": "package",
       "path": "system.xml.xmlserializer/4.0.10",
       "files": [
-        ".nupkg.metadata",
         ".signature.p7s",
         "lib/DNXCore50/System.Xml.XmlSerializer.dll",
         "lib/MonoAndroid10/_._",
@@ -15534,30 +15510,28 @@
     "UAP,Version=v10.0.10240": []
   },
   "packageFolders": {
-    "C:\\Users\\nigel\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Curt\\.nuget\\packages\\": {},
+    "C:\\Users\\Curt\\.dotnet\\NuGetFallbackFolder": {}
   },
   "project": {
     "restore": {
-      "projectUniqueName": "c:\\code\\QRCoder\\QRCoderDemoUWP\\QRCoderDemoUWP.csproj",
+      "projectUniqueName": "C:\\Users\\Curt\\Source\\Repos\\QRCoder\\QRCoderDemoUWP\\QRCoderDemoUWP.csproj",
       "projectName": "QRCoderDemoUWP",
-      "projectPath": "c:\\code\\QRCoder\\QRCoderDemoUWP\\QRCoderDemoUWP.csproj",
-      "projectJsonPath": "c:\\code\\QRCoder\\QRCoderDemoUWP\\project.json",
-      "packagesPath": "C:\\Users\\nigel\\.nuget\\packages\\",
-      "outputPath": "c:\\code\\QRCoder\\QRCoderDemoUWP\\obj\\",
+      "projectPath": "C:\\Users\\Curt\\Source\\Repos\\QRCoder\\QRCoderDemoUWP\\QRCoderDemoUWP.csproj",
+      "projectJsonPath": "C:\\Users\\Curt\\Source\\Repos\\QRCoder\\QRCoderDemoUWP\\project.json",
+      "packagesPath": "C:\\Users\\Curt\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Curt\\Source\\Repos\\QRCoder\\QRCoderDemoUWP\\obj\\",
       "projectStyle": "ProjectJson",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "C:\\Users\\Curt\\.dotnet\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\nigel\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\Curt\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {},
-        "https://pkgs.dev.azure.com/digicastle/_packaging/Digicastle/nuget/v3/index.json": {}
+        "https://api.nuget.org/v3/index.json": {}
       }
     },
     "dependencies": {
