@@ -35,22 +35,19 @@ namespace QRCoder
             Bitmap reticleImage = null,
             Bitmap backgroundImage = null)
         {
-            int numModules = this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
+            var numModules = this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
             var offset = (drawQuietZones ? 0 : 4);
-            int size = numModules * pixelsPerModule;
-            var moduleMargin = pixelsPerModule - pixelSize;
+            var size = numModules * pixelsPerModule;
 
-            Bitmap bitmap = backgroundImage ?? new Bitmap(size, size);
-            bitmap = Resize(bitmap, size);
+            var bitmap = Resize(backgroundImage,size) ?? new Bitmap(size, size);
 
-
-            using (Graphics graphics = Graphics.FromImage(bitmap))
+            using (var graphics = Graphics.FromImage(bitmap))
             {
-                using (SolidBrush lightBrush = new SolidBrush(lightColor))
+                using (var lightBrush = new SolidBrush(lightColor))
                 {
-                    using (SolidBrush darkBrush = new SolidBrush(darkColor))
+                    using (var darkBrush = new SolidBrush(darkColor))
                     {
-                        // make background transparent if you don't have an image
+                        // make background transparent if you don't have an image -- not sure this is needed
                         if (backgroundImage == null)
                         {
                             using (var brush = new SolidBrush(Color.Transparent))
@@ -62,9 +59,9 @@ namespace QRCoder
                         var darkModulePixel = MakeDotPixel(pixelsPerModule, pixelSize, darkBrush);
                         var lightModulePixel = MakeDotPixel(pixelsPerModule, pixelSize, lightBrush);
 
-                        for (int x = 0; x < numModules; x += 1)
+                        for (var x = 0; x < numModules; x += 1)
                         {
-                            for (int y = 0; y < numModules; y += 1)
+                            for (var y = 0; y < numModules; y += 1)
                             {
                                 var rectangleF = new Rectangle(x * pixelsPerModule, y * pixelsPerModule, pixelsPerModule, pixelsPerModule);
 
@@ -145,6 +142,8 @@ namespace QRCoder
         /// <returns></returns>
         private Bitmap Resize(Bitmap image, int newSize)
         {
+            if (image == null) return null;
+
             float scale = Math.Min((float)newSize / image.Width, (float)newSize / image.Height);
             var scaledWidth = (int)(image.Width * scale);
             var scaledHeight = (int)(image.Height * scale);
