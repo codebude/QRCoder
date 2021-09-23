@@ -2747,7 +2747,6 @@ namespace QRCoderTests
             var lastname = "Doe";
             var nickname = "Johnny";
             var org = "Johnny's Badass Programming";
-            var orgTitle = "Badass Manager";
             var phone = "+4253212222";
             var mobilePhone = "+421701234567";
             var workPhone = "+4253211337";
@@ -2762,11 +2761,11 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.MeCard;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org, orgTitle: orgTitle);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
-                .ShouldBe("MECARD+\r\nN:Doe, John\r\nORG:Johnny's Badass Programming\r\nTITLE:Badass Manager\r\nTEL:+4253212222\r\nTEL:+421701234567\r\nTEL:+4253211337\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nBDAY:19700201\r\nADR:,,Long street 42,12345,Super-Town,,Starlight Country\r\nURL:http://john.doe\r\nNICKNAME:Johnny");
+                .ShouldBe("MECARD+\r\nN:Doe, John\r\nORG:Johnny's Badass Programming\r\nTEL:+4253212222\r\nTEL:+421701234567\r\nTEL:+4253211337\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nBDAY:19700201\r\nADR:,,Long street 42,12345,Super-Town,,Starlight Country\r\nURL:http://john.doe\r\nNICKNAME:Johnny");
         }
 
         [Fact]
@@ -2777,7 +2776,6 @@ namespace QRCoderTests
             var lastname = "Doe";
             var nickname = "Johnny";
             var org = "Johnny's Badass Programming";
-            var orgTitle = "Badass Manager";
             var phone = "+4253212222";
             var mobilePhone = "+421701234567";
             var workPhone = "+4253211337";
@@ -2792,11 +2790,11 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.MeCard;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed, org: org, orgTitle: orgTitle);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed, org: org);
 
             generator
                 .ToString()
-                .ShouldBe("MECARD+\r\nN:Doe, John\r\nJohnny's Badass Programming\r\nTITLE:Badass Manager\r\nTEL:+4253212222\r\nTEL:+421701234567\r\nTEL:+4253211337\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nBDAY:19700201\r\nADR:,,42 Long street,Super-Town,,12345,Starlight Country\r\nURL:http://john.doe\r\nNICKNAME:Johnny");
+                .ShouldBe("MECARD+\r\nN:Doe, John\r\nORG:Johnny's Badass Programming\r\nTEL:+4253212222\r\nTEL:+421701234567\r\nTEL:+4253211337\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nBDAY:19700201\r\nADR:,,42 Long street,Super-Town,,12345,Starlight Country\r\nURL:http://john.doe\r\nNICKNAME:Johnny");
         }
 
         [Fact]
@@ -2807,7 +2805,6 @@ namespace QRCoderTests
             var lastname = "Doe";
             var nickname = "Johnny";
             var org = "Johnny's Badass Programming";
-            var orgTitle = "Badass Manager";
             var phone = "+4253212222";
             var mobilePhone = "+421701234567";
             var workPhone = "+4253211337";
@@ -2822,11 +2819,11 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard21;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org, orgTitle: orgTitle);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
-                .ShouldBe("BEGIN:VCARD\r\nVERSION:2.1\r\nN:Doe;John;;;\r\nFN:John Doe\r\nJohnny's Badass Programming\r\nTITLE:Badass Manager\r\nTEL;HOME;VOICE:+4253212222\r\nTEL;HOME;CELL:+421701234567\r\nTEL;WORK;VOICE:+4253211337\r\nADR;HOME;PREF:;;Long street 42;12345;Super-Town;;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nEND:VCARD");
+                .ShouldBe("BEGIN:VCARD\r\nVERSION:2.1\r\nN:Doe;John;;;\r\nFN:John Doe\r\nORG:Johnny's Badass Programming\r\nTEL;HOME;VOICE:+4253212222\r\nTEL;HOME;CELL:+421701234567\r\nTEL;WORK;VOICE:+4253211337\r\nADR;HOME;PREF:;;Long street 42;12345;Super-Town;;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nEND:VCARD");
         }
 
         [Fact]
@@ -2837,7 +2834,6 @@ namespace QRCoderTests
             var lastname = "Doe";
             var nickname = "Johnny";
             var org = "Johnny's Badass Programming";
-            var orgTitle = "Badass Manager";
             var phone = "+4253212222";
             var mobilePhone = "+421701234567";
             var workPhone = "+4253211337";
@@ -2852,11 +2848,11 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard3;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org, orgTitle: orgTitle);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
-                .ShouldBe("BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John;;;\r\nFN:John Doe\r\nJohnny's Badass Programming\r\nTITLE:Badass Manager\r\nTEL;TYPE=HOME,VOICE:+4253212222\r\nTEL;TYPE=HOME,CELL:+421701234567\r\nTEL;TYPE=WORK,VOICE:+4253211337\r\nADR;TYPE=HOME,PREF:;;Long street 42;12345;Super-Town;;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nNICKNAME:Johnny\r\nEND:VCARD");
+                .ShouldBe("BEGIN:VCARD\r\nVERSION:3.0\r\nN:Doe;John;;;\r\nFN:John Doe\r\nORG:Johnny's Badass Programming\r\nTEL;TYPE=HOME,VOICE:+4253212222\r\nTEL;TYPE=HOME,CELL:+421701234567\r\nTEL;TYPE=WORK,VOICE:+4253211337\r\nADR;TYPE=HOME,PREF:;;Long street 42;12345;Super-Town;;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nNICKNAME:Johnny\r\nEND:VCARD");
         }
 
         [Fact]
@@ -2867,7 +2863,6 @@ namespace QRCoderTests
             var lastname = "Doe";
             var nickname = "Johnny";
             var org = "Johnny's Badass Programming";
-            var orgTitle = "Badass Manager";
             var phone = "+4253212222";
             var mobilePhone = "+421701234567";
             var workPhone = "+4253211337";
@@ -2882,11 +2877,11 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard4;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org, orgTitle: orgTitle);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, org: org);
 
             generator
                 .ToString()
-                .ShouldBe("BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;;;\r\nFN:John Doe\r\nJohnny's Badass Programming\r\nTITLE:Badass Manager\r\nTEL;TYPE=home,voice;VALUE=uri:tel:+4253212222\r\nTEL;TYPE=home,cell;VALUE=uri:tel:+421701234567\r\nTEL;TYPE=work,voice;VALUE=uri:tel:+4253211337\r\nADR;TYPE=home,pref:;;Long street 42;12345;Super-Town;;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nNICKNAME:Johnny\r\nEND:VCARD");
+                .ShouldBe("BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;;;\r\nFN:John Doe\r\nORG:Johnny's Badass Programming\r\nTEL;TYPE=home,voice;VALUE=uri:tel:+4253212222\r\nTEL;TYPE=home,cell;VALUE=uri:tel:+421701234567\r\nTEL;TYPE=work,voice;VALUE=uri:tel:+4253211337\r\nADR;TYPE=home,pref:;;Long street 42;12345;Super-Town;;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nNICKNAME:Johnny\r\nEND:VCARD");
         }
 
         [Fact]
@@ -2897,7 +2892,6 @@ namespace QRCoderTests
             var lastname = "Doe";
             var nickname = "Johnny";
             var org = "Johnny's Badass Programming";
-            var orgTitle = "Badass Manager";
             var phone = "+4253212222";
             var mobilePhone = "+421701234567";
             var workPhone = "+4253211337";
@@ -2912,11 +2906,11 @@ namespace QRCoderTests
             var note = "Badass programmer.";
             var outputType = PayloadGenerator.ContactData.ContactOutputType.VCard4;
 
-            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed, org: org, orgTitle: orgTitle);
+            var generator = new PayloadGenerator.ContactData(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, addressOrder: PayloadGenerator.ContactData.AddressOrder.Reversed, org: org);
 
             generator
                 .ToString()
-                .ShouldBe("BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;;;\r\nFN:John Doe\r\nJohnny's Badass Programming\r\nTITLE:Badass Manager\r\nTEL;TYPE=home,voice;VALUE=uri:tel:+4253212222\r\nTEL;TYPE=home,cell;VALUE=uri:tel:+421701234567\r\nTEL;TYPE=work,voice;VALUE=uri:tel:+4253211337\r\nADR;TYPE=home,pref:;;42 Long street;Super-Town;;12345;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nNICKNAME:Johnny\r\nEND:VCARD");
+                .ShouldBe("BEGIN:VCARD\r\nVERSION:4.0\r\nN:Doe;John;;;\r\nFN:John Doe\r\nORG:Johnny's Badass Programming\r\nTEL;TYPE=home,voice;VALUE=uri:tel:+4253212222\r\nTEL;TYPE=home,cell;VALUE=uri:tel:+421701234567\r\nTEL;TYPE=work,voice;VALUE=uri:tel:+4253211337\r\nADR;TYPE=home,pref:;;42 Long street;Super-Town;;12345;Starlight Country\r\nBDAY:19700201\r\nURL:http://john.doe\r\nEMAIL:me@john.doe\r\nNOTE:Badass programmer.\r\nNICKNAME:Johnny\r\nEND:VCARD");
         }
 
         [Fact]
