@@ -73,7 +73,7 @@ jobs:
         files: ./QRCoderTests/coverage.net5.0-windows.opencover.xml
         flags: net5.0-windows
 
-pack-push-release:
+  pack-push-release:
     needs: test
     runs-on: windows-latest
     env:
