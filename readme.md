@@ -1,6 +1,12 @@
 # QRCoder
-[![qrcoder MyGet Build Status](https://www.myget.org/BuildSource/Badge/qrcoder?identifier=10cbdaa5-2dd9-460b-b424-be44e75258ec&service=github)](https://www.myget.org/feed/qrcoder/package/nuget/QRCoder)   [![NuGet Badge](https://buildstats.info/nuget/QRCoder)](https://www.nuget.org/packages/QRCoder/)
-## Info 
+
+|Build|Code coverage|Build status|NuGet Package|
+|-----|-------------|------------|-------------|
+|Latest / Stable|[![codecov](https://codecov.io/gh/codebude/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/codebude/QRCoder)|[![Build, test, pack, push (Release)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml/badge.svg?branch=main)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml)|[![NuGet Badge](https://buildstats.info/nuget/QRCoder)](https://www.nuget.org/packages/QRCoder/)|
+|CI / Last commit|[![codecov](https://codecov.io/gh/codebude/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/codebude/QRCoder)|[![Build, test, pack, push (CI)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release-ci.yml/badge.svg)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release-ci.yml)|[![Github packages](https://img.shields.io/badge/Github-Packages-blue)](https://github.com/codebude/qrcoder/packages)|
+
+
+## Info
 
 QRCoder is a simple library, written in C#.NET, which enables you to create QR codes. It hasn't any dependencies to other libraries and is available as .NET Framework and .NET Core PCL version on NuGet.
 
@@ -8,12 +14,11 @@ Feel free to grab-up/fork the project and make it better!
 
 For more information see:
 [**QRCode Wiki**](https://github.com/codebude/QRCoder/wiki) | [Creator's blog (english)](http://en.code-bude.net/2013/10/17/qrcoder-an-open-source-qr-code-generator-implementation-in-csharp/) | [Creator's blog (german)](http://code-bude.net/2013/10/17/qrcoder-eine-open-source-qr-code-implementierung-in-csharp/)
- 
+
 
 ## Legal information and credits
 
-QRCoder is project by [Raffael Herrmann](http://raffaelherrmann.de) and was first released 
-in 10/2013. It's licensed under the MIT license.
+QRCoder is a project by [Raffael Herrmann](https://raffaelherrmann.de) and was first released in 10/2013. It's licensed under the [MIT license](https://github.com/codebude/QRCoder/blob/master/LICENSE.txt).
 
 
 * * *
@@ -26,12 +31,9 @@ Either checkout this Github repository or install QRCoder via NuGet Package Mana
 PM> Install-Package QRCoder
 ```
 
-*Note: The NuGet feed contains only **stable** releases. If you wan't the latest build add one of the following urls to the "Package Sources" of Visual Studio's NuGet Package Manager options.*
-
-*NuGet V3 feed URL (Visual Studio 2015+):* `https://www.myget.org/F/qrcoder/api/v3/index.json`
-
-*NuGet V2 feed URL (Visual Studio 2012+):* `https://www.myget.org/F/qrcoder/api/v2`
-
+#### CI builds
+The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/codebude/qrcoder/packages).
+_(More information on how to use Github Packages in Nuget Package Manager can be [found here](http://webcache.googleusercontent.com/search?q=cache:i_gL6oIwpr8J:www.catiawidgets.net/2021/04/20/creating-github-packages-and-accessing-them-in-nuget/+&cd=1&hl=de&ct=clnk&gl=de).)_
 
 
 ## Usage
