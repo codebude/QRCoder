@@ -383,6 +383,7 @@ namespace QRCoder
             private readonly string lastname;
             private readonly string nickname;
             private readonly string org;
+            private readonly string orgTitle;
             private readonly string phone;
             private readonly string mobilePhone;
             private readonly string workPhone;
@@ -421,12 +422,15 @@ namespace QRCoder
             /// <param name="country">Country</param>
             /// <param name="addressOrder">The address order format to use</param>
             /// <param name="note">Memo text / notes</param>            
-            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string org = null)
+            /// <param name="org">Organisation/Company</param>            
+            /// <param name="orgTitle">Organisation/Company Title</param>            
+            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string org = null, string orgTitle = null)
             {             
                 this.firstname = firstname;
                 this.lastname = lastname;
                 this.nickname = nickname;
                 this.org = org;
+                this.orgTitle = orgTitle;
                 this.phone = phone;
                 this.mobilePhone = mobilePhone;
                 this.workPhone = workPhone;
@@ -456,6 +460,8 @@ namespace QRCoder
                         payload += $"N:{firstname}{lastname}\r\n";
                     if (!string.IsNullOrEmpty(org))
                         payload += $"ORG:{org}\r\n";
+                    if (!string.IsNullOrEmpty(orgTitle))
+                        payload += $"TITLE:{orgTitle}\r\n";
                     if (!string.IsNullOrEmpty(phone))
                         payload += $"TEL:{phone}\r\n";
                     if (!string.IsNullOrEmpty(mobilePhone))
@@ -500,6 +506,10 @@ namespace QRCoder
                     if (!string.IsNullOrEmpty(org))
                     {
                         payload += $"ORG:" + org + "\r\n";
+                    }
+                    if (!string.IsNullOrEmpty(orgTitle))
+                    {
+                        payload += $"TITLE:" + orgTitle + "\r\n";
                     }
                     if (!string.IsNullOrEmpty(phone))
                     {
