@@ -1,0 +1,107 @@
+name: Build, test, pack, push (Release)
+on:
+  workflow_dispatch:
+    inputs:
+        releaseNotes:
+          description: 'Release Notes (use `n for new line)'     
+          required: true     
+jobs:  
+  build: 
+    runs-on: windows-latest 
+    env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout Code
+     
+    - name: Setup MSBuild Ppth
+      uses: microsoft/setup-msbuild@v1      
+       
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+     
+    - name: Restore NuGet Packages
+      run: nuget restore QRCoder.sln
+ 
+    - name: Build library
+      run: msbuild QRCoder.sln /p:Configuration=Release /nr:false /t:Rebuild
+   
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Compiled project
+        path: D:\a\qrcoder\qrcoder
+
+  test:
+    needs: build 
+    runs-on: windows-latest
+    steps:   
+    - name: Download artifacts
+      uses: actions/download-artifact@v1.0.0
+      with:
+        name: Compiled project
+        path: D:\a\qrcoder\qrcoder    
+    - name: Run test .NET 3.5
+      run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stron naming
+    - name: Run test .NET 4.52
+      run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Stron naming
+# Skip 1.1 test due to missing support on Github runner
+#    - name: Run test .NET Core 1.1
+#      run: dotnet test -c Release -f netcoreapp1.1 --nologo
+    - name: Run test .NET Core 2.0
+      run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 5.0
+      run: dotnet test -c Release -f net5.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 5.0 Windows
+      run: dotnet test -c Release -f net5.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Codecov update netcoreapp2.0
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./QRCoderTests/coverage.netcoreapp2.0.opencover.xml
+        flags: netcoreapp2.0
+    - name: Codecov update net5.0
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./QRCoderTests/coverage.net5.0.opencover.xml
+        flags: net5.0
+    - name: Codecov update net5.0-windows
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./QRCoderTests/coverage.net5.0-windows.opencover.xml
+        flags: net5.0-windows
+
+  pack-push-release:
+    needs: test
+    runs-on: windows-latest
+    env:
+      GH_PKG_SEC: ${{ secrets.GH_PKG_REPO }}
+    steps:   
+    - name: Download artifacts
+      uses: actions/download-artifact@v1.0.0
+      with:
+        name: Compiled project
+        path: D:\a\qrcoder\qrcoder
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Get assembly version
+      run: echo "ASSEM_VER=$([Reflection.Assembly]::Loadfile( $(-join($pwd,"\QRCoder\bin\Release\net40\QRCoder.dll"))).GetName().version.ToString())"  | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+    - name: Clean assembly version
+      run: echo "ASSEM_VER_SHT=$($env:ASSEM_VER.substring(0, $env:ASSEM_VER.lastIndexOf(".")))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+    - name: Build NuGet package
+      run: dotnet pack QRCoder\QRCoder.csproj -c Release --no-build /p:PackageVersion="$env:ASSEM_VER_SHT" /p:PackageReleaseNotes="${{ github.event.inputs.releaseNotes }}"   
+    - name: Publish to Github packages
+      run: dotnet nuget push "**/*.nupkg" --no-symbols --skip-duplicate --api-key $env:GH_PKG_SEC --source https://nuget.pkg.github.com/codebude/index.json
+      
+    
+  clean:
+    needs: [build, test, pack-push-release]
+    if: always()
+    runs-on: windows-latest
+    steps:
+    - name: Delete artifacts
+      uses: GeekyEggo/delete-artifact@v1.0.0
+      with:
+        name: Compiled project

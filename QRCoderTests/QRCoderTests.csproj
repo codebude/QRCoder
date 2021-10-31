@@ -7,6 +7,7 @@
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
+		<DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net5.0-windows' ">
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
@@ -27,6 +28,14 @@
 		<PackageReference Include="shouldly" Version="3.0.2" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="coverlet.collector" Version="3.0.3">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.msbuild" Version="3.0.3">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<ProjectReference Include="..\QRCoder\QRCoder.csproj" />
 	</ItemGroup>
 	<ItemGroup>
