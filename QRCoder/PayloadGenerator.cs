@@ -354,7 +354,8 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return ($"https://wa.me/{this.number}?text={Uri.EscapeDataString(message)}");
+                var cleanedPhone = Regex.Replace(this.number, @"^[0+]+|[ ()-]", string.Empty);
+                return ($"https://wa.me/{cleanedPhone}?text={Uri.EscapeDataString(message)}");
             }
         }
 
