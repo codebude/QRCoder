@@ -1,0 +1,65 @@
+name: Build, test (Pull Request)
+on:
+  pull_request:
+    branches:
+      - master 
+  workflow_dispatch:
+jobs:  
+  build: 
+    runs-on: windows-latest 
+    env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    steps:
+    - uses: actions/checkout@v1
+      name: Checkout Code
+     
+    - name: Setup MSBuild Ppth
+      uses: microsoft/setup-msbuild@v1      
+       
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.0.2
+     
+    - name: Restore NuGet Packages
+      run: nuget restore QRCoder.sln
+ 
+    - name: Build library
+      run: msbuild QRCoder.sln /p:Configuration=Release /nr:false /t:Rebuild
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Compiled project
+        path: D:\a\qrcoder\qrcoder
+
+  test:
+    needs: build 
+    runs-on: windows-latest
+    steps:   
+    - name: Download artifacts
+      uses: actions/download-artifact@v1.0.0
+      with:
+        name: Compiled project
+        path: D:\a\qrcoder\qrcoder    
+    - name: Run test .NET 3.5
+      run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stron naming
+    - name: Run test .NET 4.52
+      run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Stron naming
+# Skip 1.1 test due to missing support on Github runner
+#    - name: Run test .NET Core 1.1
+#      run: dotnet test -c Release -f netcoreapp1.1 --nologo
+    - name: Run test .NET Core 2.0
+      run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 5.0
+      run: dotnet test -c Release -f net5.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 5.0 Windows
+      run: dotnet test -c Release -f net5.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    
+  clean:
+    needs: [build, test]
+    if: always()
+    runs-on: windows-latest
+    steps:
+    - name: Delete artifacts
+      uses: GeekyEggo/delete-artifact@v1.0.0
+      with:
+        name: Compiled project
