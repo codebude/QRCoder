@@ -331,7 +331,10 @@ namespace QRCoder
             /// <summary>
             /// Let's you compose a WhatApp message and send it the receiver number.
             /// </summary>
-            /// <param name="number">Receiver phone number</param>
+            /// <param name="number">Receiver phone number where the <number> is a full phone number in international format. 
+            /// Omit any zeroes, brackets, or dashes when adding the phone number in international format.
+            /// Use: 1XXXXXXXXXX | Don't use: +001-(XXX)XXXXXXX
+            /// </param>
             /// <param name="message">The message</param>
             public WhatsAppMessage(string number, string message)
             {
@@ -351,7 +354,8 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return ($"whatsapp://send?phone={this.number}&text={Uri.EscapeDataString(message)}");
+                var cleanedPhone = Regex.Replace(this.number, @"^[0+]+|[ ()-]", string.Empty);
+                return ($"https://wa.me/{cleanedPhone}?text={Uri.EscapeDataString(message)}");
             }
         }
 
