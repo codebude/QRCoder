@@ -29,12 +29,13 @@ namespace QRCoder
             /// <param name="password">Password of the WiFi network</param>
             /// <param name="authenticationMode">Authentification mode (WEP, WPA, WPA2)</param>
             /// <param name="isHiddenSSID">Set flag, if the WiFi network hides its SSID</param>
-            public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false)
+            /// <param name="escapeHexStrings">Set flag, if ssid/password is delivered as HEX string. Note: May not be supported on iOS devices.</param>
+            public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false,  bool escapeHexStrings = true)
             {
                 this.ssid = EscapeInput(ssid);
-                this.ssid = isHexStyle(this.ssid) ? "\"" + this.ssid + "\"" : this.ssid;
+                this.ssid = escapeHexStrings && isHexStyle(this.ssid) ? "\"" + this.ssid + "\"" : this.ssid;
                 this.password = EscapeInput(password);
-                this.password = isHexStyle(this.password) ? "\"" + this.password + "\"" : this.password;
+                this.password = escapeHexStrings && isHexStyle(this.password) ? "\"" + this.password + "\"" : this.password;
                 this.authenticationMode = authenticationMode.ToString();
                 this.isHiddenSsid = isHiddenSSID;
             }
