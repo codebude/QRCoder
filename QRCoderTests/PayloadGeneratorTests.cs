@@ -3054,6 +3054,58 @@ namespace QRCoderTests
             Assert.IsType<PayloadGenerator.MoneroTransaction.MoneroTransactionException>(exception);
             exception.Message.ShouldBe("The address is mandatory and has to be set.");
         }
+
+
+        [Fact]
+        [Category("PayloadGenerator/RussiaPaymentOrder")]
+        public void russiapayment_generator_can_generate_payload_minimal()
+        {
+            var account = "40702810138250123017";
+            var bic = "044525225";
+            var bankName = "=ОАО \"БАНК\"";
+            var name = "ООО «Три кита»";
+            var generator = new PayloadGenerator.RussiaPaymentOrder(PayloadGenerator.RussiaPaymentOrder.CharacterSets.utf_8, name, account, bankName, bic);
+
+            generator
+                .ToString()
+                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc=0");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/RussiaPaymentOrder")]
+        public void russiapayment_generator_can_generate_payload_mandatory_fields()
+        {
+            var account = "40702810138250123017";
+            var bic = "044525225";
+            var bankName = "=ОАО \"БАНК\"";
+            var name = "ООО «Три кита»";
+            var correspAcc = "30101810400000000225";
+            var generator = new PayloadGenerator.RussiaPaymentOrder(PayloadGenerator.RussiaPaymentOrder.CharacterSets.utf_8, name, account, bankName, bic, correspAcc);
+
+            generator
+                .ToString()
+                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc={correspAcc}");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/RussiaPaymentOrder")]
+        public void russiapayment_generator_can_generate_payload_some_additional_fields()
+        {
+            var account = "40702810138250123017";
+            var bic = "044525225";
+            var bankName = "=ОАО \"БАНК\"";
+            var name = "ООО «Три кита»";
+            var correspAcc = "30101810400000000225";
+            var firstName = "Raffael";
+            var lastName = "Herrmann";
+            var sum = 999.95d;
+
+            var generator = new PayloadGenerator.RussiaPaymentOrder(PayloadGenerator.RussiaPaymentOrder.CharacterSets.utf_8, name, account, bankName, bic, correspAcc, LastName: lastName, FirstName: firstName, Sum: sum);
+
+            generator
+                .ToString()
+                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc={correspAcc}|FirstName={firstName}|LastName={lastName}|Sum={sum}");
+        }
     }
 }
 
