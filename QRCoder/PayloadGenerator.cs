@@ -2523,7 +2523,12 @@ namespace QRCoder
                         ;
 
                     string page = this.characterSet.ToString().Replace("_", "-");
+#if NETSTANDARD1_1
+                    var bytes = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding(page), Encoding.GetEncoding(page).GetBytes(ret));
+                    return Encoding.GetEncoding(page).GetString(bytes,0,bytes.Length);
+#else
                     return Encoding.GetEncoding(page).GetString(Encoding.Convert(Encoding.Default, Encoding.GetEncoding(page), Encoding.GetEncoding(page).GetBytes(ret)));
+#endif
                 }
 
                 /// <summary>
