@@ -2488,7 +2488,11 @@ namespace QRCoder
 #if NETSTANDARD1_1               
                 optionalFieldsList = oFields.GetType().GetRuntimeProperties()
                         .Where(field => field.GetValue(oFields) != null)
-                        .Select(field => $"{field.Name}={field.GetValue(oFields)}")
+                        .Select(field => {
+                            var objValue = field.GetValue(oFields, null);
+                            var value = field.GetType().Equals(typeof(DateTime)) ? ((DateTime)objValue).ToString("dd.MM.YYYY") : objValue.ToString();
+                            return $"{field.Name}={value}";
+                        })
                         .ToList();
 #else
                 optionalFieldsList = oFields.GetType().GetProperties()

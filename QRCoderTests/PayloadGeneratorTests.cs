@@ -3092,7 +3092,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc=0|Sum={optionalFields.Sum}|LastName={optionalFields.LastName}|FirstName={optionalFields.FirstName}");
+                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc={correspAcc}|Sum={optionalFields.Sum}|LastName={optionalFields.LastName}|FirstName={optionalFields.FirstName}");
         }
 
         [Fact]
@@ -3116,7 +3116,7 @@ namespace QRCoderTests
 
             generator
                 .ToString()
-                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc=0|Sum={optionalFields.Sum}|LastName={optionalFields.LastName}|FirstName={optionalFields.FirstName}");
+                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc={correspAcc}|Sum={optionalFields.Sum}|LastName={optionalFields.LastName}|FirstName={optionalFields.FirstName}");
         }
     }
 }
