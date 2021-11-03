@@ -3058,21 +3058,6 @@ namespace QRCoderTests
 
         [Fact]
         [Category("PayloadGenerator/RussiaPaymentOrder")]
-        public void russiapayment_generator_can_generate_payload_minimal()
-        {
-            var account = "40702810138250123017";
-            var bic = "044525225";
-            var bankName = "=ОАО \"БАНК\"";
-            var name = "ООО «Три кита»";
-            var generator = new PayloadGenerator.RussiaPaymentOrder(PayloadGenerator.RussiaPaymentOrder.CharacterSets.utf_8, name, account, bankName, bic);
-
-            generator
-                .ToString()
-                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc=0");
-        }
-
-        [Fact]
-        [Category("PayloadGenerator/RussiaPaymentOrder")]
         public void russiapayment_generator_can_generate_payload_mandatory_fields()
         {
             var account = "40702810138250123017";
@@ -3096,15 +3081,42 @@ namespace QRCoderTests
             var bankName = "=ОАО \"БАНК\"";
             var name = "ООО «Три кита»";
             var correspAcc = "30101810400000000225";
-            var firstName = "Raffael";
-            var lastName = "Herrmann";
-            var sum = 999.95d;
+            var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
+            {
+                FirstName = "Raffael",
+                LastName = "Herrmann",
+                Sum = "125000"
+            };
 
-            var generator = new PayloadGenerator.RussiaPaymentOrder(PayloadGenerator.RussiaPaymentOrder.CharacterSets.utf_8, name, account, bankName, bic, correspAcc, LastName: lastName, FirstName: firstName, Sum: sum);
+            var generator = new PayloadGenerator.RussiaPaymentOrder(PayloadGenerator.RussiaPaymentOrder.CharacterSets.utf_8, name, account, bankName, bic, correspAcc, optionalFields: optionalFields);
 
             generator
                 .ToString()
-                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc={correspAcc}|FirstName={firstName}|LastName={lastName}|Sum={sum}");
+                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc=0|Sum={optionalFields.Sum}|LastName={optionalFields.LastName}|FirstName={optionalFields.FirstName}");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/RussiaPaymentOrder")]
+        public void russiapayment_generator_can_generate_payload_all_additional_fields()
+        {
+            var account = "40702810138250123017";
+            var bic = "044525225";
+            var bankName = "=ОАО \"БАНК\"";
+            var name = "ООО «Три кита»";
+            var correspAcc = "30101810400000000225";
+            var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
+            { 
+                Sum = "50000",
+                Purpose = "Your loan",
+                PayeeINN = "9909373824",
+                PayerINN = "1832090230"
+            };
+
+            var generator = new PayloadGenerator.RussiaPaymentOrder(PayloadGenerator.RussiaPaymentOrder.CharacterSets.utf_8, name, account, bankName, bic, correspAcc, optionalFields: optionalFields);
+
+            generator
+                .ToString()
+                .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc=0|Sum={optionalFields.Sum}|LastName={optionalFields.LastName}|FirstName={optionalFields.FirstName}");
         }
     }
 }
