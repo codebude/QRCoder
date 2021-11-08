@@ -68,7 +68,6 @@ namespace QRCoder
             var sideLength = QrCodeData.ModuleMatrix.Count * verticalNumberOfRepeats;
             for (var y = 0; y < sideLength; y++)
             {
-                bool emptyLine = true;
                 var lineBuilder = new StringBuilder();
 
                 for (var x = 0; x < QrCodeData.ModuleMatrix.Count; x++)
@@ -79,16 +78,8 @@ namespace QRCoder
                     {
                         lineBuilder.Append(module ? darkColorString : whiteSpaceString);
                     }
-                    if (module)
-                    {
-                        emptyLine = false;
-                    }
                 }
-                if (!emptyLine)
-                {
-                    qrCode.Add(lineBuilder.ToString());
-                }
-
+                qrCode.Add(lineBuilder.ToString());
             }
             return qrCode.ToArray();
         }
