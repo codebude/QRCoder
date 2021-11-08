@@ -4,7 +4,7 @@ using System.Linq;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-#if NETSTANDARD1_1
+#if NETSTANDARD1_3
 using System.Reflection;
 #endif
 
@@ -2455,65 +2455,168 @@ namespace QRCoder
             private CharacterSets characterSet;
             private MandatoryFields mFields;
             private OptionalFields oFields;
+            private string separator = "|";
 
             private RussiaPaymentOrder()
             {
                 mFields = new MandatoryFields();
                 oFields = new OptionalFields();
             }
-                     
-            public RussiaPaymentOrder(CharacterSets characterSet, string name, string personalAcc, string bankName, string BIC, string correspAcc, OptionalFields optionalFields = null) : this()
+
+            /// <summary>
+            /// Generates a RussiaPaymentOrder payload
+            /// </summary>            
+            /// <param name="name">Name of the payee (Наименование получателя платежа)</param>
+            /// <param name="personalAcc">Beneficiary account number (Номер счета получателя платежа)</param>
+            /// <param name="bankName">Name of the beneficiary's bank (Наименование банка получателя платежа)</param>
+            /// <param name="BIC">BIC (БИК)</param>
+            /// <param name="correspAcc">Box number / account payee's bank (Номер кор./сч. банка получателя платежа)</param>
+            /// <param name="optionalFields">An (optional) object of additional fields</param>
+            /// <param name="characterSet">Type of encoding (default UTF-8)</param>
+            public RussiaPaymentOrder(string name, string personalAcc, string bankName, string BIC, string correspAcc, OptionalFields optionalFields = null, CharacterSets characterSet = CharacterSets.utf_8) : this()
             {
                 this.characterSet = characterSet;
-                mFields.Name = validateInput(name, "Name", @"^.{1,160}$");
-                mFields.PersonalAcc = validateInput(personalAcc, "PersonalAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
-                mFields.BankName = validateInput(bankName, "BankName", @"^.{1,45}$");
-                mFields.BIC = validateInput(BIC, "BIC", @"^\d{9}$");
-                mFields.CorrespAcc = validateInput(correspAcc, "CorrespAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
+                mFields.Name = ValidateInput(name, "Name", @"^.{1,160}$");
+                mFields.PersonalAcc = ValidateInput(personalAcc, "PersonalAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
+                mFields.BankName = ValidateInput(bankName, "BankName", @"^.{1,45}$");
+                mFields.BIC = ValidateInput(BIC, "BIC", @"^\d{9}$");
+                mFields.CorrespAcc = ValidateInput(correspAcc, "CorrespAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
                                
                 if (optionalFields != null)
                     oFields = optionalFields;
             }
 
+            /// <summary>
+            /// Returns payload as string.
+            /// </summary>
+            /// <remarks>⚠ Attention: If CharacterSets was set to windows-1251 or koi8-r you should use ToBytes() instead of ToString() and pass the bytes to CreateQrCode()!</remarks>
+            /// <returns></returns>
             public override string ToString()
             {
-                string ret = $"ST0001" + ((int)characterSet).ToString() + $"|Name={mFields.Name}" +
-                    $"|PersonalAcc={mFields.PersonalAcc}" +
-                    $"|BankName={mFields.BankName}" +
-                    $"|BIC={mFields.BIC}" +
-                    $"|CorrespAcc={mFields.CorrespAcc}";
+                var cp = characterSet.ToString().Replace("_", "-");
+                var bytes = ToBytes();
+
+#if !NET35 && !NET40 && !NETSTANDARD1_3_OR_GREATER
+                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+#endif
+#if NETSTANDARD1_3
+                // TODO: Fix for NETSTANDARD1.1                
+                return Encoding.GetEncoding(cp).GetString(bytes,0,bytes.Length);
+#else
+                return Encoding.GetEncoding(cp).GetString(bytes);
+#endif
+            }
+
+            /// <summary>
+            /// Returns payload as byte[].
+            /// </summary>
+            /// <remarks>Should be used if CharacterSets equals windows-1251 or koi8-r</remarks>
+            /// <returns></returns>
+
+            public byte[] ToBytes()
+            {
+                //Calculate the seperator
+                separator = DetermineSeparator();
+
+                //Create the payload string
+                string ret = $"ST0001" + ((int)characterSet).ToString() + //(separator != "|" ? separator : "") + 
+                    $"{separator}Name={mFields.Name}" +
+                    $"{separator}PersonalAcc={mFields.PersonalAcc}" +
+                    $"{separator}BankName={mFields.BankName}" +
+                    $"{separator}BIC={mFields.BIC}" +
+                    $"{separator}CorrespAcc={mFields.CorrespAcc}";
 
                 //Add optional fields, if filled
-                var optionalFieldsList = new List<string>();
-#if NETSTANDARD1_1               
-                optionalFieldsList = oFields.GetType().GetRuntimeProperties()
+                var optionalFieldsList = GetOptionalFieldsAsList();
+                if (optionalFieldsList.Count > 0)
+                    ret += $"|{string.Join("|", optionalFieldsList.ToArray())}";
+                ret += separator;
+
+                //Encode return string as byte[] with correct CharacterSet
+#if !NET35_OR_GREATER
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
+                var cp = this.characterSet.ToString().Replace("_", "-");
+                byte[] bytesOut = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding(cp), Encoding.UTF8.GetBytes(ret));
+                if (bytesOut.Length > 300)
+                    throw new RussiaPaymentOrderException($"Data too long. Payload must not exceed 300 bytes, but actually is {bytesOut.Length} bytes long. Remove additional data fields or shorten strings/values.");
+                return bytesOut;
+            }
+
+
+            /// <summary>
+            /// Determines a valid separator
+            /// </summary>
+            /// <returns></returns>
+            private string DetermineSeparator()
+            {
+                // See chapter 5.2.1 of Standard (https://sbqr.ru/standard/files/standart.pdf)
+
+                var mandatoryValues = GetMandatoryFieldsAsList();
+                var optionalValues = GetOptionalFieldsAsList();
+
+                // Possible candidates for field separation
+                var separatorCandidates = new string[]{ "|", "#", ";", ":", "^", "_", "~", "{", "}", "!", "#", "$", "%", "&", "(", ")", "*", "+", ",", "/", "@" };
+                foreach (var sepCandidate in separatorCandidates)
+                {
+                    if (!mandatoryValues.Any(x => x.Contains(sepCandidate)) && !optionalValues.Any(x => x.Contains(sepCandidate)))
+                        return sepCandidate;
+                }
+                throw new RussiaPaymentOrderException("No valid separator found.");
+            }
+
+            /// <summary>
+            /// Takes all optional fields that are not null and returns their string represantion
+            /// </summary>
+            /// <returns>A List of strings</returns>
+            private List<string> GetOptionalFieldsAsList()
+            {
+#if NETSTANDARD1_3
+                return oFields.GetType().GetRuntimeProperties()
                         .Where(field => field.GetValue(oFields) != null)
                         .Select(field => {
                             var objValue = field.GetValue(oFields, null);
-                            var value = field.GetType().Equals(typeof(DateTime)) ? ((DateTime)objValue).ToString("dd.MM.YYYY") : objValue.ToString();
+                            var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
                             return $"{field.Name}={value}";
                         })
                         .ToList();
 #else
-                optionalFieldsList = oFields.GetType().GetProperties()
+                return oFields.GetType().GetProperties()
                         .Where(field => field.GetValue(oFields, null) != null)
                         .Select(field => {
                             var objValue = field.GetValue(oFields, null);
-                            var value = field.GetType().Equals(typeof(DateTime)) ? ((DateTime)objValue).ToString("dd.MM.YYYY") : objValue.ToString();
+                            var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
                             return $"{field.Name}={value}";                            
                          })
                         .ToList();
 #endif
-                if (optionalFieldsList.Count > 0)
-                    ret += $"|{string.Join("|", optionalFieldsList.ToArray())}";
+            }
 
 
-                string page = this.characterSet.ToString().Replace("_", "-");
-#if NETSTANDARD1_1
-                    var bytes = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding(page), Encoding.GetEncoding(page).GetBytes(ret));
-                    return Encoding.GetEncoding(page).GetString(bytes,0,bytes.Length);
+            /// <summary>
+            /// Takes all mandatory fields that are not null and returns their string represantion
+            /// </summary>
+            /// <returns>A List of strings</returns>
+            private List<string> GetMandatoryFieldsAsList()
+            {
+#if NETSTANDARD1_3
+                return mFields.GetType().GetRuntimeFields()
+                        .Where(field => field.GetValue(mFields) != null)
+                        .Select(field => {
+                            var objValue = field.GetValue(mFields);
+                            var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
+                            return $"{field.Name}={value}";
+                        })
+                        .ToList();
 #else
-                return Encoding.GetEncoding(page).GetString(Encoding.Convert(Encoding.Default, Encoding.GetEncoding(page), Encoding.GetEncoding(page).GetBytes(ret)));
+                return mFields.GetType().GetFields()
+                        .Where(field => field.GetValue(mFields) != null)
+                        .Select(field => {
+                            var objValue = field.GetValue(mFields);
+                            var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
+                            return $"{field.Name}={value}";                            
+                         })
+                        .ToList();
 #endif
             }
 
@@ -2525,9 +2628,9 @@ namespace QRCoder
             /// <param name="pattern">A regex pattern to be used for validation</param>
             /// <param name="errorText">An optional error text. If null, a standard error text is generated</param>
             /// <returns>Input value (in case it is valid)</returns>
-            private static string validateInput(string input, string fieldname, string pattern, string errorText = null)
+            private static string ValidateInput(string input, string fieldname, string pattern, string errorText = null)
             {
-                return validateInput(input, fieldname, new string[] { pattern }, errorText);
+                return ValidateInput(input, fieldname, new string[] { pattern }, errorText);
             }
 
             /// <summary>
@@ -2538,7 +2641,7 @@ namespace QRCoder
             /// <param name="patterns">An array of regex patterns to be used for validation</param>
             /// <param name="errorText">An optional error text. If null, a standard error text is generated</param>
             /// <returns>Input value (in case it is valid)</returns>
-            private static string validateInput(string input, string fieldname, string[] patterns, string errorText = null)
+            private static string ValidateInput(string input, string fieldname, string[] patterns, string errorText = null)
             {
                 if (input == null)
                     throw new RussiaPaymentOrderException($"The input for '{fieldname}' must not be null.");
@@ -2569,7 +2672,7 @@ namespace QRCoder
                 public string Sum
                 {
                     get { return _sum; }
-                    set { _sum = validateInput(value, "Sum", @"^\d{1,18}$"); }
+                    set { _sum = ValidateInput(value, "Sum", @"^\d{1,18}$"); }
                 }
 
                 private string _purpose;
@@ -2580,7 +2683,7 @@ namespace QRCoder
                 public string Purpose
                 {
                     get { return _purpose; }
-                    set { _purpose = validateInput(value, "Purpose", @"^.{1,160}$"); }
+                    set { _purpose = ValidateInput(value, "Purpose", @"^.{1,160}$"); }
                 }
 
                 private string _payeeInn;
@@ -2591,7 +2694,7 @@ namespace QRCoder
                 public string PayeeINN
                 {
                     get { return _payeeInn; }
-                    set { _payeeInn = validateInput(value, "PayeeINN", @"^.{1,12}$"); }
+                    set { _payeeInn = ValidateInput(value, "PayeeINN", @"^.{1,12}$"); }
                 }
 
                 private string _payerInn;
@@ -2602,7 +2705,7 @@ namespace QRCoder
                 public string PayerINN
                 {
                     get { return _payerInn; }
-                    set { _payerInn = validateInput(value, "PayerINN", @"^.{1,12}$"); }
+                    set { _payerInn = ValidateInput(value, "PayerINN", @"^.{1,12}$"); }
                 }
 
                 private string _drawerStatus;
@@ -2613,7 +2716,7 @@ namespace QRCoder
                 public string DrawerStatus
                 {
                     get { return _drawerStatus; }
-                    set { _drawerStatus = validateInput(value, "DrawerStatus", @"^.{1,2}$"); }
+                    set { _drawerStatus = ValidateInput(value, "DrawerStatus", @"^.{1,2}$"); }
                 }
 
                 private string _kpp;
@@ -2624,7 +2727,7 @@ namespace QRCoder
                 public string KPP
                 {
                     get { return _kpp; }
-                    set { _kpp = validateInput(value, "KPP", @"^.{1,9}$"); }
+                    set { _kpp = ValidateInput(value, "KPP", @"^.{1,9}$"); }
                 }
 
                 private string _cbc;
@@ -2635,7 +2738,7 @@ namespace QRCoder
                 public string CBC
                 {
                     get { return _cbc; }
-                    set { _cbc = validateInput(value, "CBC", @"^.{1,20}$"); }
+                    set { _cbc = ValidateInput(value, "CBC", @"^.{1,20}$"); }
                 }
 
                 private string _oktmo;
@@ -2646,7 +2749,7 @@ namespace QRCoder
                 public string OKTMO
                 {
                     get { return _oktmo; }
-                    set { _oktmo = validateInput(value, "OKTMO", @"^.{1,11}$"); }
+                    set { _oktmo = ValidateInput(value, "OKTMO", @"^.{1,11}$"); }
                 }
 
                 private string _paytReason;
@@ -2657,7 +2760,7 @@ namespace QRCoder
                 public string PaytReason
                 {
                     get { return _paytReason; }
-                    set { _paytReason = validateInput(value, "PaytReason", @"^.{1,2}$"); }
+                    set { _paytReason = ValidateInput(value, "PaytReason", @"^.{1,2}$"); }
                 }
 
                 private string _taxPeriod;
@@ -2668,7 +2771,7 @@ namespace QRCoder
                 public string TaxPeriod
                 {
                     get { return _taxPeriod; }
-                    set { _taxPeriod = validateInput(value, "ТaxPeriod", @"^.{1,10}$"); }
+                    set { _taxPeriod = ValidateInput(value, "ТaxPeriod", @"^.{1,10}$"); }
                 }
 
                 private string _docNo;
@@ -2679,7 +2782,7 @@ namespace QRCoder
                 public string DocNo
                 {
                     get { return _docNo; }
-                    set { _docNo = validateInput(value, "DocNo", @"^.{1,15}$"); }
+                    set { _docNo = ValidateInput(value, "DocNo", @"^.{1,15}$"); }
                 }
 
                 /// <summary>
@@ -2696,7 +2799,7 @@ namespace QRCoder
                 public string TaxPaytKind
                 {
                     get { return _taxPaytKind; }
-                    set { _taxPaytKind = validateInput(value, "TaxPaytKind", @"^.{1,2}$"); }
+                    set { _taxPaytKind = ValidateInput(value, "TaxPaytKind", @"^.{1,2}$"); }
                 }
 
                 /**************************************************************************
@@ -2931,15 +3034,8 @@ namespace QRCoder
 
             public class RussiaPaymentOrderException : Exception
             {
-                public RussiaPaymentOrderException()
-                {
-                }
                 public RussiaPaymentOrderException(string message)
                     : base(message)
-                {
-                }
-                public RussiaPaymentOrderException(string message, Exception inner)
-                    : base(message, inner)
                 {
                 }
             }

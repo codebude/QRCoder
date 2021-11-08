@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.1;netstandard2.0;net5.0;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;net5.0;net5.0-windows</TargetFrameworks>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
     <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWPF>
@@ -40,6 +40,10 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net5.0' ">
