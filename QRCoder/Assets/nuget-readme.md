@@ -11,6 +11,8 @@ QRCoder is a simple library, written in C#.NET, which enables you to create QR c
 * [Creator's blog (english)](http://en.code-bude.net/2013/10/17/qrcoder-an-open-source-qr-code-generator-implementation-in-csharp/)
 * [Creator's blog (german)](http://code-bude.net/2013/10/17/qrcoder-eine-open-source-qr-code-implementierung-in-csharp/)
 
+### Release Notes
+The release notes for the current and all past releases can be read here: [📄 Release Notes](https://github.com/codebude/QRCoder/wiki/Release-notes)
 
 ## Usage / Quick start
 
