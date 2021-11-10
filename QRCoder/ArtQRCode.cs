@@ -3,6 +3,8 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using static QRCoder.ArtQRCode;
+using static QRCoder.QRCodeGenerator;
 
 // pull request raised to extend library used. 
 namespace QRCoder
@@ -229,6 +231,38 @@ namespace QRCoder
         {
             Dotted,
             Flat
+        }
+    }
+
+    public static class ArtQRCodeHelper
+    {
+        /// <summary>
+        /// Helper function to create an ArtQRCode graphic with a single function call
+        /// </summary>
+        /// <param name="plainText">Text/payload to be encoded inside the QR code</param>
+        /// <param name="pixelsPerModule">Amount of px each dark/light module of the QR code shall take place in the final QR code image</param>
+        /// <param name="darkColor">Color of the dark modules</param>
+        /// <param name="lightColor">Color of the light modules</param>
+        /// <param name="backgroundColor">Color of the background</param>
+        /// <param name="eccLevel">The level of error correction data</param>
+        /// <param name="forceUtf8">Shall the generator be forced to work in UTF-8 mode?</param>
+        /// <param name="utf8BOM">Should the byte-order-mark be used?</param>
+        /// <param name="eciMode">Which ECI mode shall be used?</param>
+        /// <param name="requestedVersion">Set fixed QR code target version.</param>
+        /// <param name="backgroundImage">A bitmap object that will be used as background picture</param>
+        /// <param name="pixelSizeFactor">Value between 0.0 to 1.0 that defines how big the module dots are. The bigger the value, the less round the dots will be.</param>
+        /// <param name="drawQuietZones">If true a white border is drawn around the whole QR Code</param>
+        /// <param name="quietZoneRenderingStyle">Style of the quiet zones</param>
+        /// <param name="finderPatternImage">Optional image that should be used instead of the default finder patterns</param>
+        /// <returns>QRCode graphic as bitmap</returns>
+        public static Bitmap GetQRCode(string plainText, int pixelsPerModule, Color darkColor, Color lightColor, Color backgroundColor, ECCLevel eccLevel, bool forceUtf8 = false, 
+                                       bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap backgroundImage = null, double pixelSizeFactor = 0.8,
+                                       bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Flat, Bitmap finderPatternImage = null)
+        {
+            using (var qrGenerator = new QRCodeGenerator())
+            using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
+            using (var qrCode = new ArtQRCode(qrCodeData))
+                return qrCode.GetGraphic(pixelsPerModule, darkColor, lightColor, backgroundColor, backgroundImage, pixelSizeFactor, drawQuietZones, quietZoneRenderingStyle, finderPatternImage);
         }
     }
 }
