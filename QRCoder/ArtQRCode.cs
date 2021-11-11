@@ -53,10 +53,12 @@ namespace QRCoder
         /// <param name="pixelSizeFactor">Value between 0.0 to 1.0 that defines how big the module dots are. The bigger the value, the less round the dots will be.</param>
         /// <param name="drawQuietZones">If true a white border is drawn around the whole QR Code</param>
         /// <param name="quietZoneRenderingStyle">Style of the quiet zones</param>
+        /// <param name="backgroundImageStyle">Style of the background image (if set). Fill=spanning complete graphic; DataAreaOnly=Don't paint background into quietzone</param>
         /// <param name="finderPatternImage">Optional image that should be used instead of the default finder patterns</param>
         /// <returns>QRCode graphic as bitmap</returns>
         public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Color backgroundColor, Bitmap backgroundImage = null, double pixelSizeFactor = 0.8, 
-                                 bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Flat, Bitmap finderPatternImage = null)
+                                 bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Dotted, 
+                                 BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap finderPatternImage = null)
         {
             if (pixelSizeFactor > 1)
                 throw new Exception("The parameter pixelSize must be between 0 and 1. (0-100%)");
@@ -79,7 +81,16 @@ namespace QRCoder
                             graphics.FillRectangle(brush, new Rectangle(0, 0, size, size));
                         //Render background if set
                         if (backgroundImage != null)
-                            graphics.DrawImage(Resize(backgroundImage, size), 0, 0);
+                        {
+                            if (backgroundImageStyle == BackgroundImageStyle.Fill)
+                                graphics.DrawImage(Resize(backgroundImage, size), 0, 0);
+                            else if (backgroundImageStyle == BackgroundImageStyle.DataAreaOnly)
+                            {
+                                var bgOffset = 4 - offset;
+                                graphics.DrawImage(Resize(backgroundImage, size - (2 * bgOffset * pixelsPerModule)), 0 + (bgOffset * pixelsPerModule), (bgOffset * pixelsPerModule));
+                            }
+                        }
+                            
 
                         var darkModulePixel = MakeDotPixel(pixelsPerModule, pixelSize, darkBrush);
                         var lightModulePixel = MakeDotPixel(pixelsPerModule, pixelSize, lightBrush);
@@ -232,6 +243,15 @@ namespace QRCoder
             Dotted,
             Flat
         }
+
+        /// <summary>
+        /// Defines how the background image (if set) shall be rendered.
+        /// </summary>
+        public enum BackgroundImageStyle
+        {
+            Fill,
+            DataAreaOnly
+        }
     }
 
     public static class ArtQRCodeHelper
@@ -253,16 +273,18 @@ namespace QRCoder
         /// <param name="pixelSizeFactor">Value between 0.0 to 1.0 that defines how big the module dots are. The bigger the value, the less round the dots will be.</param>
         /// <param name="drawQuietZones">If true a white border is drawn around the whole QR Code</param>
         /// <param name="quietZoneRenderingStyle">Style of the quiet zones</param>
+        /// <param name="backgroundImageStyle">Style of the background image (if set). Fill=spanning complete graphic; DataAreaOnly=Don't paint background into quietzone</param>
         /// <param name="finderPatternImage">Optional image that should be used instead of the default finder patterns</param>
         /// <returns>QRCode graphic as bitmap</returns>
         public static Bitmap GetQRCode(string plainText, int pixelsPerModule, Color darkColor, Color lightColor, Color backgroundColor, ECCLevel eccLevel, bool forceUtf8 = false, 
                                        bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap backgroundImage = null, double pixelSizeFactor = 0.8,
-                                       bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Flat, Bitmap finderPatternImage = null)
+                                       bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Flat, 
+                                       BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap finderPatternImage = null)
         {
             using (var qrGenerator = new QRCodeGenerator())
             using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
             using (var qrCode = new ArtQRCode(qrCodeData))
-                return qrCode.GetGraphic(pixelsPerModule, darkColor, lightColor, backgroundColor, backgroundImage, pixelSizeFactor, drawQuietZones, quietZoneRenderingStyle, finderPatternImage);
+                return qrCode.GetGraphic(pixelsPerModule, darkColor, lightColor, backgroundColor, backgroundImage, pixelSizeFactor, drawQuietZones, quietZoneRenderingStyle, backgroundImageStyle, finderPatternImage);
         }
     }
 }

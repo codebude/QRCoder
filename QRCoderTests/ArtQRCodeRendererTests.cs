@@ -24,9 +24,9 @@ namespace QRCoderTests
 
             var result = HelperFunctions.BitmapToHash(bmp);
 #if NET35_OR_GREATER || NET40_OR_GREATER
-            result.ShouldBe("ea1a9008dbfe7825a6e17ed228a83a6f");
+            result.ShouldBe("11ebdda91b9632d016798cb6de2f5339");
 #else
-            result.ShouldBe("9e18d03a3f2a4ca0fb603350f9764d6d");
+            result.ShouldBe("cb38c3156eaf13cdfba699bdafc3a84c");
 #endif
         }
 
@@ -41,9 +41,9 @@ namespace QRCoderTests
 
             var result = HelperFunctions.BitmapToHash(bmp);
 #if NET35_OR_GREATER || NET40_OR_GREATER
-            result.ShouldBe("a6895846ed6b56de997bfcb2c4a72736");
+            result.ShouldBe("c54a7389ae995abc838f0d228acc3bad");
 #else
-            result.ShouldBe("8185b055473b170afa56152ec46c4be4");
+            result.ShouldBe("1102c0c6f235eaf4c3ac639f82f17bfa");
 #endif
         }
 
@@ -75,9 +75,9 @@ namespace QRCoderTests
             var result = HelperFunctions.BitmapToHash(bmp);
 
 #if NET35_OR_GREATER || NET40_OR_GREATER
-            result.ShouldBe("9f4f860d0c15ed4b1258dbbea89c4b4b");
+            result.ShouldBe("2caa9c0ee8fcb4a93841debb58cf41bc");
 #else
-            result.ShouldBe("16f3ad423cc0690cc2e259d3731400cd");
+            result.ShouldBe("bbea08507282773175cfe7b52f0ddae4");
 #endif
         }
 
