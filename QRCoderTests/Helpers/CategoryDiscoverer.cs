@@ -6,7 +6,7 @@ using Xunit.Abstractions;
 #endif
 using Xunit.Sdk;
 
-namespace QRCoderTests.XUnitExtenstions
+namespace QRCoderTests.Helpers.XUnitExtenstions
 {
 #if NET35 || NET452
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]

@@ -1,5 +1,5 @@
 ﻿using QRCoder;
-using QRCoderTests.XUnitExtenstions;
+using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using System.Collections.Generic;
 using System.Reflection;

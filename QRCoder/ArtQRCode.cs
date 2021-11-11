@@ -59,7 +59,7 @@ namespace QRCoder
                                  bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Flat, Bitmap finderPatternImage = null)
         {
             if (pixelSizeFactor > 1)
-                throw new Exception("pixelSize must be between 0 and 1. (0-100%)");
+                throw new Exception("The parameter pixelSize must be between 0 and 1. (0-100%)");
             int pixelSize = (int)Math.Min(pixelsPerModule, Math.Floor(pixelsPerModule / pixelSizeFactor));
 
             var numModules = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);

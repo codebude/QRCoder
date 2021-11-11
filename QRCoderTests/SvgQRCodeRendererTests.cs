@@ -2,7 +2,7 @@
 using Xunit;
 using QRCoder;
 using Shouldly;
-using QRCoderTests.XUnitExtenstions;
+using QRCoderTests.Helpers.XUnitExtenstions;
 using System.IO;
 using System.Security.Cryptography;
 #if !NETCOREAPP1_1
