@@ -54,6 +54,9 @@ namespace QRCoder
             double pixelsPerModule = Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
             double qrSize = drawableModulesCount * pixelsPerModule;
             string svgSizeAttributes = (sizingMode == SizingMode.WidthHeightAttribute) ? $@"width=""{viewBox.Width}"" height=""{viewBox.Height}""" : $@"viewBox=""0 0 {viewBox.Width} {viewBox.Height}""";
+            ImageAttributes? logoAttr = null;
+            if (logo != null)
+                logoAttr = GetLogoAttributes(logo, viewBox);
 
             // Merge horizontal rectangles
             int[,] matrix = new int[drawableModulesCount, drawableModulesCount];
@@ -66,7 +69,7 @@ namespace QRCoder
                 for (int xi = 0; xi < drawableModulesCount; xi += 1)
                 {
                     matrix[yi, xi] = 0;
-                    if (bitArray[xi+offset])
+                    if (bitArray[xi+offset] && !IsBlockedByLogo((xi+offset)*pixelsPerModule, (yi+offset) * pixelsPerModule, logoAttr, pixelsPerModule))
                     {
                         if(x0 == -1)
                         {
@@ -91,7 +94,7 @@ namespace QRCoder
                 }
             }
 
-            StringBuilder svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"">");
+            StringBuilder svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"" xmlns:xlink=""http://www.w3.org/1999/xlink"">");
             svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{CleanSvgVal(qrSize)}"" height=""{CleanSvgVal(qrSize)}"" fill=""{lightColorHex}"" />");
             for (int yi = 0; yi < drawableModulesCount; yi += 1)
             {
@@ -118,21 +121,53 @@ namespace QRCoder
 
                         // Output SVG rectangles
                         double x = xi * pixelsPerModule;
-                        svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");
+                        if (!IsBlockedByLogo(x, y, logoAttr, pixelsPerModule))
+                            svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");
+                       
                     }
                 }
             }
 
             //Render logo, if set
             if (logo != null)
-            {
+            {   
                 svgFile.AppendLine($@"<svg width=""100%"" height=""100%"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
-                svgFile.AppendLine($@"<image x=""{50 - (logo.GetIconSizePercent() / 2)}%"" y=""{50 - (logo.GetIconSizePercent() / 2)}%"" width=""{logo.GetIconSizePercent()}%"" height=""{logo.GetIconSizePercent()}%"" href=""{logo.GetDataUri()}"" />");
+                svgFile.AppendLine($@"<image x=""{CleanSvgVal(logoAttr.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" xlink:href=""{logo.GetDataUri()}"" />");
                 svgFile.AppendLine(@"</svg>");
             }
 
             svgFile.Append(@"</svg>");
             return svgFile.ToString();
+        }
+
+        private bool IsBlockedByLogo(double x, double y, ImageAttributes? attr, double pixelPerModule)
+        {
+            if (attr == null)
+                return false;
+            return x + pixelPerModule >= attr.Value.X && x <= attr.Value.X + attr.Value.Width && y + pixelPerModule >= attr.Value.Y && y <= attr.Value.Y + attr.Value.Height;
+        }
+
+        private ImageAttributes GetLogoAttributes(SvgLogo logo, Size viewBox)
+        {
+            var imgWidth = logo.GetIconSizePercent() / 100d * viewBox.Width;
+            var imgHeight = logo.GetIconSizePercent() / 100d * viewBox.Height;
+            var imgPosX = viewBox.Width / 2d - imgWidth / 2d;
+            var imgPosY = viewBox.Height / 2d - imgHeight / 2d;
+            return new ImageAttributes()
+            {
+                Width = imgWidth,
+                Height = imgHeight,
+                X = imgPosX,
+                Y = imgPosY
+            };
+        }
+
+        private struct ImageAttributes
+        {
+            public double Width;
+            public double Height;
+            public double X;
+            public double Y;
         }
 
         private string CleanSvgVal(double input)
@@ -152,13 +187,14 @@ namespace QRCoder
             private string _logoData;
             private string _mediaType;
             private int _iconSizePercent;
+            private bool _fillLogoBackground;
 
             /// <summary>
             /// Create a logo object to be used in SvgQRCode renderer
             /// </summary>
             /// <param name="iconRasterized">Logo to be rendered as Bitmap/rasterized graphic</param>
             /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
-            public SvgLogo(Bitmap iconRasterized, int iconSizePercent = 15)
+            public SvgLogo(Bitmap iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true)
             {
                 _iconSizePercent = iconSizePercent;
                 using (var ms = new System.IO.MemoryStream())
@@ -170,6 +206,7 @@ namespace QRCoder
                     }
                 }
                 _mediaType = "image/png";
+                _fillLogoBackground = fillLogoBackground;
             }
 
             /// <summary>
@@ -177,11 +214,12 @@ namespace QRCoder
             /// </summary>
             /// <param name="iconVectorized">Logo to be rendered as SVG/vectorized graphic/string</param>
             /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
-            public SvgLogo(string iconVectorized, int iconSizePercent = 15)
+            public SvgLogo(string iconVectorized, int iconSizePercent = 15, bool fillLogoBackground = true)
             {
                 _iconSizePercent = iconSizePercent;
                 _logoData = Convert.ToBase64String(Encoding.UTF8.GetBytes(iconVectorized), Base64FormattingOptions.None);
                 _mediaType = "image/svg+xml";
+                _fillLogoBackground = fillLogoBackground;
             }
 
             public string GetDataUri()
@@ -192,6 +230,10 @@ namespace QRCoder
             public int GetIconSizePercent()
             {
                 return _iconSizePercent;
+            }
+            public bool FillLogoBackground()
+            {
+                return _fillLogoBackground;
             }
         }
     }
