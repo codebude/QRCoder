@@ -2,9 +2,10 @@
 using Xunit;
 using QRCoder;
 using Shouldly;
-using QRCoderTests.XUnitExtenstions;
 using System.IO;
 using System.Security.Cryptography;
+using QRCoderTests.Helpers.XUnitExtenstions;
+using QRCoderTests.Helpers;
 #if !NETCOREAPP1_1
 using System.Drawing;
 #endif
@@ -24,30 +25,13 @@ namespace QRCoderTests
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
             var bmp = new QRCode(data).GetGraphic(10);
 
-            var ms = new MemoryStream();
-            bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Gif);
-            var imgBytes = ms.ToArray();
-            var md5 = new MD5CryptoServiceProvider();
-            var hash = md5.ComputeHash(imgBytes);
-            var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
-            ms.Dispose();
-
-            result.ShouldBe("a76c8a72e95df3368717663c6be41b3e");
+            var result = HelperFunctions.BitmapToHash(bmp);
+            result.ShouldBe("e8c61b8f0455924fe08ba68686d0d296");
         }
 #endif 
 
 
 #if !NETCOREAPP1_1 && !NETCOREAPP2_0
-
-        private string GetAssemblyPath()
-        {
-            return
-#if NET5_0
-                AppDomain.CurrentDomain.BaseDirectory;
-#else
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
-#endif
-        }
 
         [Fact]
         [Category("QRRenderer/QRCode")]
@@ -57,15 +41,15 @@ namespace QRCoderTests
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
-            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: (Bitmap)Image.FromFile(GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
+            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: (Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
-            var imgBytes = PixelsToAveragedByteArray(bmp);
-            var md5 = new MD5CryptoServiceProvider();
-            var hash = md5.ComputeHash(imgBytes);
-            var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
-
-            result.ShouldBe("33c250bf306b7cbbd3dd71b6029b8784");
+            var result = HelperFunctions.BitmapToHash(bmp);
+#if NET35_OR_GREATER || NET40_OR_GREATER
+            result.ShouldBe("ee65d96c3013f6032b561cc768251eef");
+#else
+            result.ShouldBe("150f8fc7dae4487ba2887d2b2bea1c25");
+#endif
         }
 
         [Fact]
@@ -75,18 +59,18 @@ namespace QRCoderTests
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
-            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: (Bitmap)Bitmap.FromFile(GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
+            var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: (Bitmap)Bitmap.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
-            var imgBytes = PixelsToAveragedByteArray(bmp);
-            var md5 = new MD5CryptoServiceProvider();
-            var hash = md5.ComputeHash(imgBytes);
-            var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
-
-            result.ShouldBe("33c250bf306b7cbbd3dd71b6029b8784");
+            var result = HelperFunctions.BitmapToHash(bmp);
+#if NET35_OR_GREATER || NET40_OR_GREATER
+            result.ShouldBe("1d718f06f904af4a46748f02af2d4eec");
+#else
+            result.ShouldBe("c46a7ec51bf978d7a882059c322ca69d");
+#endif
         }
 
-
+        /*
         private static byte[] PixelsToAveragedByteArray(Bitmap bmp)
         {
             //Re-color
@@ -107,7 +91,7 @@ namespace QRCoderTests
             }
             return bytes.ToArray();
         }
-
+        */
 #endif
     }
 }

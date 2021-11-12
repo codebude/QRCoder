@@ -4,7 +4,7 @@ using QRCoder;
 using Shouldly;
 using System.Globalization;
 using System.Threading;
-using QRCoderTests.XUnitExtenstions;
+using QRCoderTests.Helpers.XUnitExtenstions;
 using static QRCoder.PayloadGenerator.BezahlCode;
 using static QRCoder.PayloadGenerator.SwissQrCode.Reference;
 using System.Reflection;
