@@ -64,7 +64,7 @@ namespace QRCoderTests
             var svg = new SvgQRCode(data).GetGraphic(new Size(128,128));
 
             var result = HelperFunctions.StringToHash(svg);
-            result.ShouldBe("ec9a13c4484d246e3e2e0574958845c8");
+            result.ShouldBe("56719c7db39937c74377855a5dc4af0a");
         }
 
         [Fact]

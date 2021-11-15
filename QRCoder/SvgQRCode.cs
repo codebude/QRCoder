@@ -243,7 +243,9 @@ namespace QRCoder
         private string CleanSvgVal(double input)
         {
             //Clean double values for international use/formats
-            return input.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            //We use explicitly "G15" to avoid differences between .NET full and Core platforms
+            //https://stackoverflow.com/questions/64898117/tostring-has-a-different-behavior-between-net-462-and-net-core-3-1
+            return input.ToString("G15", System.Globalization.CultureInfo.InvariantCulture);
         }
 
         /// <summary>
