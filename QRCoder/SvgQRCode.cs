@@ -214,8 +214,6 @@ namespace QRCoder
 
         private bool IsBlockedByLogo(double x, double y, ImageAttributes? attr, double pixelPerModule)
         {
-            if (attr == null)
-                return false;
             return x + pixelPerModule >= attr.Value.X && x <= attr.Value.X + attr.Value.Width && y + pixelPerModule >= attr.Value.Y && y <= attr.Value.Y + attr.Value.Height;
         }
 

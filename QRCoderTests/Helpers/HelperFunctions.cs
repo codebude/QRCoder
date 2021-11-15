@@ -36,9 +36,19 @@ namespace QRCoderTests.Helpers
                 imgBytes = ms.ToArray();
                 ms.Dispose();
             }
+            return ByteArrayToHash(imgBytes);
+        }
+
+        public static string ByteArrayToHash(byte[] data)
+        {
             var md5 = new MD5CryptoServiceProvider();
-            var hash = md5.ComputeHash(imgBytes);
+            var hash = md5.ComputeHash(data);
             return BitConverter.ToString(hash).Replace("-", "").ToLower();
+        }
+
+        public static string StringToHash(string data)
+        {
+            return ByteArrayToHash(Encoding.UTF8.GetBytes(data));
         }
 #endif
 
