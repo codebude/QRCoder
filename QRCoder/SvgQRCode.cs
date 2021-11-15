@@ -1,8 +1,11 @@
 #if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0
+using QRCoder.Extensions;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Text.RegularExpressions;
 using static QRCoder.QRCodeGenerator;
 using static QRCoder.SvgQRCode;
 
@@ -69,7 +72,7 @@ namespace QRCoder
                 for (int xi = 0; xi < drawableModulesCount; xi += 1)
                 {
                     matrix[yi, xi] = 0;
-                    if (bitArray[xi+offset] && !IsBlockedByLogo((xi+offset)*pixelsPerModule, (yi+offset) * pixelsPerModule, logoAttr, pixelsPerModule))
+                    if (bitArray[xi+offset] && (logo == null || !logo.FillLogoBackground() || !IsBlockedByLogo((xi+offset)*pixelsPerModule, (yi+offset) * pixelsPerModule, logoAttr, pixelsPerModule)))
                     {
                         if(x0 == -1)
                         {
@@ -121,7 +124,7 @@ namespace QRCoder
 
                         // Output SVG rectangles
                         double x = xi * pixelsPerModule;
-                        if (!IsBlockedByLogo(x, y, logoAttr, pixelsPerModule))
+                        if (logo == null || !logo.FillLogoBackground() || !IsBlockedByLogo(x, y, logoAttr, pixelsPerModule))
                             svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");
                        
                     }
@@ -131,8 +134,23 @@ namespace QRCoder
             //Render logo, if set
             if (logo != null)
             {   
-                svgFile.AppendLine($@"<svg width=""100%"" height=""100%"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
-                svgFile.AppendLine($@"<image x=""{CleanSvgVal(logoAttr.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" xlink:href=""{logo.GetDataUri()}"" />");
+                
+                if (logo.GetMediaType() == SvgLogo.MediaType.PNG)
+                {
+                    svgFile.AppendLine($@"<svg width=""100%"" height=""100%"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
+                    svgFile.AppendLine($@"<image x=""{CleanSvgVal(logoAttr.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" xlink:href=""{logo.GetDataUri()}"" />");
+                }
+                else if (logo.GetMediaType() == SvgLogo.MediaType.SVG)
+                {
+                    svgFile.AppendLine($@"<svg x=""{CleanSvgVal(logoAttr.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
+                    var rawLogo = (string)logo.GetRawLogo();
+                    //Remove some attributes from logo, because it would lead to wrong sizing inside our svg wrapper
+                    new List<string>() { "width", "height", "x", "y" }.ForEach(attr =>
+                    {
+                        rawLogo = Regex.Replace(rawLogo, $@"(?!=<svg[^>]*?) +{attr}=(""[^""]+""|'[^']+')(?=[^>]*>)", "");
+                    });                    
+                    svgFile.Append(rawLogo);
+                }
                 svgFile.AppendLine(@"</svg>");
             }
 
@@ -185,9 +203,11 @@ namespace QRCoder
         public class SvgLogo
         {
             private string _logoData;
-            private string _mediaType;
+            private MediaType _mediaType;
             private int _iconSizePercent;
             private bool _fillLogoBackground;
+            private object _logoRaw;
+             
 
             /// <summary>
             /// Create a logo object to be used in SvgQRCode renderer
@@ -205,8 +225,9 @@ namespace QRCoder
                         _logoData = Convert.ToBase64String(ms.GetBuffer(), Base64FormattingOptions.None); 
                     }
                 }
-                _mediaType = "image/png";
+                _mediaType = MediaType.PNG;
                 _fillLogoBackground = fillLogoBackground;
+                _logoRaw = iconRasterized;
             }
 
             /// <summary>
@@ -218,13 +239,24 @@ namespace QRCoder
             {
                 _iconSizePercent = iconSizePercent;
                 _logoData = Convert.ToBase64String(Encoding.UTF8.GetBytes(iconVectorized), Base64FormattingOptions.None);
-                _mediaType = "image/svg+xml";
+                _mediaType = MediaType.SVG;
                 _fillLogoBackground = fillLogoBackground;
+                _logoRaw = iconVectorized;
+            }
+
+            public object GetRawLogo()
+            {
+                return _logoRaw;
+            }
+
+            public MediaType GetMediaType()
+            {
+                return _mediaType;
             }
 
             public string GetDataUri()
             {
-                return $"data:{_mediaType};base64,{_logoData}";
+                return $"data:{_mediaType.GetStringValue()};base64,{_logoData}";
             }
 
             public int GetIconSizePercent()
@@ -234,6 +266,14 @@ namespace QRCoder
             public bool FillLogoBackground()
             {
                 return _fillLogoBackground;
+            }
+
+            public enum MediaType : int
+            {
+                [StringValue("image/png")]
+                PNG = 0, 
+                [StringValue("image/svg+xml")]
+                SVG = 1
             }
         }
     }

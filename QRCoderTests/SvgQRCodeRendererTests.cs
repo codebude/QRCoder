@@ -72,12 +72,12 @@ namespace QRCoderTests
             var logoObj = new SvgQRCode.SvgLogo(logoBitmap, 15);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
-
+            File.WriteAllText(@"C:\Temp\qr_png.svg", svg);
             var md5 = new MD5CryptoServiceProvider();
             var hash = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(svg));
             var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
 
-            result.ShouldBe("4ff45872787f321524cc4d071239c25e");
+            result.ShouldBe("4ff45872787f321524cc4d071239c25e");            
         }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace QRCoderTests
             var logoObj = new SvgQRCode.SvgLogo(logoSvg, 30);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
-
+            File.WriteAllText(@"C:\Temp\qr_svg.svg", svg);
             var md5 = new MD5CryptoServiceProvider();
             var hash = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(svg));
             var result = BitConverter.ToString(hash).Replace("-", "").ToLower();
