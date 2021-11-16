@@ -113,7 +113,7 @@ namespace QRCoderTests
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
 
             var result = HelperFunctions.StringToHash(svg);
-            result.ShouldBe("71f461136fdbe2ab85902d23ad2d7eb8");
+            result.ShouldBe("592271ef77406c0074a3005f78130906");
         }
 
         [Fact]

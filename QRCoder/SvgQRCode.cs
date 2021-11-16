@@ -179,33 +179,31 @@ namespace QRCoder
                         // Output SVG rectangles
                         double x = xi * pixelsPerModule;
                         if (logo == null || !logo.FillLogoBackground() || !IsBlockedByLogo(x, y, logoAttr, pixelsPerModule))
-                            svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");
-                       
+                            svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");                       
                     }
                 }
             }
 
             //Render logo, if set
             if (logo != null)
-            {   
-                
-                if (logo.GetMediaType() == SvgLogo.MediaType.PNG)
+            {                   
+                if (logo.GetMediaType() == SvgLogo.MediaType.PNG || logo.IsEmbedded())
                 {
                     svgFile.AppendLine($@"<svg width=""100%"" height=""100%"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
                     svgFile.AppendLine($@"<image x=""{CleanSvgVal(logoAttr.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" xlink:href=""{logo.GetDataUri()}"" />");
+                    svgFile.AppendLine(@"</svg>");
                 }
                 else if (logo.GetMediaType() == SvgLogo.MediaType.SVG)
                 {
-                    svgFile.AppendLine($@"<svg x=""{CleanSvgVal(logoAttr.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
-                    var rawLogo = (string)logo.GetRawLogo();
-                    //Remove some attributes from logo, because it would lead to wrong sizing inside our svg wrapper
-                    new List<string>() { "width", "height", "x", "y" }.ForEach(attr =>
-                    {
-                        rawLogo = Regex.Replace(rawLogo, $@"(?!=<svg[^>]*?) +{attr}=(""[^""]+""|'[^']+')(?=[^>]*>)", "");
-                    });                    
-                    svgFile.Append(rawLogo);
+                    var rawLogo = (string)logo.GetRawLogo();                 
+                    var svg = System.Xml.Linq.XDocument.Parse(rawLogo);
+                    svg.Root.SetAttributeValue("x", CleanSvgVal(logoAttr.Value.X));
+                    svg.Root.SetAttributeValue("y", CleanSvgVal(logoAttr.Value.Y));
+                    svg.Root.SetAttributeValue("width", CleanSvgVal(logoAttr.Value.Width));
+                    svg.Root.SetAttributeValue("height", CleanSvgVal(logoAttr.Value.Height));
+                    svg.Root.SetAttributeValue("shape-rendering", "geometricPrecision");
+                    svgFile.AppendLine(svg.ToString(System.Xml.Linq.SaveOptions.DisableFormatting).Replace("svg:", ""));                    
                 }
-                svgFile.AppendLine(@"</svg>");
             }
 
             svgFile.Append(@"</svg>");
@@ -267,8 +265,9 @@ namespace QRCoder
             private int _iconSizePercent;
             private bool _fillLogoBackground;
             private object _logoRaw;
+            private bool _isEmbedded;
 
-          
+
             /// <summary>
             /// Create a logo object to be used in SvgQRCode renderer
             /// </summary>
@@ -289,6 +288,7 @@ namespace QRCoder
                 _mediaType = MediaType.PNG;
                 _fillLogoBackground = fillLogoBackground;
                 _logoRaw = iconRasterized;
+                _isEmbedded = false;
             }
 
             /// <summary>
@@ -297,13 +297,15 @@ namespace QRCoder
             /// <param name="iconVectorized">Logo to be rendered as SVG/vectorized graphic/string</param>
             /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
             /// <param name="fillLogoBackground">If true, the background behind the logo will be cleaned</param>
-            public SvgLogo(string iconVectorized, int iconSizePercent = 15, bool fillLogoBackground = true)
+            /// <param name="iconEmbedded">If true, the logo will be expressed as <image>-tag instead of embedding the svg</param>
+            public SvgLogo(string iconVectorized, int iconSizePercent = 15, bool fillLogoBackground = true, bool iconEmbedded = false)
             {
                 _iconSizePercent = iconSizePercent;
                 _logoData = Convert.ToBase64String(Encoding.UTF8.GetBytes(iconVectorized), Base64FormattingOptions.None);
                 _mediaType = MediaType.SVG;
                 _fillLogoBackground = fillLogoBackground;
                 _logoRaw = iconVectorized;
+                _isEmbedded = iconEmbedded;
             }
 
             /// <summary>
@@ -313,6 +315,16 @@ namespace QRCoder
             public object GetRawLogo()
             {
                 return _logoRaw;
+            }
+
+            /// <summary>
+            /// Defines, if the logo shall be natively embedded.
+            /// true=native svg embedding, false=embedding via image-tag
+            /// </summary>
+            /// <returns></returns>
+            public bool IsEmbedded()
+            {
+                return _isEmbedded;
             }
 
             /// <summary>
