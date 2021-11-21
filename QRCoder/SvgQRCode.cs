@@ -187,13 +187,13 @@ namespace QRCoder
             //Render logo, if set
             if (logo != null)
             {                   
-                if (logo.GetMediaType() == SvgLogo.MediaType.PNG || logo.IsEmbedded())
+                if (!logo.IsEmbedded())
                 {
                     svgFile.AppendLine($@"<svg width=""100%"" height=""100%"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
                     svgFile.AppendLine($@"<image x=""{CleanSvgVal(logoAttr.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" xlink:href=""{logo.GetDataUri()}"" />");
                     svgFile.AppendLine(@"</svg>");
                 }
-                else if (logo.GetMediaType() == SvgLogo.MediaType.SVG)
+                else
                 {
                     var rawLogo = (string)logo.GetRawLogo();                 
                     var svg = System.Xml.Linq.XDocument.Parse(rawLogo);
@@ -297,8 +297,8 @@ namespace QRCoder
             /// <param name="iconVectorized">Logo to be rendered as SVG/vectorized graphic/string</param>
             /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
             /// <param name="fillLogoBackground">If true, the background behind the logo will be cleaned</param>
-            /// <param name="iconEmbedded">If true, the logo will be expressed as <image>-tag instead of embedding the svg</param>
-            public SvgLogo(string iconVectorized, int iconSizePercent = 15, bool fillLogoBackground = true, bool iconEmbedded = false)
+            /// <param name="iconEmbedded">If true, the logo will embedded as native svg instead of embedding it as image-tag</param>
+            public SvgLogo(string iconVectorized, int iconSizePercent = 15, bool fillLogoBackground = true, bool iconEmbedded = true)
             {
                 _iconSizePercent = iconSizePercent;
                 _logoData = Convert.ToBase64String(Encoding.UTF8.GetBytes(iconVectorized), Base64FormattingOptions.None);
