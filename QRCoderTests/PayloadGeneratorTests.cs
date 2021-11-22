@@ -439,6 +439,58 @@ namespace QRCoderTests
 
         [Fact]
         [Category("PayloadGenerator/Mail")]
+        public void mail_should_build_type_mailto_receiver_only()
+        {
+            var receiver = "john@doe.com";
+            var encoding = PayloadGenerator.Mail.MailEncoding.MAILTO;
+
+            var generator = new PayloadGenerator.Mail(mailReceiver: receiver, encoding: encoding);
+
+            generator.ToString().ShouldBe("mailto:john@doe.com");
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/Mail")]
+        public void mail_should_build_type_mailto_subject_only()
+        {
+            var receiver = "john@doe.com";
+            var subject = "A test mail";
+            var encoding = PayloadGenerator.Mail.MailEncoding.MAILTO;
+
+            var generator = new PayloadGenerator.Mail(receiver, subject, encoding: encoding);
+
+            generator.ToString().ShouldBe("mailto:john@doe.com?subject=A%20test%20mail");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/Mail")]
+        public void mail_should_build_type_mailto_message_only()
+        {
+            var receiver = "john@doe.com";
+            var message = "Just see if it works!";
+            var encoding = PayloadGenerator.Mail.MailEncoding.MAILTO;
+
+            var generator = new PayloadGenerator.Mail(receiver, message: message, encoding: encoding);
+
+            generator.ToString().ShouldBe("mailto:john@doe.com?body=Just%20see%20if%20it%20works%21");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/Mail")]
+        public void mail_should_build_type_mailto_no_receiver()
+        {
+            var subject = "A test mail";
+            var message = "Just see if it works!";
+            var encoding = PayloadGenerator.Mail.MailEncoding.MAILTO;
+
+            var generator = new PayloadGenerator.Mail(subject: subject, message: message, encoding: encoding);
+
+            generator.ToString().ShouldBe("mailto:?subject=A%20test%20mail&body=Just%20see%20if%20it%20works%21");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/Mail")]
         public void mail_should_build_type_MATMSG()
         {
             var receiver = "john@doe.com";
@@ -481,7 +533,6 @@ namespace QRCoderTests
             generator.ToString().ShouldBe("MATMSG:TO:john@doe.com;SUB:A test mail;BODY:Just see if \\\\\\:\\;\\, it works!;;");
         }
 
-
         [Fact]
         [Category("PayloadGenerator/Mail")]
         public void mail_should_escape_input_SMTP()
@@ -495,19 +546,6 @@ namespace QRCoderTests
 
             generator.ToString().ShouldBe("SMTP:john@doe.com:A test mail:Just see\\: if it works!");
         }
-
-
-        [Fact]
-        [Category("PayloadGenerator/Mail")]
-        public void mail_should_add_unused_params()
-        {
-            var receiver = "john@doe.com";
-
-            var generator = new PayloadGenerator.Mail(receiver);
-
-            generator.ToString().ShouldBe("mailto:john@doe.com?subject=&body=");
-        }
-
 
         [Fact]
         [Category("PayloadGenerator/SMS")]
@@ -553,13 +591,13 @@ namespace QRCoderTests
 
         [Fact]
         [Category("PayloadGenerator/SMS")]
-        public void sms_should_add_unused_params()
+        public void sms_should_not_add_unused_params()
         {
             var number = "01601234567";
 
             var generator = new PayloadGenerator.SMS(number);
 
-            generator.ToString().ShouldBe("sms:01601234567?body=");
+            generator.ToString().ShouldBe("sms:01601234567");
         }
 
 
@@ -593,13 +631,13 @@ namespace QRCoderTests
 
         [Fact]
         [Category("PayloadGenerator/MMS")]
-        public void mms_should_add_unused_params()
+        public void mms_should_not_add_unused_params()
         {
             var number = "01601234567";
 
             var generator = new PayloadGenerator.MMS(number);
 
-            generator.ToString().ShouldBe("mms:01601234567?body=");
+            generator.ToString().ShouldBe("mms:01601234567");
         }
 
 

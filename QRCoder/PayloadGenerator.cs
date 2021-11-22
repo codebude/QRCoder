@@ -62,32 +62,7 @@ namespace QRCoder
             private readonly string mailReceiver, subject, message;
             private readonly MailEncoding encoding;
 
-            /// <summary>
-            /// Creates an empty email payload
-            /// </summary>
-            /// <param name="mailReceiver">Receiver's email address</param>
-            /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
-            public Mail(string mailReceiver, MailEncoding encoding = MailEncoding.MAILTO)
-            {
-                this.mailReceiver = mailReceiver;
-                this.subject = this.message = string.Empty;
-                this.encoding = encoding;
-            }
-
-            /// <summary>
-            /// Creates an email payload with subject
-            /// </summary>
-            /// <param name="mailReceiver">Receiver's email address</param>
-            /// <param name="subject">Subject line of the email</param>
-            /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
-            public Mail(string mailReceiver, string subject, MailEncoding encoding = MailEncoding.MAILTO)
-            {
-                this.mailReceiver = mailReceiver;
-                this.subject = subject;
-                this.message = string.Empty;
-                this.encoding = encoding;
-            }
-
+          
             /// <summary>
             /// Creates an email payload with subject and message/text
             /// </summary>
@@ -95,7 +70,7 @@ namespace QRCoder
             /// <param name="subject">Subject line of the email</param>
             /// <param name="message">Message content of the email</param>
             /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
-            public Mail(string mailReceiver, string subject, string message, MailEncoding encoding = MailEncoding.MAILTO)
+            public Mail(string mailReceiver = null, string subject = null, string message = null, MailEncoding encoding = MailEncoding.MAILTO)
             {
                 this.mailReceiver = mailReceiver;
                 this.subject = subject;
@@ -105,20 +80,26 @@ namespace QRCoder
 
             public override string ToString()
             {
+                var returnVal = string.Empty;
                 switch (this.encoding)
                 {
                     case MailEncoding.MAILTO:
-                        return
-                            $"mailto:{this.mailReceiver}?subject={System.Uri.EscapeDataString(this.subject)}&body={System.Uri.EscapeDataString(this.message)}";
+                        var parts = new List<string>();
+                        if (!string.IsNullOrEmpty(this.subject))
+                            parts.Add("subject=" + Uri.EscapeDataString(this.subject));
+                        if (!string.IsNullOrEmpty(this.message))
+                            parts.Add("body=" + Uri.EscapeDataString(this.message));
+                        var queryString = parts.Any() ? $"?{string.Join("&", parts.ToArray())}" : "";
+                        returnVal = $"mailto:{this.mailReceiver}{queryString}";
+                        break;
                     case MailEncoding.MATMSG:
-                        return
-                            $"MATMSG:TO:{this.mailReceiver};SUB:{EscapeInput(this.subject)};BODY:{EscapeInput(this.message)};;";
+                        returnVal = $"MATMSG:TO:{this.mailReceiver};SUB:{EscapeInput(this.subject)};BODY:{EscapeInput(this.message)};;";
+                        break;
                     case MailEncoding.SMTP:
-                        return
-                            $"SMTP:{this.mailReceiver}:{EscapeInput(this.subject, true)}:{EscapeInput(this.message, true)}";
-                    default:
-                        return this.mailReceiver;
+                        returnVal = $"SMTP:{this.mailReceiver}:{EscapeInput(this.subject, true)}:{EscapeInput(this.message, true)}";
+                        break;
                 }
+                return returnVal;
             }
 
             public enum MailEncoding
@@ -161,17 +142,26 @@ namespace QRCoder
 
             public override string ToString()
             {
+                var returnVal = string.Empty;
                 switch (this.encoding)
-                {
+                {                    
                     case SMSEncoding.SMS:
-                        return $"sms:{this.number}?body={System.Uri.EscapeDataString(this.subject)}";
+                        var queryString = string.Empty;
+                        if (!string.IsNullOrEmpty(this.subject))
+                            queryString = $"?body={Uri.EscapeDataString(this.subject)}";                        
+                        returnVal = $"sms:{this.number}{queryString}";
+                        break;
                     case SMSEncoding.SMS_iOS:
-                        return $"sms:{this.number};body={System.Uri.EscapeDataString(this.subject)}";
+                        var queryStringiOS = string.Empty;
+                        if (!string.IsNullOrEmpty(this.subject))
+                            queryStringiOS = $";body={Uri.EscapeDataString(this.subject)}";
+                        returnVal = $"sms:{this.number}{queryStringiOS}";
+                        break;
                     case SMSEncoding.SMSTO:
-                        return $"SMSTO:{this.number}:{this.subject}";
-                    default:
-                        return "sms:";
+                        returnVal = $"SMSTO:{this.number}:{this.subject}";
+                        break;                    
                 }
+                return returnVal;
             }
 
             public enum SMSEncoding
@@ -214,15 +204,23 @@ namespace QRCoder
 
             public override string ToString()
             {
+                var returnVal = string.Empty;                
                 switch (this.encoding)
-                {
+                {                     
                     case MMSEncoding.MMSTO:
-                        return $"mmsto:{this.number}?subject={System.Uri.EscapeDataString(this.subject)}";
+                        var queryStringMmsTo = string.Empty;
+                        if (!string.IsNullOrEmpty(this.subject))
+                            queryStringMmsTo = $"?subject={Uri.EscapeDataString(this.subject)}";
+                        returnVal = $"mmsto:{this.number}{queryStringMmsTo}";
+                        break;
                     case MMSEncoding.MMS:
-                        return $"mms:{this.number}?body={System.Uri.EscapeDataString(this.subject)}";
-                    default:
-                        return "mms:";
+                        var queryStringMms = string.Empty;
+                        if (!string.IsNullOrEmpty(this.subject))
+                            queryStringMms = $"?body={Uri.EscapeDataString(this.subject)}";
+                        returnVal = $"mms:{this.number}{queryStringMms}";
+                        break;
                 }
+                return returnVal;
             }
 
             public enum MMSEncoding
