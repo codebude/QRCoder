@@ -17,7 +17,7 @@
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>QRCoder</PackageId>
-    <Version>1.4.2</Version>
+    <Version>1.4.3</Version>
     <Authors>Raffael Herrmann</Authors>
     <PackageOwners>Raffael Herrmann</PackageOwners>
     <AssemblyName>QRCoder</AssemblyName>
