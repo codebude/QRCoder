@@ -2,7 +2,7 @@
 
 |Build|Code coverage|Build status|NuGet Package|
 |-----|-------------|------------|-------------|
-|Latest / Stable|[![codecov](https://codecov.io/gh/codebude/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/codebude/QRCoder)|[![Build, test, pack, push (Release)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml/badge.svg?branch=main)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml)|[![NuGet Badge](https://buildstats.info/nuget/QRCoder)](https://www.nuget.org/packages/QRCoder/)|
+|Latest / Stable|[![codecov](https://codecov.io/gh/codebude/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/codebude/QRCoder)|[![Build, test, pack, push (Release)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml/badge.svg?branch=master)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml)|[![NuGet Badge](https://buildstats.info/nuget/QRCoder?rnd=0892982314)](https://www.nuget.org/packages/QRCoder/)|
 |CI / Last commit|[![codecov](https://codecov.io/gh/codebude/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/codebude/QRCoder)|[![Build, test, pack, push (CI)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release-ci.yml/badge.svg)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release-ci.yml)|[![Github packages](https://img.shields.io/badge/Github-Packages-blue)](https://github.com/codebude/qrcoder/packages)|
 
 
