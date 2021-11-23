@@ -38,11 +38,16 @@ namespace QRCoderTests.Helpers
             }
             return ByteArrayToHash(imgBytes);
         }
+#endif
 
         public static string ByteArrayToHash(byte[] data)
         {
+#if !NETCOREAPP1_1
             var md5 = new MD5CryptoServiceProvider();
             var hash = md5.ComputeHash(data);
+#else
+            var hash = new SshNet.Security.Cryptography.MD5().ComputeHash(data);
+#endif
             return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
 
@@ -50,7 +55,5 @@ namespace QRCoderTests.Helpers
         {
             return ByteArrayToHash(Encoding.UTF8.GetBytes(data));
         }
-#endif
-
     }
 }
