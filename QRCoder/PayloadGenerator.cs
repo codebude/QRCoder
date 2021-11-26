@@ -2494,11 +2494,10 @@ namespace QRCoder
                 var cp = characterSet.ToString().Replace("_", "-");
                 var bytes = ToBytes();
 
-#if !NET35 && !NET40 && !NETSTANDARD1_3_OR_GREATER
+#if !NET35_OR_GREATER && !NETSTANDARD1_3_OR_GREATER
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif
-#if NETSTANDARD1_3
-                // TODO: Fix for NETSTANDARD1.1                
+#if NETSTANDARD1_3              
                 return Encoding.GetEncoding(cp).GetString(bytes,0,bytes.Length);
 #else
                 return Encoding.GetEncoding(cp).GetString(bytes);
@@ -3089,11 +3088,7 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(message);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-#if NET40
-            return iso.GetString(isoBytes);
-#else
-                return iso.GetString(isoBytes,0, isoBytes.Length);
-#endif
+            return iso.GetString(isoBytes, 0, isoBytes.Length);
         }
 
         private static string EscapeInput(string inp, bool simple = false)
