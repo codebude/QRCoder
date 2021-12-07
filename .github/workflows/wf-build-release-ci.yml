@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:  
   build: 
-    runs-on: windows-latest 
+    runs-on: windows-2022 
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
@@ -33,7 +33,7 @@ jobs:
 
   test:
     needs: build 
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:   
     - name: Download artifacts
       uses: actions/download-artifact@v1.0.0
@@ -90,7 +90,7 @@ jobs:
 
   pack-push-ci:
     needs: test
-    runs-on: windows-latest
+    runs-on: windows-2022
     env:
       GH_PKG_SEC: ${{ secrets.GH_PKG_REPO }}
     steps:   
@@ -124,7 +124,7 @@ jobs:
   clean:
     needs: [build, test, pack-push-ci]
     if: always()
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - name: Delete artifacts
       uses: GeekyEggo/delete-artifact@v1.0.0
