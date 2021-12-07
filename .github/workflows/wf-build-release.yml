@@ -6,7 +6,7 @@ on:
           description: 'Release Notes (use `n for new line)'     
           required: true     
 jobs:  
-  build: 
+  build:
     runs-on: windows-2019 
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
