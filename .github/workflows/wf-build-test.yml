@@ -57,8 +57,9 @@ jobs:
     - name: Run test .NET 4.52
       run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Stron naming
 
-    - name: Run test .NET Core 1.3
-      run: dotnet test -c Release -f netcoreapp1.3 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+# Skip 1.3 test due to missing support on Github runner
+#    - name: Run test .NET Core 1.3
+#      run: dotnet test -c Release -f netcoreapp1.3 --nologo
 
     - name: Run test .NET Core 2.0
       run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
