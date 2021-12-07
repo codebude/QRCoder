@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using NDesk.Options;
-using System.Reflection;
+using QRCoderConsole.DataObjects;
 using QRCoder;
 using System.Text;
 using System.Windows.Markup;
@@ -35,7 +34,7 @@ namespace QRCoderConsole
                     value => eccLevel = setter.GetECCLevel(value)
                 },
                 {   "f|output-format=",
-                    "Image format for outputfile. Possible values: png, jpg, gif, bmp, tiff, svg, xaml, ps, eps (default: png)",
+                    $"Image format for outputfile. Possible values: {string.Join(", ", Enum.GetNames(typeof(SupportedImageFormat)))} (default: png)",
                     value => { Enum.TryParse(value, true, out imageFormat); }
                 },
                 {
@@ -164,9 +163,9 @@ namespace QRCoderConsole
                                 }
                             }
                             break;
-#if !NET5_0 && !NET5_0_WINDOWS
+#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
                         case SupportedImageFormat.Xaml:
-                            using (var code = new XamlQRCode(data))
+                            using (var code = new QRCoder.Xaml.XamlQRCode(data))
                             {
                                 var test = XamlWriter.Save(code.GetGraphic(pixelsPerModule, foreground, background, true));
                                 using (var f = File.CreateText(outputFileName))

@@ -25,13 +25,12 @@
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NDesk.Options" Version="0.2.1" />
+    <PackageReference Include="NDesk.Options.Core" Version="1.2.5" />
   </ItemGroup>
-
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0'">
+	 <ProjectReference Include="..\QRCoder.Xaml\QRCoder.Xaml.csproj" />
+  </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj">
-      <Project>{aa6be23a-7813-4d2a-835e-b673631ae9f1}</Project>
-      <Name>QRCoder</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />	
   </ItemGroup>
 </Project>
