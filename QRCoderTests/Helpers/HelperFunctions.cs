@@ -50,10 +50,12 @@ namespace QRCoderTests.Helpers
         public static string GetAssemblyPath()
         {
             return
-#if NET5_0
-                AppDomain.CurrentDomain.BaseDirectory;
+#if NET5_0 || NET6_0
+            AppDomain.CurrentDomain.BaseDirectory;
+#elif NET35 || NET452
+            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
 #else
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
+            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
 #endif
         }
 #endif
@@ -76,7 +78,7 @@ namespace QRCoderTests.Helpers
         public static string ByteArrayToHash(byte[] data)
         {
 #if !NETCOREAPP1_1
-            var md5 = new MD5CryptoServiceProvider();
+            var md5 = MD5.Create();
             var hash = md5.ComputeHash(data);
 #else
             var hash = new SshNet.Security.Cryptography.MD5().ComputeHash(data);
