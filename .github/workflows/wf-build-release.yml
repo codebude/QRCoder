@@ -45,15 +45,18 @@ jobs:
       run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stron naming
     - name: Run test .NET 4.52
       run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Stron naming
-# Skip 1.1 test due to missing support on Github runner
-#    - name: Run test .NET Core 1.1
-#      run: dotnet test -c Release -f netcoreapp1.1 --nologo
+    - name: Run test .NET Core 1.3
+      run: dotnet test -c Release -f netcoreapp1.3 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Run test .NET Core 2.0
       run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Run test .NET 5.0
       run: dotnet test -c Release -f net5.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Run test .NET 5.0 Windows
       run: dotnet test -c Release -f net5.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 6.0
+      run: dotnet test -c Release -f net6.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 6.0 Windows
+      run: dotnet test -c Release -f net6.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Codecov update netcoreapp2.0
       uses: codecov/codecov-action@v2
       with:
@@ -67,6 +70,18 @@ jobs:
         files: ./QRCoderTests/coverage.net5.0.opencover.xml
         flags: net5.0
     - name: Codecov update net5.0-windows
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./QRCoderTests/coverage.net5.0-windows.opencover.xml
+        flags: net5.0-windows
+    - name: Codecov update net6.0
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./QRCoderTests/coverage.net5.0.opencover.xml
+        flags: net5.0
+    - name: Codecov update net6.0-windows
       uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
@@ -86,13 +101,19 @@ jobs:
         path: D:\a\qrcoder\qrcoder
     - name: Restore dependencies
       run: dotnet restore
-    - name: Get assembly version
+    - name: Get assembly version QRCoder
       run: echo "ASSEM_VER=$([Reflection.Assembly]::Loadfile( $(-join($pwd,"\QRCoder\bin\Release\net40\QRCoder.dll"))).GetName().version.ToString())"  | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-    - name: Clean assembly version
-      run: echo "ASSEM_VER_SHT=$($env:ASSEM_VER.substring(0, $env:ASSEM_VER.lastIndexOf(".")))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-    - name: Build NuGet package
+    - name: Clean assembly version QRCoder
+      run: echo "ASSEM_VER_SHT=$($env:ASSEM_VER.substring(0, $env:ASSEM_VER.lastIndexOf(".")))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append   
+    - name: Get assembly version QRCoder.Xaml
+      run: echo "ASSEM_VER_XAML=$([Reflection.Assembly]::Loadfile( $(-join($pwd,"\QRCoder.Xaml\bin\Release\net40\QRCoder.Xaml.dll"))).GetName().version.ToString())"  | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+    - name: Clean assembly version QRCoder.Xaml
+      run: echo "ASSEM_VER_SHT_XAML=$($env:ASSEM_VER_XAML.substring(0, $env:ASSEM_VER_XAML.lastIndexOf(".")))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+    - name: Build QRCoder NuGet package
       run: dotnet pack QRCoder\QRCoder.csproj -c Release --no-build /p:PackageVersion="$env:ASSEM_VER_SHT" /p:PackageReleaseNotes="${{ github.event.inputs.releaseNotes }}"   
-    - name: Publish to Github packages
+    - name: Build QRCoder.Xaml NuGet package
+      run: dotnet pack QRCoder.Xaml\QRCoder.Xaml.csproj -c Release --no-build /p:PackageVersion="$env:ASSEM_VER_SHT_XAML" /p:PackageReleaseNotes="${{ github.event.inputs.releaseNotes }}"   
+    - name: Publish QRCoder and QRCoder.Xaml to Github packages
       run: dotnet nuget push "**/*.nupkg" --no-symbols --skip-duplicate --api-key $env:GH_PKG_SEC --source https://nuget.pkg.github.com/codebude/index.json
       
     
