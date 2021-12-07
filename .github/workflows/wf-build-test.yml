@@ -44,15 +44,18 @@ jobs:
       run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stron naming
     - name: Run test .NET 4.52
       run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Stron naming
-# Skip 1.1 test due to missing support on Github runner
-#    - name: Run test .NET Core 1.1
-#      run: dotnet test -c Release -f netcoreapp1.1 --nologo
+    - name: Run test .NET Core 1.3
+      run: dotnet test -c Release -f netcoreapp1.3 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Run test .NET Core 2.0
       run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Run test .NET 5.0
       run: dotnet test -c Release -f net5.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: Run test .NET 5.0 Windows
       run: dotnet test -c Release -f net5.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 6.0
+      run: dotnet test -c Release -f net6.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+    - name: Run test .NET 6.0 Windows
+      run: dotnet test -c Release -f net6.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     
   clean:
     needs: [build, test]
