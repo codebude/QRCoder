@@ -17,7 +17,9 @@ jobs:
     - name: Install .NET 6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: | 
+          2.0.x
+          6.0.x 
      
     - name: Setup MSBuild Path
       uses: microsoft/setup-msbuild@v1      
@@ -50,7 +52,9 @@ jobs:
     - name: Install .NET 6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: | 
+          2.0.x
+          6.0.x 
 
     - name: Run test .NET 3.5
       run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stron naming
@@ -127,7 +131,9 @@ jobs:
     - name: Install .NET 6
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '6.0.x'
+        dotnet-version: | 
+          2.0.x
+          6.0.x 
 
     - name: Restore dependencies
       run: dotnet restore
