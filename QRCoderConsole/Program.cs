@@ -9,6 +9,9 @@ using System.Windows.Markup;
 
 namespace QRCoderConsole
 {
+#if NET6_0_WINDOWS
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     class MainClass
     {
         public static void Main (string[] args)
@@ -21,6 +24,7 @@ namespace QRCoderConsole
 
             QRCodeGenerator.ECCLevel eccLevel = QRCodeGenerator.ECCLevel.L;
             SupportedImageFormat imageFormat = SupportedImageFormat.Png;
+
             int pixelsPerModule = 20;
             string foregroundColor = "#000000";
             string backgroundColor = "#FFFFFF";
@@ -247,6 +251,9 @@ namespace QRCoderConsole
             return level;
         }
 
+#if NET6_0_WINDOWS
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public ImageFormat GetImageFormat(string value)
         {
             switch (value.ToLower())

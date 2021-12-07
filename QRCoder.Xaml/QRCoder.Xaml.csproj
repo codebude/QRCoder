@@ -6,6 +6,7 @@
     <!-- <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms> -->
 	<UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
     <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
+	<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
   </PropertyGroup>
