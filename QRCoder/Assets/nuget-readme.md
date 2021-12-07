@@ -1,4 +1,4 @@
-## About 
+## About
 
 QRCoder is a simple library, written in C#.NET, which enables you to create QR codes. It hasn't any dependencies to other libraries and is available as .NET Framework and .NET Core PCL version on NuGet.
 
@@ -16,13 +16,15 @@ The release notes for the current and all past releases can be read here: [📄 
 
 ## Usage / Quick start
 
-You only need five lines of code, to generate and view your first QR code.
+You only need four lines of code, to generate and view your first QR code.
 
 ```csharp
-QRCodeGenerator qrGenerator = new QRCodeGenerator();
-QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
-QRCode qrCode = new QRCode(qrCodeData);
-Bitmap qrCodeImage = qrCode.GetGraphic(20);
+using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+using (QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q))
+using (QRCode qrCode = new QRCode(qrCodeData))
+{
+    Bitmap qrCodeImage = qrCode.GetGraphic(20);
+}
 ```
 
 ### Optional parameters and overloads
@@ -47,7 +49,8 @@ There are a plenty of other options. So feel free to read more on that in our wi
 
 ## Help & Issues
 
-If you think you have a bug or have new ideas/feature requests, then feel free to open a new issues: https://github.com/codebude/QRCoder/issues
+If you think you have found a bug or have new ideas or feature requests, then feel free to open a new issue: https://github.com/codebude/QRCoder/issues 
+
 In case you have a question about using the library (and couldn't find an answer in our wiki), feel free to open a new question/discussion: https://github.com/codebude/QRCoder/discussions
 
 
