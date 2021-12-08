@@ -2675,7 +2675,6 @@ namespace QRCoderTests
 
             pg.ToString().ShouldBe("otpauth://hotp/Google:test@google.com?secret=pwq65q55&issuer=Google&counter=500");
         }
-        //TODO: Include more tests for the one time password payload generator
 
 
         [Fact]

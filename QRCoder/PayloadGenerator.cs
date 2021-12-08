@@ -634,12 +634,12 @@ namespace QRCoder
 
                 if (!string.IsNullOrEmpty(label))
                 {
-                    this.label = Uri.EscapeUriString(label);
+                    this.label = Uri.EscapeDataString(label);
                 }
 
                 if (!string.IsNullOrEmpty(message))
                 {
-                    this.message = Uri.EscapeUriString(message);
+                    this.message = Uri.EscapeDataString(message);
                 }
 
                 this.amount = amount;
@@ -2012,7 +2012,7 @@ namespace QRCoder
                 }
                 string strippedSecret = Secret.Replace(" ", "");
                 string escapedIssuer = null;
-                string escapedLabel = null;
+                string label = null;
 
                 if (!String40Methods.IsNullOrWhiteSpace(Issuer))
                 {
@@ -2020,33 +2020,26 @@ namespace QRCoder
                     {
                         throw new Exception("Issuer must not have a ':'");
                     }
-                    escapedIssuer = Uri.EscapeUriString(Issuer);
+                    escapedIssuer = Uri.EscapeDataString(Issuer);
                 }
 
-                if (!String40Methods.IsNullOrWhiteSpace(Label))
+                if (!String40Methods.IsNullOrWhiteSpace(Label) && Label.Contains(":"))
                 {
-                    if (Label.Contains(":"))
-                    {
-                        throw new Exception("Label must not have a ':'");
-                    }
-                    escapedLabel = Uri.EscapeUriString(Label);
+                    throw new Exception("Label must not have a ':'");
                 }
 
-                if (escapedLabel != null)
+                if (Label != null && Issuer != null)
                 {
-                    if (escapedIssuer != null)
-                    {
-                        escapedLabel = escapedIssuer + ":" + escapedLabel;
-                    }
+                    label = Issuer + ":" + Label;                    
                 }
-                else if (escapedIssuer != null)
+                else if (Issuer != null)
                 {
-                    escapedLabel = escapedIssuer;
+                    label = Issuer;
                 }
 
-                if (escapedLabel != null)
+                if (label != null)
                 {
-                    sb.Append(escapedLabel);
+                    sb.Append(label);
                 }
 
                 sb.Append("?secret=" + strippedSecret);

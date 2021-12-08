@@ -1,10 +1,10 @@
-﻿#if NETFRAMEWORK || NET5_0_WINDOWS
+﻿#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
 using System;
 using System.Windows;
 using System.Windows.Media;
 using static QRCoder.QRCodeGenerator;
 
-namespace QRCoder
+namespace QRCoder.Xaml
 {
     public class XamlQRCode : AbstractQRCode, IDisposable
     {

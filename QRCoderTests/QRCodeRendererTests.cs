@@ -1,22 +1,17 @@
-﻿using System;
+﻿#if !NETCOREAPP1_1 && !NET6_0
 using Xunit;
 using QRCoder;
 using Shouldly;
-using System.IO;
-using System.Security.Cryptography;
 using QRCoderTests.Helpers.XUnitExtenstions;
 using QRCoderTests.Helpers;
-#if !NETCOREAPP1_1
 using System.Drawing;
-#endif
+
 
 namespace QRCoderTests
 {
 
     public class QRCodeRendererTests
     {
-
-#if !NETCOREAPP1_1
         [Fact]
         [Category("QRRenderer/QRCode")]
         public void can_create_qrcode_standard_graphic()
@@ -172,6 +167,7 @@ namespace QRCoderTests
             var result = HelperFunctions.BitmapToHash(bmp);
             result.ShouldBe("e8c61b8f0455924fe08ba68686d0d296");
         }
-#endif
+
     }
 }
+#endif

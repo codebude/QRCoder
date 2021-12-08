@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("QRCoderDemoUWP")]
-[assembly: AssemblyDescription("Demo app for QRCoder PCL version")]
+[assembly: AssemblyDescription("Demo app for QRCoder on UWP")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("QRCoderDemoUWP")]
-[assembly: AssemblyCopyright("Copyright © www.code-bude.net 2016")]
+[assembly: AssemblyCopyright("Copyright © www.code-bude.net 2016-2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

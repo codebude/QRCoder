@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QRCoderConsole
+﻿namespace QRCoderConsole.DataObjects
 {
     public enum SupportedImageFormat
     {
@@ -14,7 +8,9 @@ namespace QRCoderConsole
         Bmp,
         Tiff,
         Svg,
+#if !NET5_0 || NET5_0_WINDOWS
         Xaml,
+#endif
         Ps,
         Eps,
     }

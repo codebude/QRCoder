@@ -4,16 +4,25 @@ on:
     branches:
       - master 
   workflow_dispatch:
-jobs:  
-  build: 
-    runs-on: windows-2022 
+jobs:
+  build:
+    runs-on: windows-2019 
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
     - uses: actions/checkout@v1
       name: Checkout Code
-     
-    - name: Setup MSBuild Ppth
+
+    - name: Install additional .NET SDKs
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: | 
+          1.0.x
+          2.0.x
+          5.0.x
+          6.0.x 
+
+    - name: Setup MSBuild Path
       uses: microsoft/setup-msbuild@v1      
        
     - name: Setup NuGet
@@ -23,7 +32,7 @@ jobs:
       run: nuget restore QRCoder.sln
  
     - name: Build library
-      run: msbuild QRCoder.sln /p:Configuration=Release /nr:false /t:Rebuild
+      run: msbuild QRCoder.sln /p:Configuration=Release /p:NoWarn="1182" /p:NoWarn="1701" /nr:false /t:Rebuild
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v1.0.0
@@ -33,34 +42,51 @@ jobs:
 
   test:
     needs: build 
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:   
     - name: Download artifacts
       uses: actions/download-artifact@v1.0.0
       with:
         name: Compiled project
-        path: D:\a\qrcoder\qrcoder    
+        path: D:\a\qrcoder\qrcoder 
+
+    - name: Install additional .NET SDKs
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: | 
+          1.0.x
+          2.0.x
+          5.0.x
+          6.0.x 
+
     - name: Run test .NET 3.5
-      run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stron naming
+      run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stronh naming
+
     - name: Run test .NET 4.52
-      run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Stron naming
-    - name: Run test .NET Core 1.3
-      run: dotnet test -c Release -f netcoreapp1.3 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Strong naming
+
+    - name: Run test .NET Core 1.1
+      run: dotnet test -c Release -f netcoreapp1.1 --nologo  # No coverage for .NETCORE 1.1 because Coverlet doesn't support it https://github.com/coverlet-coverage/coverlet/issues/466
+
     - name: Run test .NET Core 2.0
       run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
     - name: Run test .NET 5.0
       run: dotnet test -c Release -f net5.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
     - name: Run test .NET 5.0 Windows
       run: dotnet test -c Release -f net5.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
     - name: Run test .NET 6.0
       run: dotnet test -c Release -f net6.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
     - name: Run test .NET 6.0 Windows
       run: dotnet test -c Release -f net6.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     
   clean:
     needs: [build, test]
     if: always()
-    runs-on: windows-2022
+    runs-on: windows-2019
     steps:
     - name: Delete artifacts
       uses: GeekyEggo/delete-artifact@v1.0.0

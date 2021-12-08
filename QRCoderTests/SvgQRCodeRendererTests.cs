@@ -1,23 +1,19 @@
-﻿using System;
+﻿#if !NETCOREAPP1_1 && !NET6_0
+using System;
 using Xunit;
 using QRCoder;
 using Shouldly;
 using QRCoderTests.Helpers.XUnitExtenstions;
 using System.IO;
-using System.Security.Cryptography;
 using QRCoderTests.Helpers;
-
-#if !NETCOREAPP1_1
 using System.Drawing;
-#endif
+
 
 namespace QRCoderTests
 {
 
     public class SvgQRCodeRendererTests
     {
-
-#if !NETCOREAPP1_1 && !NETCOREAPP2_0
 
         private string GetAssemblyPath()
         {
@@ -182,9 +178,9 @@ namespace QRCoderTests
             var result = HelperFunctions.StringToHash(svg);
             result.ShouldBe("f5ec37aa9fb207e3701cc0d86c4a357d");
         }
-#endif
     }
 }
+#endif
 
 
 

@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net35;net40;net5.0-windows;net6.0-windows</TargetFrameworks>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <!-- <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms> -->
+	<UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
+	<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
+    <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <NoWarn />
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>QRCoder.Xaml</PackageId>
+    <Version>1.4.3</Version>
+    <Authors>Raffael Herrmann</Authors>
+    <PackageOwners>Raffael Herrmann</PackageOwners>
+    <AssemblyName>QRCoder.Xaml</AssemblyName>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/codebude/QRCoder.Xaml/</PackageProjectUrl>
+    <PackageIcon>nuget-icon-xaml.png</PackageIcon>
+    <PackageReadmeFile>nuget-readme-xaml.md</PackageReadmeFile>
+    <PackageTags>c# csharp qr QRCoder.Xaml qrcode qr-generator qr-code-generator</PackageTags>
+    <RepositoryUrl>https://github.com/codebude/QRCoder.Xaml.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Description>QRCoder.Xaml is the XamlQRCode-extension for the popular QRCoder .NET library.</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<None Include="Assets\nuget-icon-xaml.png" Pack="true" PackagePath="\" />
+	<None Include="Assets\nuget-readme-xaml.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+    <AutomaticallyUseReferenceAssemblyPackages Condition=" '$(TargetFramework)' == 'net35' ">false</AutomaticallyUseReferenceAssemblyPackages>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>QRCoder.XamlStrongName.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+</Project>
