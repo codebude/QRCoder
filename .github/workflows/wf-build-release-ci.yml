@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v1
       name: Checkout Code
     
-    - name: Install .NET 6
+    - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: | 
@@ -32,7 +32,7 @@ jobs:
       run: nuget restore QRCoder.sln
  
     - name: Build library
-      run: msbuild QRCoder.sln /p:Configuration=Release /nr:false /t:Rebuild
+      run: msbuild QRCoder.sln /p:Configuration=Release /p:NoWarn="1182" /p:NoWarn="1701" /nr:false /t:Rebuild
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v1.0.0
@@ -50,7 +50,7 @@ jobs:
         name: Compiled project
         path: D:\a\qrcoder\qrcoder    
 
-    - name: Install .NET 6
+    - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: | 
@@ -131,7 +131,7 @@ jobs:
         name: Compiled project
         path: D:\a\qrcoder\qrcoder
 
-    - name: Install .NET 6
+    - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: | 
