@@ -60,13 +60,13 @@ jobs:
           6.0.x 
 
     - name: Run test .NET 3.5
-      run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stron naming
+      run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stronh naming
 
     - name: Run test .NET 4.52
-      run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Stron naming
+      run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Strong naming
 
     - name: Run test .NET Core 1.1
-      run: dotnet test -c Release -f netcoreapp1.1 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test -c Release -f netcoreapp1.1 --nologo  # No coverage for .NETCORE 1.1 because Coverlet doesn't support it https://github.com/coverlet-coverage/coverlet/issues/466
 
     - name: Run test .NET Core 2.0
       run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
