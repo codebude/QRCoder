@@ -1,4 +1,4 @@
-﻿#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0
+﻿#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -11,6 +11,9 @@ using static QRCoder.QRCodeGenerator;
 namespace QRCoder
 {
 
+#if NET6_0_WINDOWS
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     // ReSharper disable once InconsistentNaming
     public class PdfByteQRCode : AbstractQRCode, IDisposable
     {
@@ -210,6 +213,9 @@ namespace QRCoder
         }
     }
 
+#if NET6_0_WINDOWS
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     public static class PdfByteQRCodeHelper
     {
         public static byte[] GetQRCode(string plainText, int pixelsPerModule, string darkColorHtmlHex,

@@ -1,4 +1,4 @@
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
 
 using System;
 using System.Drawing;
@@ -9,6 +9,9 @@ using static QRCoder.QRCodeGenerator;
 // pull request raised to extend library used. 
 namespace QRCoder
 {
+#if NET6_0_WINDOWS
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     public class ArtQRCode : AbstractQRCode, IDisposable
     {
         /// <summary>
@@ -254,6 +257,9 @@ namespace QRCoder
         }
     }
 
+#if NET6_0_WINDOWS
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     public static class ArtQRCodeHelper
     {
         /// <summary>
