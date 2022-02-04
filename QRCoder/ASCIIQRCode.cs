@@ -62,6 +62,51 @@ namespace QRCoder
             }
             return qrCode.ToArray();
         }
+
+        /// <summary>
+        /// Returns a strings that contains the resulting QR code as ASCII chars.
+        /// </summary>
+        /// <returns></returns>
+        public string GetGraphicSmall()
+        {
+            string endOfLine = "\n";
+            bool BLACK = true, WHITE = false;
+
+            var platte = new
+            {
+                WHITE_ALL = "\u2588",
+                WHITE_BLACK = "\u2580",
+                BLACK_WHITE = "\u2584",
+                BLACK_ALL = " ",
+            };
+
+            var moduleData = QrCodeData.ModuleMatrix;
+            var lineBuilder = new StringBuilder();
+            for (var row = 0; row < moduleData.Count; row += 2)
+            {
+                for (var col = 0; col < moduleData.Count; col++)
+                {
+                    try
+                    {
+                        if (moduleData[col][row] == WHITE && moduleData[col][row + 1] == WHITE)
+                            lineBuilder.Append(platte.WHITE_ALL);
+                        else if (moduleData[col][row] == WHITE && moduleData[col][row + 1] == BLACK)
+                            lineBuilder.Append(platte.WHITE_BLACK);
+                        else if (moduleData[col][row] == BLACK && moduleData[col][row + 1] == WHITE)
+                            lineBuilder.Append(platte.BLACK_WHITE);
+                        else
+                            lineBuilder.Append(platte.BLACK_ALL);
+                    }
+                    catch (Exception)
+                    {
+                        lineBuilder.Append(platte.WHITE_BLACK);
+                    }
+
+                }
+                lineBuilder.Append(endOfLine);
+            }
+            return lineBuilder.ToString();
+        }
     }
 
 
