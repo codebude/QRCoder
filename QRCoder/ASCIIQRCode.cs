@@ -62,6 +62,61 @@ namespace QRCoder
             }
             return qrCode.ToArray();
         }
+
+        /// <summary>
+        /// Returns a strings that contains the resulting QR code as ASCII chars.
+        /// </summary>
+        /// <returns></returns>
+        public string GetGraphicSmall(bool drawQuietZones = true)
+        {
+            string endOfLine = "\n";
+            bool BLACK = true, WHITE = false;
+
+            var platte = new
+            {
+                WHITE_ALL = "\u2588",
+                WHITE_BLACK = "\u2580",
+                BLACK_WHITE = "\u2584",
+                BLACK_ALL = " ",
+            };
+
+            var moduleData = QrCodeData.ModuleMatrix;
+            var lineBuilder = new StringBuilder();
+
+            var quietZonesModifier = (drawQuietZones ? 4 : 8);
+            var quietZonesOffset = (int)(quietZonesModifier * 0.5);
+            var sideLength = (QrCodeData.ModuleMatrix.Count - quietZonesModifier);
+
+            for (var row = 0; row < sideLength; row = row + 2)
+            {
+                for (var col = 0; col < moduleData.Count - quietZonesModifier; col++)
+                {
+                    try
+                    {
+                        var current = moduleData[col + quietZonesOffset][row + quietZonesOffset];
+                        var next = moduleData[col + quietZonesOffset][(row + 1) + quietZonesOffset];
+                        if (current == WHITE && next == WHITE)
+                            lineBuilder.Append(platte.WHITE_ALL);
+                        else if (current == WHITE && next == BLACK)
+                            lineBuilder.Append(platte.WHITE_BLACK);
+                        else if (current == BLACK && next == WHITE)
+                            lineBuilder.Append(platte.BLACK_WHITE);
+                        else
+                            lineBuilder.Append(platte.BLACK_ALL);
+                    }
+                    catch (Exception)
+                    {
+                        if (drawQuietZones)
+                            lineBuilder.Append(platte.WHITE_BLACK);
+                        else
+                            lineBuilder.Append(platte.BLACK_ALL);
+                    }
+
+                }
+                lineBuilder.Append(endOfLine);
+            }
+            return lineBuilder.ToString();
+        }
     }
 
 
