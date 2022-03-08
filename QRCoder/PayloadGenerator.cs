@@ -2030,11 +2030,11 @@ namespace QRCoder
 
                 if (Label != null && Issuer != null)
                 {
-                    label = Issuer + ":" + Label;                    
+                    label = escapedIssuer + ":" + Label;
                 }
                 else if (Issuer != null)
                 {
-                    label = Issuer;
+                    label = escapedIssuer;
                 }
 
                 if (label != null)

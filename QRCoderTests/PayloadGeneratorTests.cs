@@ -2662,6 +2662,21 @@ namespace QRCoderTests
 
         [Fact]
         [Category("PayloadGenerator/OneTimePassword")]
+        public void one_time_password_generator_time_based_generates_with_standard_options_escapes_issuer()
+        {
+            var pg = new PayloadGenerator.OneTimePassword
+            {
+                Secret = "pwq6 5q55",
+                Issuer = "Google Google",
+                Label = "test@google.com",
+            };
+
+            pg.ToString().ShouldBe("otpauth://totp/Google%20Google:test@google.com?secret=pwq65q55&issuer=Google%20Google");
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/OneTimePassword")]
         public void one_time_password_generator_hmac_based_generates_with_standard_options()
         {
             var pg = new PayloadGenerator.OneTimePassword
@@ -2674,6 +2689,22 @@ namespace QRCoderTests
             };
 
             pg.ToString().ShouldBe("otpauth://hotp/Google:test@google.com?secret=pwq65q55&issuer=Google&counter=500");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/OneTimePassword")]
+        public void one_time_password_generator_hmac_based_generates_with_standard_options_escapes_issuer()
+        {
+            var pg = new PayloadGenerator.OneTimePassword
+            {
+                Secret = "pwq6 5q55",
+                Issuer = "Google Google",
+                Label = "test@google.com",
+                Type = PayloadGenerator.OneTimePassword.OneTimePasswordAuthType.HOTP,
+                Counter = 500,
+            };
+
+            pg.ToString().ShouldBe("otpauth://hotp/Google%20Google:test@google.com?secret=pwq65q55&issuer=Google%20Google&counter=500");
         }
 
 
