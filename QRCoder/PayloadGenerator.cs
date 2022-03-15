@@ -2028,11 +2028,11 @@ namespace QRCoder
                     throw new Exception("Label must not have a ':'");
                 }
 
-                if (Label != null && Issuer != null)
+                if (Label != null && escapedIssuer != null)
                 {
                     label = escapedIssuer + ":" + Label;
                 }
-                else if (Issuer != null)
+                else if (escapedIssuer != null)
                 {
                     label = escapedIssuer;
                 }
