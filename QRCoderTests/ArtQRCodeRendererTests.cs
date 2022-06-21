@@ -21,7 +21,7 @@ namespace QRCoderTests
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
             var bmp = new ArtQRCode(data).GetGraphic(10);
-
+            bmp.Save("original.png");
             var result = HelperFunctions.BitmapToHash(bmp);
 #if NET35_OR_GREATER || NET40_OR_GREATER
             result.ShouldBe("11ebdda91b9632d016798cb6de2f5339");
@@ -38,7 +38,7 @@ namespace QRCoderTests
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
             var finder = new Bitmap(15, 15);
             var bmp = new ArtQRCode(data).GetGraphic(10, Color.Black, Color.White, Color.Transparent, finderPatternImage: finder);
-
+            bmp.Save("finder.png");
             var result = HelperFunctions.BitmapToHash(bmp);
 #if NET35_OR_GREATER || NET40_OR_GREATER
             result.ShouldBe("c54a7389ae995abc838f0d228acc3bad");
@@ -71,7 +71,7 @@ namespace QRCoderTests
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
             var bmp = new ArtQRCode(data).GetGraphic((Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
-
+            bmp.Save("custom_background.png");
             var result = HelperFunctions.BitmapToHash(bmp);
 
 #if NET35_OR_GREATER || NET40_OR_GREATER
