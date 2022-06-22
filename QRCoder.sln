@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoderTests", "QRCoderTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoder.Xaml", "QRCoder.Xaml\QRCoder.Xaml.csproj", "{A7A7E073-2504-4BA2-A63B-87AC34174789}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoder.ImageSharp", "QRCoder.ImageSharp\QRCoder.ImageSharp.csproj", "{229BC36C-54D6-43FC-9D82-EE0D6FD9883C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoder.ImageSharp", "QRCoder.ImageSharp\QRCoder.ImageSharp.csproj", "{229BC36C-54D6-43FC-9D82-EE0D6FD9883C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoder.ImageSharpTests", "QRCoder.ImageSharpTests\QRCoder.ImageSharpTests.csproj", "{F5596C43-DDB9-47BC-BCA0-2308A59F630B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoder.ImageSharpTests", "QRCoder.ImageSharpTests\QRCoder.ImageSharpTests.csproj", "{F5596C43-DDB9-47BC-BCA0-2308A59F630B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{3E51E726-E6AB-492B-A37D-DF1CE024D54F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -158,6 +160,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1B51624B-9915-4ED6-8FC1-1B7C472246E5} = {3E51E726-E6AB-492B-A37D-DF1CE024D54F}
+		{F5596C43-DDB9-47BC-BCA0-2308A59F630B} = {3E51E726-E6AB-492B-A37D-DF1CE024D54F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F1845CDF-5EE5-456F-B6C8-717E4E2284F4}

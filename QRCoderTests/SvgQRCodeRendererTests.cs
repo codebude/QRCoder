@@ -117,7 +117,7 @@ namespace QRCoderTests
             logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
-
+            
             var result = HelperFunctions.StringToHash(svg);
             result.ShouldBe("78e02e8ba415f15817d5ed88c4afca31");            
         }
