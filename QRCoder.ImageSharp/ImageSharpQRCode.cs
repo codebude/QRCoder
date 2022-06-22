@@ -159,7 +159,7 @@ namespace QRCoder.ImageSharp
                     
                 backgroundShape = backgroundShape.Scale(1.03f);
 
-                image.Mutate(x => x.Fill(lightBrush, backgroundShape));
+                image.Mutate(x => x.Fill(backgroundBrush, backgroundShape));
 
                 logoImage = logoImage.Clone(x =>
                 {
