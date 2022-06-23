@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using QRCoder.ImageSharp;
+using QRCoder.Models;
 using QRCoderTests.Helpers;
 using SixLabors.ImageSharp;
 

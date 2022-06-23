@@ -1,23 +1,20 @@
 ﻿using QRCoder.Models;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing;
-using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace QRCoder.ImageSharp
+namespace QRCoder.SkiaSharp
 {
-    
-    public class ImageSharpQRCode : AbstractQRCode, IDisposable
+    public class SkiaSharpQRCode : AbstractQRCode, IDisposable
     {
-        public ImageSharpQRCode()
+        public SkiaSharpQRCode()
         {
         }
 
-        public ImageSharpQRCode(QRCodeData data) : base(data)
+        public SkiaSharpQRCode(QRCodeData data) : base(data)
         {
         }
 
@@ -26,9 +23,9 @@ namespace QRCoder.ImageSharp
         /// </summary>
         /// <param name="pixelsPerModule">Amount of px each dark/light module of the QR code shall take place in the final QR code image</param>
         /// <returns>QRCode graphic as bitmap</returns>
-        public Image GetGraphic(int pixelsPerModule, Image? logoImage = null, LogoLocation logoLocation = LogoLocation.BottomRight, LogoBackgroundShape logoBackgroundShape = LogoBackgroundShape.Rectangle)
+        public SKImage GetGraphic(int pixelsPerModule, SKImage? logoImage = null, LogoLocation logoLocation = LogoLocation.BottomRight, LogoBackgroundShape logoBackgroundShape = LogoBackgroundShape.Rectangle)
         {
-            return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, Color.Transparent, logoImage, logoLocation, logoBackgroundShape);
+            return this.GetGraphic(pixelsPerModule, SKColors.Black, SKColors.White, SKColors.Transparent, logoImage, logoLocation, logoBackgroundShape);
         }
 
         /// <summary>
@@ -36,9 +33,9 @@ namespace QRCoder.ImageSharp
         /// </summary>
         /// <param name="backgroundImage">A bitmap object that will be used as background picture</param>
         /// <returns>QRCode graphic as bitmap</returns>
-        public Image GetGraphic(Image? logoImage = null)
+        public SKImage GetGraphic(SKImage? logoImage = null)
         {
-            return this.GetGraphic(10, Color.Black, Color.White, Color.Transparent, logoImage);
+            return this.GetGraphic(10, SKColors.Black, SKColors.White, SKColors.Transparent, logoImage);
         }
 
         /// <summary>
@@ -55,7 +52,7 @@ namespace QRCoder.ImageSharp
         /// <param name="backgroundImageStyle">Style of the background image (if set). Fill=spanning complete graphic; DataAreaOnly=Don't paint background into quietzone</param>
         /// <param name="finderPatternImage">Optional image that should be used instead of the default finder patterns</param>
         /// <returns>QRCode graphic as bitmap</returns>
-        public Image GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Color backgroundColor, Image? logoImage = null, LogoLocation logoLocation = LogoLocation.BottomRight, LogoBackgroundShape logoBackgroundShape = LogoBackgroundShape.Circle,   double pixelSizeFactor = 0.8,
+        public SKImage GetGraphic(int pixelsPerModule, SKColor darkColor, SKColor lightColor, SKColor backgroundColor, SKImage? logoImage = null, LogoLocation logoLocation = LogoLocation.BottomRight, LogoBackgroundShape logoBackgroundShape = LogoBackgroundShape.Circle, double pixelSizeFactor = 0.8,
                                  bool drawQuietZones = true)
         {
             if (pixelSizeFactor > 1)
@@ -67,26 +64,37 @@ namespace QRCoder.ImageSharp
             var offset = (drawQuietZones ? 0 : 4);
             var size = numModules * pixelsPerModule;
 
-            var image = new Image<Rgba32>(size, size);
+            var imageInfo = new SKImageInfo(size, size, SKColorType.RgbaF32);
 
-            var options = new DrawingOptions
+            using var surface = SKSurface.Create(imageInfo);
+
+            var canvas = surface.Canvas;
+
+            var lightBrush = new SKPaint
             {
-                GraphicsOptions = new GraphicsOptions
-                {
-                    Antialias = true,
-                    AntialiasSubpixelDepth = 2
-                }
+                Color = lightColor,
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill
             };
 
-            IBrush lightBrush = Brushes.Solid(lightColor);
-            IBrush darkBrush = Brushes.Solid(darkColor);
+            var darkBrush = new SKPaint
+            {
+                Color = darkColor,
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill
+            };
 
-            IBrush backgroundBrush = Brushes.Solid(backgroundColor);
+            var backgroundBrush = new SKPaint
+            {
+                Color = backgroundColor,
+                IsAntialias = true,
+                Style = SKPaintStyle.Fill
+            };
+
 
             //background rectangle:
-            IPath backgroundRectangle = new RectangularPolygon(0, 0, size, size);
 
-            image.Mutate(x => x.Fill(options, brush: backgroundBrush, path: backgroundRectangle));
+            canvas.DrawRect(0, 0, size, size, backgroundBrush);
 
             //if (backgroundImage != null)
             //{
@@ -108,7 +116,7 @@ namespace QRCoder.ImageSharp
             {
                 for (var y = 0; y < numModules; y += 1)
                 {
-                    var rectangleF = new RectangularPolygon(x * pixelsPerModule, y * pixelsPerModule, pixelsPerModule, pixelsPerModule);
+                    var rectangleF = SKRect.Create(x * pixelsPerModule, y * pixelsPerModule, pixelsPerModule, pixelsPerModule); //creates a rectangle in positions x * pixelsPerModule, y * pixelsPerModule and with the width, height pixelsPerModule. Do not use the constructor since that uses the 4 point location.
 
                     var pixelIsDark = this.QrCodeData.ModuleMatrix[offset + y][offset + x];
                     var solidBrush = pixelIsDark ? darkBrush : lightBrush;
@@ -116,51 +124,62 @@ namespace QRCoder.ImageSharp
 
                     if (!IsPartOfFinderPattern(x, y, numModules, offset))
                         if (drawQuietZones && IsPartOfQuietZone(x, y, numModules))
-                            image.Mutate(im => im.Fill(options, solidBrush, rectangleF));
+                            canvas.DrawRect(rectangleF, solidBrush); // .Mutate(im => im.Fill(options, solidBrush, rectangleF));
                         else
-                            image.Mutate(im => im.Fill(options, solidBrush, rectangleF));
+                            canvas.DrawRect(rectangleF, solidBrush); // .Mutate(im => im.Fill(options, solidBrush, rectangleF));
                     else
-                        image.Mutate(im => im.Fill(options, solidBrush, rectangleF));
+                        canvas.DrawRect(rectangleF, solidBrush); // .Mutate(im => im.Fill(options, solidBrush, rectangleF));
                 }
             }
 
-            if(logoImage != null)
+            if (logoImage != null)
             {
                 var logoSize = (int)(size * 0.15);
                 var logoOffset = drawQuietZones ? 4 : 0;
+
                 var locationPadding = logoLocation switch
                 {
-                    LogoLocation.Center => new PointF(size / 2, size / 2),
-                    _ => new Point(size - logoSize / 2 - logoOffset * pixelsPerModule, size - logoSize / 2 - logoOffset * pixelsPerModule),
+                    LogoLocation.Center => new SKPoint(size / 2, size / 2),
+                    _ => new SKPoint(size - logoSize / 2 - logoOffset * pixelsPerModule, size - logoSize / 2 - logoOffset * pixelsPerModule),
                 };
-                
 
                 var locationLogo = logoLocation switch
                 {
-                    LogoLocation.Center => new Point(size / 2 - logoSize / 2, size / 2 - logoSize / 2),
-                    _ => new Point(size - logoSize - logoOffset * pixelsPerModule, size - logoSize - logoOffset * pixelsPerModule),
+                    LogoLocation.Center => new SKPoint(size / 2 - logoSize / 2, size / 2 - logoSize / 2),
+                    _ => new SKPoint(size - logoSize - logoOffset * pixelsPerModule, size - logoSize - logoOffset * pixelsPerModule),
                 };
 
+                
 
-                IPath backgroundShape = logoBackgroundShape switch
+                switch (logoBackgroundShape)
                 {
-                    LogoBackgroundShape.Circle => new EllipsePolygon(locationPadding, logoSize / 2),
-                    _ => logoLocation == LogoLocation.Center ? new RectangularPolygon(size / 2 - logoSize/2, size /2 - logoSize /2, logoSize, logoSize) : new RectangularPolygon(size - logoSize - logoOffset * pixelsPerModule, size - logoSize - logoOffset * pixelsPerModule, logoSize, logoSize),
+                    case LogoBackgroundShape.Circle:
+                        canvas.DrawOval(locationPadding, new SKSize(1.20f*logoSize / 2, 1.20f * logoSize/2), backgroundBrush);
+
+                        break;
+                    case LogoBackgroundShape.Rectangle:
+                        var paddingRectangle = logoLocation switch
+                        {
+                            LogoLocation.Center => SKRect.Create(size / 2 - logoSize / 2, size / 2 - logoSize / 2, logoSize, logoSize),
+                            _ => SKRect.Create(size - logoSize - logoOffset * pixelsPerModule, size - logoSize - logoOffset * pixelsPerModule, logoSize, logoSize)
+                        };
+                        paddingRectangle.Inflate(1.05f, 1.05f);
+                        canvas.DrawRect(paddingRectangle, backgroundBrush);
+                        break;
+                }
+
+
+                var destinationArea = logoLocation switch
+                {
+                    LogoLocation.Center => SKRect.Create(size / 2 - logoSize / 2, size / 2 - logoSize / 2, logoSize, logoSize),
+                    _ => SKRect.Create(size - logoSize - logoOffset * pixelsPerModule, size - logoSize - logoOffset * pixelsPerModule, logoSize, logoSize)
                 };
-                    
-                backgroundShape = backgroundShape.Scale(1.03f);
+                //var sourceArea = SKRect.Create(logoImage.Info.Width, logoImage.Info.Height);
 
-                image.Mutate(x => x.Fill(backgroundBrush, backgroundShape));
-
-                logoImage = logoImage.Clone(x =>
-                {
-                    x.Resize(logoSize, logoSize);
-                    
-                });
-                image.Mutate(x => x.DrawImage(logoImage, locationLogo, 1));
+                canvas.DrawImage(logoImage, destinationArea);
             }
 
-            return image;
+            return surface.Snapshot();
         }
 
         /// <summary>
