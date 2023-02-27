@@ -311,7 +311,7 @@ namespace QRCoder
             private readonly string url;
 
             /// <summary>
-            /// Generates a link. If not given, http/https protocol will be added.
+            /// Generates a link. If protocol not given, http protocol will be added.
             /// </summary>
             /// <param name="url">Link url target</param>
             public Url(string url)
@@ -321,7 +321,7 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return (!this.url.StartsWith("http") ? "http://" + this.url : this.url);
+                return (!this.url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "http://" + this.url : this.url);
             }
         }
 
