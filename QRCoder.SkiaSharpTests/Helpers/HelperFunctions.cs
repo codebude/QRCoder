@@ -62,19 +62,15 @@ namespace QRCoderTests.Helpers
 #endif
 
 
-#if !NETCOREAPP1_1
-        public static string BitmapToHash(Bitmap bmp)
-        {
-            byte[] imgBytes = null;
-            using (var ms = new MemoryStream())
-            {
-                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                imgBytes = ms.ToArray();
-                ms.Dispose();
-            }
-            return ByteArrayToHash(imgBytes);
-        }
-#endif
+//#if NET6_0
+//        public static string ImageToHash(SixLabors.ImageSharp.Image image)
+//        {
+//            using var ms = new MemoryStream();
+//            image.Save(ms, new PngEncoder());
+//            byte[] imgBytes = ms.ToArray();
+//            return ByteArrayToHash(imgBytes);
+//        }
+//#endif
 
         public static string ByteArrayToHash(byte[] data)
         {
