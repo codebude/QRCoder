@@ -116,7 +116,7 @@ namespace QRCoderConsole
                 }
                 else
                 {
-                    var stdin = Console.OpenStandardInput();
+                      var stdin = Console.OpenStandardInput();
 
                     text = GetTextFromStream(stdin);
                 }

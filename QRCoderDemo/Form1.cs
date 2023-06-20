@@ -9,61 +9,78 @@ using System.Windows.Forms;
 using QRCoder;
 using System.Drawing.Imaging;
 using System.IO;
+using QRCoder.UI;
 
 namespace QRCoderDemo
 {
-    public partial class Form1 : Form
+    public partial class Form1 : Form, IQRCodeView
     {
         public Form1()
         {
             InitializeComponent();
+
         }
+
+        #region     fields
+        private readonly QRCodeAction action = new QRCodeAction();
+        #endregion
+
+        #region events
+        public ButtonClick GenerateClicked { get; set; }
+        public SelectClick SelectClicked { get; set; }
+        public SaveClick SaveClicked { get; set; }
+        public ValueChange CodeChanged { get; set; }
+        public ValueChange ECCLevelChanged { get; set; }
+        public ColorChange PrimaryColorChanged { get; set; }
+        public ColorChange BackgroundColorChanged { get; set; }
+        #endregion
+
+        #region props
+        public string QRCode { get => textBoxQRCode.Text; set => textBoxQRCode.Text = value; }
+        public Image QRCodeImage { get => pictureBoxQRCode.BackgroundImage; set => pictureBoxQRCode.BackgroundImage = value; }
+        public Size QRCodeImageSize { get => pictureBoxQRCode.Size; set => pictureBoxQRCode.Size = value; }
+        public int QRCodeImageSizeMode { get => (int)pictureBoxQRCode.SizeMode; set => pictureBoxQRCode.SizeMode = (PictureBoxSizeMode)value; }
+        public int IconSize { get => (int)iconSize.Value; set => iconSize.Value = value; }
+        public string IconPath { get => iconPath.Text; set => iconPath.Text = value; }
+        public Bitmap IconImage
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(IconPath))
+                    return null;
+                return new Bitmap(IconPath);
+            }
+        }
+
+        public string SelectedEccLevel { get => comboBoxECC.SelectedItem as string; set => comboBoxECC.SelectedText = value; }
+        public List<string> EccLevels { get => (comboBoxECC.DataSource as List<string>); set => comboBoxECC.DataSource = value; }
+        public Color PrimaryColor { get => panelPreviewPrimaryColor.BackColor; set => panelPreviewPrimaryColor.BackColor = value; }
+        public Color BackgroundColor { get => panelPreviewBackgroundColor.BackColor; set => panelPreviewBackgroundColor.BackColor = value; }
+
+        public bool IsPC => true;
+
+        #region props -> Texts
+        public string GenerateButtonText { set => buttonGenerate.Text = value; }
+        public string SelectButtonText { set => selectIconBtn.Text = value; }
+        public string SaveButtonText { set => buttonSave.Text = value; }
+        public string EccLevelLabelText { set => labelECC.Text = value; }
+        public string PrimaryColorLabelText { set => labelPreviewPrimaryColor.Text = value; }
+        public string BackgroundColorLabelText { set => labelPreviewBackgroundColor.Text = value; }
+        public string IconSizeLabelText { set => labelIconsize.Text = value; }
+        public string IconLabelText { set => labelIcon.Text = value; }
+        #endregion
+        #endregion
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            comboBoxECC.SelectedIndex = 0; //Pre-select ECC level "L"
-            RenderQrCode();
+            action.Perform(this);
         }
 
         private void buttonGenerate_Click(object sender, EventArgs e)
         {
-            RenderQrCode();
+            GenerateClicked?.Invoke();
         }
 
-        private void RenderQrCode()
-        {
-            string level = comboBoxECC.SelectedItem.ToString();
-            QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
-            using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-            using (QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel))
-            using (QRCode qrCode = new QRCode(qrCodeData))
-            {
-                pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, GetPrimaryColor(), GetBackgroundColor(),
-                    GetIconBitmap(), (int)iconSize.Value);
-
-                this.pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
-                //Set the SizeMode to center the image.
-                this.pictureBoxQRCode.SizeMode = PictureBoxSizeMode.CenterImage;
-
-                pictureBoxQRCode.SizeMode = PictureBoxSizeMode.StretchImage;
-            }
-        }
-
-        private Bitmap GetIconBitmap()
-        {
-            if (iconPath.Text.Length == 0)
-            {
-                return null;
-            }
-            try
-            {
-                return new Bitmap(iconPath.Text);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
-        }
 
         private void selectIconBtn_Click(object sender, EventArgs e)
         {
@@ -73,15 +90,11 @@ namespace QRCoderDemo
             openFileDlg.CheckFileExists = true;
             if (openFileDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                iconPath.Text = openFileDlg.FileName;
-                if (iconSize.Value == 0)
-                {
-                    iconSize.Value = 15;
-                }
+                SelectClicked?.Invoke(openFileDlg.FileName);
             }
             else
             {
-                iconPath.Text = "";
+                SelectClicked?.Invoke(string.Empty);
             }
         }
 
@@ -98,58 +111,28 @@ namespace QRCoderDemo
             // If the file name is not an empty string open it for saving.
             if (saveFileDialog1.FileName != "")
             {
-                // Saves the Image via a FileStream created by the OpenFile method.
-                using (FileStream fs = (System.IO.FileStream) saveFileDialog1.OpenFile())
-                {
-                    // Saves the Image in the appropriate ImageFormat based upon the
-                    // File type selected in the dialog box.
-                    // NOTE that the FilterIndex property is one-based.
-
-                    ImageFormat imageFormat = null;
-                    switch (saveFileDialog1.FilterIndex)
-                    {
-                        case 1:
-                            imageFormat = ImageFormat.Bmp;
-                            break;
-                        case 2:
-                            imageFormat = ImageFormat.Png;
-                            break;
-                        case 3:
-                            imageFormat = ImageFormat.Jpeg;
-                            break;
-                        case 4:
-                            imageFormat = ImageFormat.Gif;
-                            break;
-                        default:
-                            throw new NotSupportedException("File extension is not supported");
-                    }
-
-                    pictureBoxQRCode.BackgroundImage.Save(fs, imageFormat);
-                }
+                SaveClicked?.Invoke(saveFileDialog1.FileName);
             }
         }
 
-        public void ExportToBmp(string path)
-        {
 
-        }
 
         private void textBoxQRCode_TextChanged(object sender, EventArgs e)
         {
-            RenderQrCode();
+            CodeChanged?.Invoke(QRCode);
         }
 
         private void comboBoxECC_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RenderQrCode();
+            ECCLevelChanged?.Invoke(SelectedEccLevel);
         }
 
         private void panelPreviewPrimaryColor_Click(object sender, EventArgs e)
         {
             if (colorDialogPrimaryColor.ShowDialog() == DialogResult.OK)
             {
-                panelPreviewPrimaryColor.BackColor = colorDialogPrimaryColor.Color;
-                RenderQrCode();
+                PrimaryColor = colorDialogPrimaryColor.Color;
+                PrimaryColorChanged?.Invoke(PrimaryColor);
             }
         }
 
@@ -157,19 +140,10 @@ namespace QRCoderDemo
         {
             if (colorDialogBackgroundColor.ShowDialog() == DialogResult.OK)
             {
-                panelPreviewBackgroundColor.BackColor = colorDialogBackgroundColor.Color;
-                RenderQrCode();
+                BackgroundColor = colorDialogBackgroundColor.Color;
+                BackgroundColorChanged?.Invoke(BackgroundColor);
             }
         }
 
-        private Color GetPrimaryColor()
-        {
-            return panelPreviewPrimaryColor.BackColor;
-        }
-
-        private Color GetBackgroundColor()
-        {
-            return panelPreviewBackgroundColor.BackColor;
-        }
     }
 }
