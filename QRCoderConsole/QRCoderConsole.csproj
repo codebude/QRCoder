@@ -5,7 +5,8 @@
     <!-- <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>-->
     <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
     <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
-	<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
+    <DefineConstants Condition=" $(TargetFramework.StartsWith('net5.0')) == true or $(TargetFramework.StartsWith('net6.0')) == true or '$(TargetFramework)' == 'netstandard2.0' ">$(DefineConstants);IMAGE_SHARP</DefineConstants>
     <Externalconsole>true</Externalconsole>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

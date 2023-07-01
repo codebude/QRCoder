@@ -84,6 +84,8 @@ Besides the normal QRCode class (which is shown in the example above) for creati
 * [SvgQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail)
 * [UnityQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) (_via [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity)_)
 * [XamlQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail) (_via [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml)_)
+* ImageSharp.QRCode (repeats logic of QRCode but uses ImageSharp under the hood)
+* ImageSharp.Base64QRCode (repeats logic of Base64QRCode but uses ImageSharp under the hood)
 
 *Note: Please be aware that not all renderers are available on all target frameworks. Please check the [compatibility table](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#2-overview-of-the-different-renderers) in our wiki, to see if a specific renderer is available on your favourite target framework.*  
 
