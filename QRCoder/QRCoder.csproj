@@ -1,63 +1,80 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
-	  <DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
-    <CheckEolTargetFramework>false</CheckEolTargetFramework>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
+		<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
+		<CheckEolTargetFramework>false</CheckEolTargetFramework>
+		<DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn />
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<NoWarn />
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PackageId>QRCoder</PackageId>
-    <Version>1.4.3</Version>
-    <Authors>Raffael Herrmann</Authors>
-    <PackageOwners>Raffael Herrmann</PackageOwners>
-    <AssemblyName>QRCoder</AssemblyName>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/codebude/QRCoder/</PackageProjectUrl>
-    <PackageIcon>nuget-icon.png</PackageIcon>
-    <PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
-    <PackageTags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</PackageTags>
-    <RepositoryUrl>https://github.com/codebude/QRCoder.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <Description>QRCoder is a simple library, written in C#.NET, which enables you to create QR codes.</Description>
-  </PropertyGroup>
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<PackageId>QRCoder</PackageId>
+		<Version>1.4.3</Version>
+		<Authors>Raffael Herrmann</Authors>
+		<PackageOwners>Raffael Herrmann</PackageOwners>
+		<AssemblyName>QRCoder</AssemblyName>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/codebude/QRCoder/</PackageProjectUrl>
+		<PackageIcon>nuget-icon.png</PackageIcon>
+		<PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
+		<PackageTags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</PackageTags>
+		<RepositoryUrl>https://github.com/codebude/QRCoder.git</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<Description>QRCoder is a simple library, written in C#.NET, which enables you to create QR codes.</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="Assets\nuget-icon.png" Pack="true" PackagePath="\" />
-    <None Include="Assets\nuget-readme.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="WindowsBase" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net5.0-windows' ">
-    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
-  </ItemGroup>
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	<ItemGroup>
+		<None Include="Assets\nuget-icon.png" Pack="true" PackagePath="\" />
+		<None Include="Assets\nuget-readme.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-  <PropertyGroup>
-    <FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
-    <AutomaticallyUseReferenceAssemblyPackages Condition=" '$(TargetFramework)' == 'net35' ">false</AutomaticallyUseReferenceAssemblyPackages>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-  </PropertyGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
+		<Reference Include="PresentationCore" />
+		<Reference Include="PresentationFramework" />
+		<Reference Include="WindowsBase" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">
+		<PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net5.0-windows' ">
+		<PackageReference Include="System.Drawing.Common" Version="5.0.3" />
+	</ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
+		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+		<PackageReference Include="SkiaSharp">
+			<Version>2.88.3</Version>
+		</PackageReference>
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net5.0-windows'">
+		<PackageReference Include="SkiaSharp">
+			<Version>2.88.3</Version>
+		</PackageReference>
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
+		<PackageReference Include="SkiaSharp">
+			<Version>2.88.3</Version>
+		</PackageReference>
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.0.1" />
+	</ItemGroup>
+
+
+	<PropertyGroup>
+		<FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
+		<AutomaticallyUseReferenceAssemblyPackages Condition=" '$(TargetFramework)' == 'net35' ">false</AutomaticallyUseReferenceAssemblyPackages>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
+		<DelaySign>false</DelaySign>
+	</PropertyGroup>
 
 </Project>
