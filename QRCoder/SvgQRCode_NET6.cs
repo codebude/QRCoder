@@ -1,6 +1,5 @@
 ﻿#if NET6_0
 using QRCoder.Extensions;
-using SixLabors.ImageSharp;
 using SkiaSharp;
 using System;
 using System.Collections;
@@ -25,7 +24,7 @@ namespace QRCoder
         public string GetGraphic(int pixelsPerModule)
         {
             var viewBox = new SKSize(pixelsPerModule * this.QrCodeData.ModuleMatrix.Count, pixelsPerModule * this.QrCodeData.ModuleMatrix.Count);
-            return this.GetGraphic(viewBox, Color.Black.ToHex(), Color.White.ToHex());
+            return this.GetGraphic(viewBox, SKColors.Black, SKColors.White);
         }
 
         /// <summary>
@@ -38,12 +37,12 @@ namespace QRCoder
         /// <param name="sizingMode">Defines if width/height or viewbox should be used for size definition</param>
         /// <param name="logo">A (optional) logo to be rendered on the code (either Bitmap or SVG)</param>
         /// <returns>SVG as string</returns>
-        public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo_NET6 logo = null)
+        public string GetGraphic(int pixelsPerModule, SKColor darkColor, SKColor lightColor, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo_NET6 logo = null)
         {
             var offset = drawQuietZones ? 0 : 4;
             var edgeSize = this.QrCodeData.ModuleMatrix.Count * pixelsPerModule - (offset * 2 * pixelsPerModule);
             var viewBox = new SKSize(edgeSize, edgeSize);
-            return this.GetGraphic(viewBox, darkColor.ToHex(), lightColor.ToHex(), drawQuietZones, sizingMode, logo);
+            return this.GetGraphic(viewBox, darkColor.ToString(), lightColor.ToString(), drawQuietZones, sizingMode, logo);
         }
 
         /// <summary>
@@ -180,6 +179,34 @@ namespace QRCoder
             return svgFile.ToString();
         }
 
+        /// <summary>
+        /// Returns a QR code as SVG string with optional quietzone and logo
+        /// </summary>
+        /// <param name="viewBox">The viewbox of the QR code graphic</param>
+        /// <param name="drawQuietZones">If true a white border is drawn around the whole QR Code</param>
+        /// <param name="sizingMode">Defines if width/height or viewbox should be used for size definition</param>
+        /// <param name="logo">A (optional) logo to be rendered on the code (either Bitmap or SVG)</param>
+        /// <returns>SVG as string</returns>
+        public string GetGraphic(SKSize viewBox, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo_NET6 logo = null)
+        {
+            return this.GetGraphic(viewBox, SKColors.Black, SKColors.White, drawQuietZones, sizingMode, logo);
+        }
+
+        /// <summary>
+        /// Returns a QR code as SVG string with custom colors and optional quietzone and logo
+        /// </summary>
+        /// <param name="viewBox">The viewbox of the QR code graphic</param>
+        /// <param name="darkColor">Color of the dark modules</param>
+        /// <param name="lightColor">Color of the light modules</param>
+        /// <param name="drawQuietZones">If true a white border is drawn around the whole QR Code</param>
+        /// <param name="sizingMode">Defines if width/height or viewbox should be used for size definition</param>
+        /// <param name="logo">A (optional) logo to be rendered on the code (either Bitmap or SVG)</param>
+        /// <returns>SVG as string</returns>
+        public string GetGraphic(SKSize viewBox, SKColor darkColor, SKColor lightColor, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo_NET6 logo = null)
+        {
+            return this.GetGraphic(viewBox, darkColor.ToString(), lightColor.ToString(), drawQuietZones, sizingMode, logo);
+        }
+
         private bool IsBlockedByLogo(double x, double y, ImageAttributes? attr, double pixelPerModule)
         {
             return x + pixelPerModule >= attr.Value.X && x <= attr.Value.X + attr.Value.Width && y + pixelPerModule >= attr.Value.Y && y <= attr.Value.Y + attr.Value.Height;
@@ -244,12 +271,12 @@ namespace QRCoder
             /// <param name="iconRasterized">Logo to be rendered as Bitmap/rasterized graphic</param>
             /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
             /// <param name="fillLogoBackground">If true, the background behind the logo will be cleaned</param>
-            public SvgLogo_NET6(Image iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true)
+            public SvgLogo_NET6(SKImage iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true)
             {
                 _iconSizePercent = iconSizePercent;
                 using (var ms = new System.IO.MemoryStream())
                 {
-                    iconRasterized.SaveAsPng(ms);
+                    iconRasterized.Encode(SKEncodedImageFormat.Png, 100).SaveTo(ms);
                     _logoData = Convert.ToBase64String(ms.GetBuffer(), Base64FormattingOptions.None);
                 }
 
