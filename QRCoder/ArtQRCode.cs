@@ -120,9 +120,10 @@ namespace QRCoder
                         if (finderPatternImage != null)
                         {
                             var finderPatternSize = 7 * pixelsPerModule;
-                            graphics.DrawImage(finderPatternImage, new Rectangle(0, 0, finderPatternSize, finderPatternSize));
-                            graphics.DrawImage(finderPatternImage, new Rectangle(size - finderPatternSize, 0, finderPatternSize, finderPatternSize));
-                            graphics.DrawImage(finderPatternImage, new Rectangle(0, size - finderPatternSize, finderPatternSize, finderPatternSize));
+                            var finderPatternOffset = drawQuietZones ? 4 * pixelsPerModule : 0;
+                            graphics.DrawImage(finderPatternImage, new Rectangle(finderPatternOffset, finderPatternOffset, finderPatternSize, finderPatternSize));
+                            graphics.DrawImage(finderPatternImage, new Rectangle(size - finderPatternOffset - finderPatternSize, finderPatternOffset, finderPatternSize, finderPatternSize));
+                            graphics.DrawImage(finderPatternImage, new Rectangle(finderPatternOffset, size - finderPatternOffset - finderPatternSize, finderPatternSize, finderPatternSize));
                         }
                         graphics.Save();
                     }
