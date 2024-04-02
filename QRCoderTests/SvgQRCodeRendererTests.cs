@@ -120,8 +120,9 @@ namespace QRCoderTests
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
 
             var result = HelperFunctions.StringToHash(svg);
-            result.ShouldBe("7d53f25af04e52b20550deb2e3589e96");
+            result.ShouldBe("78e02e8ba415f15817d5ed88c4afca31");
         }
+#endif
 
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
@@ -141,7 +142,6 @@ namespace QRCoderTests
             var result = HelperFunctions.StringToHash(svg);
             result.ShouldBe("7d53f25af04e52b20550deb2e3589e96");
         }
-#endif
 
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
