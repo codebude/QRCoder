@@ -107,11 +107,7 @@ namespace QRCoderTests
                 var bmp = (Bitmap)Image.FromStream(mStream);
                 bmp.MakeTransparent(Color.Transparent);
                 var result = HelperFunctions.BitmapToHash(bmp);
-#if NET35_OR_GREATER || NET40_OR_GREATER
-                result.ShouldBe("75be11d582575617d2490c54b69e844e");
-#else
                 result.ShouldBe("fbbc8255ebf3e4f4a1d21f0dd15f76f8");
-#endif
             }
 #endif
         }
