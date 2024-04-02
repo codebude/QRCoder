@@ -103,7 +103,7 @@ namespace QRCoderTests
             result.ShouldBe("4ab0417cc6127e347ca1b2322c49ed7d");
         }
 
-#if !NET6_0
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
         public void can_render_svg_qrcode_with_png_logo()
