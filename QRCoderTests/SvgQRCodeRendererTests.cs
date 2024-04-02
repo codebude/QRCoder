@@ -1,4 +1,4 @@
-﻿#if !NETCOREAPP1_1 && !NET6_0
+﻿#if !NETCOREAPP1_1
 using System;
 using Xunit;
 using QRCoder;
@@ -103,6 +103,7 @@ namespace QRCoderTests
             result.ShouldBe("4ab0417cc6127e347ca1b2322c49ed7d");
         }
 
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
         public void can_render_svg_qrcode_with_png_logo_bitmap()
@@ -140,6 +141,7 @@ namespace QRCoderTests
             var result = HelperFunctions.StringToHash(svg);
             result.ShouldBe("7d53f25af04e52b20550deb2e3589e96");
         }
+#endif
 
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
