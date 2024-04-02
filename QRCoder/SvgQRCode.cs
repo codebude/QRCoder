@@ -1,4 +1,4 @@
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0_OR_GREATER
 using QRCoder.Extensions;
 using System;
 using System.Collections;
@@ -11,9 +11,6 @@ using static QRCoder.SvgQRCode;
 
 namespace QRCoder
 {
-#if NET6_0_WINDOWS
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
     public class SvgQRCode : AbstractQRCode, IDisposable
     {
         /// <summary>
@@ -270,13 +267,16 @@ namespace QRCoder
             private object _logoRaw;
             private bool _isEmbedded;
 
-
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
             /// <summary>
             /// Create a logo object to be used in SvgQRCode renderer
             /// </summary>
             /// <param name="iconRasterized">Logo to be rendered as Bitmap/rasterized graphic</param>
             /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
             /// <param name="fillLogoBackground">If true, the background behind the logo will be cleaned</param>
+#if NET6_0_WINDOWS
+            [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
             public SvgLogo(Bitmap iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true)
             {
                 _iconSizePercent = iconSizePercent;
@@ -293,6 +293,7 @@ namespace QRCoder
                 _logoRaw = iconRasterized;
                 _isEmbedded = false;
             }
+#endif
 
             /// <summary>
             /// Create a logo object to be used in SvgQRCode renderer
@@ -379,9 +380,6 @@ namespace QRCoder
         }
     }
 
-#if NET6_0_WINDOWS
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
     public static class SvgQRCodeHelper
     {
         public static string GetQRCode(string plainText, int pixelsPerModule, string darkColorHex, string lightColorHex, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo logo = null)
