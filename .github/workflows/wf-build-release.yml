@@ -123,7 +123,7 @@ jobs:
     needs: test
     runs-on: windows-2019
     env:
-      GH_PKG_SEC: ${{ secrets.GH_PKG_REPO }}
+      GH_PKG_SEC: ${{ secrets.GITHUB_TOKEN }}
     steps:   
     - name: Download artifacts
       uses: actions/download-artifact@v4
