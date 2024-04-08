@@ -10,11 +10,11 @@ jobs:
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
       name: Checkout Code
     
     - name: Install additional .NET SDKs
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: | 
           1.0.x
@@ -26,7 +26,7 @@ jobs:
       uses: microsoft/setup-msbuild@v1      
        
     - name: Setup NuGet
-      uses: NuGet/setup-nuget@v1.0.2
+      uses: NuGet/setup-nuget@v2
      
     - name: Restore NuGet Packages
       run: nuget restore QRCoder.sln
@@ -35,7 +35,7 @@ jobs:
       run: msbuild QRCoder.sln /p:Configuration=Release /p:NoWarn="1182" /p:NoWarn="1701" /nr:false /t:Rebuild
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v1.0.0
+      uses: actions/upload-artifact@v4
       with:
         name: Compiled project
         path: D:\a\qrcoder\qrcoder
@@ -45,13 +45,13 @@ jobs:
     runs-on: windows-2019
     steps:   
     - name: Download artifacts
-      uses: actions/download-artifact@v1.0.0
+      uses: actions/download-artifact@v4
       with:
         name: Compiled project
         path: D:\a\qrcoder\qrcoder    
 
     - name: Install additional .NET SDKs
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: | 
           1.0.x
@@ -123,16 +123,16 @@ jobs:
     needs: test
     runs-on: windows-2019
     env:
-      GH_PKG_SEC: ${{ secrets.GH_PKG_REPO }}
+      GH_PKG_SEC: ${{ secrets.GITHUB_TOKEN }}
     steps:   
     - name: Download artifacts
-      uses: actions/download-artifact@v1.0.0
+      uses: actions/download-artifact@v4
       with:
         name: Compiled project
         path: D:\a\qrcoder\qrcoder
 
     - name: Install additional .NET SDKs
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: | 
           1.0.x
@@ -177,6 +177,6 @@ jobs:
     runs-on: windows-2019
     steps:
     - name: Delete artifacts
-      uses: GeekyEggo/delete-artifact@v1.0.0
+      uses: GeekyEggo/delete-artifact@v5
       with:
         name: Compiled project
