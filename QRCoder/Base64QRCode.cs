@@ -112,8 +112,7 @@ namespace QRCoder
         {
             var base64 = string.Empty;
             ImageFormat iFormat;
-            switch (imgType)
-            {
+            switch (imgType) {
                 case ImageType.Png:
                     iFormat = ImageFormat.Png;
                     break;
