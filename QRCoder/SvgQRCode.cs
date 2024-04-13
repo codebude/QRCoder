@@ -285,7 +285,7 @@ namespace QRCoder
                     using (var bitmap = new Bitmap(iconRasterized))
                     {
                         bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                        _logoData = Convert.ToBase64String(ms.GetBuffer(), Base64FormattingOptions.None); 
+                        _logoData = Convert.ToBase64String(ms.GetBuffer(), 0, (int)ms.Length, Base64FormattingOptions.None); 
                     }
                 }
                 _mediaType = MediaType.PNG;
@@ -310,6 +310,22 @@ namespace QRCoder
                 _fillLogoBackground = fillLogoBackground;
                 _logoRaw = iconVectorized;
                 _isEmbedded = iconEmbedded;
+            }
+
+            /// <summary>
+            /// Create a logo object to be used in SvgQRCode renderer
+            /// </summary>
+            /// <param name="iconRasterized">Logo to be rendered as PNG</param>
+            /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
+            /// <param name="fillLogoBackground">If true, the background behind the logo will be cleaned</param>
+            public SvgLogo(byte[] iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true)
+            {
+                _iconSizePercent = iconSizePercent;
+                _logoData = Convert.ToBase64String(iconRasterized, Base64FormattingOptions.None);
+                _mediaType = MediaType.PNG;
+                _fillLogoBackground = fillLogoBackground;
+                _logoRaw = iconRasterized;
+                _isEmbedded = false;
             }
 
             /// <summary>

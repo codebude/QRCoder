@@ -2013,6 +2013,7 @@ namespace QRCoder
                 }
                 string strippedSecret = Secret.Replace(" ", "");
                 string escapedIssuer = null;
+                string escapedLabel = null;
                 string label = null;
 
                 if (!String40Methods.IsNullOrWhiteSpace(Issuer))
@@ -2024,18 +2025,22 @@ namespace QRCoder
                     escapedIssuer = Uri.EscapeDataString(Issuer);
                 }
 
-                if (!String40Methods.IsNullOrWhiteSpace(Label) && Label.Contains(":"))
+                if (!String40Methods.IsNullOrWhiteSpace(Label))
                 {
-                    throw new Exception("Label must not have a ':'");
+                    if (Label.Contains(":"))
+                    {
+                        throw new Exception("Label must not have a ':'");
+                    }
+                    escapedLabel = Uri.EscapeDataString(Label);
                 }
 
-                if (Label != null && Issuer != null)
+                if (escapedLabel != null && escapedIssuer != null)
                 {
-                    label = Issuer + ":" + Label;                    
+                    label = escapedIssuer + ":" + escapedLabel;
                 }
-                else if (Issuer != null)
+                else if (escapedIssuer != null)
                 {
-                    label = Issuer;
+                    label = escapedIssuer;
                 }
 
                 if (label != null)

@@ -52,7 +52,7 @@ namespace QRCoder
                 var lineBuilder = new StringBuilder();
                 for (var x = 0; x < QrCodeData.ModuleMatrix.Count - quietZonesModifier; x++)
                 {
-                    var module = QrCodeData.ModuleMatrix[x + quietZonesOffset][((y + verticalNumberOfRepeats) / verticalNumberOfRepeats - 1)+quietZonesOffset];
+                    var module = QrCodeData.ModuleMatrix[((y + verticalNumberOfRepeats) / verticalNumberOfRepeats - 1)+quietZonesOffset][x + quietZonesOffset];
                     for (var i = 0; i < repeatPerModule; i++)
                     {
                         lineBuilder.Append(module ? darkColorString : whiteSpaceString);
