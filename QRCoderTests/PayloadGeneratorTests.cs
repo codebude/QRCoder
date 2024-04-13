@@ -331,7 +331,6 @@ namespace QRCoderTests
             generator.ToString().ShouldBe($"WIFI:T:WPA2;S:MyWiFiSSID;P:7heP4assw0rd;;");
         }
 
-
         [Fact]
         [Category("PayloadGenerator/WiFi")]
         public void wifi_should_ignore_hiddenSSID_param()
