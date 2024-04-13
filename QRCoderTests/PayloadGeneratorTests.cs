@@ -317,6 +317,20 @@ namespace QRCoderTests
             generator.ToString().ShouldBe($"WIFI:T:WPA;S:MyWiFiSSID;P:7heP4assw0rd;;");
         }
 
+        [Fact]
+        [Category("PayloadGenerator/WiFi")]
+        public void wifi_should_build_wpa2()
+        {
+            var ssid = "MyWiFiSSID";
+            var password = "7heP4assw0rd";
+            var authmode = PayloadGenerator.WiFi.Authentication.WPA2;
+            var hideSSID = false;
+
+            var generator = new PayloadGenerator.WiFi(ssid, password, authmode, hideSSID);
+
+            generator.ToString().ShouldBe($"WIFI:T:WPA2;S:MyWiFiSSID;P:7heP4assw0rd;;");
+        }
+
 
         [Fact]
         [Category("PayloadGenerator/WiFi")]

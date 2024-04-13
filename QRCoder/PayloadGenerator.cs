@@ -53,7 +53,8 @@ namespace QRCoder
             {
                 WEP,
                 WPA,
-                nopass
+                nopass,
+                WPA2
             }
         }
 
