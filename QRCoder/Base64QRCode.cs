@@ -60,11 +60,6 @@ namespace QRCoder
                 }
 
                 return Convert.ToBase64String(pngData, Base64FormattingOptions.None);
-
-                byte[] ToRgba(Color color)
-                {
-                    return new byte[] { color.R, color.G, color.B, color.A };
-                }
             }
 
 #if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
