@@ -14,12 +14,10 @@ namespace QRCoder
         /// <summary>
         /// Constructor without params to be used in COM Objects connections
         /// </summary>
-        public Base64QRCode()
-        {
+        public Base64QRCode() {
         }
 
-        public Base64QRCode(QRCodeData data) : base(data)
-        {
+        public Base64QRCode(QRCodeData data) : base(data) {
         }
 
         public string GetGraphic(int pixelsPerModule)
