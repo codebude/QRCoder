@@ -112,11 +112,7 @@ namespace QRCoderTests
             var bmp = ArtQRCodeHelper.GetQRCode("A", 10, Color.Black, Color.White, Color.Transparent, QRCodeGenerator.ECCLevel.L);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-#if NET35_OR_GREATER || NET40_OR_GREATER
-            result.ShouldBe("fea51114bc4ff893542a1c0574c82a07");
-#else
             result.ShouldBe("6c1bb8257349b29f76e50c3fa8abd9c9");
-#endif
         }
     }
 }
