@@ -53,7 +53,8 @@ namespace QRCoder
             {
                 WEP,
                 WPA,
-                nopass
+                nopass,
+                WPA2
             }
         }
 
@@ -311,7 +312,7 @@ namespace QRCoder
             private readonly string url;
 
             /// <summary>
-            /// Generates a link. If not given, http/https protocol will be added.
+            /// Generates a link. If the protocol is not specified, the http protocol will be added.
             /// </summary>
             /// <param name="url">Link url target</param>
             public Url(string url)
@@ -321,7 +322,7 @@ namespace QRCoder
 
             public override string ToString()
             {
-                return (!this.url.StartsWith("http") ? "http://" + this.url : this.url);
+                return (!this.url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "http://" + this.url : this.url);
             }
         }
 
@@ -2012,6 +2013,7 @@ namespace QRCoder
                 }
                 string strippedSecret = Secret.Replace(" ", "");
                 string escapedIssuer = null;
+                string escapedLabel = null;
                 string label = null;
 
                 if (!String40Methods.IsNullOrWhiteSpace(Issuer))
@@ -2023,18 +2025,22 @@ namespace QRCoder
                     escapedIssuer = Uri.EscapeDataString(Issuer);
                 }
 
-                if (!String40Methods.IsNullOrWhiteSpace(Label) && Label.Contains(":"))
+                if (!String40Methods.IsNullOrWhiteSpace(Label))
                 {
-                    throw new Exception("Label must not have a ':'");
+                    if (Label.Contains(":"))
+                    {
+                        throw new Exception("Label must not have a ':'");
+                    }
+                    escapedLabel = Uri.EscapeDataString(Label);
                 }
 
-                if (Label != null && Issuer != null)
+                if (escapedLabel != null && escapedIssuer != null)
                 {
-                    label = Issuer + ":" + Label;                    
+                    label = escapedIssuer + ":" + escapedLabel;
                 }
-                else if (Issuer != null)
+                else if (escapedIssuer != null)
                 {
-                    label = Issuer;
+                    label = escapedIssuer;
                 }
 
                 if (label != null)

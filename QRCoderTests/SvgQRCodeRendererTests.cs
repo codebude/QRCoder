@@ -1,4 +1,4 @@
-﻿#if !NETCOREAPP1_1 && !NET6_0
+﻿#if !NETCOREAPP1_1
 using System;
 using Xunit;
 using QRCoder;
@@ -103,9 +103,10 @@ namespace QRCoderTests
             result.ShouldBe("4ab0417cc6127e347ca1b2322c49ed7d");
         }
 
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
-        public void can_render_svg_qrcode_with_png_logo()
+        public void can_render_svg_qrcode_with_png_logo_bitmap()
         {
             //Create QR code
             var gen = new QRCodeGenerator();
@@ -119,7 +120,27 @@ namespace QRCoderTests
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
 
             var result = HelperFunctions.StringToHash(svg);
-            result.ShouldBe("78e02e8ba415f15817d5ed88c4afca31");            
+            result.ShouldBe("78e02e8ba415f15817d5ed88c4afca31");
+        }
+#endif
+
+        [Fact]
+        [Category("QRRenderer/SvgQRCode")]
+        public void can_render_svg_qrcode_with_png_logo_bytearray()
+        {
+            //Create QR code
+            var gen = new QRCodeGenerator();
+            var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
+
+            //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
+            var logoBitmap = System.IO.File.ReadAllBytes(GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png");
+            var logoObj = new SvgQRCode.SvgLogo(iconRasterized: logoBitmap, 15);
+            logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
+
+            var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
+
+            var result = HelperFunctions.StringToHash(svg);
+            result.ShouldBe("7d53f25af04e52b20550deb2e3589e96");
         }
 
         [Fact]

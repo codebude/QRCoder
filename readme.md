@@ -40,13 +40,13 @@ _(More information on how to use Github Packages in Nuget Package Manager can be
 
 ## Usage
 
-You only need five lines of code, to generate and view your first QR code.
+You only need four lines of code, to generate and view your first QR code.
 
 ```csharp
 QRCodeGenerator qrGenerator = new QRCodeGenerator();
 QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
-QRCode qrCode = new QRCode(qrCodeData);
-Bitmap qrCodeImage = qrCode.GetGraphic(20);
+QRCode qrCode = new PngByteQRCode(qrCodeData);
+byte[] qrCodeImage = qrCode.GetGraphic(20);
 ```
 
 ### Optional parameters and overloads
