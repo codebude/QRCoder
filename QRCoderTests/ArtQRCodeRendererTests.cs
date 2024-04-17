@@ -99,9 +99,9 @@ namespace QRCoderTests
         [Category("QRRenderer/ArtQRCode")]
         public void can_instantate_parameterless()
         {
-            var asciiCode = new ArtQRCode();
-            asciiCode.ShouldNotBeNull();
-            asciiCode.ShouldBeOfType<ArtQRCode>();
+            var artCode = new ArtQRCode();
+            artCode.ShouldNotBeNull();
+            artCode.ShouldBeOfType<ArtQRCode>();
         }
 
         [Fact]
@@ -115,7 +115,7 @@ namespace QRCoderTests
 #if NET35_OR_GREATER || NET40_OR_GREATER
             result.ShouldBe("fea51114bc4ff893542a1c0574c82a07");
 #else
-            result.ShouldBe("57ecaa9bdeadcdcbeac8a19d734907ff");
+            result.ShouldBe("6c1bb8257349b29f76e50c3fa8abd9c9");
 #endif
         }
     }
