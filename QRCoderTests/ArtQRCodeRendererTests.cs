@@ -83,9 +83,9 @@ namespace QRCoderTests
         [Category("QRRenderer/ArtQRCode")]
         public void can_instantate_parameterless()
         {
-            var asciiCode = new ArtQRCode();
-            asciiCode.ShouldNotBeNull();
-            asciiCode.ShouldBeOfType<ArtQRCode>();
+            var artCode = new ArtQRCode();
+            artCode.ShouldNotBeNull();
+            artCode.ShouldBeOfType<ArtQRCode>();
         }
 
         [Fact]
@@ -94,7 +94,6 @@ namespace QRCoderTests
         {
             //Create QR code
             var bmp = ArtQRCodeHelper.GetQRCode("A", 10, Color.Black, Color.White, Color.Transparent, QRCodeGenerator.ECCLevel.L);
-
             var result = HelperFunctions.BitmapToHash(bmp);
             result.ShouldBe("57ecaa9bdeadcdcbeac8a19d734907ff");
         }

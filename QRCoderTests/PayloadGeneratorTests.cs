@@ -317,6 +317,19 @@ namespace QRCoderTests
             generator.ToString().ShouldBe($"WIFI:T:WPA;S:MyWiFiSSID;P:7heP4assw0rd;;");
         }
 
+        [Fact]
+        [Category("PayloadGenerator/WiFi")]
+        public void wifi_should_build_wpa2()
+        {
+            var ssid = "MyWiFiSSID";
+            var password = "7heP4assw0rd";
+            var authmode = PayloadGenerator.WiFi.Authentication.WPA2;
+            var hideSSID = false;
+
+            var generator = new PayloadGenerator.WiFi(ssid, password, authmode, hideSSID);
+
+            generator.ToString().ShouldBe($"WIFI:T:WPA2;S:MyWiFiSSID;P:7heP4assw0rd;;");
+        }
 
         [Fact]
         [Category("PayloadGenerator/WiFi")]
@@ -741,6 +754,18 @@ namespace QRCoderTests
             var generator = new PayloadGenerator.Url(url);
 
             generator.ToString().ShouldBe("https://code-bude.net");
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/Url")]
+        public void url_should_build_https_all_caps()
+        {
+            var url = "HTTPS://CODE-BUDE.NET";
+
+            var generator = new PayloadGenerator.Url(url);
+
+            generator.ToString().ShouldBe("HTTPS://CODE-BUDE.NET");
         }
 
 
