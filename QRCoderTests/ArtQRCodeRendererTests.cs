@@ -6,7 +6,6 @@ using Shouldly;
 using System.Drawing;
 using QRCoderTests.Helpers.XUnitExtenstions;
 using QRCoderTests.Helpers;
-using System.Drawing.Imaging;
 
 namespace QRCoderTests
 {
@@ -111,7 +110,6 @@ namespace QRCoderTests
         {
             //Create QR code
             var bmp = ArtQRCodeHelper.GetQRCode("A", 10, Color.Black, Color.White, Color.Transparent, QRCodeGenerator.ECCLevel.L);
-            ((Bitmap)bmp.Clone()).Save("C:\\Users\\netbl\\Downloads\\art_new.png", ImageFormat.Png);
             var result = HelperFunctions.BitmapToHash(bmp);
             result.ShouldBe("57ecaa9bdeadcdcbeac8a19d734907ff");
         }
