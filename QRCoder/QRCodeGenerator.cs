@@ -172,7 +172,6 @@ namespace QRCoder
             string modeIndicator = DecToBin((int)EncodingMode.Byte, 4);
             string countIndicator = DecToBin(binaryData.Length, GetCountIndicatorLength(version, EncodingMode.Byte));
 
-            string bitString = "";
             StringBuilder sb = new StringBuilder();
             sb.Append(modeIndicator + countIndicator);
             foreach (byte b in binaryData)
