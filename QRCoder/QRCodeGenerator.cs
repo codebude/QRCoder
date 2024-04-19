@@ -179,7 +179,7 @@ namespace QRCoder
                 sb.Append(DecToBin(b, 8));
 
             }
-            bitString = sb.ToString();
+            string bitString = sb.ToString();
 
 
             return GenerateQrCode(bitString, eccLevel, version);
