@@ -1140,7 +1140,8 @@ namespace QRCoder
                 //AddInf "logical" element
                 SwissQrCodePayload += (!string.IsNullOrEmpty(additionalInformation.UnstructureMessage) ? additionalInformation.UnstructureMessage : string.Empty) + br; //Ustrd
                 SwissQrCodePayload += additionalInformation.Trailer + br; //Trailer
-                SwissQrCodePayload += (!string.IsNullOrEmpty(additionalInformation.BillInformation) ? additionalInformation.BillInformation : string.Empty) + br; //StrdBkgInf
+		// Bug #399 If BillInformation is empty, insert no linebreak
+                SwissQrCodePayload += (!string.IsNullOrEmpty(additionalInformation.BillInformation) ? additionalInformation.BillInformation + br : string.Empty); //StrdBkgInf
 
                 //AltPmtInf "logical" element
                 if (!string.IsNullOrEmpty(alternativeProcedure1))
