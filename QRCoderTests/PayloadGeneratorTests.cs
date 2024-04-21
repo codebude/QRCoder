@@ -2668,6 +2668,39 @@ namespace QRCoderTests
             exception.Message.ShouldBe("Alternative procedure information block 2 must be shorter than 101 chars.");
         }
 
+        [Fact]
+        [Category("PayloadGenerator/SwissQrCode")]
+        public void swissqrcode_generator_should_validate_two_lettercodes()
+        {
+            string name = "John Doe";
+            string zip = "12345";
+            string city = "Gotham City";
+
+            // Should work, as DE is a valid country code
+            string country = "DE";
+            var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
+            Assert.Null(exception);
+
+            // Should work, as de is a valid country code and case should be ignored
+            country = "de";
+            exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
+            Assert.Null(exception);
+
+            // Should work, as XK is is defined as special case (not officially ISO-3166-1,but used in the wild)
+            // See https://en.wikipedia.org/wiki/XK_(user_assigned_code) and https://github.com/codebude/QRCoder/issues/420
+            country = "XK";
+            exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
+            Assert.Null(exception);
+
+
+            // Should throw exception, as ZZ isn't a valid country code
+            country = "ZZ";
+            exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
+
+            Assert.NotNull(exception);
+            Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
+            exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
+        }
 
 
         [Fact]
