@@ -2491,7 +2491,7 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
-            exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by  ISO 3166-1, but it isn't.");
+            exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
         }
 
 
