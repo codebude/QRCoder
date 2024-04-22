@@ -30,7 +30,7 @@ namespace QRCoder
                 throw new Exception("The repeatPerModule-parameter must be 1 or greater.");
             return string.Join(endOfLine, GetLineByLineGraphic(repeatPerModule, darkColorString, whiteSpaceString, drawQuietZones));
         }
-        
+
 
         /// <summary>
         /// Returns an array of strings that contains each line of the resulting QR code as ASCII chars.
@@ -38,6 +38,7 @@ namespace QRCoder
         /// <param name="repeatPerModule">Number of repeated darkColorString/whiteSpaceString per module.</param>
         /// <param name="darkColorString">String for use as dark color modules. In case of string make sure whiteSpaceString has the same length.</param>
         /// <param name="whiteSpaceString">String for use as white modules (whitespace). In case of string make sure darkColorString has the same length.</param>
+        /// <param name="drawQuietZones">Bool that defines if quiet zones around the QR code shall be drawn</param>
         /// <returns></returns>
         public string[] GetLineByLineGraphic(int repeatPerModule, string darkColorString = "██", string whiteSpaceString = "  ", bool drawQuietZones = true)
         {
