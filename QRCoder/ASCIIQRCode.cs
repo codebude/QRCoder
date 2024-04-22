@@ -16,15 +16,18 @@ namespace QRCoder
 
        
         /// <summary>
-        /// Returns a strings that contains the resulting QR code as ASCII chars.
+        /// Returns a strings that contains the resulting QR code as textual representation.
         /// </summary>
         /// <param name="repeatPerModule">Number of repeated darkColorString/whiteSpaceString per module.</param>
         /// <param name="darkColorString">String for use as dark color modules. In case of string make sure whiteSpaceString has the same length.</param>
         /// <param name="whiteSpaceString">String for use as white modules (whitespace). In case of string make sure darkColorString has the same length.</param>
+        /// <param name="drawQuietZones">Bool that defines if quiet zones around the QR code shall be drawn</param>
         /// <param name="endOfLine">End of line separator. (Default: \n)</param>
         /// <returns></returns>
         public string GetGraphic(int repeatPerModule, string darkColorString = "██", string whiteSpaceString = "  ", bool drawQuietZones = true, string endOfLine = "\n")
         {
+            if (repeatPerModule < 1)
+                throw new Exception("The repeatPerModule-parameter must be 1 or greater.");
             return string.Join(endOfLine, GetLineByLineGraphic(repeatPerModule, darkColorString, whiteSpaceString, drawQuietZones));
         }
         
@@ -64,15 +67,17 @@ namespace QRCoder
         }
 
         /// <summary>
-        /// Returns a strings that contains the resulting QR code as ASCII chars.
+        /// Returns a strings that contains the resulting QR code as minified textual representation.
         /// </summary>
+        /// <param name="drawQuietZones">Bool that defines if quiet zones around the QR code shall be drawn</param>
+        /// <param name="invert">If set to true, dark and light colors will be inverted</param>
+        /// <param name="endOfLine">End of line separator. (Default: \n)</param>
         /// <returns></returns>
-        public string GetGraphicSmall(bool drawQuietZones = true)
+        public string GetGraphic(bool drawQuietZones = true, bool invert = false, string endOfLine = "\n")
         {
-            string endOfLine = "\n";
             bool BLACK = true, WHITE = false;
 
-            var platte = new
+            var palette = new
             {
                 WHITE_ALL = "\u2588",
                 WHITE_BLACK = "\u2580",
@@ -83,39 +88,39 @@ namespace QRCoder
             var moduleData = QrCodeData.ModuleMatrix;
             var lineBuilder = new StringBuilder();
 
-            var quietZonesModifier = (drawQuietZones ? 4 : 8);
+            var quietZonesModifier = (drawQuietZones ? 0 : 8);
             var quietZonesOffset = (int)(quietZonesModifier * 0.5);
             var sideLength = (QrCodeData.ModuleMatrix.Count - quietZonesModifier);
 
-            for (var row = 0; row < sideLength; row = row + 2)
+            for (var row = 0; row < sideLength; row += 2)
             {
-                for (var col = 0; col < moduleData.Count - quietZonesModifier; col++)
+                for (var col = 0; col < sideLength; col++)
                 {
                     try
                     {
-                        var current = moduleData[col + quietZonesOffset][row + quietZonesOffset];
-                        var next = moduleData[col + quietZonesOffset][(row + 1) + quietZonesOffset];
+                        var current = moduleData[col + quietZonesOffset][row + quietZonesOffset] ^ invert;
+                        var next = moduleData[col + quietZonesOffset][(row + 1) + quietZonesOffset] ^ invert;
                         if (current == WHITE && next == WHITE)
-                            lineBuilder.Append(platte.WHITE_ALL);
+                            lineBuilder.Append(palette.WHITE_ALL);
                         else if (current == WHITE && next == BLACK)
-                            lineBuilder.Append(platte.WHITE_BLACK);
+                            lineBuilder.Append(palette.WHITE_BLACK);
                         else if (current == BLACK && next == WHITE)
-                            lineBuilder.Append(platte.BLACK_WHITE);
+                            lineBuilder.Append(palette.BLACK_WHITE);
                         else
-                            lineBuilder.Append(platte.BLACK_ALL);
+                            lineBuilder.Append(palette.BLACK_ALL);
                     }
                     catch (Exception)
                     {
                         if (drawQuietZones)
-                            lineBuilder.Append(platte.WHITE_BLACK);
+                            lineBuilder.Append(palette.WHITE_BLACK);
                         else
-                            lineBuilder.Append(platte.BLACK_ALL);
+                            lineBuilder.Append(palette.BLACK_ALL);
                     }
 
                 }
                 lineBuilder.Append(endOfLine);
             }
-            return lineBuilder.ToString();
+            return lineBuilder.ToString().Trim(endOfLine.ToCharArray());
         }
     }
 

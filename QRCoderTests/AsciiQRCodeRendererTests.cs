@@ -28,12 +28,54 @@ namespace QRCoderTests
         [Category("QRRenderer/AsciiQRCode")]
         public void can_render_small_ascii_qrcode()
         {
-            var targetCode = "█████████████████████████\n██ ▄▄▄▄▄ █▀▄█ ▀█ ▄▄▄▄▄ ██\n██ █   █ █▄█ █▄█ █   █ ██\n██ █▄▄▄█ █▄▀▀▀▀█ █▄▄▄█ ██\n██▄▄▄▄▄▄▄█ █ ▀▄█▄▄▄▄▄▄▄██\n██  ▄▄ █▄ ██▀ ▄▄▄▀ ▀ ▄▀██\n██▀█▄█ █▄  ▄ ▀▄▀ █▄█▄▄███\n███▄▄▄▄█▄▄▄████▀▀  █▄█▄██\n██ ▄▄▄▄▄ █▄▄█▄▄▀ ▀ ▄█▄▄██\n██ █   █ █ ▀ █▄▀█ ██▄█▄██\n██ █▄▄▄█ █ ▀▄▀ █▄█▄ █ ▄██\n██▄▄▄▄▄▄▄█▄▄▄█████▄█▄▄▄██\n█████████████████████████\n";
+            var targetCode = "█████████████████████████████\n█████████████████████████████\n████ ▄▄▄▄▄ █▀▄█ ▀█ ▄▄▄▄▄ ████\n████ █   █ █▄█ █▄█ █   █ ████\n████ █▄▄▄█ █▄▀▀▀▀█ █▄▄▄█ ████\n████▄▄▄▄▄▄▄█ █ ▀▄█▄▄▄▄▄▄▄████\n████  ▄▄ █▄ ██▀ ▄▄▄▀ ▀ ▄▀████\n████▀█▄█ █▄  ▄ ▀▄▀ █▄█▄▄█████\n█████▄▄▄▄█▄▄▄████▀▀  █▄█▄████\n████ ▄▄▄▄▄ █▄▄█▄▄▀ ▀ ▄█▄▄████\n████ █   █ █ ▀ █▄▀█ ██▄█▄████\n████ █▄▄▄█ █ ▀▄▀ █▄█▄ █ ▄████\n████▄▄▄▄▄▄▄█▄▄▄█████▄█▄▄▄████\n█████████████████████████████\n▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀";
 
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
-            var asciiCode = new AsciiQRCode(data).GetGraphicSmall();
+            var asciiCode = new AsciiQRCode(data).GetGraphic();
+
+            asciiCode.ShouldBe(targetCode);
+        }
+
+        [Fact]
+        [Category("QRRenderer/AsciiQRCode")]
+        public void can_render_small_ascii_qrcode_without_quietzones()
+        {
+            var targetCode = " ▄▄▄▄▄ █▀▄█ ▀█ ▄▄▄▄▄ \n █   █ █▄█ █▄█ █   █ \n █▄▄▄█ █▄▀▀▀▀█ █▄▄▄█ \n▄▄▄▄▄▄▄█ █ ▀▄█▄▄▄▄▄▄▄\n  ▄▄ █▄ ██▀ ▄▄▄▀ ▀ ▄▀\n▀█▄█ █▄  ▄ ▀▄▀ █▄█▄▄█\n█▄▄▄▄█▄▄▄████▀▀  █▄█▄\n ▄▄▄▄▄ █▄▄█▄▄▀ ▀ ▄█▄▄\n █   █ █ ▀ █▄▀█ ██▄█▄\n █▄▄▄█ █ ▀▄▀ █▄█▄ █ ▄\n▄▄▄▄▄▄▄█▄▄▄█████▄█▄▄▄";
+
+            //Create QR code
+            var gen = new QRCodeGenerator();
+            var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
+            var asciiCode = new AsciiQRCode(data).GetGraphic(drawQuietZones: false);
+
+            asciiCode.ShouldBe(targetCode);
+        }
+
+        [Fact]
+        [Category("QRRenderer/AsciiQRCode")]
+        public void can_render_small_ascii_qrcode_inverted()
+        {
+            var targetCode = "                             \n                             \n    █▀▀▀▀▀█ ▄▀ █▄ █▀▀▀▀▀█    \n    █ ███ █ ▀ █ ▀ █ ███ █    \n    █ ▀▀▀ █ ▀▄▄▄▄ █ ▀▀▀ █    \n    ▀▀▀▀▀▀▀ █ █▄▀ ▀▀▀▀▀▀▀    \n    ██▀▀█ ▀█  ▄█▀▀▀▄█▄█▀▄    \n    ▄ ▀ █ ▀██▀█▄▀▄█ ▀ ▀▀     \n     ▀▀▀▀ ▀▀▀    ▄▄██ ▀ ▀    \n    █▀▀▀▀▀█ ▀▀ ▀▀▄█▄█▀ ▀▀    \n    █ ███ █ █▄█ ▀▄ █  ▀ ▀    \n    █ ▀▀▀ █ █▄▀▄█ ▀ ▀█ █▀    \n    ▀▀▀▀▀▀▀ ▀▀▀     ▀ ▀▀▀    \n                             \n                             ";
+
+            //Create QR code
+            var gen = new QRCodeGenerator();
+            var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
+            var asciiCode = new AsciiQRCode(data).GetGraphic(invert: true);
+
+            asciiCode.ShouldBe(targetCode);
+        }
+
+        [Fact]
+        [Category("QRRenderer/AsciiQRCode")]
+        public void can_render_small_ascii_qrcode_with_custom_eol()
+        {
+            var targetCode = "█████████████████████████████\r\n█████████████████████████████\r\n████ ▄▄▄▄▄ █▀▄█ ▀█ ▄▄▄▄▄ ████\r\n████ █   █ █▄█ █▄█ █   █ ████\r\n████ █▄▄▄█ █▄▀▀▀▀█ █▄▄▄█ ████\r\n████▄▄▄▄▄▄▄█ █ ▀▄█▄▄▄▄▄▄▄████\r\n████  ▄▄ █▄ ██▀ ▄▄▄▀ ▀ ▄▀████\r\n████▀█▄█ █▄  ▄ ▀▄▀ █▄█▄▄█████\r\n█████▄▄▄▄█▄▄▄████▀▀  █▄█▄████\r\n████ ▄▄▄▄▄ █▄▄█▄▄▀ ▀ ▄█▄▄████\r\n████ █   █ █ ▀ █▄▀█ ██▄█▄████\r\n████ █▄▄▄█ █ ▀▄▀ █▄█▄ █ ▄████\r\n████▄▄▄▄▄▄▄█▄▄▄█████▄█▄▄▄████\r\n█████████████████████████████\r\n▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀";
+
+            //Create QR code
+            var gen = new QRCodeGenerator();
+            var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
+            var asciiCode = new AsciiQRCode(data).GetGraphic(endOfLine: "\r\n");
 
             asciiCode.ShouldBe(targetCode);
         }
