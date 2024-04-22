@@ -74,7 +74,7 @@ namespace QRCoder
         /// <param name="invert">If set to true, dark and light colors will be inverted</param>
         /// <param name="endOfLine">End of line separator. (Default: \n)</param>
         /// <returns></returns>
-        public string GetGraphic(bool drawQuietZones = true, bool invert = false, string endOfLine = "\n")
+        public string GetGraphicSmall(bool drawQuietZones = true, bool invert = false, string endOfLine = "\n")
         {
             bool BLACK = true, WHITE = false;
 
@@ -139,7 +139,7 @@ namespace QRCoder
             using (var qrGenerator = new QRCodeGenerator())
             using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
             using (var qrCode = new AsciiQRCode(qrCodeData))
-                return qrCode.GetGraphic(drawQuietZones, invert, endOfLine);
+                return qrCode.GetGraphicSmall(drawQuietZones, invert, endOfLine);
         }
     }
 }

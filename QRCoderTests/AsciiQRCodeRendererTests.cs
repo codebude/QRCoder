@@ -33,7 +33,7 @@ namespace QRCoderTests
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
-            var asciiCode = new AsciiQRCode(data).GetGraphic();
+            var asciiCode = new AsciiQRCode(data).GetGraphicSmall();
 
             asciiCode.ShouldBe(targetCode);
         }
@@ -47,7 +47,7 @@ namespace QRCoderTests
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
-            var asciiCode = new AsciiQRCode(data).GetGraphic(drawQuietZones: false);
+            var asciiCode = new AsciiQRCode(data).GetGraphicSmall(drawQuietZones: false);
 
             asciiCode.ShouldBe(targetCode);
         }
@@ -61,7 +61,7 @@ namespace QRCoderTests
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
-            var asciiCode = new AsciiQRCode(data).GetGraphic(invert: true);
+            var asciiCode = new AsciiQRCode(data).GetGraphicSmall(invert: true);
 
             asciiCode.ShouldBe(targetCode);
         }
@@ -75,7 +75,7 @@ namespace QRCoderTests
             //Create QR code
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
-            var asciiCode = new AsciiQRCode(data).GetGraphic(endOfLine: "\r\n");
+            var asciiCode = new AsciiQRCode(data).GetGraphicSmall(endOfLine: "\r\n");
 
             asciiCode.ShouldBe(targetCode);
         }
