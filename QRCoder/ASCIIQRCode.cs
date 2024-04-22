@@ -99,7 +99,14 @@ namespace QRCoder
                     try
                     {
                         var current = moduleData[col + quietZonesOffset][row + quietZonesOffset] ^ invert;
-                        var next = moduleData[col + quietZonesOffset][(row + 1) + quietZonesOffset] ^ invert;
+                        var nextRowId = row + quietZonesOffset + 1;
+
+                        // Set next to whitespace "color"
+                        var next = false ^ invert;
+                        // Fill next with value, if in data range
+                        if (nextRowId < QrCodeData.ModuleMatrix.Count)
+                            next = moduleData[col + quietZonesOffset][nextRowId] ^ invert;
+                        
                         if (current == WHITE && next == WHITE)
                             lineBuilder.Append(palette.WHITE_ALL);
                         else if (current == WHITE && next == BLACK)
@@ -109,14 +116,6 @@ namespace QRCoder
                         else
                             lineBuilder.Append(palette.BLACK_ALL);
                     }
-                    catch (Exception)
-                    {
-                        if (drawQuietZones)
-                            lineBuilder.Append(palette.WHITE_BLACK);
-                        else
-                            lineBuilder.Append(palette.BLACK_ALL);
-                    }
-
                 }
                 lineBuilder.Append(endOfLine);
             }
