@@ -86,40 +86,39 @@ namespace QRCoder
             };
 
             var moduleData = QrCodeData.ModuleMatrix;
-            var lineBuilder = new StringBuilder();
+            var sbSize = (moduleData.Count + endOfLine.Length) * (int)Math.Ceiling(moduleData.Count / 2.0) - 1;
+            var lineBuilder = new StringBuilder(sbSize);
 
             var quietZonesModifier = (drawQuietZones ? 0 : 8);
             var quietZonesOffset = (int)(quietZonesModifier * 0.5);
-            var sideLength = (QrCodeData.ModuleMatrix.Count - quietZonesModifier);
+            var sideLength = (moduleData.Count - quietZonesModifier);
 
             for (var row = 0; row < sideLength; row += 2)
             {
                 for (var col = 0; col < sideLength; col++)
                 {
-                    try
-                    {
-                        var current = moduleData[col + quietZonesOffset][row + quietZonesOffset] ^ invert;
-                        var nextRowId = row + quietZonesOffset + 1;
+                    var current = moduleData[col + quietZonesOffset][row + quietZonesOffset] ^ invert;
+                    var nextRowId = row + quietZonesOffset + 1;
 
-                        // Set next to whitespace "color"
-                        var next = false ^ invert;
-                        // Fill next with value, if in data range
-                        if (nextRowId < QrCodeData.ModuleMatrix.Count)
-                            next = moduleData[col + quietZonesOffset][nextRowId] ^ invert;
+                    // Set next to whitespace "color"
+                    var next = BLACK;
+                    // Fill next with value, if in data range
+                    if (nextRowId < QrCodeData.ModuleMatrix.Count)
+                        next = moduleData[col + quietZonesOffset][nextRowId] ^ invert;
                         
-                        if (current == WHITE && next == WHITE)
-                            lineBuilder.Append(palette.WHITE_ALL);
-                        else if (current == WHITE && next == BLACK)
-                            lineBuilder.Append(palette.WHITE_BLACK);
-                        else if (current == BLACK && next == WHITE)
-                            lineBuilder.Append(palette.BLACK_WHITE);
-                        else
-                            lineBuilder.Append(palette.BLACK_ALL);
-                    }
+                    if (current == WHITE && next == WHITE)
+                        lineBuilder.Append(palette.WHITE_ALL);
+                    else if (current == WHITE && next == BLACK)
+                        lineBuilder.Append(palette.WHITE_BLACK);
+                    else if (current == BLACK && next == WHITE)
+                        lineBuilder.Append(palette.BLACK_WHITE);
+                    else
+                        lineBuilder.Append(palette.BLACK_ALL);
                 }
-                lineBuilder.Append(endOfLine);
+                if (row + 2 < sideLength)
+                    lineBuilder.Append(endOfLine);
             }
-            return lineBuilder.ToString().Trim(endOfLine.ToCharArray());
+            return lineBuilder.ToString();
         }
     }
 
@@ -132,6 +131,14 @@ namespace QRCoder
             using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
             using (var qrCode = new AsciiQRCode(qrCodeData))
                 return qrCode.GetGraphic(pixelsPerModule, darkColorString, whiteSpaceString, drawQuietZones, endOfLine);
+        }
+
+        public static string GetQRCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, string endOfLine = "\n", bool drawQuietZones = true, bool invert = true)
+        {
+            using (var qrGenerator = new QRCodeGenerator())
+            using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
+            using (var qrCode = new AsciiQRCode(qrCodeData))
+                return qrCode.GetGraphic(drawQuietZones, invert, endOfLine);
         }
     }
 }
