@@ -3283,21 +3283,41 @@ namespace QRCoderTests
         {
             var account = "40702810138250123017";
             var bic = "044525225";
-            var bankName = "ОАО | \"БАНК\"";
-            var name = "A very very very very very very very very very very very very very very very very very very very very very very very very very very very very very long name";
+            var bankName = "A very very very very very long bank name";
+            // We use € symbol for the test case, because it needs 2-bytes. Otherwise we couldn't generate more than 300 bytes
+            // of mandatory data to trigger the test case and stay at the same time within the 160 chars field validation limit
+            var name = "A very €€€€ €€€€ €€€€ €€€€ very very very very very very very very very very very very very very very very very very very very very very very very ver long name";
             var correspAcc = "30101810400000000225";
-            var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
-            {
-                FirstName = "Another long long long long long long long long long long long long long long firstname",
-                LastName = "Another long long long long long long long long long long long long long long lastname",
-                Sum = "125000"
-            };
-            var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, optionalFields);
+            var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc);
 
             var exception = Record.Exception(() => generator.ToString());
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(exception);
             exception.Message.ShouldStartWith("Data too long");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/RussiaPaymentOrder")]
+        public void russiapayment_generator_should_throw_no_data_too_long_exception()
+        {
+            var account = "40702810138250123017";
+            var bic = "044525225";
+            var bankName = "ОАО | \"БАНК\"";
+            var name = "A name";
+            var correspAcc = "30101810400000000225";
+            var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
+            {
+                FirstName = "Another long long long long long long long long long long long long long long firstname",
+                LastName = "Another long long long long long long long long long long long long long long lastname",
+                Category = "A pretty long long long long long long long long long long long long long category",
+                Sum = "125000"
+            };
+            var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, optionalFields);
+
+            // Should throw no exception as the 300 byte limit applies only to the mandatory fields
+            // See https://github.com/codebude/QRCoder/issues/392
+            var exception = Record.Exception(() => generator.ToString());
+            Assert.Null(exception);
         }
 
         [Fact]
