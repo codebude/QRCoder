@@ -150,9 +150,7 @@ namespace QRCoder
             }
             modeIndicator += DecToBin((int)encoding, 4);
             var countIndicator = DecToBin(dataInputLength, GetCountIndicatorLength(version, encoding));
-            var bitString = modeIndicator + countIndicator;
-
-            bitString += codedText;
+            var bitString = modeIndicator + countIndicator + codedText;
 
             return GenerateQrCode(bitString, eccLevel, version);
         }
@@ -170,13 +168,18 @@ namespace QRCoder
             int version = GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
             string modeIndicator = DecToBin((int)EncodingMode.Byte, 4);
-            string countIndicator = DecToBin(binaryData.Length, GetCountIndicatorLength(version, EncodingMode.Byte));
+            int countIndicatorLen = GetCountIndicatorLength(version, EncodingMode.Byte);
+            string countIndicator = DecToBin(binaryData.Length, countIndicatorLen);
 
-            string bitString = modeIndicator + countIndicator;
+            StringBuilder sb = new StringBuilder(capacity: 4 + countIndicatorLen + (binaryData.Length*8));
+            sb.Append(modeIndicator).Append(countIndicator);
             foreach (byte b in binaryData)
             {
-                bitString += DecToBin(b, 8);
+                sb.Append(DecToBin(b, 8));
+
             }
+            string bitString = sb.ToString();
+
 
             return GenerateQrCode(bitString, eccLevel, version);
         }

@@ -32,11 +32,15 @@ namespace QRCoderTests
         {
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
-            var finder = new Bitmap(15, 15);
+            var finder = new Bitmap(70, 70);
+            using (var g = Graphics.FromImage(finder))
+            {
+                g.FillRectangle(Brushes.Red, 0, 0, 70, 70);
+            }
             var bmp = new ArtQRCode(data).GetGraphic(10, Color.Black, Color.White, Color.Transparent, finderPatternImage: finder);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("1102c0c6f235eaf4c3ac639f82f17bfa");
+            result.ShouldBe("5df3f2892eeb01e9c282ad10f642dec2");
         }
 
         [Fact]
