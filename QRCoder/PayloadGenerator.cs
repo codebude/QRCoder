@@ -1883,6 +1883,20 @@ namespace QRCoder
             /// <param name="subject">Subject/title of the calender event</param>
             /// <param name="description">Description of the event</param>
             /// <param name="location">Location (lat:long or address) of the event</param>
+            /// <param name="start">Start time (incl. UTC offset) of the event</param>
+            /// <param name="end">End time (incl. UTC offset) of the event</param>
+            /// <param name="allDayEvent">Is it a full day event?</param>
+            /// <param name="encoding">Type of encoding (universal or iCal)</param>
+            public CalendarEvent(string subject, string description, string location, DateTimeOffset start, DateTimeOffset end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal) : this(subject, description, location, DateTime.SpecifyKind(start.ToUniversalTime().DateTime, DateTimeKind.Utc), DateTime.SpecifyKind(end.ToUniversalTime().DateTime, DateTimeKind.Utc), allDayEvent, encoding)
+            {
+            }
+
+            /// <summary>
+            /// Generates a calender entry/event payload.
+            /// </summary>
+            /// <param name="subject">Subject/title of the calender event</param>
+            /// <param name="description">Description of the event</param>
+            /// <param name="location">Location (lat:long or address) of the event</param>
             /// <param name="start">Start time of the event</param>
             /// <param name="end">End time of the event</param>
             /// <param name="allDayEvent">Is it a full day event?</param>
@@ -1893,9 +1907,17 @@ namespace QRCoder
                 this.description = description;
                 this.location = location;
                 this.encoding = encoding;
-                string dtFormat = allDayEvent ? "yyyyMMdd" : "yyyyMMddTHHmmss";
-                this.start = start.ToString(dtFormat);
-                this.end = end.ToString(dtFormat);
+                string dtFormatStart = "yyyyMMdd", dtFormatEnd = "yyyyMMdd";
+                if (!allDayEvent)
+                {
+                    dtFormatStart = dtFormatEnd = "yyyyMMddTHHmmss";
+                    if (start.Kind == DateTimeKind.Utc)
+                        dtFormatStart = "yyyyMMddTHHmmssZ";
+                    if (end.Kind == DateTimeKind.Utc)
+                        dtFormatEnd = "yyyyMMddTHHmmssZ";
+                }                
+                this.start = start.ToString(dtFormatStart);
+                this.end = end.ToString(dtFormatEnd);
             }
 
             public override string ToString()
