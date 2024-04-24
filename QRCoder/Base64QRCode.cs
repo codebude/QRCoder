@@ -63,33 +63,22 @@ namespace QRCoder
             }
 
 #if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
-            if (
-#if NET6_0_OR_GREATER
-                RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-#else
-                true
-#endif
-                )
+#pragma warning disable CA1416 // Validate platform compatibility
+            var qr = new QRCode(QrCodeData);
+            var base64 = string.Empty;
+            using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones))
             {
-                var qr = new QRCode(QrCodeData);
-                var base64 = string.Empty;
-                using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones))
-                {
-                    base64 = BitmapToBase64(bmp, imgType);
-                }
-                return base64;
+                base64 = BitmapToBase64(bmp, imgType);
             }
-            else
-            {
-                throw new PlatformNotSupportedException("The specified image type is not supported on this platform.");
-            }
+            return base64;
+#pragma warning restore CA1416 // Validate platform compatibility
 #else
-            throw new PlatformNotSupportedException("The specified image type is not supported on this platform.");
+            throw new PlatformNotSupportedException("Only the PNG image type is supported on this platform.");
 #endif
         }
 
 #if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
-#if NET6_0_WINDOWS
+#if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
         public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
@@ -105,7 +94,7 @@ namespace QRCoder
 #endif
 
 #if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
-#if NET6_0_WINDOWS
+#if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
         private string BitmapToBase64(Bitmap bmp, ImageType imgType)
@@ -137,11 +126,11 @@ namespace QRCoder
 
         public enum ImageType
         {
-#if NET6_0_WINDOWS
+#if NET6_0_OR_GREATER
             [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
             Gif,
-#if NET6_0_WINDOWS
+#if NET6_0_OR_GREATER
             [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
             Jpeg,
