@@ -1887,7 +1887,7 @@ namespace QRCoder
             /// <param name="end">End time (incl. UTC offset) of the event</param>
             /// <param name="allDayEvent">Is it a full day event?</param>
             /// <param name="encoding">Type of encoding (universal or iCal)</param>
-            public CalendarEvent(string subject, string description, string location, DateTimeOffset start, DateTimeOffset end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal) : this(subject, description, location, DateTime.SpecifyKind(start.ToUniversalTime().DateTime, DateTimeKind.Utc), DateTime.SpecifyKind(end.ToUniversalTime().DateTime, DateTimeKind.Utc), allDayEvent, encoding)
+            public CalendarEvent(string subject, string description, string location, DateTimeOffset start, DateTimeOffset end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal) : this(subject, description, location, start.UtcDateTime, end.UtcDateTime, allDayEvent, encoding)
             {
             }
 
