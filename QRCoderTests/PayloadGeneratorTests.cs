@@ -816,7 +816,7 @@ namespace QRCoderTests
             var location = "Programmer's paradise, Beachtown, Paradise";
             var alldayEvent = false;
             var begin = new DateTime(2016, 01, 03, 12, 00, 00);
-            var end = new DateTime(2016, 01, 03, 14, 30, 0);
+            var end = new DateTime(2016, 01, 03, 14, 30, 00);
             var encoding = PayloadGenerator.CalendarEvent.EventEncoding.Universal;
 
             var generator = new PayloadGenerator.CalendarEvent(subject, description, location, begin, end, alldayEvent, encoding);
@@ -840,6 +840,42 @@ namespace QRCoderTests
             var generator = new PayloadGenerator.CalendarEvent(subject, description, location, begin, end, alldayEvent, encoding);
 
             generator.ToString().ShouldBe($"BEGIN:VCALENDAR{Environment.NewLine}VERSION:2.0{Environment.NewLine}BEGIN:VEVENT{Environment.NewLine}SUMMARY:Release party{Environment.NewLine}DESCRIPTION:A small party for the new QRCoder. Bring some beer!{Environment.NewLine}LOCATION:Programmer's paradise, Beachtown, Paradise{Environment.NewLine}DTSTART:20160103T120000{Environment.NewLine}DTEND:20160103T143000{Environment.NewLine}END:VEVENT{Environment.NewLine}END:VCALENDAR");
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/CalendarEvent")]
+        public void calendarevent_should_build_with_utc_datetime()
+        {
+            var subject = "Release party";
+            var description = "A small party for the new QRCoder. Bring some beer!";
+            var location = "Programmer's paradise, Beachtown, Paradise";
+            var alldayEvent = false;
+            var begin = new DateTime(2016, 01, 03, 12, 00, 00, DateTimeKind.Utc);
+            var end = new DateTime(2016, 01, 03, 14, 30, 00, DateTimeKind.Utc);
+            var encoding = PayloadGenerator.CalendarEvent.EventEncoding.Universal;
+
+            var generator = new PayloadGenerator.CalendarEvent(subject, description, location, begin, end, alldayEvent, encoding);
+
+            generator.ToString().ShouldBe($"BEGIN:VEVENT{Environment.NewLine}SUMMARY:Release party{Environment.NewLine}DESCRIPTION:A small party for the new QRCoder. Bring some beer!{Environment.NewLine}LOCATION:Programmer's paradise, Beachtown, Paradise{Environment.NewLine}DTSTART:20160103T120000Z{Environment.NewLine}DTEND:20160103T143000Z{Environment.NewLine}END:VEVENT");
+        }
+
+
+        [Fact]
+        [Category("PayloadGenerator/CalendarEvent")]
+        public void calendarevent_should_build_with_utc_offset()
+        {
+            var subject = "Release party";
+            var description = "A small party for the new QRCoder. Bring some beer!";
+            var location = "Programmer's paradise, Beachtown, Paradise";
+            var alldayEvent = false;
+            var begin = new DateTimeOffset(2016, 01, 03, 12, 00, 00, new TimeSpan(3, 0, 0));
+            var end = new DateTimeOffset(2016, 01, 03, 14, 30, 00, new TimeSpan(3, 0, 0));
+            var encoding = PayloadGenerator.CalendarEvent.EventEncoding.Universal;
+
+            var generator = new PayloadGenerator.CalendarEvent(subject, description, location, begin, end, alldayEvent, encoding);
+
+            generator.ToString().ShouldBe($"BEGIN:VEVENT{Environment.NewLine}SUMMARY:Release party{Environment.NewLine}DESCRIPTION:A small party for the new QRCoder. Bring some beer!{Environment.NewLine}LOCATION:Programmer's paradise, Beachtown, Paradise{Environment.NewLine}DTSTART:20160103T090000Z{Environment.NewLine}DTEND:20160103T113000Z{Environment.NewLine}END:VEVENT");
         }
 
 
@@ -3283,21 +3319,41 @@ namespace QRCoderTests
         {
             var account = "40702810138250123017";
             var bic = "044525225";
-            var bankName = "ОАО | \"БАНК\"";
-            var name = "A very very very very very very very very very very very very very very very very very very very very very very very very very very very very very long name";
+            var bankName = "A very very very very very long bank name";
+            // We use € symbol for the test case, because it needs 2-bytes. Otherwise we couldn't generate more than 300 bytes
+            // of mandatory data to trigger the test case and stay at the same time within the 160 chars field validation limit
+            var name = "A very €€€€ €€€€ €€€€ €€€€ very very very very very very very very very very very very very very very very very very very very very very very very ver long name";
             var correspAcc = "30101810400000000225";
-            var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
-            {
-                FirstName = "Another long long long long long long long long long long long long long long firstname",
-                LastName = "Another long long long long long long long long long long long long long long lastname",
-                Sum = "125000"
-            };
-            var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, optionalFields);
+            var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc);
 
             var exception = Record.Exception(() => generator.ToString());
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(exception);
             exception.Message.ShouldStartWith("Data too long");
+        }
+
+        [Fact]
+        [Category("PayloadGenerator/RussiaPaymentOrder")]
+        public void russiapayment_generator_should_throw_no_data_too_long_exception()
+        {
+            var account = "40702810138250123017";
+            var bic = "044525225";
+            var bankName = "ОАО | \"БАНК\"";
+            var name = "A name";
+            var correspAcc = "30101810400000000225";
+            var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
+            {
+                FirstName = "Another long long long long long long long long long long long long long long firstname",
+                LastName = "Another long long long long long long long long long long long long long long lastname",
+                Category = "A pretty long long long long long long long long long long long long long category",
+                Sum = "125000"
+            };
+            var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, optionalFields);
+
+            // Should throw no exception as the 300 byte limit applies only to the mandatory fields
+            // See https://github.com/codebude/QRCoder/issues/392
+            var exception = Record.Exception(() => generator.ToString());
+            Assert.Null(exception);
         }
 
         [Fact]
