@@ -108,7 +108,7 @@ namespace QRCoderTests
             logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
-            File.WriteAllText(@"C:\Users\netbl\Downloads\1.svg", svg);
+
             var result = HelperFunctions.StringToHash(svg);
             result.ShouldBe("78e02e8ba415f15817d5ed88c4afca31");
         }
@@ -127,7 +127,7 @@ namespace QRCoderTests
             logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
-            File.WriteAllText(@"C:\Users\netbl\Downloads\2.svg", svg);
+
             var result = HelperFunctions.StringToHash(svg);
             result.ShouldBe("f221b2baecc2883f8e8ae54f12ba701b");
         }
@@ -146,7 +146,7 @@ namespace QRCoderTests
             logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
 
             var svg = new SvgQRCode(data).GetGraphic(10, Color.Black, Color.White, drawQuietZones: false, logo: logoObj);
-            File.WriteAllText(@"C:\Users\netbl\Downloads\3.svg", svg);
+
             var result = HelperFunctions.StringToHash(svg);
             result.ShouldBe("8b4d114136c7fd26e0b34e5a15daac3b");
         }
