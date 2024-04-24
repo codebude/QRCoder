@@ -35,12 +35,12 @@ PM> Install-Package QRCoder
 
 #### CI builds
 The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/codebude/qrcoder/packages).
-_(More information on how to use Github Packages in Nuget Package Manager can be [found here](http://webcache.googleusercontent.com/search?q=cache:i_gL6oIwpr8J:www.catiawidgets.net/2021/04/20/creating-github-packages-and-accessing-them-in-nuget/+&cd=1&hl=de&ct=clnk&gl=de).)_
+_(More information on how to use Github Packages in Nuget Package Manager can be [found here](https://samlearnsazure.blog/2021/08/08/consuming-a-nuget-package-from-github-packages/).)_
 
 
 ## Usage
 
-You only need four lines of code, to generate and view your first QR code.
+You only need a couple lines of code, to generate your first QR code.
 
 ```csharp
 QRCodeGenerator qrGenerator = new QRCodeGenerator();
@@ -49,29 +49,11 @@ QRCode qrCode = new PngByteQRCode(qrCodeData);
 byte[] qrCodeImage = qrCode.GetGraphic(20);
 ```
 
-### Optional parameters and overloads
-
-The GetGraphics-method has some more overloads. The first two enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
-
-```csharp
-//Set color by using Color-class types
-Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.DarkRed, Color.PaleGreen, true);
-
-//Set color by using HTML hex color notation
-Bitmap qrCodeImage = qrCode.GetGraphic(20, "#000ff0", "#0ff000");
-```
-
-The other overload enables you to render a logo/image in the center of the QR code.
-
-```csharp
-Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.Black, Color.White, (Bitmap)Bitmap.FromFile("C:\\myimage.png"));
-```
-
 There are a plenty of other options. So feel free to read more on that in our wiki: [Wiki: How to use QRCoder](https://github.com/codebude/QRCoder/wiki/How-to-use-QRCoder)
 
 ### Special rendering types
 
-Besides the normal QRCode class (which is shown in the example above) for creating QR codes in Bitmap format, there are some more QR code rendering classes, each for another special purpose.
+Besides the normal PngByteQRCode-class (which is shown in the example above) for creating QR codes in Bitmap format, there are some more QR code rendering classes, each for another special purpose.
 
 * [QRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail)
 * [ArtQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail)
