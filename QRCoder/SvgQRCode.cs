@@ -1,4 +1,4 @@
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0_OR_GREATER
+#if !NETSTANDARD1_3
 using QRCoder.Extensions;
 using System;
 using System.Collections;
@@ -267,14 +267,14 @@ namespace QRCoder
             private object _logoRaw;
             private bool _isEmbedded;
 
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
+#if SYSTEM_DRAWING
             /// <summary>
             /// Create a logo object to be used in SvgQRCode renderer
             /// </summary>
             /// <param name="iconRasterized">Logo to be rendered as Bitmap/rasterized graphic</param>
             /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
             /// <param name="fillLogoBackground">If true, the background behind the logo will be cleaned</param>
-#if NET6_0_WINDOWS
+#if NET6_0_OR_GREATER
             [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
             public SvgLogo(Bitmap iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true)

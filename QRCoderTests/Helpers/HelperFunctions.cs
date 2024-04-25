@@ -2,10 +2,11 @@
 using System.Text;
 using System.IO;
 using System.Security.Cryptography;
+using System.Reflection;
 #if !NETCOREAPP1_1
 using System.Drawing;
 #endif
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+#if TEST_XAML
 using SW = System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -17,7 +18,7 @@ namespace QRCoderTests.Helpers
     public static class HelperFunctions
     {
 
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+#if TEST_XAML
         public static BitmapSource ToBitmapSource(DrawingImage source)
         {
             DrawingVisual drawingVisual = new DrawingVisual();
@@ -44,34 +45,53 @@ namespace QRCoderTests.Helpers
                 }
             }
         }
-#endif 
+#endif
 
-#if !NETCOREAPP1_1
         public static string GetAssemblyPath()
         {
             return
-#if NET5_0 || NET6_0
-            AppDomain.CurrentDomain.BaseDirectory;
-#elif NET35 || NET452
-            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
+#if NET5_0_OR_GREATER
+                AppDomain.CurrentDomain.BaseDirectory;
+#elif NETFRAMEWORK
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
+#elif NETCOREAPP1_1
+                Path.GetDirectoryName(typeof(HelperFunctions).GetTypeInfo().Assembly.Location).Replace("file:\\", "");
 #else
-            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
+                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
 #endif
         }
-#endif
 
 
 #if !NETCOREAPP1_1
-        public static string BitmapToHash(Bitmap bmp)
+        /// <summary>
+        /// Converts a bitmap to a hash string based on the pixel data
+        /// using a deterministic algorithm that ignores compression algorithm
+        /// differences across platforms.
+        /// </summary>
+        public static string BitmapToHash(Bitmap bitmap)
         {
-            byte[] imgBytes = null;
-            using (var ms = new MemoryStream())
+            // Lock the bitmap's bits.
+            var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            var bitmapData = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            byte[] rgbValues;
+            try
             {
-                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                imgBytes = ms.ToArray();
-                ms.Dispose();
+                // Create an array to hold the bytes of the bitmap.
+                int bytes = Math.Abs(bitmapData.Stride) * bitmap.Height;
+                rgbValues = new byte[bytes];
+
+                // Copy the RGB values into the array.
+                System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, rgbValues, 0, bytes);
             }
-            return ByteArrayToHash(imgBytes);
+            finally
+            {
+                // Unlock the bits.
+                bitmap.UnlockBits(bitmapData);
+            }
+
+            // Hash the resulting byte array
+            return ByteArrayToHash(rgbValues);
         }
 #endif
 

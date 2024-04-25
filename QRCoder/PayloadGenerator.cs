@@ -2516,14 +2516,10 @@ namespace QRCoder
                 var cp = characterSet.ToString().Replace("_", "-");
                 var bytes = ToBytes();
 
-#if !NET35_OR_GREATER && !NETSTANDARD1_3_OR_GREATER
+#if NETCOREAPP
                 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 #endif
-#if NETSTANDARD1_3              
-                return Encoding.GetEncoding(cp).GetString(bytes,0,bytes.Length);
-#else
-                return Encoding.GetEncoding(cp).GetString(bytes);
-#endif
+                return Encoding.GetEncoding(cp).GetString(bytes, 0, bytes.Length);
             }
 
             /// <summary>
@@ -2536,7 +2532,7 @@ namespace QRCoder
             {
                 //Setup byte encoder
                 //Encode return string as byte[] with correct CharacterSet
-#if !NET35_OR_GREATER
+#if !NETFRAMEWORK   // -- why different ifdef than line 2519? --
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
                 var cp = this.characterSet.ToString().Replace("_", "-");
