@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 #if !NETCOREAPP1_1
 using System.Drawing;
 #endif
-#if NETFRAMEWORK || NET5_0_WINDOWS
+#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
 using SW = System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -17,7 +17,7 @@ namespace QRCoderTests.Helpers
     public static class HelperFunctions
     {
 
-#if NETFRAMEWORK || NET5_0_WINDOWS
+#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
         public static BitmapSource ToBitmapSource(DrawingImage source)
         {
             DrawingVisual drawingVisual = new DrawingVisual();
