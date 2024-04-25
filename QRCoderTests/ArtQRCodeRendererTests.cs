@@ -21,7 +21,7 @@ namespace QRCoderTests
             var gen = new QRCodeGenerator();
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
             var bmp = new ArtQRCode(data).GetGraphic(10);
-
+            bmp.Save("original.png");
             var result = HelperFunctions.BitmapToHash(bmp);
             result.ShouldBe("cb38c3156eaf13cdfba699bdafc3a84c");
         }
@@ -38,7 +38,7 @@ namespace QRCoderTests
                 g.FillRectangle(Brushes.Red, 0, 0, 70, 70);
             }
             var bmp = new ArtQRCode(data).GetGraphic(10, Color.Black, Color.White, Color.Transparent, finderPatternImage: finder);
-
+            bmp.Save("finder.png");
             var result = HelperFunctions.BitmapToHash(bmp);
             result.ShouldBe("5df3f2892eeb01e9c282ad10f642dec2");
         }
@@ -63,7 +63,7 @@ namespace QRCoderTests
             var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
             var bmp = new ArtQRCode(data).GetGraphic((Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
-
+            bmp.Save("custom_background.png");
             var result = HelperFunctions.BitmapToHash(bmp);
 
             result.ShouldBe("bbea08507282773175cfe7b52f0ddae4");

@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	  <Version>1.0.0-dev1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="2.88.1-preview.71" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
+  </ItemGroup>
+
+</Project>

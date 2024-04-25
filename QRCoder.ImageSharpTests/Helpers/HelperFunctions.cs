@@ -2,11 +2,14 @@
 using System.Text;
 using System.IO;
 using System.Security.Cryptography;
+#if NET6_0_OR_GREATER
+using SixLabors.ImageSharp.Formats.Png;
+#endif
 
 #if !NETCOREAPP1_1
 using System.Drawing;
 #endif
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+#if NETFRAMEWORK || NET5_0_WINDOWS
 using SW = System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -18,7 +21,7 @@ namespace QRCoderTests.Helpers
     public static class HelperFunctions
     {
 
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+#if NETFRAMEWORK || NET5_0_WINDOWS
         public static BitmapSource ToBitmapSource(DrawingImage source)
         {
             DrawingVisual drawingVisual = new DrawingVisual();
@@ -62,16 +65,12 @@ namespace QRCoderTests.Helpers
 #endif
 
 
-#if !NETCOREAPP1_1
-        public static string BitmapToHash(Bitmap bmp)
+#if NET6_0
+        public static string ImageToHash(SixLabors.ImageSharp.Image image)
         {
-            byte[] imgBytes = null;
-            using (var ms = new MemoryStream())
-            {
-                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                imgBytes = ms.ToArray();
-                ms.Dispose();
-            }
+            using var ms = new MemoryStream();
+            image.Save(ms, new PngEncoder());
+            byte[] imgBytes = ms.ToArray();
             return ByteArrayToHash(imgBytes);
         }
 #endif
