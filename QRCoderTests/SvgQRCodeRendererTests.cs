@@ -14,16 +14,6 @@ namespace QRCoderTests
 
     public class SvgQRCodeRendererTests
     {
-        private string GetAssemblyPath()
-        {
-            return
-#if NET5_0
-                AppDomain.CurrentDomain.BaseDirectory;
-#else
-                Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
-#endif
-        }
-
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
         public void can_render_svg_qrcode_simple()
