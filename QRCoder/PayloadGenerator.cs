@@ -2516,8 +2516,8 @@ namespace QRCoder
                 var cp = characterSet.ToString().Replace("_", "-");
                 var bytes = ToBytes();
 
-#if NETCOREAPP
-                System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+#if !NETFRAMEWORK
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
                 return Encoding.GetEncoding(cp).GetString(bytes, 0, bytes.Length);
             }
@@ -2532,7 +2532,7 @@ namespace QRCoder
             {
                 //Setup byte encoder
                 //Encode return string as byte[] with correct CharacterSet
-#if !NETFRAMEWORK   // -- why different ifdef than line 2519? --
+#if !NETFRAMEWORK
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
                 var cp = this.characterSet.ToString().Replace("_", "-");
@@ -3111,7 +3111,7 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(message);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-            return iso.GetString(isoBytes, 0, isoBytes.Length);
+            return iso.GetString(isoBytes);
         }
 
         private static string EscapeInput(string inp, bool simple = false)

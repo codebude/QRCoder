@@ -1026,8 +1026,7 @@ namespace QRCoder
         private static bool IsValidISO(string input)
         {
             var bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
-            //var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
-            var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes,0,bytes.Length);
+            var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
             return String.Equals(input, result);
         }
 
