@@ -22,7 +22,6 @@ namespace QRCoder
                 this.ModuleMatrix.Add(new BitArray(size));
         }
 
-        [Obsolete("This constructor will be removed in version 2.0.0.")]
         public QRCodeData(string pathToRawData, Compression compressMode) : this(File.ReadAllBytes(pathToRawData), compressMode)
         {
         }
