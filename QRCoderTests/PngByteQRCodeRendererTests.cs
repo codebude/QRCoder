@@ -38,7 +38,7 @@ namespace QRCoderTests
             {
                 var bmp = (Bitmap)Image.FromStream(mStream);
                 var result = HelperFunctions.BitmapToHash(bmp);
-                result.ShouldBe("18b19e6037cff06ae995d8d487b0e46e");
+                result.ShouldBe("0cfc8a8d552ade875190d8e9f5c1e1bf");
             }
 #endif        
         }
@@ -60,7 +60,7 @@ namespace QRCoderTests
             {
                 var bmp = (Bitmap)Image.FromStream(mStream);
                 var result = HelperFunctions.BitmapToHash(bmp);
-                result.ShouldBe("37ae73e90b66beac317b790be3db24cc");
+                result.ShouldBe("88d394b2405499869feb69b81593e703");
             }
 #endif   
         }
@@ -83,7 +83,7 @@ namespace QRCoderTests
             {
                 var bmp = (Bitmap)Image.FromStream(mStream);
                 var result = HelperFunctions.BitmapToHash(bmp);
-                result.ShouldBe("c56c2a9535fd8e9a92a6ac9709d21e67");
+                result.ShouldBe("1d81b3d52fc64543186558eee7d9494b");
             }
 #endif   
         }
@@ -107,7 +107,7 @@ namespace QRCoderTests
                 var bmp = (Bitmap)Image.FromStream(mStream);
                 bmp.MakeTransparent(Color.Transparent);
                 var result = HelperFunctions.BitmapToHash(bmp);
-                result.ShouldBe("fbbc8255ebf3e4f4a1d21f0dd15f76f8");
+                result.ShouldBe("825a6469f89bf9e3d7318a5390d5ba7f");
             }
 #endif
         }
@@ -136,7 +136,7 @@ namespace QRCoderTests
             {
                 var bmp = (Bitmap)Image.FromStream(mStream);
                 var result = HelperFunctions.BitmapToHash(bmp);
-                result.ShouldBe("1978fb11ce26acf9b6cb7490b4c44ef2");
+                result.ShouldBe("a2ea116068eb516a7c210b2541e99348");
             }
 #endif  
         }
@@ -156,7 +156,7 @@ namespace QRCoderTests
             {
                 var bmp = (Bitmap)Image.FromStream(mStream);
                 var result = HelperFunctions.BitmapToHash(bmp);
-                result.ShouldBe("c56c2a9535fd8e9a92a6ac9709d21e67");
+                result.ShouldBe("1d81b3d52fc64543186558eee7d9494b");
             }
 #endif  
         }

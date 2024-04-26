@@ -1026,8 +1026,7 @@ namespace QRCoder
         private static bool IsValidISO(string input)
         {
             var bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
-            //var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
-            var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes,0,bytes.Length);
+            var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
             return String.Equals(input, result);
         }
 
@@ -1107,11 +1106,7 @@ namespace QRCoder
             Encoding utf8 = Encoding.UTF8;
             byte[] utfBytes = utf8.GetBytes(value);
             byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0
             return iso.GetString(isoBytes);
-#else
-            return iso.GetString(isoBytes, 0, isoBytes.Length);
-#endif
         }
 
         private static string PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)

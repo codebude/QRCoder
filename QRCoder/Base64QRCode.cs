@@ -62,7 +62,7 @@ namespace QRCoder
                 return Convert.ToBase64String(pngData, Base64FormattingOptions.None);
             }
 
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
+#if SYSTEM_DRAWING
 #pragma warning disable CA1416 // Validate platform compatibility
             var qr = new QRCode(QrCodeData);
             var base64 = string.Empty;
@@ -77,7 +77,7 @@ namespace QRCoder
 #endif
         }
 
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
+#if SYSTEM_DRAWING
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
@@ -93,7 +93,7 @@ namespace QRCoder
         }
 #endif
 
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
+#if SYSTEM_DRAWING
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif

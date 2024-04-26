@@ -55,7 +55,7 @@ namespace QRCoderTests
             base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
         }
 
-#if NETFRAMEWORK || NETCOREAPP2_0 || NET5_0 || NET6_0_WINDOWS
+#if SYSTEM_DRAWING
         [Fact]
         [Category("QRRenderer/Base64QRCode")]
         public void can_render_base64_qrcode_jpeg()

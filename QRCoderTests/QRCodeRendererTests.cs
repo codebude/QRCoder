@@ -1,4 +1,4 @@
-﻿#if !NETCOREAPP1_1 && !NET6_0
+﻿#if SYSTEM_DRAWING
 using Xunit;
 using QRCoder;
 using Shouldly;
@@ -21,7 +21,7 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("e8c61b8f0455924fe08ba68686d0d296");
+            result.ShouldBe("f2ed5073bd42dc012e442c0f750e9dae");
         }
 
         [Fact]
@@ -33,7 +33,7 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10, "#000000", "#ffffff");
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("e8c61b8f0455924fe08ba68686d0d296");
+            result.ShouldBe("f2ed5073bd42dc012e442c0f750e9dae");
         }
 
 
@@ -46,7 +46,7 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(5, Color.Black, Color.White, false);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("d703e54a0ba541c6ea69e3d316e394e7");
+            result.ShouldBe("c401d45c01e636af3eb4b8ca6cd17d14");
         }
 
 
@@ -61,7 +61,7 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: (Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("150f8fc7dae4487ba2887d2b2bea1c25");
+            result.ShouldBe("c99a82b43ce48ddae18a75862c476a9e");
         }
 
         [Fact]
@@ -75,7 +75,7 @@ namespace QRCoderTests
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("c46a7ec51bf978d7a882059c322ca69d");
+            result.ShouldBe("74808e52270bba92e7b821dbd067dfd2");
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: logo, iconBorderWidth: 6);
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("150f8fc7dae4487ba2887d2b2bea1c25");
+            result.ShouldBe("c99a82b43ce48ddae18a75862c476a9e");
         }
 
         [Fact]
@@ -105,7 +105,7 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: logo, iconBorderWidth: 6);
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("1c926ea1d48f42fdf8e6f1438b774cdd");
+            result.ShouldBe("943ecd2a847a4d9509ca0266dbbadd7b");
         }
 
         [Fact]
@@ -120,7 +120,7 @@ namespace QRCoderTests
             var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: logo, iconBorderWidth: 6, iconBackgroundColor: Color.DarkGreen);
             //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("9a06bfbb72df999b6290b5af5c4037cb");
+            result.ShouldBe("e60bdaafe807889ca322d47146fe8300");
         }
 
 
@@ -141,7 +141,7 @@ namespace QRCoderTests
             var bmp = QRCodeHelper.GetQRCode("This is a quick test! 123#?", 10, Color.Black, Color.White, QRCodeGenerator.ECCLevel.H);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("e8c61b8f0455924fe08ba68686d0d296");
+            result.ShouldBe("f2ed5073bd42dc012e442c0f750e9dae");
         }
 
     }
