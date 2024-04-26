@@ -52,7 +52,12 @@ namespace QRCoderApiTests
             string projectName = type.Assembly.GetName().Name!;
             string testDir = Path.Combine(baseDir, $"..{Path.DirectorySeparatorChar}..{Path.DirectorySeparatorChar}..");
             string projectDir = Path.Combine(testDir, "..");
-            string buildDir = Path.Combine(projectDir, projectName, "bin", "Release");
+            string buildDir = Path.Combine(projectDir, projectName, "bin",
+#if DEBUG
+                "Debug");
+#else
+                "Release");
+#endif
             Debug.Assert(Directory.Exists(buildDir), $"Directory '{buildDir}' doesn't exist");
             string csProject = Path.Combine(projectDir, projectName, projectName + ".csproj");
             var project = XDocument.Load(csProject);
