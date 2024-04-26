@@ -57,7 +57,6 @@ namespace QRCoder
         public string GetGraphicSmall(bool drawQuietZones = true, bool invert = false, string endOfLine = "
 ") { }
         public string[] GetLineByLineGraphic(int repeatPerModule, string darkColorString = "██", string whiteSpaceString = "  ", bool drawQuietZones = true) { }
-        public void Testme() { }
     }
     public static class AsciiQRCodeHelper
     {
