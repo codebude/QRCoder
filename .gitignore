@@ -219,3 +219,6 @@ pip-log.txt
 *.userprefs
 
 QRCoder/PortabilityAnalysis.html
+
+# Unaccepted approval files
+*.received.txt

@@ -14,7 +14,7 @@ namespace QRCoder
 
         public AsciiQRCode(QRCodeData data) : base(data) { }
 
-       
+
         /// <summary>
         /// Returns a strings that contains the resulting QR code as textual representation.
         /// </summary>
