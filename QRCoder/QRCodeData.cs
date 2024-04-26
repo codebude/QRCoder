@@ -154,7 +154,6 @@ namespace QRCoder
             return rawData;
         }
 
-        [Obsolete("This constructor will be removed in version 2.0.0.")]
         public void SaveRawData(string filePath, Compression compressMode)
         {
             File.WriteAllBytes(filePath, GetRawData(compressMode));
