@@ -20,19 +20,13 @@ jobs:
           1.0.x
           2.0.x
           5.0.x
-          6.0.x 
+          6.0.x
 
-    - name: Setup MSBuild Path
-      uses: microsoft/setup-msbuild@v1      
-       
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-     
     - name: Restore NuGet Packages
-      run: nuget restore QRCoder.sln
+      run: dotnet restore
  
     - name: Build library
-      run: msbuild QRCoder.sln /p:Configuration=Release /p:NoWarn="1182" /p:NoWarn="1701" /nr:false /t:Rebuild
+      run: dotnet build -c Release --no-restore
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -60,28 +54,40 @@ jobs:
           6.0.x 
 
     - name: Run test .NET 3.5
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f net35 --nologo --no-build # No coverage for NET3.5 because of bug in combination with Coverlet+Stronh naming
 
     - name: Run test .NET 4.52
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f net452 --nologo --no-build # No coverage for NET4.5 because of bug in combination with Coverlet+Strong naming
 
     - name: Run test .NET Core 1.1
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f netcoreapp1.1 --nologo  # No coverage for .NETCORE 1.1 because Coverlet doesn't support it https://github.com/coverlet-coverage/coverlet/issues/466
 
     - name: Run test .NET Core 2.0
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Run test .NET 5.0
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f net5.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Run test .NET 5.0 Windows
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f net5.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Run test .NET 6.0
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f net6.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Run test .NET 6.0 Windows
+      working-directory: QRCoderTests
       run: dotnet test -c Release -f net6.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      
+    - name: Run API approval tests
+      working-directory: QRCoderApiTests
+      run: dotnet test -c Release --nologo --no-build
 
     - name: Codecov update netcoreapp2.0
       uses: codecov/codecov-action@v2
