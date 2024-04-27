@@ -34,7 +34,9 @@ namespace QRCoder
         public string GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true, QRCoder.Base64QRCode.ImageType imgType = 2) { }
         public enum ImageType
         {
+            [System.Runtime.Versioning.SupportedOSPlatform("windows")]
             Gif = 0,
+            [System.Runtime.Versioning.SupportedOSPlatform("windows")]
             Jpeg = 1,
             Png = 2,
         }

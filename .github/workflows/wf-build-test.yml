@@ -20,19 +20,13 @@ jobs:
           1.0.x
           2.0.x
           5.0.x
-          6.0.x 
-
-    - name: Setup MSBuild Path
-      uses: microsoft/setup-msbuild@v1      
-       
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-     
+          6.0.x
+          
     - name: Restore NuGet Packages
-      run: nuget restore QRCoder.sln
+      run: dotnet restore
  
     - name: Build library
-      run: msbuild QRCoder.sln /p:Configuration=Release /p:NoWarn="1182" /p:NoWarn="1701" /nr:false /t:Rebuild
+      run: dotnet build -c Release --no-restore
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
