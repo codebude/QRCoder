@@ -1,6 +1,6 @@
 ## About
 
-QRCoder is a simple library, written in C#.NET, which enables you to create QR codes. It hasn't any dependencies to other libraries and is available as .NET Framework and .NET Core PCL version on NuGet.
+QRCoder is a simple library, written in C#.NET, which enables you to create QR codes. It hasn't any dependencies to external libraries<sup>1</sup>, is available as package on NuGet and supports .NET Framework, .NET Core, .NET Standard and .NET. A full list of supported target frameworks can be [found here](https://www.nuget.org/packages/QRCoder/#supportedframeworks-body-tab).
 
 ***
 
@@ -16,33 +16,13 @@ The release notes for the current and all past releases can be read here: [📄 
 
 ## Usage / Quick start
 
-You only need four lines of code, to generate and view your first QR code.
+You only need a couple lines of code, to generate your first QR code.
 
 ```csharp
-using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-using (QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q))
-using (QRCode qrCode = new QRCode(qrCodeData))
-{
-    Bitmap qrCodeImage = qrCode.GetGraphic(20);
-}
-```
-
-### Optional parameters and overloads
-
-The GetGraphics-method has some more overloads. The first two enable you to set the color of the QR code graphic. One uses Color-class-types, the other HTML hex color notation.
-
-```csharp
-//Set color by using Color-class types
-Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.DarkRed, Color.PaleGreen, true);
-
-//Set color by using HTML hex color notation
-Bitmap qrCodeImage = qrCode.GetGraphic(20, "#000ff0", "#0ff000");
-```
-
-The other overload enables you to render a logo/image in the center of the QR code.
-
-```csharp
-Bitmap qrCodeImage = qrCode.GetGraphic(20, Color.Black, Color.White, (Bitmap)Bitmap.FromFile("C:\\myimage.png"));
+QRCodeGenerator qrGenerator = new QRCodeGenerator();
+QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
+QRCode qrCode = new PngByteQRCode(qrCodeData);
+byte[] qrCodeImage = qrCode.GetGraphic(20);
 ```
 
 There are a plenty of other options. So feel free to read more on that in our wiki: [Wiki: How to use QRCoder](https://github.com/codebude/QRCoder/wiki/How-to-use-QRCoder)
@@ -57,3 +37,6 @@ In case you have a question about using the library (and couldn't find an answer
 ## Legal information and credits
 
 QRCoder is a project by [Raffael Herrmann](https://raffaelherrmann.de) and was first released in 10/2013. It's licensed under the [MIT license](https://github.com/codebude/QRCoder/blob/master/LICENSE.txt).
+
+***
+<sup>(1)</sup> *Depending on the targeted framework the .NET libraries System.Drawing.Common and System.Text.Encoding.CodePages will used as package dependencies.*

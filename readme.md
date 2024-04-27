@@ -8,7 +8,7 @@
 
 ## Info
 
-QRCoder is a simple library, written in C#.NET, which enables you to create QR codes. It hasn't any dependencies to other libraries and is available as .NET Framework and .NET Core PCL version on NuGet.
+QRCoder is a simple library, written in C#.NET, which enables you to create QR codes. It hasn't any dependencies to external libraries<sup>1</sup>, is available as package on NuGet and supports .NET Framework, .NET Core, .NET Standard and .NET. A full list of supported target frameworks can be [found here](https://www.nuget.org/packages/QRCoder/#supportedframeworks-body-tab).
 
 Feel free to grab-up/fork the project and make it better!
 
@@ -135,3 +135,6 @@ The PayloadGenerator supports the following types of payloads:
 * [URL](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#319-url)
 * [WhatsAppMessage](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#320-whatsappmessage)
 * [WiFi](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#321-wifi)
+
+***
+<sup>(1)</sup> *Depending on the targeted framework the .NET libraries System.Drawing.Common and System.Text.Encoding.CodePages will used as package dependencies.*
