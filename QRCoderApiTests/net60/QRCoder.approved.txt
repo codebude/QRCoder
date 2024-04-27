@@ -810,10 +810,12 @@ namespace QRCoder
     {
         public QRCodeData(int version) { }
         public QRCodeData(byte[] rawData, QRCoder.QRCodeData.Compression compressMode) { }
+        public QRCodeData(string pathToRawData, QRCoder.QRCodeData.Compression compressMode) { }
         public System.Collections.Generic.List<System.Collections.BitArray> ModuleMatrix { get; set; }
         public int Version { get; }
         public void Dispose() { }
         public byte[] GetRawData(QRCoder.QRCodeData.Compression compressMode) { }
+        public void SaveRawData(string filePath, QRCoder.QRCodeData.Compression compressMode) { }
         public enum Compression
         {
             Uncompressed = 0,
