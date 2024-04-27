@@ -63,11 +63,11 @@ jobs:
 
     - name: Run test .NET Core 1.1
       working-directory: QRCoderTests
-      run: dotnet test -c Release -f netcoreapp1.1 --nologo # No coverage for .NETCORE 1.1 because Coverlet doesn't support it https://github.com/coverlet-coverage/coverlet/issues/466
+      run: dotnet test -c Release -f netcoreapp1.1 --nologo --no-build # No coverage for .NETCORE 1.1 because Coverlet doesn't support it https://github.com/coverlet-coverage/coverlet/issues/466
 
     - name: Run test .NET Core 2.0
       working-directory: QRCoderTests
-      run: dotnet test -c Release -f netcoreapp2.0 --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test -c Release -f netcoreapp2.0 --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Run test .NET 5.0
       working-directory: QRCoderTests
@@ -87,7 +87,7 @@ jobs:
     
     - name: Run API approval tests
       working-directory: QRCoderApiTests
-      run: dotnet test -c Release -f net6.0 --nologo --no-build
+      run: dotnet test -c Release --nologo --no-build
 
   clean:
     needs: [build, test]
