@@ -18,7 +18,7 @@
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>QRCoder.Xaml</PackageId>
-    <Version>1.5.1</Version>
+    <Version>1.5.2</Version>
     <Authors>Raffael Herrmann</Authors>
     <PackageOwners>Raffael Herrmann</PackageOwners>
     <AssemblyName>QRCoder.Xaml</AssemblyName>
