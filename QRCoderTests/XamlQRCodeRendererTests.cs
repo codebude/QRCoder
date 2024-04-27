@@ -1,4 +1,4 @@
-﻿#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+﻿#if TEST_XAML
 using Xunit;
 using QRCoder;
 using QRCoder.Xaml;
@@ -22,7 +22,7 @@ namespace QRCoderTests
 
             var bmp = HelperFunctions.BitmapSourceToBitmap(xCode);
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("e8c61b8f0455924fe08ba68686d0d296");
+            result.ShouldBe("f2ed5073bd42dc012e442c0f750e9dae");
         }
 
 

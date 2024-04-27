@@ -14,7 +14,6 @@ namespace QRCoderTests
 
     public class SvgQRCodeRendererTests
     {
-
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
         public void can_render_svg_qrcode_simple()
@@ -93,7 +92,7 @@ namespace QRCoderTests
             result.ShouldBe("4ab0417cc6127e347ca1b2322c49ed7d");
         }
 
-#if NETFRAMEWORK || NETSTANDARD2_0 || NET5_0 || NET6_0_WINDOWS
+#if SYSTEM_DRAWING && !NET5_0_OR_GREATER // .NET 5+ does not encode PNG images in a deterministic way, so the hash may be different across different runs
         [Fact]
         [Category("QRRenderer/SvgQRCode")]
         public void can_render_svg_qrcode_with_png_logo_bitmap()

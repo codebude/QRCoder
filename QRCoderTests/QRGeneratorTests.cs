@@ -140,12 +140,7 @@ namespace QRCoderTests
         public static string ToBitString(this BitArray bits)
         {
             var sb = new StringBuilder();
-            int bitLength = 0;
-#if !NETCOREAPP1_1
-            bitLength = bits.Count;
-#else
-            bitLength = bits.Length;
-#endif
+            int bitLength = bits.Length;
             for (int i = 0; i < bitLength; i++)
             {
                 char c = bits[i] ? '1' : '0';

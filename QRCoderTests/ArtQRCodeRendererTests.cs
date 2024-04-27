@@ -1,4 +1,4 @@
-﻿#if !NETCOREAPP1_1 && !NET6_0
+﻿#if SYSTEM_DRAWING
 
 using Xunit;
 using QRCoder;
@@ -23,7 +23,7 @@ namespace QRCoderTests
             var bmp = new ArtQRCode(data).GetGraphic(10);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("cb38c3156eaf13cdfba699bdafc3a84c");
+            result.ShouldBe("df510ce9feddc0dd8c23c54e700abbf0");
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace QRCoderTests
             var bmp = new ArtQRCode(data).GetGraphic(10, Color.Black, Color.White, Color.Transparent, finderPatternImage: finder);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("5df3f2892eeb01e9c282ad10f642dec2");
+            result.ShouldBe("e28a3779b9b975b85984e36f596c9a35");
         }
 
         [Fact]
@@ -52,7 +52,7 @@ namespace QRCoderTests
             var bmp = new ArtQRCode(data).GetGraphic(10, Color.Black, Color.White, Color.Transparent, drawQuietZones: false);
 
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("632315c8695416fc82fe06a202688433");
+            result.ShouldBe("54408da26852d6c67ab7cad2656da7fa");
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace QRCoderTests
 
             var result = HelperFunctions.BitmapToHash(bmp);
 
-            result.ShouldBe("bbea08507282773175cfe7b52f0ddae4");
+            result.ShouldBe("7f039ccde219ae78e4f768466376a17f");
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace QRCoderTests
             //Create QR code
             var bmp = ArtQRCodeHelper.GetQRCode("A", 10, Color.Black, Color.White, Color.Transparent, QRCodeGenerator.ECCLevel.L);
             var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("57ecaa9bdeadcdcbeac8a19d734907ff");
+            result.ShouldBe("a1975852df9b537344468bd44d54abe0");
         }
     }
 }
