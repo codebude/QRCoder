@@ -11,6 +11,7 @@
 		<IsTestProject>true</IsTestProject>
 		<CheckEolTargetFramework>false</CheckEolTargetFramework>
 		<DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+		<NoWarn>$(NoWarn);NU1903</NoWarn>
 	</PropertyGroup>
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net6.0-windows' ">
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />

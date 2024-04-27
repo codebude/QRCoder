@@ -1,0 +1,18 @@
+namespace QRCoder.Xaml
+{
+    public class XamlQRCode : QRCoder.AbstractQRCode, System.IDisposable
+    {
+        public XamlQRCode() { }
+        public XamlQRCode(QRCoder.QRCodeData data) { }
+        public System.Windows.Media.DrawingImage GetGraphic(int pixelsPerModule) { }
+        public System.Windows.Media.DrawingImage GetGraphic(int pixelsPerModule, bool drawQuietZones) { }
+        public System.Windows.Media.DrawingImage GetGraphic(System.Windows.Size viewBox, bool drawQuietZones = true) { }
+        public System.Windows.Media.DrawingImage GetGraphic(int pixelsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true) { }
+        public System.Windows.Media.DrawingImage GetGraphic(System.Windows.Size viewBox, System.Windows.Media.Brush darkBrush, System.Windows.Media.Brush lightBrush, bool drawQuietZones = true) { }
+        public double GetUnitsPerModule(System.Windows.Size viewBox, bool drawQuietZones = true) { }
+    }
+    public static class XamlQRCodeHelper
+    {
+        public static System.Windows.Media.DrawingImage GetQRCode(string plainText, int pixelsPerModule, string darkColorHex, string lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true) { }
+    }
+}
