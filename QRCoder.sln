@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoder.Xaml", "QRCoder.Xam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderApiTests", "QRCoderApiTests\QRCoderApiTests.csproj", "{5FACE5F6-53C9-4B89-91D4-162677893574}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderBenchmarks", "QRCoderBenchmarks\QRCoderBenchmarks.csproj", "{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -137,6 +139,22 @@ Global
 		{5FACE5F6-53C9-4B89-91D4-162677893574}.Release|x64.Build.0 = Release|Any CPU
 		{5FACE5F6-53C9-4B89-91D4-162677893574}.Release|x86.ActiveCfg = Release|Any CPU
 		{5FACE5F6-53C9-4B89-91D4-162677893574}.Release|x86.Build.0 = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|ARM.Build.0 = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|x64.Build.0 = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Debug|x86.Build.0 = Debug|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|ARM.ActiveCfg = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|ARM.Build.0 = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|x64.ActiveCfg = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|x64.Build.0 = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|x86.ActiveCfg = Release|Any CPU
+		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

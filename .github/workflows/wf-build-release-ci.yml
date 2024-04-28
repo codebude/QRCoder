@@ -21,6 +21,7 @@ jobs:
           2.0.x
           5.0.x
           6.0.x
+          8.0.x
 
     - name: Restore NuGet Packages
       run: dotnet restore
@@ -51,7 +52,8 @@ jobs:
           1.0.x
           2.0.x
           5.0.x
-          6.0.x 
+          6.0.x
+          8.0.x
 
     - name: Run test .NET 3.5
       working-directory: QRCoderTests
