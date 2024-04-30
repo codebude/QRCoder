@@ -1733,13 +1733,16 @@ namespace QRCoder
             public override string ToString()
             {
                 var sb = new StringBuilder();
-                //this.PolyItems.ForEach(x => sb.Append("a^" + x.Coefficient + "*x^" + x.Exponent + " + "));
+
                 foreach (var polyItem in this.PolyItems)
                 {
                     sb.Append("a^" + polyItem.Coefficient + "*x^" + polyItem.Exponent + " + ");
                 }
 
-                return sb.ToString().TrimEnd(new[] { ' ', '+' });
+                if (sb.Length > 0)
+                    sb.Length -= 3;
+
+                return sb.ToString();
             }
         }
 
