@@ -215,7 +215,7 @@ namespace QRCoder
         private static QRCodeData GenerateQrCode(string bitString, ECCLevel eccLevel, int version)
         {
             return GenerateQrCode(ToBitArray(bitString), eccLevel, version);
-            }
+        }
 
         private static readonly BitArray _repeatingPattern = new BitArray(
             new[] { true, true, true, false, true, true, false, false, false, false, false, true, false, false, false, true });
@@ -301,25 +301,21 @@ namespace QRCoder
 
             void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, BitArray bitArray2, int offset2, int count)
             {
+                var groupLength = codewordsInGroup * 8;
                 for (var i = 0; i < blocksInGroup; i++)
                 {
-                    var bitStr = BitArrayToString(bitArray2, i * codewordsInGroup * 8 + offset2, codewordsInGroup * 8);
+                    //var bitStr = BitArrayToString(bitArray2, i * codewordsInGroup * 8 + offset2, codewordsInGroup * 8);
                     // todo: combine next two lines to convert to byte array
-                    //var newBitBlockLlist = BinaryStringToBitBlockByteList(bitArray2, i * codewordsInGroup * 8 + offset2, codewordsInGroup * 8);
-                    var bitBlockList = BinaryStringToBitBlockList(bitArray2, i * codewordsInGroup * 8 + offset2, codewordsInGroup * 8);
-                    var bitBlockListDec = BinaryStringListToDecList(bitBlockList);
+                    //var newBitBlockList = BinaryStringToBitBlockByteList(bitArray2, i * codewordsInGroup * 8 + offset2, codewordsInGroup * 8);
+                    var bitBlockList = BinaryStringToBitBlockList(bitArray2, offset2, groupLength);
                     // todo: combine next two lines to convert to byte array
-                    var eccWordList = CalculateECCWords(bitStr, eccInfo);
-                    var eccWordListDec = BinaryStringListToDecList(eccWordList);
+                    var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo);
                     // todo: update CodewordBlock constructor to take byte arrays
-                    codeWordWithECC.Add(new CodewordBlock(blockNum,
-                                          i + 1,
-                                          bitStr,
+                    codeWordWithECC.Add(new CodewordBlock(
                                           bitBlockList,
-                                          eccWordList,
-                                          bitBlockListDec,
-                                          eccWordListDec)
+                                          eccWordList)
                                     );
+                    offset2 += groupLength;
                 }
             }
         }
@@ -910,10 +906,10 @@ namespace QRCoder
 
         }
 
-        private static List<string> CalculateECCWords(string bitString, ECCInfo eccInfo)
+        private static List<string> CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo)
         {
             var eccWords = eccInfo.ECCPerBlock;
-            var messagePolynom = CalculateMessagePolynom(bitString);
+            var messagePolynom = CalculateMessagePolynom(bitArray, offset, count);
             var generatorPolynom = CalculateGeneratorPolynom(eccWords);
 
             for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
@@ -1006,13 +1002,13 @@ namespace QRCoder
             return (uint)(c - min) <= (uint)(max - min);
         }
 
-        private static Polynom CalculateMessagePolynom(string bitString)
+        private static Polynom CalculateMessagePolynom(BitArray bitArray, int offset, int count)
         {
-            var messagePol = new Polynom(bitString.Length / 8);
-            for (var i = bitString.Length / 8 - 1; i >= 0; i--)
+            var messagePol = new Polynom(count / 8);
+            for (var i = count / 8 - 1; i >= 0; i--)
             {
-                messagePol.PolyItems.Add(new PolynomItem(BinToDec(bitString.Substring(0, 8)), i));
-                bitString = bitString.Remove(0, 8);
+                messagePol.PolyItems.Add(new PolynomItem(BinToDec(bitArray, offset, 8), i));
+                offset += 8;
             }
             return messagePol;
         }
@@ -1084,6 +1080,16 @@ namespace QRCoder
         private static int BinToDec(string binStr)
         {
             return Convert.ToInt32(binStr, 2);
+        }
+
+        private static int BinToDec(BitArray bitArray, int offset, int count)
+        {
+            var ret = 0;
+            for (int i = 0; i < count; i++)
+            {
+                ret ^= bitArray[offset + i] ? 1 << (count - i - 1) : 0;
+            }
+            return ret;
         }
 
         private static void DecToBin(int decNum, int bits, BitArray bitList, ref int index)
@@ -1636,25 +1642,14 @@ namespace QRCoder
 
         private struct CodewordBlock
         {
-            public CodewordBlock(int groupNumber, int blockNumber, string bitString, List<string> codeWords,
-                List<string> eccWords, List<int> codeWordsInt, List<int> eccWordsInt)
+            public CodewordBlock(List<string> codeWords, List<string> eccWords)
             {
-                this.GroupNumber = groupNumber;
-                this.BlockNumber = blockNumber;
-                this.BitString = bitString;
                 this.CodeWords = codeWords;
                 this.ECCWords = eccWords;
-                this.CodeWordsInt = codeWordsInt;
-                this.ECCWordsInt = eccWordsInt;
             }
 
-            public int GroupNumber { get; }
-            public int BlockNumber { get; }
-            public string BitString { get; }
             public List<string> CodeWords { get; }
-            public List<int> CodeWordsInt { get; }
             public List<string> ECCWords { get; }
-            public List<int> ECCWordsInt { get; }
         }
 
         private struct ECCInfo
@@ -1779,6 +1774,182 @@ namespace QRCoder
         public void Dispose()
         {
             // left for back-compat
+        }
+
+        public ref struct BitArraySegment
+        {
+            public BitArraySegment(BitArray bitArray)
+                : this(bitArray, 0, bitArray.Length)
+            {
+            }
+
+            public BitArraySegment(BitArray bitArray, int offset, int count)
+            {
+                _bitArray = bitArray;
+                _offset = offset;
+                _count = count;
+            }
+
+            public BitArraySegment(string bitString)
+                : this(ToBitArray(bitString))
+            {
+            }
+
+            private BitArray _bitArray { get; set; }
+            private int _offset { get; set; }
+            private int _count { get; set; }
+
+            public void TrimLeadingZeros()
+            {
+                while (_count > 0 && !_bitArray[_offset])
+                {
+                    _offset++;
+                    _count--;
+                }
+            }
+
+            public void PadRight(int newLength)
+            {
+                if (newLength < _count)
+                    throw new ArgumentOutOfRangeException(nameof(newLength), "Value is shorter than existing data length.");
+                if (newLength == _count)
+                    return;
+
+                // Calculate the total required length of the bit array
+                int requiredLength = _offset + newLength;
+
+                // Set the existing unused bits to zero which will be utilized after adjusting the length
+                for (int i = _offset + _count; i < Math.Min(_bitArray.Length, requiredLength); i++)
+                    _bitArray[i] = false;
+
+                // Check if the current bit array is sufficient
+                if (requiredLength > _bitArray.Length)
+                {
+                    // Extend the length of the bit array, setting new values to zero
+                    _bitArray.Length = requiredLength;
+                }
+
+                // Update the count to reflect the new size
+                _count = newLength;
+            }
+
+            public void PadLeft(int newLength)
+            {
+                if (newLength < _count)
+                    throw new ArgumentOutOfRangeException(nameof(newLength), "Value is shorter than existing data length.");
+                if (newLength == _count)
+                    return;
+
+                if (_bitArray.Length < newLength)
+                    _bitArray.Length = newLength;
+
+                // Calculate new offset and count (new offset may be negative)
+                var oldOffset = _offset;
+                _offset -= newLength - _count;
+                _count = newLength;
+
+                // Set the existing unused bits to zero which will be utilized after adjusting the length
+                for (int i = Math.Max(_offset, 0); i < oldOffset; i++)
+                    _bitArray[i] = false;
+
+                if (_offset < 0)
+                {
+                    ShiftRightInternal(_bitArray, -_offset);
+                    _offset += -_offset;
+                }
+            }
+
+            private void ZeroAlign()
+            {
+                if (_offset > 0)
+                {
+                    ShiftLeftInternal(_bitArray, _offset);
+                    _offset = 0;
+                }
+            }
+
+            public void Xor(BitArray bitArray)
+            {
+                if (bitArray.Length < _count)
+                    throw new ArgumentOutOfRangeException(nameof(bitArray), "Value is shorter than existing data length.");
+
+                ZeroAlign();
+                _bitArray.Xor(bitArray);
+            }
+
+            private static void ShiftLeftInternal(BitArray fStrEcc, int num)
+            {
+#if NETCOREAPP
+                fStrEcc.RightShift(num); // Shift towards bit 0
+#else
+                for (var i = 0; i < fStrEcc.Length - num; i++)
+                    fStrEcc[i] = fStrEcc[i + num];
+                for (var i = fStrEcc.Length - num; i < fStrEcc.Length; i++)
+                    fStrEcc[i] = false;
+#endif
+            }
+
+            private static void ShiftRightInternal(BitArray fStrEcc, int num)
+            {
+#if NETCOREAPP
+                fStrEcc.LeftShift(num); // Shift away from bit 0
+#else
+                for (var i = fStrEcc.Length - 1; i >= num; i--)
+                    fStrEcc[i] = fStrEcc[i - num];
+                for (var i = 0; i < num; i++)
+                    fStrEcc[i] = false;
+#endif
+            }
+
+            public bool this[int index]
+            {
+                get => _bitArray[_offset + index];
+                set => _bitArray[_offset + index] = value;
+            }
+
+            public int Length
+            {
+                get => _count;
+                set
+                {
+                    if (value < 0)
+                        throw new ArgumentOutOfRangeException(nameof(value), "Value cannot be negative.");
+                    if (value > _count)
+                        PadRight(value);
+                    else
+                        _count = value;
+                }
+            }
+
+            public void Clear()
+            {
+                _offset = 0;
+                _count = 0;
+            }
+
+            public void Zero()
+            {
+                _bitArray.SetAll(false);
+            }
+
+            public void AppendTo(BitArraySegment bitArraySegment)
+            {
+                var offset = bitArraySegment.Length;
+                bitArraySegment.Length += _count;
+                for (int i = 0; i < _count; i++)
+                    bitArraySegment[offset + i] = this[i];
+            }
+
+            public void CopyTo(BitArraySegment bitArraySegment, int offset)
+            {
+                for (int i = 0; i < _count; i++)
+                    bitArraySegment[offset + i] = this[i];
+            }
+
+            public override string ToString()
+            {
+                return BitArrayToString(_bitArray, _offset, _count);
+            }
         }
     }
 }
