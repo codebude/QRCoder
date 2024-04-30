@@ -146,7 +146,8 @@ jobs:
           1.0.x
           2.0.x
           5.0.x
-          6.0.x 
+          6.0.x
+          8.0.x
 
     - name: Restore dependencies
       run: dotnet restore
