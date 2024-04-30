@@ -156,9 +156,11 @@ namespace QRCoder
                 }
             }
 
+            var countIndicatorLength = GetCountIndicatorLength(version, encoding);
+
             var completeBitArrayLength =
                 (eciMode != EciMode.Default ? 16 : 4) +  // Mode indicator
-                GetCountIndicatorLength(version, encoding) + // Count indicator
+                countIndicatorLength + // Count indicator
                 codedText.Length;                            // Data
 
             var completeBitArray = new BitArray(completeBitArrayLength);
@@ -171,7 +173,7 @@ namespace QRCoder
             }
             DecToBin((int)encoding, 4, completeBitArray, ref completeBitArrayIndex);
             // write count indicator
-            DecToBin(dataInputLength, GetCountIndicatorLength(version, encoding), completeBitArray, ref completeBitArrayIndex);
+            DecToBin(dataInputLength, countIndicatorLength, completeBitArray, ref completeBitArrayIndex);
             // write data
             for (int i = 0; i < codedText.Length; i++)
             {
