@@ -214,13 +214,8 @@ namespace QRCoder
 
         private static QRCodeData GenerateQrCode(string bitString, ECCLevel eccLevel, int version)
         {
-            var bitArray = new BitArray(bitString.Length);
-            for (int i = 0; i < bitString.Length; i++)
-            {
-                bitArray[i] = bitString[i] == '1';
+            return GenerateQrCode(ToBitArray(bitString), eccLevel, version);
             }
-            return GenerateQrCode(bitArray, eccLevel, version);
-        }
 
         private static readonly BitArray _repeatingPattern = new BitArray(
             new[] { true, true, true, false, true, true, false, false, false, false, false, true, false, false, false, true });
