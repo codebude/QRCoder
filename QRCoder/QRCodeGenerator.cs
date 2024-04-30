@@ -254,8 +254,40 @@ namespace QRCoder
             AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, bitArray, offset, bitArray.Length - offset);
 
 
+            //Calculate interleaved code word lengths
+            int interleavedLength = 0;
+            for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
+            {
+                foreach (var codeBlock in codeWordWithECC)
+                    if (codeBlock.CodeWords.Length > i)
+                        interleavedLength += 8;
+            }
+            for (var i = 0; i < eccInfo.ECCPerBlock; i++)
+            {
+                foreach (var codeBlock in codeWordWithECC)
+                    if (codeBlock.ECCWords.Length > i)
+                        interleavedLength += 8;
+            }
+            interleavedLength += remainderBits[version - 1];
 
             //Interleave code words
+            var interleavedData = new BitArray(interleavedLength);
+            int pos = 0;
+            for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
+            {
+                foreach (var codeBlock in codeWordWithECC)
+                    if (codeBlock.CodeWords.Length > i)
+                        DecToBin(codeBlock.CodeWords[i], 8, interleavedData, ref pos);
+            }
+            for (var i = 0; i < eccInfo.ECCPerBlock; i++)
+            {
+                foreach (var codeBlock in codeWordWithECC)
+                    if (codeBlock.ECCWords.Length > i)
+                        DecToBin(codeBlock.ECCWords[i], 8, interleavedData, ref pos);
+            }
+
+
+            /*
             var interleavedWordsSb = new StringBuilder();
             for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
             {
@@ -273,6 +305,7 @@ namespace QRCoder
             }
             interleavedWordsSb.Append(new string('0', remainderBits[version - 1]));
             var interleavedData = ToBitArray(interleavedWordsSb.ToString());
+            */
 
 
             //Place interleaved data on module matrix
@@ -304,13 +337,8 @@ namespace QRCoder
                 var groupLength = codewordsInGroup * 8;
                 for (var i = 0; i < blocksInGroup; i++)
                 {
-                    //var bitStr = BitArrayToString(bitArray2, i * codewordsInGroup * 8 + offset2, codewordsInGroup * 8);
-                    // todo: combine next two lines to convert to byte array
-                    //var newBitBlockList = BinaryStringToBitBlockByteList(bitArray2, i * codewordsInGroup * 8 + offset2, codewordsInGroup * 8);
-                    var bitBlockList = BinaryStringToBitBlockList(bitArray2, offset2, groupLength);
-                    // todo: combine next two lines to convert to byte array
+                    var bitBlockList = BinaryStringToBitBlockByteList(bitArray2, offset2, groupLength);
                     var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo);
-                    // todo: update CodewordBlock constructor to take byte arrays
                     codeWordWithECC.Add(new CodewordBlock(
                                           bitBlockList,
                                           eccWordList)
@@ -906,7 +934,7 @@ namespace QRCoder
 
         }
 
-        private static List<string> CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo)
+        private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo)
         {
             var eccWords = eccInfo.ECCPerBlock;
             var messagePolynom = CalculateMessagePolynom(bitArray, offset, count);
@@ -936,7 +964,10 @@ namespace QRCoder
                     leadTermSource = resPoly;
                 }
             }
-            return leadTermSource.PolyItems.Select(x => DecToBin(x.Coefficient, 8)).ToList();
+            var ret = new byte[leadTermSource.PolyItems.Count];
+            for (var i = 0; i < leadTermSource.PolyItems.Count; i++)
+                ret[i] = (byte)leadTermSource.PolyItems[i].Coefficient;
+            return ret;
         }
 
         private static Polynom ConvertToAlphaNotation(Polynom poly)
@@ -1642,14 +1673,14 @@ namespace QRCoder
 
         private struct CodewordBlock
         {
-            public CodewordBlock(List<string> codeWords, List<string> eccWords)
+            public CodewordBlock(byte[] codeWords, byte[] eccWords)
             {
                 this.CodeWords = codeWords;
                 this.ECCWords = eccWords;
             }
 
-            public List<string> CodeWords { get; }
-            public List<string> ECCWords { get; }
+            public byte[] CodeWords { get; }
+            public byte[] ECCWords { get; }
         }
 
         private struct ECCInfo
@@ -1776,6 +1807,7 @@ namespace QRCoder
             // left for back-compat
         }
 
+        /*
         public ref struct BitArraySegment
         {
             public BitArraySegment(BitArray bitArray)
@@ -1951,5 +1983,6 @@ namespace QRCoder
                 return BitArrayToString(_bitArray, _offset, _count);
             }
         }
+        */
     }
 }
