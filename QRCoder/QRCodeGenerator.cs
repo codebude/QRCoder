@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections;
+using System.Globalization;
 
 namespace QRCoder
 {
@@ -195,26 +196,13 @@ namespace QRCoder
         {
             int version = GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
-            string modeIndicator = DecToBin((int)EncodingMode.Byte, 4);
             int countIndicatorLen = GetCountIndicatorLength(version, EncodingMode.Byte);
-            string countIndicator = DecToBin(binaryData.Length, countIndicatorLen);
+            var bitArray = ToBitArray(binaryData, 4 + countIndicatorLen);
+            var index = 0;
+            DecToBin((int)EncodingMode.Byte, 4, bitArray, ref index);
+            DecToBin(binaryData.Length, countIndicatorLen, bitArray, ref index);
 
-            StringBuilder sb = new StringBuilder(capacity: 4 + countIndicatorLen + (binaryData.Length * 8));
-            sb.Append(modeIndicator).Append(countIndicator);
-            foreach (byte b in binaryData)
-            {
-                sb.Append(DecToBin(b, 8));
-
-            }
-            string bitString = sb.ToString();
-
-
-            return GenerateQrCode(bitString, eccLevel, version);
-        }
-
-        private static QRCodeData GenerateQrCode(string bitString, ECCLevel eccLevel, int version)
-        {
-            return GenerateQrCode(ToBitArray(bitString), eccLevel, version);
+            return GenerateQrCode(bitArray, eccLevel, version);
         }
 
         private static readonly BitArray _repeatingPattern = new BitArray(
@@ -346,16 +334,6 @@ namespace QRCoder
                     offset2 += groupLength;
                 }
             }
-        }
-
-        private static string BitArrayToString(BitArray bitArray) => BitArrayToString(bitArray, 0, bitArray.Length);
-
-        private static string BitArrayToString(BitArray bitArray, int offset, int count)
-        {
-            var bitStringChars = new char[count];
-            for (var i = 0; i < count; i++)
-                bitStringChars[i] = bitArray[i + offset] ? '1' : '0';
-            return new string(bitStringChars);
         }
 
         private static readonly BitArray _getFormatGenerator = new BitArray(new bool[] { true, false, true, false, false, true, true, false, true, true, true });
@@ -1063,20 +1041,6 @@ namespace QRCoder
             return generatorPolynom;
         }
 
-        private static List<string> BinaryStringToBitBlockList(BitArray bitString, int offset, int count)
-        {
-            const int blockSize = 8;
-            var numberOfBlocks = (int)Math.Ceiling(count / (double)blockSize);
-            var blocklist = new List<string>(numberOfBlocks);
-
-            for (int i = 0; i < count; i += blockSize)
-            {
-                blocklist.Add(BitArrayToString(bitString, offset + i, blockSize));
-            }
-
-            return blocklist;
-        }
-
         private static byte[] BinaryStringToBitBlockByteList(BitArray bitString, int offset, int count)
         {
             const int blockSize = 8;
@@ -1204,9 +1168,9 @@ namespace QRCoder
                 case EncodingMode.Alphanumeric:
                     return PlainTextToBinaryAlphanumeric(plainText);
                 case EncodingMode.Numeric:
-                    return ToBitArray(PlainTextToBinaryNumeric(plainText));
+                    return PlainTextToBinaryNumeric(plainText);
                 case EncodingMode.Byte:
-                    return ToBitArray(PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8));
+                    return PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8);
                 case EncodingMode.Kanji:
                 case EncodingMode.ECI:
                 default:
@@ -1216,39 +1180,38 @@ namespace QRCoder
 
         private static readonly BitArray _emptyBitArray = new BitArray(0);
 
-        private static BitArray ToBitArray(string bitString) => ToBitArray(bitString, 0, bitString.Length);
-
-        private static BitArray ToBitArray(string bitString, int offset, int count)
+        private static BitArray PlainTextToBinaryNumeric(string plainText)
         {
-            var bitArray = new BitArray(count);
-            for (var i = 0; i < count; i++)
+            var bitArray = new BitArray(plainText.Length / 3 * 10 + (plainText.Length % 3 == 1 ? 4 : plainText.Length % 3 == 2 ? 7 : 0));
+            var index = 0;
+            for (int i = 0; (i + 2) < plainText.Length; i += 3)
             {
-                bitArray[i] = bitString[i + offset] == '1';
+#if NET5_0_OR_GREATER
+                var dec = int.Parse(plainText.AsSpan(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
+#else
+                var dec = int.Parse(plainText.Substring(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
+#endif
+                DecToBin(dec, 10, bitArray, ref index);
+            }
+            if (plainText.Length % 3 == 2)
+            {
+#if NET5_0_OR_GREATER
+                var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+#else
+                var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+#endif
+                DecToBin(dec, 7, bitArray, ref index);
+            }
+            else if (plainText.Length % 3 == 1)
+            {
+#if NET5_0_OR_GREATER
+                var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
+#else
+                var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
+#endif
+                DecToBin(dec, 4, bitArray, ref index);
             }
             return bitArray;
-        }
-
-        private static string PlainTextToBinaryNumeric(string plainText)
-        {
-            var codeText = string.Empty;
-            while (plainText.Length >= 3)
-            {
-                var dec = Convert.ToInt32(plainText.Substring(0, 3));
-                codeText += DecToBin(dec, 10);
-                plainText = plainText.Substring(3);
-
-            }
-            if (plainText.Length == 2)
-            {
-                var dec = Convert.ToInt32(plainText);
-                codeText += DecToBin(dec, 7);
-            }
-            else if (plainText.Length == 1)
-            {
-                var dec = Convert.ToInt32(plainText);
-                codeText += DecToBin(dec, 4);
-            }
-            return codeText;
         }
 
         private static BitArray PlainTextToBinaryAlphanumeric(string plainText)
@@ -1271,15 +1234,11 @@ namespace QRCoder
             return codeText;
         }
 
-        private string PlainTextToBinaryECI(string plainText)
+        private BitArray PlainTextToBinaryECI(string plainText)
         {
             var codeText = string.Empty;
             byte[] _bytes = Encoding.GetEncoding("ascii").GetBytes(plainText);
-            foreach (byte _byte in _bytes)
-            {
-                codeText += DecToBin(_byte, 8);
-            }
-            return codeText;
+            return ToBitArray(_bytes);
         }
 
         private static string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
@@ -1291,10 +1250,9 @@ namespace QRCoder
             return iso.GetString(isoBytes);
         }
 
-        private static string PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
+        private static BitArray PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
             byte[] codeBytes;
-            var codeText = string.Empty;
 
             if (IsValidISO(plainText) && !forceUtf8)
                 codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
@@ -1316,12 +1274,22 @@ namespace QRCoder
                 }
             }
 
-            foreach (var b in codeBytes)
-                codeText += DecToBin(b, 8);
-
-            return codeText;
+            return ToBitArray(codeBytes);
         }
 
+        private static BitArray ToBitArray(byte[] byteArray, int prefixZeros = 0)
+        {
+            var bitArray = new BitArray(byteArray.Length * 8 + prefixZeros);
+            for (var i = 0; i < byteArray.Length; i++)
+            {
+                var byteVal = byteArray[i];
+                for (var j = 0; j < 8; j++)
+                {
+                    bitArray[i * 8 + j + prefixZeros] = (byteVal & (1 << (7 - j))) != 0;
+                }
+            }
+            return bitArray;
+        }
 
         private static Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
         {
