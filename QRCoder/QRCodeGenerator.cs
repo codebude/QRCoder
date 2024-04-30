@@ -343,12 +343,12 @@ namespace QRCoder
 
             int index = 0;
             int count = 15;
-            TrimLeadingZeros();
+            TrimLeadingZeros(); // modifies index and count
             while (count > 10)
             {
                 for (var i = 0; i < _getFormatGenerator.Length; i++)
                     fStrEcc[index + i] ^= _getFormatGenerator[i];
-                TrimLeadingZeros();
+                TrimLeadingZeros(); // modifies index and count
             }
             ShiftTowardsBit0(fStrEcc, index);
             fStrEcc.Length = 10 + 5;
@@ -1179,15 +1179,7 @@ namespace QRCoder
 
         private static readonly BitArray _emptyBitArray = new BitArray(0);
 
-        private static BitArray ToBitArray(string bitString)
-        {
-            var bitArray = new BitArray(bitString.Length);
-            for (var i = 0; i < bitString.Length; i++)
-            {
-                bitArray[i] = bitString[i] == '1';
-            }
-            return bitArray;
-        }
+        private static BitArray ToBitArray(string bitString) => ToBitArray(bitString, 0, bitString.Length);
 
         private static BitArray ToBitArray(string bitString, int offset, int count)
         {
@@ -1296,7 +1288,7 @@ namespace QRCoder
 
         private static Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
         {
-            var resultPolynom = new Polynom();
+            var resultPolynom = new Polynom(Math.Max(messagePolynom.PolyItems.Count, resPolynom.PolyItems.Count));
             Polynom longPoly, shortPoly;
             if (messagePolynom.PolyItems.Count >= resPolynom.PolyItems.Count)
             {
@@ -1327,7 +1319,7 @@ namespace QRCoder
 
         private static Polynom MultiplyGeneratorPolynomByLeadterm(Polynom genPolynom, PolynomItem leadTerm, int lowerExponentBy)
         {
-            var resultPolynom = new Polynom();
+            var resultPolynom = new Polynom(genPolynom.PolyItems.Count);
             foreach (var polItemBase in genPolynom.PolyItems)
             {
                 var polItemRes = new PolynomItem(
@@ -1735,13 +1727,8 @@ namespace QRCoder
             public int Exponent { get; }
         }
 
-        private class Polynom
+        private struct Polynom
         {
-            public Polynom()
-            {
-                this.PolyItems = new List<PolynomItem>();
-            }
-
             public Polynom(int count)
             {
                 this.PolyItems = new List<PolynomItem>(count);
