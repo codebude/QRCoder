@@ -1066,11 +1066,6 @@ namespace QRCoder
             }
         }
 
-        private static string DecToBin(int decNum)
-        {
-            return Convert.ToString(decNum, 2);
-        }
-
         private static int GetCountIndicatorLength(int version, EncodingMode encMode)
         {
             if (version < 10)
