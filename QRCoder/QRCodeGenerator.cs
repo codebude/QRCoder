@@ -142,14 +142,14 @@ namespace QRCoder
             var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
             var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
             int version = requestedVersion;
+            int minVersion = GetVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
             if (version == -1)
             {
-                version = GetVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
+                version = minVersion;
             }
             else
             {
                 //Version was passed as fixed version via parameter. Thus let's check if chosen version is valid.
-                var minVersion = GetVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
                 if (minVersion > version)
                 {
                     var maxSizeByte = capacityTable[version - 1].Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
@@ -157,14 +157,12 @@ namespace QRCoder
                 }
             }
 
+            var modeIndicatorLength = eciMode != EciMode.Default ? 16 : 4;
             var countIndicatorLength = GetCountIndicatorLength(version, encoding);
-
-            var completeBitArrayLength =
-                (eciMode != EciMode.Default ? 16 : 4) +  // Mode indicator
-                countIndicatorLength + // Count indicator
-                codedText.Length;                            // Data
+            var completeBitArrayLength = modeIndicatorLength + countIndicatorLength + codedText.Length;
 
             var completeBitArray = new BitArray(completeBitArrayLength);
+
             // write mode indicator
             var completeBitArrayIndex = 0;
             if (eciMode != EciMode.Default)
@@ -197,7 +195,9 @@ namespace QRCoder
             int version = GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
             int countIndicatorLen = GetCountIndicatorLength(version, EncodingMode.Byte);
-            var bitArray = ToBitArray(binaryData, 4 + countIndicatorLen);
+            // Convert byte array to bit array, with prefix padding for mode indicator and count indicator
+            var bitArray = ToBitArray(binaryData, prefixZeros: 4 + countIndicatorLen);
+            // Add mode indicator and count indicator
             var index = 0;
             DecToBin((int)EncodingMode.Byte, 4, bitArray, ref index);
             DecToBin(binaryData.Length, countIndicatorLen, bitArray, ref index);
@@ -273,28 +273,6 @@ namespace QRCoder
                     if (codeBlock.ECCWords.Length > i)
                         DecToBin(codeBlock.ECCWords[i], 8, interleavedData, ref pos);
             }
-
-
-            /*
-            var interleavedWordsSb = new StringBuilder();
-            for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
-            {
-                foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.CodeWords.Count > i)
-                        interleavedWordsSb.Append(codeBlock.CodeWords[i]);
-            }
-
-
-            for (var i = 0; i < eccInfo.ECCPerBlock; i++)
-            {
-                foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.ECCWords.Count > i)
-                        interleavedWordsSb.Append(codeBlock.ECCWords[i]);
-            }
-            interleavedWordsSb.Append(new string('0', remainderBits[version - 1]));
-            var interleavedData = ToBitArray(interleavedWordsSb.ToString());
-            */
-
 
             //Place interleaved data on module matrix
             var qr = new QRCodeData(version);
