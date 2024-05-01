@@ -1045,16 +1045,6 @@ namespace QRCoder
             return blocklist;
         }
 
-        private static List<int> BinaryStringListToDecList(List<string> binaryStringList)
-        {
-            return binaryStringList.Select(binaryString => BinToDec(binaryString)).ToList();
-        }
-
-        private static int BinToDec(string binStr)
-        {
-            return Convert.ToInt32(binStr, 2);
-        }
-
         private static int BinToDec(BitArray bitArray, int offset, int count)
         {
             var ret = 0;
@@ -1079,12 +1069,6 @@ namespace QRCoder
         private static string DecToBin(int decNum)
         {
             return Convert.ToString(decNum, 2);
-        }
-
-        private static string DecToBin(int decNum, int padLeftUpTo)
-        {
-            var binStr = DecToBin(decNum);
-            return binStr.PadLeft(padLeftUpTo, '0');
         }
 
         private static int GetCountIndicatorLength(int version, EncodingMode encMode)
@@ -1212,13 +1196,6 @@ namespace QRCoder
             return codeText;
         }
 
-        private BitArray PlainTextToBinaryECI(string plainText)
-        {
-            var codeText = string.Empty;
-            byte[] _bytes = Encoding.GetEncoding("ascii").GetBytes(plainText);
-            return ToBitArray(_bytes);
-        }
-
         private static string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
         {
             Encoding iso = Encoding.GetEncoding(Iso);
@@ -1314,7 +1291,6 @@ namespace QRCoder
             }
             return resultPolynom;
         }
-
 
         private static Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
         {
@@ -1455,7 +1431,6 @@ namespace QRCoder
             }
             return localAlignmentPatternTable;
         }
-
 
         private static List<ECCInfo> CreateCapacityECCTable()
         {
