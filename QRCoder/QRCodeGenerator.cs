@@ -1231,7 +1231,7 @@ namespace QRCoder
         private static BitArray ToBitArray(byte[] byteArray, int prefixZeros = 0)
         {
             // new BitArray(byteArray) is not used because it reverses the bit order within each byte
-            var bitArray = new BitArray(byteArray.Length * 8 + prefixZeros);
+            var bitArray = new BitArray((int)((uint)byteArray.Length * 8) + prefixZeros);
             for (var i = 0; i < byteArray.Length; i++)
             {
                 var byteVal = byteArray[i];
