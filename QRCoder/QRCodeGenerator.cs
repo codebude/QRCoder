@@ -1237,7 +1237,7 @@ namespace QRCoder
                 var byteVal = byteArray[i];
                 for (var j = 0; j < 8; j++)
                 {
-                    bitArray[i * 8 + j + prefixZeros] = (byteVal & (1 << (7 - j))) != 0;
+                    bitArray[(int)((uint)i * 8) + j + prefixZeros] = (byteVal & (1 << (7 - j))) != 0;
                 }
             }
             return bitArray;
