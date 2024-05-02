@@ -1104,7 +1104,7 @@ namespace QRCoder
 
         private static int GetDataLength(EncodingMode encoding, string plainText, BitArray codedText, bool forceUtf8)
         {
-            return forceUtf8 || IsUtf8(encoding, plainText, forceUtf8) ? (codedText.Length / 8) : plainText.Length;
+            return forceUtf8 || IsUtf8(encoding, plainText, forceUtf8) ? (int)((uint)codedText.Length / 8) : plainText.Length;
         }
 
         private static bool IsUtf8(EncodingMode encoding, string plainText, bool forceUtf8)
