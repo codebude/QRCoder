@@ -1142,7 +1142,7 @@ namespace QRCoder
         {
             var bitArray = new BitArray(plainText.Length / 3 * 10 + (plainText.Length % 3 == 1 ? 4 : plainText.Length % 3 == 2 ? 7 : 0));
             var index = 0;
-            for (int i = 0; (i + 2) < plainText.Length; i += 3)
+            for (int i = 0; i < plainText.Length - 2; i += 3)
             {
 #if NET5_0_OR_GREATER
                 var dec = int.Parse(plainText.AsSpan(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
