@@ -223,8 +223,8 @@ namespace QRCoder
                 // pad with 4 zeros (or less if lengthDiff < 4)
                 index += Math.Min(lengthDiff, 4);
                 // pad to nearest 8 bit boundary
-                if (index % 8 != 0)
-                    index += 8 - (index % 8);
+                if ((uint)index % 8 != 0)
+                    index += 8 - (int)((uint)index % 8);
                 // pad with repeating pattern
                 var repeatingPatternIndex = 0;
                 while (index < dataLength)
