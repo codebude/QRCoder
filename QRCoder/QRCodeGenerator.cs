@@ -884,7 +884,7 @@ namespace QRCoder
                     var nextMultipleOf5 = Math.Abs((int)Math.Floor(percent / 5) * 5 - 45) / 5;
                     score4 = Math.Min(prevMultipleOf5, nextMultipleOf5) * 10;
 
-                    return score1 + score2 + score3 + score4;
+                    return (score1 + score2) + (score3 + score4);
                 }
             }
 
