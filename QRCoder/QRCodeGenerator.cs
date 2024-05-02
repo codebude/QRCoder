@@ -1025,7 +1025,7 @@ namespace QRCoder
             const int blockSize = 8;
             if (count % blockSize != 0)
                 throw new ArgumentException("Count must be a multiple of 8.", nameof(count));
-            var numberOfBlocks = count / blockSize;
+            var numberOfBlocks = (int)((uint)count / blockSize);
             var blocklist = new byte[numberOfBlocks];
 
             int j = 0;
