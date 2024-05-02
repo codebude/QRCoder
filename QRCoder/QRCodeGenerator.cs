@@ -1009,6 +1009,7 @@ namespace QRCoder
             var multiplierPolynom = new Polynom(numEccWords * 2);
             for (var i = 1; i <= numEccWords - 1; i++)
             {
+                // Re-use multiplierPolynom, so clear it's content.
                 multiplierPolynom.PolyItems.Clear();
                 multiplierPolynom.PolyItems.Add(new PolynomItem(0, 1));
                 multiplierPolynom.PolyItems.Add(new PolynomItem(i, 0));
