@@ -1015,19 +1015,7 @@ namespace QRCoder
 
         private static int GetDataLength(EncodingMode encoding, string plainText, string codedText, bool forceUtf8)
         {
-            return forceUtf8 || IsUtf8(encoding, plainText, forceUtf8) ? (codedText.Length / 8) : plainText.Length;
-        }
-
-        private static bool IsUtf8(EncodingMode encoding, string plainText, bool forceUtf8)
-        {
-            return (encoding == EncodingMode.Byte && (!IsValidISO(plainText) || forceUtf8));
-        }
-
-        private static bool IsValidISO(string input)
-        {
-            var bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
-            var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
-            return String.Equals(input, result);
+            return encoding == EncodingMode.Byte ? (codedText.Length / 8) : plainText.Length;
         }
 
         private static string PlainTextToBinary(string plainText, EncodingMode encMode, EciMode eciMode, bool utf8BOM, bool forceUtf8)
@@ -1100,37 +1088,30 @@ namespace QRCoder
             return codeText;
         }
 
-        private static string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
-        {
-            Encoding iso = Encoding.GetEncoding(Iso);
-            Encoding utf8 = Encoding.UTF8;
-            byte[] utfBytes = utf8.GetBytes(value);
-            byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-            return iso.GetString(isoBytes);
-        }
-
         private static string PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
             byte[] codeBytes;
             var codeText = string.Empty;
 
-            if (IsValidISO(plainText) && !forceUtf8)
-                codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
+            if (eciMode == EciMode.Utf8 || (eciMode == EciMode.Default && forceUtf8))
+                codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
             else
             {
                 switch(eciMode)
                 {
+                    case EciMode.Default: // per spec, ISO-8859-1 is default
                     case EciMode.Iso8859_1:
-                        codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(ConvertToIso8859(plainText, "ISO-8859-1"));
+#if NET5_0_OR_GREATER
+                        codeBytes = Encoding.Latin1.GetBytes(plainText);
+#else
+                        codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
+#endif
                         break;
                     case EciMode.Iso8859_2:
-                        codeBytes = Encoding.GetEncoding("ISO-8859-2").GetBytes(ConvertToIso8859(plainText, "ISO-8859-2"));
+                        codeBytes = Encoding.GetEncoding("ISO-8859-2").GetBytes(plainText);
                         break;
-                    case EciMode.Default:
-                    case EciMode.Utf8:
                     default:
-                        codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
-                        break;
+                        throw new ArgumentOutOfRangeException(nameof(eciMode));
                 }
             }
 
@@ -1139,7 +1120,6 @@ namespace QRCoder
 
             return codeText;
         }
-
 
         private static Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
         {
