@@ -1003,7 +1003,7 @@ namespace QRCoder
         {
             const int blockSize = 8;
             if (count % blockSize != 0)
-                ThrowArgumentException(nameof(count));
+                ThrowCountMustBeMultipleOf8Exception();
             var numberOfBlocks = (int)((uint)count / blockSize);
             var blocklist = new byte[numberOfBlocks];
 
@@ -1024,7 +1024,7 @@ namespace QRCoder
 
             return blocklist;
 
-            void ThrowArgumentException(string paramName) => throw new ArgumentOutOfRangeException(paramName, "Count must be a multiple of 8.");
+            void ThrowCountMustBeMultipleOf8Exception() => throw new ArgumentOutOfRangeException(nameof(count), "Count must be a multiple of 8.");
         }
 
         private static int BinToDec(BitArray bitArray, int offset, int count)
@@ -1352,10 +1352,10 @@ namespace QRCoder
         private static int GetAlphaExpFromIntVal(int intVal)
         {
             if (intVal == 0)
-                ThrowArgumentOutOfRangeException(nameof(intVal));
+                ThrowIntValOutOfRangeException();
             return galoisFieldByIntegerValue[intVal];
 
-            void ThrowArgumentOutOfRangeException(string paramName) => throw new ArgumentOutOfRangeException(paramName);
+            void ThrowIntValOutOfRangeException() => throw new ArgumentOutOfRangeException(nameof(intVal));
         }
 
         private static int ShrinkAlphaExp(int alphaExp)
