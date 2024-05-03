@@ -970,8 +970,8 @@ namespace QRCoder
 
         private static Polynom CalculateMessagePolynom(BitArray bitArray, int offset, int count)
         {
-            var messagePol = new Polynom(count / 8);
-            for (var i = count / 8 - 1; i >= 0; i--)
+            var messagePol = new Polynom(count /= 8);
+            for (var i = count - 1; i >= 0; i--)
             {
                 messagePol.PolyItems.Add(new PolynomItem(BinToDec(bitArray, offset, 8), i));
                 offset += 8;
@@ -1003,7 +1003,7 @@ namespace QRCoder
         {
             const int blockSize = 8;
             if (count % blockSize != 0)
-                throw new ArgumentException("Count must be a multiple of 8.", nameof(count));
+                ThrowArgumentException(nameof(count));
             var numberOfBlocks = (int)((uint)count / blockSize);
             var blocklist = new byte[numberOfBlocks];
 
@@ -1023,6 +1023,8 @@ namespace QRCoder
             }
 
             return blocklist;
+
+            void ThrowArgumentException(string paramName) => throw new ArgumentOutOfRangeException(paramName, "Count must be a multiple of 8.");
         }
 
         private static int BinToDec(BitArray bitArray, int offset, int count)
@@ -1350,8 +1352,10 @@ namespace QRCoder
         private static int GetAlphaExpFromIntVal(int intVal)
         {
             if (intVal == 0)
-                throw new ArgumentOutOfRangeException(nameof(intVal));
+                ThrowArgumentOutOfRangeException(nameof(intVal));
             return galoisFieldByIntegerValue[intVal];
+
+            void ThrowArgumentOutOfRangeException(string paramName) => throw new ArgumentOutOfRangeException(paramName);
         }
 
         private static int ShrinkAlphaExp(int alphaExp)
