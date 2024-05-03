@@ -853,9 +853,9 @@ namespace QRCoder
 
                     //Penalty 4
                     int blackModules = 0;
-                    foreach (var row in qrCode.ModuleMatrix)
-                        foreach (bool bit in row)
-                            if (bit)
+                    foreach (var bitArray in qrCode.ModuleMatrix)
+                        for (var x = 0; x < size; x++)
+                            if (bitArray[x])
                                 blackModules++;
 
                     var percentDiv5 = blackModules * 20 / (qrCode.ModuleMatrix.Count * qrCode.ModuleMatrix.Count);
@@ -1311,7 +1311,7 @@ namespace QRCoder
 
             int[] GetNotUniqueExponents(List<PolynomItem> list)
             {
-                var dic = new Dictionary<int, bool>();
+                var dic = new Dictionary<int, bool>(list.Count);
                 foreach (var row in list)
                 {
 #if NETCOREAPP
@@ -1385,7 +1385,7 @@ namespace QRCoder
 
             for (var i = 0; i < (7 * 40); i = i + 7)
             {
-                var points = new List<Point>();
+                var points = new List<Point>(50);
                 for (var x = 0; x < 7; x++)
                 {
                     if (alignmentPatternBaseValues[i + x] != 0)
@@ -1654,7 +1654,7 @@ namespace QRCoder
             }
         }
 
-        private readonly struct Point
+        private readonly struct Point : IEquatable<Point>
         {
             public int X { get; }
             public int Y { get; }
@@ -1663,6 +1663,12 @@ namespace QRCoder
                 this.X = x;
                 this.Y = y;
             }
+
+            public bool Equals(Point other)
+            {
+                return this.X == other.X && this.Y == other.Y;
+            }
+
         }
 
         private readonly struct Rectangle
