@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Collections;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace QRCoder
 {
@@ -154,12 +155,12 @@ namespace QRCoder
             var completeBitArrayIndex = 0;
             if (eciMode != EciMode.Default)
             {
-                DecToBin((int)EncodingMode.ECI, 4, completeBitArray, ref completeBitArrayIndex);
-                DecToBin((int)eciMode, 8, completeBitArray, ref completeBitArrayIndex);
+                completeBitArrayIndex = DecToBin((int)EncodingMode.ECI, 4, completeBitArray, completeBitArrayIndex);
+                completeBitArrayIndex = DecToBin((int)eciMode, 8, completeBitArray, completeBitArrayIndex);
             }
-            DecToBin((int)encoding, 4, completeBitArray, ref completeBitArrayIndex);
+            completeBitArrayIndex = DecToBin((int)encoding, 4, completeBitArray, completeBitArrayIndex);
             // write count indicator
-            DecToBin(dataInputLength, countIndicatorLength, completeBitArray, ref completeBitArrayIndex);
+            completeBitArrayIndex = DecToBin(dataInputLength, countIndicatorLength, completeBitArray, completeBitArrayIndex);
             // write data
             for (int i = 0; i < codedText.Length; i++)
             {
@@ -185,9 +186,8 @@ namespace QRCoder
             // Convert byte array to bit array, with prefix padding for mode indicator and count indicator
             var bitArray = ToBitArray(binaryData, prefixZeros: 4 + countIndicatorLen);
             // Add mode indicator and count indicator
-            var index = 0;
-            DecToBin((int)EncodingMode.Byte, 4, bitArray, ref index);
-            DecToBin(binaryData.Length, countIndicatorLen, bitArray, ref index);
+            var index = DecToBin((int)EncodingMode.Byte, 4, bitArray, 0);
+            DecToBin(binaryData.Length, countIndicatorLen, bitArray, index);
 
             return GenerateQrCode(bitArray, eccLevel, version);
         }
@@ -252,13 +252,13 @@ namespace QRCoder
             {
                 foreach (var codeBlock in codeWordWithECC)
                     if (codeBlock.CodeWords.Length > i)
-                        DecToBin(codeBlock.CodeWords[i], 8, interleavedData, ref pos);
+                        pos = DecToBin(codeBlock.CodeWords[i], 8, interleavedData, pos);
             }
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
                     if (codeBlock.ECCWords.Length > i)
-                        DecToBin(codeBlock.ECCWords[i], 8, interleavedData, ref pos);
+                        pos = DecToBin(codeBlock.ECCWords[i], 8, interleavedData, pos);
             }
 
             //Place interleaved data on module matrix
@@ -341,10 +341,12 @@ namespace QRCoder
                     default: // M: 00
                         break;
                 }
-                int indexTemp = 2;
-                DecToBin(maskVersion, 3, fStrEcc, ref indexTemp);
+                DecToBin(maskVersion, 3, fStrEcc, 2);
             }
 
+#if NETCOREAPP
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+#endif
             void TrimLeadingZeros()
             {
                 while (!fStrEcc[index])
@@ -384,10 +386,9 @@ namespace QRCoder
         private static BitArray GetVersionString(int version)
         {
             var vStr = new BitArray(18);
-            var index = 0;
-            DecToBin(version, 6, vStr, ref index);
+            DecToBin(version, 6, vStr, 0);
             var count = vStr.Length;
-            index = 0;
+            var index = 0;
             while (!vStr[index])
             {
                 index++;
@@ -406,8 +407,7 @@ namespace QRCoder
             ShiftTowardsBit0(vStr, index);
             vStr.Length = 12 + 6;
             ShiftAwayFromBit0(vStr, (12 - count) + 6);
-            index = 0;
-            DecToBin(version, 6, vStr, ref index);
+            DecToBin(version, 6, vStr, 0);
             return vStr;
         }
 
@@ -1043,7 +1043,7 @@ namespace QRCoder
             return ret;
         }
 
-        private static void DecToBin(int decNum, int bits, BitArray bitList, ref int index)
+        private static int DecToBin(int decNum, int bits, BitArray bitList, int index)
         {
             // Convert decNum to binary using a bitwise operation
             for (int i = bits - 1; i >= 0; i--)
@@ -1052,6 +1052,7 @@ namespace QRCoder
                 bool bit = (decNum & (1 << i)) != 0;
                 bitList[index++] = bit;
             }
+            return index;
         }
 
         private static int GetCountIndicatorLength(int version, EncodingMode encMode)
@@ -1136,7 +1137,7 @@ namespace QRCoder
 #else
                 var dec = int.Parse(plainText.Substring(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
-                DecToBin(dec, 10, bitArray, ref index);
+                index = DecToBin(dec, 10, bitArray, index);
             }
             if (plainText.Length % 3 == 2)
             {
@@ -1145,7 +1146,7 @@ namespace QRCoder
 #else
                 var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
-                DecToBin(dec, 7, bitArray, ref index);
+                index = DecToBin(dec, 7, bitArray, index);
             }
             else if (plainText.Length % 3 == 1)
             {
@@ -1154,7 +1155,7 @@ namespace QRCoder
 #else
                 var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
-                DecToBin(dec, 4, bitArray, ref index);
+                index = DecToBin(dec, 4, bitArray, index);
             }
             return bitArray;
         }
@@ -1168,13 +1169,13 @@ namespace QRCoder
             while (count >= 2)
             {
                 var dec = alphanumEncDict[plainText[index++]] * 45 + alphanumEncDict[plainText[index++]];
-                DecToBin(dec, 11, codeText, ref codeIndex);
+                codeIndex = DecToBin(dec, 11, codeText, codeIndex);
                 count -= 2;
 
             }
             if (count > 0)
             {
-                DecToBin(alphanumEncDict[plainText[index]], 6, codeText, ref codeIndex);
+                DecToBin(alphanumEncDict[plainText[index]], 6, codeText, codeIndex);
             }
             return codeText;
         }
