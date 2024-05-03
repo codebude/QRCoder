@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Reflection;
 
 namespace QRCoder
 {
@@ -310,12 +311,12 @@ namespace QRCoder
 
             int index = 0;
             int count = 15;
-            TrimLeadingZeros(); // modifies index and count
+            TrimLeadingZeros(fStrEcc, ref index, ref count);
             while (count > 10)
             {
                 for (var i = 0; i < _getFormatGenerator.Length; i++)
                     fStrEcc[index + i] ^= _getFormatGenerator[i];
-                TrimLeadingZeros(); // modifies index and count
+                TrimLeadingZeros(fStrEcc, ref index, ref count);
             }
             ShiftTowardsBit0(fStrEcc, index);
             fStrEcc.Length = 10 + 5;
@@ -343,19 +344,18 @@ namespace QRCoder
                 }
                 DecToBin(maskVersion, 3, fStrEcc, 2);
             }
+        }
 
 #if NETCOREAPP
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
-            void TrimLeadingZeros()
+        private static void TrimLeadingZeros(BitArray fStrEcc, ref int index, ref int count)
+        {
+            while (!fStrEcc[index])
             {
-                while (!fStrEcc[index])
-                {
-                    index++;
-                    count--;
-                }
+                index++;
+                count--;
             }
-
         }
 
         private static void ShiftTowardsBit0(BitArray fStrEcc, int num)
@@ -389,20 +389,12 @@ namespace QRCoder
             DecToBin(version, 6, vStr, 0);
             var count = vStr.Length;
             var index = 0;
-            while (!vStr[index])
-            {
-                index++;
-                count--;
-            }
+            TrimLeadingZeros(vStr, ref index, ref count);
             while (count > 12)
             {
                 for (var i = 0; i < _getVersionGenerator.Length; i++)
                     vStr[index + i] ^= _getVersionGenerator[i];
-                while (!vStr[index])
-                {
-                    index++;
-                    count--;
-                }
+                TrimLeadingZeros(vStr, ref index, ref count);
             }
             ShiftTowardsBit0(vStr, index);
             vStr.Length = 12 + 6;
@@ -860,15 +852,15 @@ namespace QRCoder
                     }
 
                     //Penalty 4
-                    double blackModules = 0;
+                    int blackModules = 0;
                     foreach (var row in qrCode.ModuleMatrix)
                         foreach (bool bit in row)
                             if (bit)
                                 blackModules++;
 
-                    var percent = (blackModules / (qrCode.ModuleMatrix.Count * qrCode.ModuleMatrix.Count)) * 100;
-                    var prevMultipleOf5 = Math.Abs((int)Math.Floor(percent / 5) * 5 - 50) / 5;
-                    var nextMultipleOf5 = Math.Abs((int)Math.Floor(percent / 5) * 5 - 45) / 5;
+                    var percentDiv5 = blackModules * 20 / (qrCode.ModuleMatrix.Count * qrCode.ModuleMatrix.Count);
+                    var prevMultipleOf5 = Math.Abs(percentDiv5 - 10);
+                    var nextMultipleOf5 = Math.Abs(percentDiv5 - 9);
                     score4 = Math.Min(prevMultipleOf5, nextMultipleOf5) * 10;
 
                     return (score1 + score2) + (score3 + score4);
