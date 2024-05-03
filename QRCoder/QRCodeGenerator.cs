@@ -346,7 +346,7 @@ namespace QRCoder
             }
         }
 
-#if NETCOREAPP
+#if !NETFRAMEWORK
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void TrimLeadingZeros(BitArray fStrEcc, ref int index, ref int count)
