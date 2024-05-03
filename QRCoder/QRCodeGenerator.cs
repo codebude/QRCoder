@@ -346,7 +346,7 @@ namespace QRCoder
             }
         }
 
-#if !NETFRAMEWORK
+#if !NETFRAMEWORK || NET45_OR_GREATER
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #endif
         private static void TrimLeadingZeros(BitArray fStrEcc, ref int index, ref int count)
