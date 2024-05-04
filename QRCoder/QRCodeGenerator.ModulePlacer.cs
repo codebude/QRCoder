@@ -43,7 +43,7 @@ namespace QRCoder
             /// <param name="versionStr">The bit array containing the version information.</param>
             public static void PlaceVersion(QRCodeData qrCode, BitArray versionStr)
             {
-                var size = qrCode.ModuleMatrix.Count; // The size of the QR code matrix.
+                var size = qrCode.ModuleMatrix.Count;
 
                 // Loop through each module position intended for version information, placed adjacent to the separators.
                 for (var x = 0; x < 6; x++)
@@ -214,7 +214,7 @@ namespace QRCoder
                         if (up)
                         {
                             y = size - yMod; // Calculate y for upward direction.
-                                             // Place data if within data length, current position is not blocked, and leftward column is in bounds.
+                            // Place data if within data length, current position is not blocked, and leftward column is in bounds.
                             if (index < count && !IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                                 qrCode.ModuleMatrix[y][x] = data[index++];
                             if (index < count && x > 0 && !IsBlocked(new Rectangle(x - 1, y, 1, 1), blockedModules))
@@ -223,7 +223,7 @@ namespace QRCoder
                         else
                         {
                             y = yMod - 1; // Calculate y for downward direction.
-                                          // Similar checks and data placement for the downward direction.
+                            // Similar checks and data placement for the downward direction.
                             if (index < count && !IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                                 qrCode.ModuleMatrix[y][x] = data[index++];
                             if (index < count && x > 0 && !IsBlocked(new Rectangle(x - 1, y, 1, 1), blockedModules))
@@ -284,7 +284,7 @@ namespace QRCoder
             public static void PlaceDarkModule(QRCodeData qrCode, int version, List<Rectangle> blockedModules)
             {
                 // Place the dark module, which is always required to be black.
-                qrCode.ModuleMatrix[4 * version + 9][8] = true; // Calculated position for the dark module based on the version
+                qrCode.ModuleMatrix[4 * version + 9][8] = true;
                 // Block the dark module area to prevent overwriting during further QR code generation steps.
                 blockedModules.Add(new Rectangle(8, 4 * version + 9, 1, 1));
             }
@@ -296,7 +296,7 @@ namespace QRCoder
             /// <param name="blockedModules">A list of rectangles representing areas that must not be overwritten. This is updated with the areas occupied by the finder patterns.</param>
             public static void PlaceFinderPatterns(QRCodeData qrCode, List<Rectangle> blockedModules)
             {
-                var size = qrCode.ModuleMatrix.Count; // Get the size of the QR code matrix.
+                var size = qrCode.ModuleMatrix.Count;
 
                 // Loop to place three finder patterns in the top-left, top-right, and bottom-left corners of the QR code.
                 for (var i = 0; i < 3; i++)
@@ -399,9 +399,6 @@ namespace QRCoder
             /// <summary>
             /// Determines if two rectangles intersect with each other.
             /// </summary>
-            /// <param name="r1">The first rectangle.</param>
-            /// <param name="r2">The second rectangle to check for intersection with the first.</param>
-            /// <returns>True if the rectangles intersect; otherwise, false.</returns>
             private static bool Intersects(Rectangle r1, Rectangle r2)
             {
                 // Check if any part of the rectangles overlap.
@@ -413,16 +410,15 @@ namespace QRCoder
             /// </summary>
             /// <param name="r1">The rectangle to check.</param>
             /// <param name="blockedModules">The list of rectangles representing blocked areas.</param>
-            /// <returns>True if the rectangle is blocked; otherwise, false.</returns>
             private static bool IsBlocked(Rectangle r1, List<Rectangle> blockedModules)
             {
                 // Iterate through the list of blocked modules to check for any intersection.
                 foreach (var blockedMod in blockedModules)
                 {
                     if (Intersects(blockedMod, r1))
-                        return true; // Return true if an intersection is found, indicating the area is blocked.
+                        return true;
                 }
-                return false; // Return false if no intersections are found, indicating the area is not blocked.
+                return false;
             }
         }
     }

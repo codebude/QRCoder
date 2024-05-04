@@ -151,9 +151,7 @@ namespace QRCoder
                             if (qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y][x + 1] &&
                                 qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y + 1][x] &&
                                 qrCode.ModuleMatrix[y][x] == qrCode.ModuleMatrix[y + 1][x + 1])
-                            {
                                 score2 += 3;
-                            }
                         }
                     }
 

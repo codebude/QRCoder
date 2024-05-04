@@ -35,7 +35,7 @@ namespace QRCoder
 
                 foreach (var polyItem in this.PolyItems)
                 {
-                    sb.Append($"a^{polyItem.Coefficient}*x^{polyItem.Exponent} + ");
+                    sb.Append("a^" + polyItem.Coefficient + "*x^" + polyItem.Exponent + " + ");
                 }
 
                 // Remove the trailing " + " if the string builder has added terms
@@ -45,6 +45,5 @@ namespace QRCoder
                 return sb.ToString();
             }
         }
-
     }
 }
