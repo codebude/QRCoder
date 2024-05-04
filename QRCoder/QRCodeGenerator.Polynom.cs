@@ -28,7 +28,6 @@ namespace QRCoder
             /// Returns a string that represents the polynomial in standard algebraic notation.
             /// Example output: "a^2*x^3 + a^5*x^1 + a^3*x^0", which represents the polynomial 2x³ + 5x + 3.
             /// </summary>
-            /// <returns>A string representation of the polynomial, formatted as a sum of terms like 'a^coefficient*x^exponent + ...'.</returns>
             public override string ToString()
             {
                 var sb = new StringBuilder();
