@@ -234,6 +234,7 @@ namespace QRCoder
                     up = !up;
                 }
             }
+
             /// <summary>
             /// Reserves separator areas around the positioning patterns of a QR code to ensure that these crucial areas remain unmodified during data placement.
             /// </summary>
