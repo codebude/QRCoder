@@ -374,49 +374,73 @@ namespace QRCoder
         }
 
         private static readonly BitArray _getVersionGenerator = new BitArray(new bool[] { true, true, true, true, true, false, false, true, false, false, true, false, true });
+
+        /// <summary>
+        /// Encodes the version information of a QR code into a BitArray using error correction coding similar to format information encoding.
+        /// This method is used for QR codes version 7 and above.
+        /// </summary>
+        /// <param name="version">The version number of the QR code (7-40).</param>
+        /// <returns>A BitArray containing the encoded version information, which includes error correction bits.</returns>
         private static BitArray GetVersionString(int version)
         {
             var vStr = new BitArray(18);
-            DecToBin(version, 6, vStr, 0);
+            DecToBin(version, 6, vStr, 0); // Convert the version number to a 6-bit binary representation.
+
             var count = vStr.Length;
             var index = 0;
-            TrimLeadingZeros(vStr, ref index, ref count);
-            while (count > 12)
+            TrimLeadingZeros(vStr, ref index, ref count); // Trim leading zeros to normalize the version bit sequence.
+
+            // Perform error correction encoding using a polynomial generator (specified by _getVersionGenerator).
+            while (count > 12) // The target length of the version information error correction information is 12 bits.
             {
                 for (var i = 0; i < _getVersionGenerator.Length; i++)
-                    vStr[index + i] ^= _getVersionGenerator[i];
-                TrimLeadingZeros(vStr, ref index, ref count);
+                    vStr[index + i] ^= _getVersionGenerator[i]; // XOR the current bits with the generator sequence.
+
+                TrimLeadingZeros(vStr, ref index, ref count); // Trim leading zeros after each XOR operation to maintain the proper sequence.
             }
-            ShiftTowardsBit0(vStr, index);
+
+            ShiftTowardsBit0(vStr, index); // Align the bit array so the data starts at index 0.
+
+            // Prefix the error correction encoding with 6 bits containing the version number
             vStr.Length = 12 + 6;
             ShiftAwayFromBit0(vStr, (12 - count) + 6);
             DecToBin(version, 6, vStr, 0);
+
             return vStr;
         }
 
+        /// <summary>
+        /// Calculates the Error Correction Codewords (ECC) for a segment of data using the provided ECC information.
+        /// This method applies polynomial division, using the message polynomial and a generator polynomial,
+        /// to compute the remainder which forms the ECC codewords.
+        /// </summary>
         private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo)
         {
-            var eccWords = eccInfo.ECCPerBlock;
+            // Calculate the message polynomial from the bit array data.
             var messagePolynom = CalculateMessagePolynom(bitArray, offset, count);
-            var generatorPolynom = CalculateGeneratorPolynom(eccWords);
+            // Generate the generator polynomial using the number of ECC words.
+            var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock);
 
+            // Adjust the exponents in the message polynomial to account for ECC length.
             for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
                 messagePolynom.PolyItems[i] = new PolynomItem(messagePolynom.PolyItems[i].Coefficient,
-                    messagePolynom.PolyItems[i].Exponent + eccWords);
+                    messagePolynom.PolyItems[i].Exponent + eccInfo.ECCPerBlock);
 
+            // Adjust the generator polynomial exponents based on the message polynomial.
             for (var i = 0; i < generatorPolynom.PolyItems.Count; i++)
                 generatorPolynom.PolyItems[i] = new PolynomItem(generatorPolynom.PolyItems[i].Coefficient,
                     generatorPolynom.PolyItems[i].Exponent + (messagePolynom.PolyItems.Count - 1));
 
+            // Divide the message polynomial by the generator polynomial to find the remainder.
             var leadTermSource = messagePolynom;
             for (var i = 0; (leadTermSource.PolyItems.Count > 0 && leadTermSource.PolyItems[leadTermSource.PolyItems.Count - 1].Exponent > 0); i++)
             {
-                if (leadTermSource.PolyItems[0].Coefficient == 0)
+                if (leadTermSource.PolyItems[0].Coefficient == 0)  // Simplify the polynomial if the leading coefficient is zero.
                 {
                     leadTermSource.PolyItems.RemoveAt(0);
                     leadTermSource.PolyItems.Add(new PolynomItem(0, leadTermSource.PolyItems[leadTermSource.PolyItems.Count - 1].Exponent - 1));
                 }
-                else
+                else  // Otherwise, perform polynomial reduction using XOR and multiplication with the generator polynomial.
                 {
                     var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
                     ConvertToDecNotationInPlace(resPoly);
@@ -424,30 +448,59 @@ namespace QRCoder
                     leadTermSource = resPoly;
                 }
             }
+
+            // Convert the resulting polynomial into a byte array representing the ECC codewords.
             var ret = new byte[leadTermSource.PolyItems.Count];
             for (var i = 0; i < leadTermSource.PolyItems.Count; i++)
                 ret[i] = (byte)leadTermSource.PolyItems[i].Coefficient;
             return ret;
         }
 
+        /// <summary>
+        /// Converts the coefficients of a polynomial from integer values to their corresponding alpha exponent notation
+        /// based on a Galois field mapping. This is typically used in error correction calculations where
+        /// operations are performed on exponents rather than coefficients directly.
+        /// </summary>
         private static Polynom ConvertToAlphaNotation(Polynom poly)
         {
             var newPoly = new Polynom(poly.PolyItems.Count);
+
             for (var i = 0; i < poly.PolyItems.Count; i++)
+            {
+                // Convert each coefficient to its corresponding alpha exponent unless it's zero.
+                // Coefficients that are zero remain zero because log(0) is undefined.
                 newPoly.PolyItems.Add(
                     new PolynomItem(
                         (poly.PolyItems[i].Coefficient != 0
                             ? GetAlphaExpFromIntVal(poly.PolyItems[i].Coefficient)
-                            : 0), poly.PolyItems[i].Exponent));
+                            : 0),
+                        poly.PolyItems[i].Exponent)); // The exponent remains unchanged.
+            }
+
             return newPoly;
         }
 
+        /// <summary>
+        /// Converts all polynomial item coefficients from their alpha exponent notation to decimal representation in place.
+        /// This conversion facilitates operations that require polynomial coefficients in their integer forms.
+        /// </summary>
         private static void ConvertToDecNotationInPlace(Polynom poly)
         {
             for (var i = 0; i < poly.PolyItems.Count; i++)
+            {
+                // Convert the alpha exponent of the coefficient to its decimal value and create a new polynomial item with the updated coefficient.
                 poly.PolyItems[i] = new PolynomItem(GetIntValFromAlphaExp(poly.PolyItems[i].Coefficient), poly.PolyItems[i].Exponent);
+            }
         }
 
+        /// <summary>
+        /// Determines the minimum QR code version required to encode a given amount of data with a specific encoding mode and error correction level.
+        /// If no suitable version is found, it throws an exception indicating that the data length exceeds the maximum capacity for the given settings.
+        /// </summary>
+        /// <param name="length">The length of the data to be encoded.</param>
+        /// <param name="encMode">The encoding mode (e.g., Numeric, Alphanumeric, Byte).</param>
+        /// <param name="eccLevel">The error correction level (e.g., Low, Medium, Quartile, High).</param>
+        /// <returns>The minimum version of the QR code that can accommodate the given data and settings.</returns>
         private static int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
 
@@ -474,6 +527,10 @@ namespace QRCoder
             throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
         }
 
+        /// <summary>
+        /// Determines the most efficient encoding mode for the given plain text based on its character content
+        /// and a flag indicating whether to force UTF-8 encoding.
+        /// </summary>
         private static EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
         {
             if (forceUtf8) return EncodingMode.Byte;
@@ -488,11 +545,18 @@ namespace QRCoder
             return result;                              // either numeric or alphanumeric
         }
 
+        /// <summary>
+        /// Checks if a character falls within a specified range.
+        /// </summary>
         private static bool IsInRange(char c, char min, char max)
         {
             return (uint)(c - min) <= (uint)(max - min);
         }
 
+        /// <summary>
+        /// Calculates the message polynomial from a bit array which represents the encoded data.
+        /// </summary>
+        /// <returns>A polynomial representation of the message.</returns>
         private static Polynom CalculateMessagePolynom(BitArray bitArray, int offset, int count)
         {
             var messagePol = new Polynom(count /= 8);
@@ -504,26 +568,35 @@ namespace QRCoder
             return messagePol;
         }
 
-
+        /// <summary>
+        /// Calculates the generator polynomial used for creating error correction codewords.
+        /// </summary>
+        /// <param name="numEccWords">The number of error correction codewords to generate.</param>
+        /// <returns>A polynomial that can be used to generate ECC codewords.</returns>
         private static Polynom CalculateGeneratorPolynom(int numEccWords)
         {
-            var generatorPolynom = new Polynom(2);
+            var generatorPolynom = new Polynom(2); // Start with the simplest form of the polynomial
             generatorPolynom.PolyItems.Add(new PolynomItem(0, 1));
             generatorPolynom.PolyItems.Add(new PolynomItem(0, 0));
-            var multiplierPolynom = new Polynom(numEccWords * 2);
+
+            var multiplierPolynom = new Polynom(numEccWords * 2); // Used for polynomial multiplication
             for (var i = 1; i <= numEccWords - 1; i++)
             {
-                // Re-use multiplierPolynom, so clear it's content.
+                // Clear and set up the multiplier polynomial for the current multiplication
                 multiplierPolynom.PolyItems.Clear();
                 multiplierPolynom.PolyItems.Add(new PolynomItem(0, 1));
                 multiplierPolynom.PolyItems.Add(new PolynomItem(i, 0));
 
+                // Multiply the generator polynomial by the current multiplier polynomial
                 generatorPolynom = MultiplyAlphaPolynoms(generatorPolynom, multiplierPolynom);
             }
 
-            return generatorPolynom;
+            return generatorPolynom; // Return the completed generator polynomial
         }
 
+        /// <summary>
+        /// Converts a segment of a BitArray into a list of bytes where each byte represents a consecutive block of 8 bits from the BitArray.
+        /// </summary>
         private static byte[] BinaryStringToBitBlockByteList(BitArray bitString, int offset, int count)
         {
             const int blockSize = 8;
@@ -552,6 +625,10 @@ namespace QRCoder
             void ThrowCountMustBeMultipleOf8Exception() => throw new ArgumentOutOfRangeException(nameof(count), "Count must be a multiple of 8.");
         }
 
+        /// <summary>
+        /// Converts a segment of a BitArray into its decimal (integer) equivalent.
+        /// </summary>
+        /// <returns>The integer value that represents the specified binary data.</returns>
         private static int BinToDec(BitArray bitArray, int offset, int count)
         {
             var ret = 0;
@@ -562,6 +639,14 @@ namespace QRCoder
             return ret;
         }
 
+        /// <summary>
+        /// Converts a decimal number to binary and stores the result in a BitArray starting from a specific index.
+        /// </summary>
+        /// <param name="decNum">The decimal number to convert to binary.</param>
+        /// <param name="bits">The number of bits to use for the binary representation (ensuring fixed-width like 8, 16, 32 bits).</param>
+        /// <param name="bitList">The BitArray where the binary bits will be stored.</param>
+        /// <param name="index">The starting index in the BitArray where the bits will be stored.</param>
+        /// <returns>The next index in the BitArray after the last bit placed.</returns>
         private static int DecToBin(int decNum, int bits, BitArray bitList, int index)
         {
             // Convert decNum to binary using a bitwise operation
@@ -574,8 +659,15 @@ namespace QRCoder
             return index;
         }
 
+        /// <summary>
+        /// Determines the number of bits used to indicate the count of characters in a segment, depending on the QR code version and the encoding mode.
+        /// </summary>
+        /// <param name="version">The version of the QR code, which influences the number of bits due to increasing data capacity.</param>
+        /// <param name="encMode">The encoding mode (e.g., Numeric, Alphanumeric, Byte) used for the data segment.</param>
+        /// <returns>The number of bits needed to represent the character count in the specified encoding mode and version.</returns>
         private static int GetCountIndicatorLength(int version, EncodingMode encMode)
         {
+            // Different versions and encoding modes require different lengths of bits to represent the character count efficiently
             if (version < 10)
             {
                 if (encMode == EncodingMode.Numeric)
@@ -609,16 +701,28 @@ namespace QRCoder
             }
         }
 
+        /// <summary>
+        /// Calculates the data length based on the encoding mode, text content, and whether UTF-8 is forced.
+        /// </summary>
+        /// <param name="encoding">The encoding mode used for the QR code data.</param>
+        /// <param name="plainText">The plain text input to be encoded.</param>
+        /// <param name="codedText">A BitArray representing the binary data of the encoded text.</param>
+        /// <param name="forceUtf8">Flag to determine if UTF-8 encoding should be enforced.</param>
+        /// <returns>The length of data in units appropriate to the encoding (bytes or characters).</returns>
         private static int GetDataLength(EncodingMode encoding, string plainText, BitArray codedText, bool forceUtf8)
         {
+            // If UTF-8 is forced or the text is detected as UTF-8, return the number of bytes, otherwise return the character count.
             return forceUtf8 || IsUtf8(encoding, plainText, forceUtf8) ? (int)((uint)codedText.Length / 8) : plainText.Length;
+
+            bool IsUtf8(EncodingMode encoding, string plainText, bool forceUtf8)
+            {
+                return (encoding == EncodingMode.Byte && (!IsValidISO(plainText) || forceUtf8));
+            }
         }
 
-        private static bool IsUtf8(EncodingMode encoding, string plainText, bool forceUtf8)
-        {
-            return (encoding == EncodingMode.Byte && (!IsValidISO(plainText) || forceUtf8));
-        }
-
+        /// <summary>
+        /// Checks if the given string can be accurately represented and retrieved in ISO-8859-1 encoding.
+        /// </summary>
         private static bool IsValidISO(string input)
         {
             var bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
@@ -626,6 +730,15 @@ namespace QRCoder
             return String.Equals(input, result);
         }
 
+        /// <summary>
+        /// Converts plain text to a binary format suitable for QR code generation, based on the specified encoding mode.
+        /// </summary>
+        /// <param name="plainText">The text to be encoded.</param>
+        /// <param name="encMode">The encoding mode.</param>
+        /// <param name="eciMode">The ECI mode specifying the character encoding to use.</param>
+        /// <param name="utf8BOM">Flag indicating whether to prepend a UTF-8 Byte Order Mark.</param>
+        /// <param name="forceUtf8">Flag indicating whether UTF-8 encoding is forced.</param>
+        /// <returns>A BitArray containing the binary representation of the encoded data.</returns>
         private static BitArray PlainTextToBinary(string plainText, EncodingMode encMode, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
             switch (encMode)
@@ -645,20 +758,34 @@ namespace QRCoder
 
         private static readonly BitArray _emptyBitArray = new BitArray(0);
 
+        /// <summary>
+        /// Converts numeric plain text into a binary format specifically optimized for QR codes.
+        /// Numeric compression groups up to 3 digits into 10 bits, less for remaining digits if they do not complete a group of three.
+        /// </summary>
+        /// <param name="plainText">The numeric text to be encoded, which should only contain digit characters.</param>
+        /// <returns>A BitArray representing the binary data of the encoded numeric text.</returns>
         private static BitArray PlainTextToBinaryNumeric(string plainText)
         {
+            // Calculate the length of the BitArray needed to encode the text.
+            // Groups of three digits are encoded in 10 bits, remaining groups of two or one digits take 7 or 4 bits respectively.
             var bitArray = new BitArray(plainText.Length / 3 * 10 + (plainText.Length % 3 == 1 ? 4 : plainText.Length % 3 == 2 ? 7 : 0));
             var index = 0;
+
+            // Process each group of three digits.
             for (int i = 0; i < plainText.Length - 2; i += 3)
             {
+                // Parse the next three characters as a decimal integer.
 #if NET5_0_OR_GREATER
                 var dec = int.Parse(plainText.AsSpan(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
                 var dec = int.Parse(plainText.Substring(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
+                // Convert the decimal to binary and store it in the BitArray.
                 index = DecToBin(dec, 10, bitArray, index);
             }
-            if (plainText.Length % 3 == 2)
+
+            // Handle any remaining digits if the total number is not a multiple of three.
+            if (plainText.Length % 3 == 2)  // Two remaining digits are encoded in 7 bits.
             {
 #if NET5_0_OR_GREATER
                 var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
@@ -667,7 +794,7 @@ namespace QRCoder
 #endif
                 index = DecToBin(dec, 7, bitArray, index);
             }
-            else if (plainText.Length % 3 == 1)
+            else if (plainText.Length % 3 == 1)  // One remaining digit is encoded in 4 bits.
             {
 #if NET5_0_OR_GREATER
                 var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
@@ -676,29 +803,48 @@ namespace QRCoder
 #endif
                 index = DecToBin(dec, 4, bitArray, index);
             }
+
             return bitArray;
         }
 
+        /// <summary>
+        /// Converts alphanumeric plain text into a binary format optimized for QR codes.
+        /// Alphanumeric encoding packs characters into 11-bit groups for each pair of characters,
+        /// and 6 bits for a single remaining character if the total count is odd.
+        /// </summary>
+        /// <param name="plainText">The alphanumeric text to be encoded, which should only contain characters valid in QR alphanumeric mode.</param>
+        /// <returns>A BitArray representing the binary data of the encoded alphanumeric text.</returns>
         private static BitArray PlainTextToBinaryAlphanumeric(string plainText)
         {
+            // Calculate the length of the BitArray needed based on the number of character pairs.
             var codeText = new BitArray((plainText.Length / 2) * 11 + (plainText.Length & 1) * 6);
             var codeIndex = 0;
             var index = 0;
             var count = plainText.Length;
+
+            // Process each pair of characters.
             while (count >= 2)
             {
+                // Convert each pair of characters to a number by looking them up in the alphanumeric dictionary and calculating.
                 var dec = alphanumEncDict[plainText[index++]] * 45 + alphanumEncDict[plainText[index++]];
+                // Convert the number to binary and store it in the BitArray.
                 codeIndex = DecToBin(dec, 11, codeText, codeIndex);
                 count -= 2;
-
             }
+
+            // Handle the last character if the length is odd.
             if (count > 0)
             {
                 DecToBin(alphanumEncDict[plainText[index]], 6, codeText, codeIndex);
             }
+
             return codeText;
         }
 
+        /// <summary>
+        /// Returns a string that contains the original string, with characters that cannot be encoded by a
+        /// specified encoding (default of ISO-8859-2) with a replacement character.
+        /// </summary>
         private static string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
         {
             Encoding iso = Encoding.GetEncoding(Iso);
@@ -708,50 +854,83 @@ namespace QRCoder
             return iso.GetString(isoBytes);
         }
 
+        /// <summary>
+        /// Converts plain text into a binary format using byte mode encoding, which supports various character encodings through ECI (Extended Channel Interpretations).
+        /// </summary>
+        /// <param name="plainText">The text to be encoded.</param>
+        /// <param name="eciMode">The ECI mode that specifies the character encoding to use.</param>
+        /// <param name="utf8BOM">Specifies whether to include a Byte Order Mark (BOM) for UTF-8 encoding.</param>
+        /// <param name="forceUtf8">Forces UTF-8 encoding regardless of the text content's compatibility with ISO-8859-1.</param>
+        /// <returns>A BitArray representing the binary data of the encoded text.</returns>
+        /// <remarks>
+        /// The returned text is always encoded as ISO-8859-1 unless either the text contains a non-ISO-8859-1 character or
+        /// UTF-8 encoding is forced. This does not meet the QR Code standard, which requires the use of ECI to specify the encoding
+        /// when not ISO-8859-1.
+        /// </remarks>
         private static BitArray PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
             byte[] codeBytes;
 
+            // Check if the text is valid ISO-8859-1 and UTF-8 is not forced, then encode using ISO-8859-1.
             if (IsValidISO(plainText) && !forceUtf8)
                 codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
             else
             {
+                // Determine the encoding based on the specified ECI mode.
                 switch (eciMode)
                 {
                     case EciMode.Iso8859_1:
+                        // Convert text to ISO-8859-1 and encode.
                         codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(ConvertToIso8859(plainText, "ISO-8859-1"));
                         break;
                     case EciMode.Iso8859_2:
+                        // Convert text to ISO-8859-2 and encode.
                         codeBytes = Encoding.GetEncoding("ISO-8859-2").GetBytes(ConvertToIso8859(plainText, "ISO-8859-2"));
                         break;
                     case EciMode.Default:
                     case EciMode.Utf8:
                     default:
+                        // Handle UTF-8 encoding, optionally adding a BOM if specified.
                         codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
                         break;
                 }
             }
 
+            // Convert the array of bytes into a BitArray.
             return ToBitArray(codeBytes);
         }
 
+        /// <summary>
+        /// Converts an array of bytes into a BitArray, considering the proper bit order within each byte.
+        /// Unlike the constructor of BitArray, this function preserves the MSB-to-LSB order within each byte.
+        /// </summary>
+        /// <param name="byteArray">The byte array to convert into a BitArray.</param>
+        /// <param name="prefixZeros">The number of leading zeros to prepend to the resulting BitArray.</param>
+        /// <returns>A BitArray representing the bits of the input byteArray, with optional leading zeros.</returns>
         private static BitArray ToBitArray(byte[] byteArray, int prefixZeros = 0)
         {
-            // new BitArray(byteArray) is not used because it reverses the bit order within each byte
+            // Calculate the total number of bits in the resulting BitArray including the prefix zeros.
             var bitArray = new BitArray((int)((uint)byteArray.Length * 8) + prefixZeros);
             for (var i = 0; i < byteArray.Length; i++)
             {
                 var byteVal = byteArray[i];
                 for (var j = 0; j < 8; j++)
                 {
+                    // Set each bit in the BitArray based on the corresponding bit in the byte array.
+                    // It shifts bits within the byte to align with the MSB-to-LSB order.
                     bitArray[(int)((uint)i * 8) + j + prefixZeros] = (byteVal & (1 << (7 - j))) != 0;
                 }
             }
             return bitArray;
         }
 
+        /// <summary>
+        /// Performs a bitwise XOR operation between two polynomials, commonly used in QR code error correction coding.
+        /// </summary>
+        /// <returns>The resultant polynomial after performing the XOR operation.</returns>
         private static Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
         {
+            // Determine the larger of the two polynomials to guide the XOR operation.
             var resultPolynom = new Polynom(Math.Max(messagePolynom.PolyItems.Count, resPolynom.PolyItems.Count));
             Polynom longPoly, shortPoly;
             if (messagePolynom.PolyItems.Count >= resPolynom.PolyItems.Count)
@@ -765,13 +944,12 @@ namespace QRCoder
                 shortPoly = messagePolynom;
             }
 
+            // XOR the coefficients of the two polynomials.
             for (var i = 0; i < longPoly.PolyItems.Count; i++)
             {
-                var polItemRes = new PolynomItem
-                (
-
-                        longPoly.PolyItems[i].Coefficient ^
-                        (shortPoly.PolyItems.Count > i ? shortPoly.PolyItems[i].Coefficient : 0),
+                var polItemRes = new PolynomItem(
+                    longPoly.PolyItems[i].Coefficient ^
+                    (shortPoly.PolyItems.Count > i ? shortPoly.PolyItems[i].Coefficient : 0),
                     messagePolynom.PolyItems[0].Exponent - i
                 );
                 resultPolynom.PolyItems.Add(polItemRes);
@@ -780,7 +958,10 @@ namespace QRCoder
             return resultPolynom;
         }
 
-
+        /// <summary>
+        /// Multiplies a generator polynomial by a leading term polynomial, reducing the result by a specified lower exponent,
+        /// used in constructing QR code error correction codewords.
+        /// </summary>
         private static Polynom MultiplyGeneratorPolynomByLeadterm(Polynom genPolynom, PolynomItem leadTerm, int lowerExponentBy)
         {
             var resultPolynom = new Polynom(genPolynom.PolyItems.Count);
@@ -796,13 +977,23 @@ namespace QRCoder
             return resultPolynom;
         }
 
+        /// <summary>
+        /// Multiplies two polynomials, treating coefficients as exponents of a primitive element (alpha), which is common in error correction algorithms such as Reed-Solomon.
+        /// </summary>
+        /// <param name="polynomBase">The first polynomial to multiply.</param>
+        /// <param name="polynomMultiplier">The second polynomial to multiply.</param>
+        /// <returns>A new polynomial which is the result of the multiplication of the two input polynomials.</returns>
         private static Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
         {
+            // Initialize a new polynomial with a size based on the product of the sizes of the two input polynomials.
             var resultPolynom = new Polynom(polynomMultiplier.PolyItems.Count * polynomBase.PolyItems.Count);
+
+            // Multiply each term of the first polynomial by each term of the second polynomial.
             foreach (var polItemBase in polynomMultiplier.PolyItems)
             {
                 foreach (var polItemMulti in polynomBase.PolyItems)
                 {
+                    // Create a new polynomial term with the coefficients added (as exponents) and exponents summed.
                     var polItemRes = new PolynomItem
                     (
                         ShrinkAlphaExp(polItemBase.Coefficient + polItemMulti.Coefficient),
@@ -811,6 +1002,8 @@ namespace QRCoder
                     resultPolynom.PolyItems.Add(polItemRes);
                 }
             }
+
+            // Identify and merge terms with the same exponent.
             var toGlue = GetNotUniqueExponents(resultPolynom.PolyItems);
             var gluedPolynoms = new PolynomItem[toGlue.Length];
             var gluedPolynomsIndex = 0;
@@ -823,17 +1016,23 @@ namespace QRCoder
                         coefficient ^= GetIntValFromAlphaExp(polynomOld.Coefficient);
                 }
 
+                // Fix the polynomial terms by recalculating the coefficients based on XORed results.
                 var polynomFixed = new PolynomItem(GetAlphaExpFromIntVal(coefficient), exponent);
                 gluedPolynoms[gluedPolynomsIndex++] = polynomFixed;
             }
+
+            // Remove duplicated exponents and add the corrected ones back.
             for (int i = resultPolynom.PolyItems.Count - 1; i >= 0; i--)
                 if (toGlue.Contains(resultPolynom.PolyItems[i].Exponent))
                     resultPolynom.PolyItems.RemoveAt(i);
             foreach (var polynom in gluedPolynoms)
                 resultPolynom.PolyItems.Add(polynom);
+
+            // Sort the polynomial terms by exponent in descending order.
             resultPolynom.PolyItems.Sort((x, y) => -x.Exponent.CompareTo(y.Exponent));
             return resultPolynom;
 
+            // Auxiliary function to identify exponents that appear more than once in the polynomial.
             int[] GetNotUniqueExponents(List<PolynomItem> list)
             {
                 var dic = new Dictionary<int, bool>(list.Count);
@@ -843,13 +1042,14 @@ namespace QRCoder
                     if (dic.TryAdd(row.Exponent, false))
                         dic[row.Exponent] = true;
 #else
-                    if (!dic.ContainsKey(row.Exponent))
-                        dic.Add(row.Exponent, false);
-                    else
-                        dic[row.Exponent] = true;
+            if (!dic.ContainsKey(row.Exponent))
+                dic.Add(row.Exponent, false);
+            else
+                dic[row.Exponent] = true;
 #endif
                 }
 
+                // Collect all exponents that appeared more than once.
                 int count = 0;
                 foreach (var row in dic)
                 {
@@ -869,41 +1069,62 @@ namespace QRCoder
             }
         }
 
+        /// <summary>
+        /// Retrieves the integer value from the Galois field that corresponds to a given exponent.
+        /// This is used in Reed-Solomon and other error correction calculations involving Galois fields.
+        /// </summary>
         private static int GetIntValFromAlphaExp(int exp)
         {
             return galoisFieldByExponentAlpha[exp];
         }
 
+        /// <summary>
+        /// Retrieves the exponent from the Galois field that corresponds to a given integer value.
+        /// Throws an exception if the integer value is zero, as zero does not have a logarithmic representation in the field.
+        /// </summary>
         private static int GetAlphaExpFromIntVal(int intVal)
         {
             if (intVal == 0)
-                ThrowIntValOutOfRangeException();
+                ThrowIntValOutOfRangeException(); // Zero is not valid as it does not have an exponent representation.
             return galoisFieldByIntegerValue[intVal];
 
-            void ThrowIntValOutOfRangeException() => throw new ArgumentOutOfRangeException(nameof(intVal));
+            void ThrowIntValOutOfRangeException() => throw new ArgumentOutOfRangeException(nameof(intVal), "The provided integer value is out of range, as zero is not representable.");
         }
 
+        /// <summary>
+        /// Normalizes a Galois field exponent to ensure it remains within the bounds of the field's size.
+        /// This is particularly necessary when performing multiplications in the field which can result in exponents exceeding the field's maximum.
+        /// </summary>
         private static int ShrinkAlphaExp(int alphaExp)
         {
-            // ReSharper disable once PossibleLossOfFraction
             return (int)((alphaExp % 256) + Math.Floor((double)(alphaExp / 256)));
         }
 
+        /// <summary>
+        /// Creates a dictionary mapping alphanumeric characters to their respective positions used in QR code encoding.
+        /// This includes digits 0-9, uppercase letters A-Z, and some special characters.
+        /// </summary>
+        /// <returns>A dictionary mapping each supported alphanumeric character to its corresponding value.</returns>
         private static Dictionary<char, int> CreateAlphanumEncDict()
         {
             var localAlphanumEncDict = new Dictionary<char, int>(45);
-            //Add numbers
             for (int i = 0; i < 10; i++)
                 localAlphanumEncDict.Add($"{i}"[0], i);
-            //Add chars
+            // Add uppercase alphabetic characters.
             for (char c = 'A'; c <= 'Z'; c++)
-                localAlphanumEncDict.Add(c, localAlphanumEncDict.Count());
-            //Add special chars
+                localAlphanumEncDict.Add(c, localAlphanumEncDict.Count);
+            // Add special characters from a predefined table.
             for (int i = 0; i < alphanumEncTable.Length; i++)
-                localAlphanumEncDict.Add(alphanumEncTable[i], localAlphanumEncDict.Count());
+                localAlphanumEncDict.Add(alphanumEncTable[i], localAlphanumEncDict.Count);
             return localAlphanumEncDict;
         }
 
+        /// <summary>
+        /// Creates a lookup table mapping QR code versions to their corresponding alignment patterns.
+        /// Alignment patterns are used in QR codes to help scanners accurately read the code at high speeds and when partially obscured.
+        /// This table provides the necessary patterns based on the QR code version which dictates the size and complexity of the QR code.
+        /// </summary>
+        /// <returns>A dictionary where keys are QR code version numbers and values are AlignmentPattern structures detailing the positions of alignment patterns for each version.</returns>
         private static Dictionary<int, AlignmentPattern> CreateAlignmentPatternTable()
         {
             var localAlignmentPatternTable = new Dictionary<int, AlignmentPattern>(40);
@@ -938,6 +1159,12 @@ namespace QRCoder
             return localAlignmentPatternTable;
         }
 
+        /// <summary>
+        /// Generates a table containing the error correction capacities and data codeword information for different QR code versions and error correction levels.
+        /// This table is essential for determining how much data can be encoded in a QR code of a specific version and ECC level,
+        /// as well as how robust the QR code will be against distortions or obstructions.
+        /// </summary>
+        /// <returns>A list of ECCInfo structures, each representing the ECC data and capacities for different combinations of QR code versions and ECC levels.</returns>
         private static List<ECCInfo> CreateCapacityECCTable()
         {
             var localCapacityECCTable = new List<ECCInfo>(160);
@@ -993,6 +1220,11 @@ namespace QRCoder
             return localCapacityECCTable;
         }
 
+        /// <summary>
+        /// Generates a list containing detailed capacity information for various versions of QR codes.
+        /// This table includes capacities for different encoding modes (numeric, alphanumeric, byte, etc.) under each error correction level.
+        /// The capacity table is crucial for QR code generation, as it determines how much data each QR code version can store depending on the encoding mode and error correction level used.
+        /// </summary>
         private static List<VersionInfo> CreateCapacityTable()
         {
             var localCapacityTable = new List<VersionInfo>(40);
