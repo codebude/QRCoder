@@ -163,11 +163,58 @@ namespace QRCoder
                         for (var x = 0; x < size - 10; x++)
                         {
                             // Horizontal pattern matching
-                            if (MatchesPattern1(qrCode.ModuleMatrix, x, y))
+                            if ((qrCode.ModuleMatrix[y][x] &&
+                                !qrCode.ModuleMatrix[y][x + 1] &&
+                                qrCode.ModuleMatrix[y][x + 2] &&
+                                qrCode.ModuleMatrix[y][x + 3] &&
+                                qrCode.ModuleMatrix[y][x + 4] &&
+                                !qrCode.ModuleMatrix[y][x + 5] &&
+                                qrCode.ModuleMatrix[y][x + 6] &&
+                                !qrCode.ModuleMatrix[y][x + 7] &&
+                                !qrCode.ModuleMatrix[y][x + 8] &&
+                                !qrCode.ModuleMatrix[y][x + 9] &&
+                                !qrCode.ModuleMatrix[y][x + 10]) ||
+                                (!qrCode.ModuleMatrix[y][x] &&
+                                !qrCode.ModuleMatrix[y][x + 1] &&
+                                !qrCode.ModuleMatrix[y][x + 2] &&
+                                !qrCode.ModuleMatrix[y][x + 3] &&
+                                qrCode.ModuleMatrix[y][x + 4] &&
+                                !qrCode.ModuleMatrix[y][x + 5] &&
+                                qrCode.ModuleMatrix[y][x + 6] &&
+                                qrCode.ModuleMatrix[y][x + 7] &&
+                                qrCode.ModuleMatrix[y][x + 8] &&
+                                !qrCode.ModuleMatrix[y][x + 9] &&
+                                qrCode.ModuleMatrix[y][x + 10]))
+                            {
                                 score3 += 40;
+                            }
+
                             // Vertical pattern matching
-                            if (MatchesPattern1(qrCode.ModuleMatrix, y, x))
+                            if ((qrCode.ModuleMatrix[x][y] &&
+                                !qrCode.ModuleMatrix[x + 1][y] &&
+                                qrCode.ModuleMatrix[x + 2][y] &&
+                                qrCode.ModuleMatrix[x + 3][y] &&
+                                qrCode.ModuleMatrix[x + 4][y] &&
+                                !qrCode.ModuleMatrix[x + 5][y] &&
+                                qrCode.ModuleMatrix[x + 6][y] &&
+                                !qrCode.ModuleMatrix[x + 7][y] &&
+                                !qrCode.ModuleMatrix[x + 8][y] &&
+                                !qrCode.ModuleMatrix[x + 9][y] &&
+                                !qrCode.ModuleMatrix[x + 10][y]) ||
+                                (!qrCode.ModuleMatrix[x][y] &&
+                                !qrCode.ModuleMatrix[x + 1][y] &&
+                                !qrCode.ModuleMatrix[x + 2][y] &&
+                                !qrCode.ModuleMatrix[x + 3][y] &&
+                                qrCode.ModuleMatrix[x + 4][y] &&
+                                !qrCode.ModuleMatrix[x + 5][y] &&
+                                qrCode.ModuleMatrix[x + 6][y] &&
+                                qrCode.ModuleMatrix[x + 7][y] &&
+                                qrCode.ModuleMatrix[x + 8][y] &&
+                                !qrCode.ModuleMatrix[x + 9][y] &&
+                                qrCode.ModuleMatrix[x + 10][y]))
+                            {
                                 score3 += 40;
+                            }
                         }
                     }
 
@@ -185,35 +232,6 @@ namespace QRCoder
 
                     // Return the sum of all four penalties
                     return (score1 + score2) + (score3 + score4);
-                }
-
-                /// <summary>
-                /// Matches the specified pattern in QR code evaluation rules (1:1:3:1:1 ratio).
-                /// </summary>
-                private static bool MatchesPattern1(List<BitArray> matrix, int x, int y)
-                {
-                    return (matrix[y][x] && 
-                        !matrix[y][x + 1] && 
-                        matrix[y][x + 2] && 
-                        matrix[y][x + 3] &&
-                        matrix[y][x + 4] && 
-                        !matrix[y][x + 5] && 
-                        matrix[y][x + 6] && 
-                        !matrix[y][x + 7] &&
-                        !matrix[y][x + 8] && 
-                        !matrix[y][x + 9] && 
-                        !matrix[y][x + 10]) ||
-                        (!matrix[y][x] &&
-                        !matrix[y][x + 1] &&
-                        !matrix[y][x + 2] &&
-                        !matrix[y][x + 3] &&
-                        matrix[y][x + 4] &&
-                        !matrix[y][x + 5] &&
-                        matrix[y][x + 6] &&
-                        matrix[y][x + 7] &&
-                        matrix[y][x + 8] &&
-                        !matrix[y][x + 9] &&
-                        matrix[y][x + 10]);
                 }
             }
         }
