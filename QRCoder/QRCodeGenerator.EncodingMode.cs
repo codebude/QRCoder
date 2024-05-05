@@ -1,4 +1,6 @@
-﻿namespace QRCoder
+﻿using System;
+
+namespace QRCoder
 {
     public partial class QRCodeGenerator
     {
@@ -27,7 +29,7 @@
 
             /// <summary>
             /// Kanji encoding mode, which is used to encode characters from the Shift JIS character set, primarily for Japanese Kanji and Kana characters.
-            /// One character is encoded into 13 bits.
+            /// One character is encoded into 13 bits. This mode is not currently supported by QRCoder.
             /// </summary>
             Kanji = 8,
 

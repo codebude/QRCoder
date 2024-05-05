@@ -187,6 +187,14 @@ namespace QRCoder
         private static readonly BitArray _repeatingPattern = new BitArray(
             new[] { true, true, true, false, true, true, false, false, false, false, false, true, false, false, false, true });
 
+        /// <summary>
+        /// Generates a QR code data structure using the provided BitArray, error correction level, and version.
+        /// The BitArray provided is assumed to already include the count, encoding mode, and/or ECI mode information.
+        /// </summary>
+        /// <param name="bitArray">The BitArray containing the binary-encoded data to be included in the QR code. It should already contain the count, encoding mode, and/or ECI mode information.</param>
+        /// <param name="eccLevel">The desired error correction level for the QR code. This impacts how much data can be recovered if damaged.</param>
+        /// <param name="version">The version of the QR code, determining the size and complexity of the QR code data matrix.</param>
+        /// <returns>A QRCodeData structure containing the full QR code matrix, which can be used for rendering or analysis.</returns>
         private static QRCodeData GenerateQrCode(BitArray bitArray, ECCLevel eccLevel, int version)
         {
             //Fill up data code word
