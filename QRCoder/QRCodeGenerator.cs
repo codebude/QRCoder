@@ -416,15 +416,16 @@ namespace QRCoder
         /// </summary>
         private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo)
         {
+            var eccWords = eccInfo.ECCPerBlock;
             // Calculate the message polynomial from the bit array data.
             var messagePolynom = CalculateMessagePolynom(bitArray, offset, count);
             // Generate the generator polynomial using the number of ECC words.
-            var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock);
+            var generatorPolynom = CalculateGeneratorPolynom(eccWords);
 
             // Adjust the exponents in the message polynomial to account for ECC length.
             for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
                 messagePolynom.PolyItems[i] = new PolynomItem(messagePolynom.PolyItems[i].Coefficient,
-                    messagePolynom.PolyItems[i].Exponent + eccInfo.ECCPerBlock);
+                    messagePolynom.PolyItems[i].Exponent + eccWords);
 
             // Adjust the generator polynomial exponents based on the message polynomial.
             for (var i = 0; i < generatorPolynom.PolyItems.Count; i++)
@@ -1042,10 +1043,10 @@ namespace QRCoder
                     if (dic.TryAdd(row.Exponent, false))
                         dic[row.Exponent] = true;
 #else
-            if (!dic.ContainsKey(row.Exponent))
-                dic.Add(row.Exponent, false);
-            else
-                dic[row.Exponent] = true;
+                    if (!dic.ContainsKey(row.Exponent))
+                        dic.Add(row.Exponent, false);
+                    else
+                        dic[row.Exponent] = true;
 #endif
                 }
 
