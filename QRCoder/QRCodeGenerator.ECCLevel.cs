@@ -3,24 +3,32 @@
     public partial class QRCodeGenerator
     {
         /// <summary>
-        /// Error correction level. These define the tolerance levels for how much of the code can be lost before the code cannot be recovered.
+        /// Defines the levels of error correction available in QR codes.
+        /// Each level specifies the proportion of data that can be recovered if the QR code is partially obscured or damaged.
         /// </summary>
         public enum ECCLevel
         {
             /// <summary>
-            /// 7% may be lost before recovery is not possible
+            /// Level L: Low error correction (approximately 7% of data can be recovered).
+            /// This level allows the highest data density.
             /// </summary>
             L,
+
             /// <summary>
-            /// 15% may be lost before recovery is not possible
+            /// Level M: Medium error correction (approximately 15% of data can be recovered).
+            /// Offers a balance between data capacity and error recovery.
             /// </summary>
             M,
+
             /// <summary>
-            /// 25% may be lost before recovery is not possible
+            /// Level Q: Quartile error correction (approximately 25% of data can be recovered).
+            /// More robust error correction at the cost of reduced data capacity.
             /// </summary>
             Q,
+
             /// <summary>
-            /// 30% may be lost before recovery is not possible
+            /// Level H: High error correction (approximately 30% of data can be recovered).
+            /// Provides the highest level of error recovery, ideal for environments with high risk of data loss.
             /// </summary>
             H
         }
