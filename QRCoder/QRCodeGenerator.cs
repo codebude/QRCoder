@@ -713,9 +713,9 @@ namespace QRCoder
         private static int GetDataLength(EncodingMode encoding, string plainText, BitArray codedText, bool forceUtf8)
         {
             // If UTF-8 is forced or the text is detected as UTF-8, return the number of bytes, otherwise return the character count.
-            return forceUtf8 || IsUtf8(encoding, plainText, forceUtf8) ? (int)((uint)codedText.Length / 8) : plainText.Length;
+            return forceUtf8 || IsUtf8() ? (int)((uint)codedText.Length / 8) : plainText.Length;
 
-            bool IsUtf8(EncodingMode encoding, string plainText, bool forceUtf8)
+            bool IsUtf8()
             {
                 return (encoding == EncodingMode.Byte && (!IsValidISO(plainText) || forceUtf8));
             }
