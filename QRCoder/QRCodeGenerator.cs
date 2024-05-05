@@ -303,11 +303,19 @@ namespace QRCoder
 
         private static readonly BitArray _getFormatGenerator = new BitArray(new bool[] { true, false, true, false, false, true, true, false, true, true, true });
         private static readonly BitArray _getFormatMask = new BitArray(new bool[] { true, false, true, false, true, false, false, false, false, false, true, false, false, true, false });
+        /// <summary>
+        /// Generates a BitArray containing the format string for a QR code based on the error correction level and mask pattern version.
+        /// The format string includes the error correction level, mask pattern version, and error correction coding.
+        /// </summary>
+        /// <param name="level">The error correction level to be encoded in the format string.</param>
+        /// <param name="maskVersion">The mask pattern version to be encoded in the format string.</param>
+        /// <returns>A BitArray containing the 15-bit format string used in QR code generation.</returns>
         private static BitArray GetFormatString(ECCLevel level, int maskVersion)
         {
             var fStrEcc = new BitArray(15); // Total length including space for mask version and padding
             WriteEccLevelAndVersion();
 
+            // Apply the format generator polynomial to add error correction to the format string.
             int index = 0;
             int count = 15;
             TrimLeadingZeros(fStrEcc, ref index, ref count);
@@ -317,10 +325,16 @@ namespace QRCoder
                     fStrEcc[index + i] ^= _getFormatGenerator[i];
                 TrimLeadingZeros(fStrEcc, ref index, ref count);
             }
+
+            // Align bits with the start of the array.
             ShiftTowardsBit0(fStrEcc, index);
+
+            // Prefix the error correction bits with the ECC level and version number.
             fStrEcc.Length = 10 + 5;
             ShiftAwayFromBit0(fStrEcc, (10 - count) + 5);
             WriteEccLevelAndVersion();
+
+            // XOR the format string with a predefined mask to add robustness against errors.
             fStrEcc.Xor(_getFormatMask);
             return fStrEcc;
 
@@ -341,6 +355,8 @@ namespace QRCoder
                     default: // M: 00
                         break;
                 }
+                
+                // Insert the 3-bit mask version directly after the error correction level bits.
                 DecToBin(maskVersion, 3, fStrEcc, 2);
             }
         }
