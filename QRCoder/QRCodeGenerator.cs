@@ -717,7 +717,7 @@ namespace QRCoder
 
             bool IsUtf8()
             {
-                return (encoding == EncodingMode.Byte && (!IsValidISO(plainText) || forceUtf8));
+                return (encoding == EncodingMode.Byte && (forceUtf8 || !IsValidISO(plainText)));
             }
         }
 
