@@ -222,6 +222,8 @@ namespace QRCoder
                 }
             }
 
+            // Generate the generator polynomial using the number of ECC words.
+            var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock);
             //Calculate error correction words
             var codeWordWithECC = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
             AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, bitArray, 0, bitArray.Length);
@@ -291,7 +293,7 @@ namespace QRCoder
                 for (var i = 0; i < blocksInGroup; i++)
                 {
                     var bitBlockList = BinaryStringToBitBlockByteList(bitArray2, offset2, groupLength);
-                    var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo);
+                    var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo, generatorPolynom);
                     codeWordWithECC.Add(new CodewordBlock(
                                           bitBlockList,
                                           eccWordList)
@@ -438,13 +440,11 @@ namespace QRCoder
         /// This method applies polynomial division, using the message polynomial and a generator polynomial,
         /// to compute the remainder which forms the ECC codewords.
         /// </summary>
-        private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo)
+        private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo, Polynom generatorPolynom)
         {
             var eccWords = eccInfo.ECCPerBlock;
             // Calculate the message polynomial from the bit array data.
             var messagePolynom = CalculateMessagePolynom(bitArray, offset, count);
-            // Generate the generator polynomial using the number of ECC words.
-            var generatorPolynom = CalculateGeneratorPolynom(eccWords);
 
             // Adjust the exponents in the message polynomial to account for ECC length.
             for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
