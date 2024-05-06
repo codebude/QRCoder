@@ -234,7 +234,7 @@ namespace QRCoder
             for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.CodeWords.Length > i)
+                    if (codeBlock.CodeWordsLength / 8 > i)
                         interleavedLength += 8;
             }
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
@@ -251,8 +251,10 @@ namespace QRCoder
             for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.CodeWords.Length > i)
-                        pos = DecToBin(codeBlock.CodeWords[i], 8, interleavedData, pos);
+                {
+                    if (codeBlock.CodeWordsLength / 8 > i)
+                        pos = codeBlock.CodeWords.CopyTo(i * 8 + codeBlock.CodeWordsOffset, interleavedData, pos, 8);
+                }
             }
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
@@ -290,10 +292,13 @@ namespace QRCoder
                 var groupLength = codewordsInGroup * 8;
                 for (var i = 0; i < blocksInGroup; i++)
                 {
-                    var bitBlockList = BinaryStringToBitBlockByteList(bitArray2, offset2, groupLength);
+                    //var bitBlockList = BinaryStringToBitBlockByteList(bitArray2, offset2, groupLength);
                     var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo);
                     codeWordWithECC.Add(new CodewordBlock(
-                                          bitBlockList,
+                                          //bitBlockList,
+                                          bitArray2,
+                                          offset2,
+                                          groupLength,
                                           eccWordList)
                                     );
                     offset2 += groupLength;
