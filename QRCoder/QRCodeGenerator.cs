@@ -935,9 +935,8 @@ namespace QRCoder
                 }
             }
 
-#if NETCOREAPP2_1_OR_GREATER
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
             // We can use stackalloc for small arrays to prevent heap allocations
-            // (also available in .NET Standard and .NET Framework with an additional NuGet dependency)
             // Note that all QR codes should fit within 3000 bytes, so this code should never trigger a heap allocation unless an exception will be thrown anyway.
             int count = targetEncoding.GetByteCount(plainText);
             Span<byte> codeBytes = count < 3000 ? stackalloc byte[count] : new byte[count];
@@ -971,7 +970,7 @@ namespace QRCoder
         /// <param name="prefixZeros">The number of leading zeros to prepend to the resulting BitArray.</param>
         /// <returns>A BitArray representing the bits of the input byteArray, with optional leading zeros.</returns>
         private static BitArray ToBitArray(
-#if NET5_0_OR_GREATER
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
             ReadOnlySpan<byte> byteArray, // byte[] has an implicit cast to ReadOnlySpan<byte>
 #else
             byte[] byteArray,
