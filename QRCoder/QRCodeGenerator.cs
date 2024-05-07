@@ -943,8 +943,7 @@ namespace QRCoder
             Span<byte> codeBytes = count < 3000 ? stackalloc byte[count] : new byte[count];
             targetEncoding.GetBytes(plainText, codeBytes);
 #else
-            byte[] codeBytes;
-            codeBytes = targetEncoding.GetBytes(plainText);
+            byte[] codeBytes = targetEncoding.GetBytes(plainText);
 #endif
 
             // Convert the array of bytes into a BitArray.
@@ -973,7 +972,7 @@ namespace QRCoder
         /// <returns>A BitArray representing the bits of the input byteArray, with optional leading zeros.</returns>
         private static BitArray ToBitArray(
 #if NET5_0_OR_GREATER
-            ReadOnlySpan<byte> byteArray,
+            ReadOnlySpan<byte> byteArray, // byte[] has an implicit cast to ReadOnlySpan<byte>
 #else
             byte[] byteArray,
 #endif
