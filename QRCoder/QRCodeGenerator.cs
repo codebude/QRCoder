@@ -934,8 +934,10 @@ namespace QRCoder
                 }
             }
 
-#if NET5_0_OR_GREATER
-            // In .NET 5.0 and later, we can use stackalloc for small arrays to prevent heap allocations
+#if NETCOREAPP2_1_OR_GREATER
+            // We can use stackalloc for small arrays to prevent heap allocations
+            // (also available in .NET Standard and .NET Framework with an additional NuGet dependency)
+            // Note that all QR codes should fit within 3000 bytes, so this code should never trigger a heap allocation unless an exception will be thrown anyway.
             int count = targetEncoding.GetByteCount(plainText);
             Span<byte> codeBytes = count < 3000 ? stackalloc byte[count] : new byte[count];
             targetEncoding.GetBytes(plainText, codeBytes);
