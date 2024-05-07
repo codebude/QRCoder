@@ -745,14 +745,21 @@ namespace QRCoder
             }
         }
 
+        private static readonly Encoding _iso88591ExceptionFallback = Encoding.GetEncoding("ISO-8859-1", new EncoderExceptionFallback(), new DecoderExceptionFallback());
         /// <summary>
         /// Checks if the given string can be accurately represented and retrieved in ISO-8859-1 encoding.
         /// </summary>
         private static bool IsValidISO(string input)
         {
-            var bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(input);
-            var result = Encoding.GetEncoding("ISO-8859-1").GetString(bytes);
-            return String.Equals(input, result);
+            try
+            {
+                _ = _iso88591ExceptionFallback.GetByteCount(input);
+                return true;
+            }
+            catch (EncoderFallbackException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -866,18 +873,13 @@ namespace QRCoder
             return codeText;
         }
 
-        /// <summary>
-        /// Returns a string that contains the original string, with characters that cannot be encoded by a
-        /// specified encoding (default of ISO-8859-2) with a replacement character.
-        /// </summary>
-        private static string ConvertToIso8859(string value, string Iso = "ISO-8859-2")
-        {
-            Encoding iso = Encoding.GetEncoding(Iso);
-            Encoding utf8 = Encoding.UTF8;
-            byte[] utfBytes = utf8.GetBytes(value);
-            byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
-            return iso.GetString(isoBytes);
-        }
+        private static readonly Encoding _iso8859_1 =
+#if NET5_0_OR_GREATER
+            Encoding.Latin1;
+#else
+            Encoding.GetEncoding("ISO-8859-1");
+#endif
+        private static Encoding _iso8859_2;
 
         /// <summary>
         /// Converts plain text into a binary format using byte mode encoding, which supports various character encodings through ECI (Extended Channel Interpretations).
@@ -894,11 +896,14 @@ namespace QRCoder
         /// </remarks>
         private static BitArray PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
         {
-            byte[] codeBytes;
+            Encoding targetEncoding;
 
             // Check if the text is valid ISO-8859-1 and UTF-8 is not forced, then encode using ISO-8859-1.
             if (IsValidISO(plainText) && !forceUtf8)
-                codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(plainText);
+            {
+                targetEncoding = _iso8859_1;
+                utf8BOM = false;
+            }
             else
             {
                 // Determine the encoding based on the specified ECI mode.
@@ -906,23 +911,54 @@ namespace QRCoder
                 {
                     case EciMode.Iso8859_1:
                         // Convert text to ISO-8859-1 and encode.
-                        codeBytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(ConvertToIso8859(plainText, "ISO-8859-1"));
+                        targetEncoding = _iso8859_1;
+                        utf8BOM = false;
                         break;
                     case EciMode.Iso8859_2:
+                        // Note: ISO-8859-2 is not natively supported on .NET Core
+                        //
+                        // Users must install the System.Text.Encoding.CodePages package and call Encoding.RegisterProvider(CodePagesEncodingProvider.Instance)
+                        // before using this encoding mode.
+                        if (_iso8859_2 == null)
+                            _iso8859_2 = Encoding.GetEncoding("ISO-8859-2");
                         // Convert text to ISO-8859-2 and encode.
-                        codeBytes = Encoding.GetEncoding("ISO-8859-2").GetBytes(ConvertToIso8859(plainText, "ISO-8859-2"));
+                        targetEncoding = _iso8859_2;
+                        utf8BOM = false;
                         break;
                     case EciMode.Default:
                     case EciMode.Utf8:
                     default:
                         // Handle UTF-8 encoding, optionally adding a BOM if specified.
-                        codeBytes = utf8BOM ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes(plainText)).ToArray() : Encoding.UTF8.GetBytes(plainText);
+                        targetEncoding = Encoding.UTF8;
                         break;
                 }
             }
 
+#if NET5_0_OR_GREATER
+            // In .NET 5.0 and later, we can use stackalloc for small arrays to prevent heap allocations
+            int count = targetEncoding.GetByteCount(plainText);
+            Span<byte> codeBytes = count < 2000 ? stackalloc byte[count] : new byte[count];
+            targetEncoding.GetBytes(plainText, codeBytes);
+#else
+            byte[] codeBytes;
+            codeBytes = targetEncoding.GetBytes(plainText);
+#endif
+
             // Convert the array of bytes into a BitArray.
-            return ToBitArray(codeBytes);
+            if (utf8BOM)
+            {
+                // convert to bit array, leaving 24 bits for the UTF-8 preamble
+                var bitArray = ToBitArray(codeBytes, 24);
+                // write UTF8 preamble (EF BB BF) to the BitArray
+                DecToBin(0xEF, 8, bitArray, 0);
+                DecToBin(0xBB, 8, bitArray, 8);
+                DecToBin(0xBF, 8, bitArray, 16);
+                return bitArray;
+            }
+            else
+            {
+                return ToBitArray(codeBytes);
+            }
         }
 
         /// <summary>
@@ -932,7 +968,13 @@ namespace QRCoder
         /// <param name="byteArray">The byte array to convert into a BitArray.</param>
         /// <param name="prefixZeros">The number of leading zeros to prepend to the resulting BitArray.</param>
         /// <returns>A BitArray representing the bits of the input byteArray, with optional leading zeros.</returns>
-        private static BitArray ToBitArray(byte[] byteArray, int prefixZeros = 0)
+        private static BitArray ToBitArray(
+#if NET5_0_OR_GREATER
+            ReadOnlySpan<byte> byteArray,
+#else
+            byte[] byteArray,
+#endif
+            int prefixZeros = 0)
         {
             // Calculate the total number of bits in the resulting BitArray including the prefix zeros.
             var bitArray = new BitArray((int)((uint)byteArray.Length * 8) + prefixZeros);
