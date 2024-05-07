@@ -501,30 +501,6 @@ namespace QRCoder
         }
 
         /// <summary>
-        /// Converts the coefficients of a polynomial from integer values to their corresponding alpha exponent notation
-        /// based on a Galois field mapping. This is typically used in error correction calculations where
-        /// operations are performed on exponents rather than coefficients directly.
-        /// </summary>
-        private static Polynom ConvertToAlphaNotation(Polynom poly)
-        {
-            var newPoly = new Polynom(poly.Count);
-
-            for (var i = 0; i < poly.Count; i++)
-            {
-                // Convert each coefficient to its corresponding alpha exponent unless it's zero.
-                // Coefficients that are zero remain zero because log(0) is undefined.
-                newPoly.Add(
-                    new PolynomItem(
-                        (poly[i].Coefficient != 0
-                            ? GetAlphaExpFromIntVal(poly[i].Coefficient)
-                            : 0),
-                        poly[i].Exponent)); // The exponent remains unchanged.
-            }
-
-            return newPoly;
-        }
-
-        /// <summary>
         /// Converts all polynomial item coefficients from their alpha exponent notation to decimal representation in place.
         /// This conversion facilitates operations that require polynomial coefficients in their integer forms.
         /// </summary>
