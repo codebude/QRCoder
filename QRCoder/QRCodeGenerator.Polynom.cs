@@ -99,7 +99,6 @@ namespace QRCoder
             {
                 if (comparer == null) throw new ArgumentNullException(nameof(comparer));
 
-                // Assuming you have a list or array to sort within your class
                 var items = _polyItems;
                 if (items == null || _length <= 1)
                 {
