@@ -751,12 +751,13 @@ namespace QRCoder
         /// </summary>
         private static bool IsValidISO(string input)
         {
+            // No heap allocations if the string is ISO-8859-1
             try
             {
                 _ = _iso88591ExceptionFallback.GetByteCount(input);
                 return true;
             }
-            catch (EncoderFallbackException)
+            catch (EncoderFallbackException) // The exception is a heap allocation and not ideal
             {
                 return false;
             }
