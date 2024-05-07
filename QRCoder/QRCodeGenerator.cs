@@ -253,7 +253,7 @@ namespace QRCoder
                 foreach (var codeBlock in codeWordWithECC)
                 {
                     if (codeBlock.CodeWordsLength / 8 > i)
-                        pos = codeBlock.CodeWords.CopyTo(i * 8 + codeBlock.CodeWordsOffset, interleavedData, pos, 8);
+                        pos = bitArray.CopyTo(i * 8 + codeBlock.CodeWordsOffset, interleavedData, pos, 8);
                 }
             }
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
@@ -292,11 +292,9 @@ namespace QRCoder
                 var groupLength = codewordsInGroup * 8;
                 for (var i = 0; i < blocksInGroup; i++)
                 {
-                    //var bitBlockList = BinaryStringToBitBlockByteList(bitArray2, offset2, groupLength);
                     var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo);
                     codeWordWithECC.Add(new CodewordBlock(
-                                          //bitBlockList,
-                                          bitArray2,
+                                          //bitArray2,
                                           offset2,
                                           groupLength,
                                           eccWordList)
@@ -622,37 +620,6 @@ namespace QRCoder
             }
 
             return generatorPolynom; // Return the completed generator polynomial
-        }
-
-        /// <summary>
-        /// Converts a segment of a BitArray into a list of bytes where each byte represents a consecutive block of 8 bits from the BitArray.
-        /// </summary>
-        private static byte[] BinaryStringToBitBlockByteList(BitArray bitString, int offset, int count)
-        {
-            const int blockSize = 8;
-            if (count % blockSize != 0)
-                ThrowCountMustBeMultipleOf8Exception();
-            var numberOfBlocks = (int)((uint)count / blockSize);
-            var blocklist = new byte[numberOfBlocks];
-
-            int j = 0;
-            count += offset;
-            for (int i = offset; i < count; i += blockSize)
-            {
-                blocklist[j++] = (byte)(
-                    (bitString[i] ? 128 : 0) + 
-                    (bitString[i + 1] ? 64 : 0) + 
-                    (bitString[i + 2] ? 32 : 0) + 
-                    (bitString[i + 3] ? 16 : 0) + 
-                    (bitString[i + 4] ? 8 : 0) + 
-                    (bitString[i + 5] ? 4 : 0) + 
-                    (bitString[i + 6] ? 2 : 0) + 
-                    (bitString[i + 7] ? 1 : 0));
-            }
-
-            return blocklist;
-
-            void ThrowCountMustBeMultipleOf8Exception() => throw new ArgumentOutOfRangeException(nameof(count), "Count must be a multiple of 8.");
         }
 
         /// <summary>
