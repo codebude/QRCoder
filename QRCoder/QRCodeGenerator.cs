@@ -745,7 +745,7 @@ namespace QRCoder
             }
         }
 
-        private static readonly Encoding _iso88591ExceptionFallback = Encoding.GetEncoding("ISO-8859-1", new EncoderExceptionFallback(), new DecoderExceptionFallback());
+        private static readonly Encoding _iso88591ExceptionFallback = Encoding.GetEncoding(28591, new EncoderExceptionFallback(), new DecoderExceptionFallback()); // ISO-8859-1
         /// <summary>
         /// Checks if the given string can be accurately represented and retrieved in ISO-8859-1 encoding.
         /// </summary>
@@ -877,7 +877,7 @@ namespace QRCoder
 #if NET5_0_OR_GREATER
             Encoding.Latin1;
 #else
-            Encoding.GetEncoding("ISO-8859-1");
+            Encoding.GetEncoding(28591); // ISO-8859-1
 #endif
         private static Encoding _iso8859_2;
 
@@ -920,7 +920,7 @@ namespace QRCoder
                         // Users must install the System.Text.Encoding.CodePages package and call Encoding.RegisterProvider(CodePagesEncodingProvider.Instance)
                         // before using this encoding mode.
                         if (_iso8859_2 == null)
-                            _iso8859_2 = Encoding.GetEncoding("ISO-8859-2");
+                            _iso8859_2 = Encoding.GetEncoding(28592); // ISO-8859-2
                         // Convert text to ISO-8859-2 and encode.
                         targetEncoding = _iso8859_2;
                         utf8BOM = false;

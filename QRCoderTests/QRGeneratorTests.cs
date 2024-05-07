@@ -195,7 +195,9 @@ namespace QRCoderTests
         [Category("QRGenerator/TextEncoding")]
         public void isValidIso_works()
         {
-            Encoding _iso88591ExceptionFallback = Encoding.GetEncoding("ISO-8859-1", new EncoderExceptionFallback(), new DecoderExceptionFallback());
+            // see private method: QRCodeGenerator.IsValidISO
+
+            Encoding _iso88591ExceptionFallback = Encoding.GetEncoding(28591, new EncoderExceptionFallback(), new DecoderExceptionFallback()); // ISO-8859-1
 
             IsValidISO("abc").ShouldBeTrue();
             IsValidISO("äöü").ShouldBeTrue();
