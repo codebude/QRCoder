@@ -224,9 +224,9 @@ namespace QRCoder
 
             //Calculate error correction words
             var codeWordWithECC = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
-            AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, bitArray, 0, bitArray.Length);
+            AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, 0, bitArray.Length);
             int offset = eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8;
-            AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, bitArray, offset, bitArray.Length - offset);
+            AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, offset, bitArray.Length - offset);
 
 
             //Calculate interleaved code word lengths
@@ -253,7 +253,7 @@ namespace QRCoder
                 foreach (var codeBlock in codeWordWithECC)
                 {
                     if (codeBlock.CodeWordsLength / 8 > i)
-                        pos = bitArray.CopyTo(i * 8 + codeBlock.CodeWordsOffset, interleavedData, pos, 8);
+                        pos = bitArray.CopyTo(interleavedData, i * 8 + codeBlock.CodeWordsOffset, pos, 8);
                 }
             }
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
@@ -287,18 +287,13 @@ namespace QRCoder
             ModulePlacer.AddQuietZone(qr);
             return qr;
 
-            void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, BitArray bitArray2, int offset2, int count)
+            void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, int offset2, int count)
             {
                 var groupLength = codewordsInGroup * 8;
                 for (var i = 0; i < blocksInGroup; i++)
                 {
-                    var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo);
-                    codeWordWithECC.Add(new CodewordBlock(
-                                          //bitArray2,
-                                          offset2,
-                                          groupLength,
-                                          eccWordList)
-                                    );
+                    var eccWordList = CalculateECCWords(bitArray, offset2, groupLength, eccInfo);
+                    codeWordWithECC.Add(new CodewordBlock(offset2, groupLength, eccWordList));
                     offset2 += groupLength;
                 }
             }
