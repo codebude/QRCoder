@@ -7,6 +7,7 @@ namespace QRCoder
     /// </summary>
     internal static class BitArrayExtensions
     {
+        /// <summary>
         /// Copies a specified number of elements from one <see cref="BitArray"/> to another starting at the specified offsets.
         /// </summary>
         /// <param name="source">The source <see cref="BitArray"/> from which elements will be copied.</param>
