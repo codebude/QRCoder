@@ -253,7 +253,7 @@ namespace QRCoder
                 foreach (var codeBlock in codeWordWithECC)
                 {
                     if (codeBlock.CodeWordsLength / 8 > i)
-                        pos = bitArray.CopyTo(interleavedData, i * 8 + codeBlock.CodeWordsOffset, pos, 8);
+                        pos = bitArray.CopyTo(interleavedData, (int)((uint)i * 8) + codeBlock.CodeWordsOffset, pos, 8);
                 }
             }
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
