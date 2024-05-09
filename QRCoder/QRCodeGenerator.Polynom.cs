@@ -38,7 +38,7 @@ namespace QRCoder
             /// </summary>
             public void RemoveAt(int index)
             {
-                if (index < 0 || index >= _length)
+                if ((uint)index >= (uint)_length)
                     throw new IndexOutOfRangeException();
 
                 if (index < _length - 1)
