@@ -1,4 +1,7 @@
 using System;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+using System.Buffers;
+#endif
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -937,29 +940,41 @@ namespace QRCoder
 
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
             // We can use stackalloc for small arrays to prevent heap allocations
-            // Note that all QR codes should fit within 3000 bytes, so this code should never trigger a heap allocation unless an exception will be thrown anyway.
+            const int MAX_STACK_SIZE_IN_BYTES = 512;
+
             int count = targetEncoding.GetByteCount(plainText);
-            Span<byte> codeBytes = count < 3000 ? stackalloc byte[count] : new byte[count];
+            byte[] bufferFromPool = null;
+            Span<byte> codeBytes = (count <= MAX_STACK_SIZE_IN_BYTES)
+                ? (stackalloc byte[MAX_STACK_SIZE_IN_BYTES])
+                : (bufferFromPool = ArrayPool<byte>.Shared.Rent(count));
+            codeBytes = codeBytes.Slice(0, count);
             targetEncoding.GetBytes(plainText, codeBytes);
 #else
             byte[] codeBytes = targetEncoding.GetBytes(plainText);
 #endif
 
             // Convert the array of bytes into a BitArray.
+            BitArray bitArray;
             if (utf8BOM)
             {
                 // convert to bit array, leaving 24 bits for the UTF-8 preamble
-                var bitArray = ToBitArray(codeBytes, 24);
+                bitArray = ToBitArray(codeBytes, 24);
                 // write UTF8 preamble (EF BB BF) to the BitArray
                 DecToBin(0xEF, 8, bitArray, 0);
                 DecToBin(0xBB, 8, bitArray, 8);
                 DecToBin(0xBF, 8, bitArray, 16);
-                return bitArray;
             }
             else
             {
-                return ToBitArray(codeBytes);
+                bitArray = ToBitArray(codeBytes);
             }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+            if (bufferFromPool != null)
+                ArrayPool<byte>.Shared.Return(bufferFromPool);
+#endif
+
+            return bitArray;
         }
 
         /// <summary>
