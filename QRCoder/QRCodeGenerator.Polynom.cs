@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace QRCoder
@@ -21,7 +22,7 @@ namespace QRCoder
             public Polynom(int count)
             {
                 _length = 0;
-                _polyItems = Allocate(count);
+                _polyItems = RentArray(count);
             }
 
             /// <summary>
@@ -29,7 +30,7 @@ namespace QRCoder
             /// </summary>
             public void Add(PolynomItem item)
             {
-                EnsureCapacity(_length + 1);
+                AssertCapacity(_length + 1);
                 _polyItems[_length++] = item;
             }
 
@@ -53,16 +54,25 @@ namespace QRCoder
             public PolynomItem this[int index]
             {
                 get {
-                    if (index < 0 || index >= _length)
-                        throw new IndexOutOfRangeException();
+                    if ((uint)index >= _length)
+                        ThrowIndexOutOfRangeException();
                     return _polyItems[index];
                 }
                 set {
-                    if (index < 0 || index >= _length)
-                        throw new IndexOutOfRangeException();
+                    if ((uint)index >= _length)
+                        ThrowIndexOutOfRangeException();
                     _polyItems[index] = value;
                 }
             }
+
+#if NET6_0_OR_GREATER
+            [StackTraceHidden]
+#endif
+            private static void ThrowIndexOutOfRangeException()
+            {
+                throw new IndexOutOfRangeException();
+            }
+
 
             /// <summary>
             /// Gets the number of polynomial terms in the polynomial.
@@ -100,7 +110,9 @@ namespace QRCoder
                 if (comparer == null) throw new ArgumentNullException(nameof(comparer));
 
                 var items = _polyItems;
-                if (items == null || _length <= 1)
+                if (items == null) throw new ObjectDisposedException(nameof(Polynom));
+
+                if (_length <= 1)
                 {
                     return; // Nothing to sort if the list is empty or contains only one element
                 }
@@ -158,14 +170,14 @@ namespace QRCoder
             /// <inheritdoc/>
             public void Dispose()
             {
-                Free(_polyItems);
+                ReturnArray(_polyItems);
                 _polyItems = null;
             }
 
             /// <summary>
             /// Ensures that the polynomial has enough capacity to store the specified number of polynomial terms.
             /// </summary>
-            private void EnsureCapacity(int min)
+            private void AssertCapacity(int min)
             {
                 if (_polyItems.Length < min)
                 {
@@ -173,12 +185,15 @@ namespace QRCoder
                     ThrowNotSupportedException();
 
                     // Sample code for growing the capacity:
-                    //var newArray = Allocate(Math.Max(min - 1, 8) * 2); // Grow by 2x, but at least by 8
+                    //var newArray = RentArray(Math.Max(min - 1, 8) * 2); // Grow by 2x, but at least by 8
                     //Array.Copy(_polyItems, newArray, _length);
-                    //Free(_polyItems);
+                    //ReturnArray(_polyItems);
                     //_polyItems = newArray;
                 }
 
+#if NET6_0_OR_GREATER
+                [StackTraceHidden]
+#endif
                 void ThrowNotSupportedException()
                 {
                     throw new NotSupportedException("The polynomial capacity is fixed and cannot be increased.");
@@ -187,17 +202,17 @@ namespace QRCoder
 
 #if NETCOREAPP
             /// <summary>
-            /// Allocates memory for the polynomial terms.
+            /// Rents memory for the polynomial terms from the shared memory pool.
             /// </summary>
-            private static PolynomItem[] Allocate(int count)
+            private static PolynomItem[] RentArray(int count)
             {
                 return System.Buffers.ArrayPool<PolynomItem>.Shared.Rent(count);
             }
 
             /// <summary>
-            /// Frees memory allocated for the polynomial terms.
+            /// Returns memory allocated for the polynomial terms back to the shared memory pool.
             /// </summary>
-            private static void Free(PolynomItem[] array)
+            private static void ReturnArray(PolynomItem[] array)
             {
                 System.Buffers.ArrayPool<PolynomItem>.Shared.Return(array);
             }
@@ -205,11 +220,11 @@ namespace QRCoder
             // Implement a poor-man's array pool for .NET Framework
             [ThreadStatic]
             private static List<PolynomItem[]> _arrayPool;
-
+            
             /// <summary>
-            /// Allocates memory for the polynomial terms.
+            /// Rents memory for the polynomial terms from a shared memory pool.
             /// </summary>
-            private static PolynomItem[] Allocate(int count)
+            private static PolynomItem[] RentArray(int count)
             {
                 if (count <= 0)
                     ThrowArgumentOutOfRangeException();
@@ -236,11 +251,11 @@ namespace QRCoder
                     throw new ArgumentOutOfRangeException(nameof(count), "The count must be a positive number.");
                 }
             }
-
+            
             /// <summary>
-            /// Frees memory allocated for the polynomial terms.
+            /// Returns memory allocated for the polynomial terms back to a shared memory pool.
             /// </summary>
-            private static void Free(PolynomItem[] array)
+            private static void ReturnArray(PolynomItem[] array)
             {
                 if (array == null)
                     ThrowArgumentNullException();
