@@ -225,12 +225,16 @@ namespace QRCoder
                 }
             }
 
-            //Calculate error correction words
-            var codeWordWithECC = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
-            AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, bitArray, 0, bitArray.Length);
-            int offset = eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8;
-            AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, bitArray, offset, bitArray.Length - offset);
-
+            // Generate the generator polynomial using the number of ECC words.
+            List<CodewordBlock> codeWordWithECC;
+            using (var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock))
+            {
+                //Calculate error correction words
+                codeWordWithECC = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
+                AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, bitArray, 0, bitArray.Length, generatorPolynom);
+                int offset = eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8;
+                AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, bitArray, offset, bitArray.Length - offset, generatorPolynom);
+            }
 
             //Calculate interleaved code word lengths
             int interleavedLength = 0;
@@ -288,13 +292,13 @@ namespace QRCoder
             ModulePlacer.AddQuietZone(qr);
             return qr;
 
-            void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, BitArray bitArray2, int offset2, int count)
+            void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, BitArray bitArray2, int offset2, int count, Polynom generatorPolynom)
             {
                 var groupLength = codewordsInGroup * 8;
                 for (var i = 0; i < blocksInGroup; i++)
                 {
                     var bitBlockList = BinaryStringToBitBlockByteList(bitArray2, offset2, groupLength);
-                    var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo);
+                    var eccWordList = CalculateECCWords(bitArray2, offset2, groupLength, eccInfo, generatorPolynom);
                     codeWordWithECC.Add(new CodewordBlock(
                                           bitBlockList,
                                           eccWordList)
@@ -441,71 +445,62 @@ namespace QRCoder
         /// This method applies polynomial division, using the message polynomial and a generator polynomial,
         /// to compute the remainder which forms the ECC codewords.
         /// </summary>
-        private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo)
+        private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo, Polynom generatorPolynomBase)
         {
             var eccWords = eccInfo.ECCPerBlock;
             // Calculate the message polynomial from the bit array data.
             var messagePolynom = CalculateMessagePolynom(bitArray, offset, count);
-            // Generate the generator polynomial using the number of ECC words.
-            var generatorPolynom = CalculateGeneratorPolynom(eccWords);
+            var generatorPolynom = generatorPolynomBase.Clone();
 
             // Adjust the exponents in the message polynomial to account for ECC length.
-            for (var i = 0; i < messagePolynom.PolyItems.Count; i++)
-                messagePolynom.PolyItems[i] = new PolynomItem(messagePolynom.PolyItems[i].Coefficient,
-                    messagePolynom.PolyItems[i].Exponent + eccWords);
+            for (var i = 0; i < messagePolynom.Count; i++)
+                messagePolynom[i] = new PolynomItem(messagePolynom[i].Coefficient,
+                    messagePolynom[i].Exponent + eccWords);
 
             // Adjust the generator polynomial exponents based on the message polynomial.
-            for (var i = 0; i < generatorPolynom.PolyItems.Count; i++)
-                generatorPolynom.PolyItems[i] = new PolynomItem(generatorPolynom.PolyItems[i].Coefficient,
-                    generatorPolynom.PolyItems[i].Exponent + (messagePolynom.PolyItems.Count - 1));
+            for (var i = 0; i < generatorPolynom.Count; i++)
+                generatorPolynom[i] = new PolynomItem(generatorPolynom[i].Coefficient,
+                    generatorPolynom[i].Exponent + (messagePolynom.Count - 1));
 
             // Divide the message polynomial by the generator polynomial to find the remainder.
             var leadTermSource = messagePolynom;
-            for (var i = 0; (leadTermSource.PolyItems.Count > 0 && leadTermSource.PolyItems[leadTermSource.PolyItems.Count - 1].Exponent > 0); i++)
+            for (var i = 0; (leadTermSource.Count > 0 && leadTermSource[leadTermSource.Count - 1].Exponent > 0); i++)
             {
-                if (leadTermSource.PolyItems[0].Coefficient == 0)  // Simplify the polynomial if the leading coefficient is zero.
+                if (leadTermSource[0].Coefficient == 0)  // Simplify the polynomial if the leading coefficient is zero.
                 {
-                    leadTermSource.PolyItems.RemoveAt(0);
-                    leadTermSource.PolyItems.Add(new PolynomItem(0, leadTermSource.PolyItems[leadTermSource.PolyItems.Count - 1].Exponent - 1));
+                    leadTermSource.RemoveAt(0);
+                    leadTermSource.Add(new PolynomItem(0, leadTermSource[leadTermSource.Count - 1].Exponent - 1));
                 }
                 else  // Otherwise, perform polynomial reduction using XOR and multiplication with the generator polynomial.
                 {
-                    var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, ConvertToAlphaNotation(leadTermSource).PolyItems[0], i);
+                    // Convert the first coefficient to its corresponding alpha exponent unless it's zero.
+                    // Coefficients that are zero remain zero because log(0) is undefined.
+                    var index0Coefficient = leadTermSource[0].Coefficient;
+                    index0Coefficient = index0Coefficient == 0 ? 0 : GetAlphaExpFromIntVal(index0Coefficient);
+                    var alphaNotation = new PolynomItem(index0Coefficient, leadTermSource[0].Exponent);
+                    var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, alphaNotation, i);
                     ConvertToDecNotationInPlace(resPoly);
-                    resPoly = XORPolynoms(leadTermSource, resPoly);
-                    leadTermSource = resPoly;
+                    var newPoly = XORPolynoms(leadTermSource, resPoly);
+                    // Free memory used by the previous polynomials.
+                    resPoly.Dispose();
+                    leadTermSource.Dispose();
+                    // Update the message polynomial with the new remainder.
+                    leadTermSource = newPoly;
                 }
             }
 
+            // Free memory used by the generator polynomial.
+            generatorPolynom.Dispose();
+
             // Convert the resulting polynomial into a byte array representing the ECC codewords.
-            var ret = new byte[leadTermSource.PolyItems.Count];
-            for (var i = 0; i < leadTermSource.PolyItems.Count; i++)
-                ret[i] = (byte)leadTermSource.PolyItems[i].Coefficient;
+            var ret = new byte[leadTermSource.Count];
+            for (var i = 0; i < leadTermSource.Count; i++)
+                ret[i] = (byte)leadTermSource[i].Coefficient;
+
+            // Free memory used by the message polynomial.
+            leadTermSource.Dispose();
+
             return ret;
-        }
-
-        /// <summary>
-        /// Converts the coefficients of a polynomial from integer values to their corresponding alpha exponent notation
-        /// based on a Galois field mapping. This is typically used in error correction calculations where
-        /// operations are performed on exponents rather than coefficients directly.
-        /// </summary>
-        private static Polynom ConvertToAlphaNotation(Polynom poly)
-        {
-            var newPoly = new Polynom(poly.PolyItems.Count);
-
-            for (var i = 0; i < poly.PolyItems.Count; i++)
-            {
-                // Convert each coefficient to its corresponding alpha exponent unless it's zero.
-                // Coefficients that are zero remain zero because log(0) is undefined.
-                newPoly.PolyItems.Add(
-                    new PolynomItem(
-                        (poly.PolyItems[i].Coefficient != 0
-                            ? GetAlphaExpFromIntVal(poly.PolyItems[i].Coefficient)
-                            : 0),
-                        poly.PolyItems[i].Exponent)); // The exponent remains unchanged.
-            }
-
-            return newPoly;
         }
 
         /// <summary>
@@ -514,10 +509,10 @@ namespace QRCoder
         /// </summary>
         private static void ConvertToDecNotationInPlace(Polynom poly)
         {
-            for (var i = 0; i < poly.PolyItems.Count; i++)
+            for (var i = 0; i < poly.Count; i++)
             {
                 // Convert the alpha exponent of the coefficient to its decimal value and create a new polynomial item with the updated coefficient.
-                poly.PolyItems[i] = new PolynomItem(GetIntValFromAlphaExp(poly.PolyItems[i].Coefficient), poly.PolyItems[i].Exponent);
+                poly[i] = new PolynomItem(GetIntValFromAlphaExp(poly[i].Coefficient), poly[i].Exponent);
             }
         }
 
@@ -590,7 +585,7 @@ namespace QRCoder
             var messagePol = new Polynom(count /= 8);
             for (var i = count - 1; i >= 0; i--)
             {
-                messagePol.PolyItems.Add(new PolynomItem(BinToDec(bitArray, offset, 8), i));
+                messagePol.Add(new PolynomItem(BinToDec(bitArray, offset, 8), i));
                 offset += 8;
             }
             return messagePol;
@@ -604,19 +599,23 @@ namespace QRCoder
         private static Polynom CalculateGeneratorPolynom(int numEccWords)
         {
             var generatorPolynom = new Polynom(2); // Start with the simplest form of the polynomial
-            generatorPolynom.PolyItems.Add(new PolynomItem(0, 1));
-            generatorPolynom.PolyItems.Add(new PolynomItem(0, 0));
+            generatorPolynom.Add(new PolynomItem(0, 1));
+            generatorPolynom.Add(new PolynomItem(0, 0));
 
-            var multiplierPolynom = new Polynom(numEccWords * 2); // Used for polynomial multiplication
-            for (var i = 1; i <= numEccWords - 1; i++)
+            using (var multiplierPolynom = new Polynom(numEccWords * 2)) // Used for polynomial multiplication
             {
-                // Clear and set up the multiplier polynomial for the current multiplication
-                multiplierPolynom.PolyItems.Clear();
-                multiplierPolynom.PolyItems.Add(new PolynomItem(0, 1));
-                multiplierPolynom.PolyItems.Add(new PolynomItem(i, 0));
+                for (var i = 1; i <= numEccWords - 1; i++)
+                {
+                    // Clear and set up the multiplier polynomial for the current multiplication
+                    multiplierPolynom.Clear();
+                    multiplierPolynom.Add(new PolynomItem(0, 1));
+                    multiplierPolynom.Add(new PolynomItem(i, 0));
 
-                // Multiply the generator polynomial by the current multiplier polynomial
-                generatorPolynom = MultiplyAlphaPolynoms(generatorPolynom, multiplierPolynom);
+                    // Multiply the generator polynomial by the current multiplier polynomial
+                    var newGeneratorPolynom = MultiplyAlphaPolynoms(generatorPolynom, multiplierPolynom);
+                    generatorPolynom.Dispose();
+                    generatorPolynom = newGeneratorPolynom;
+                }
             }
 
             return generatorPolynom; // Return the completed generator polynomial
@@ -1014,9 +1013,9 @@ namespace QRCoder
         private static Polynom XORPolynoms(Polynom messagePolynom, Polynom resPolynom)
         {
             // Determine the larger of the two polynomials to guide the XOR operation.
-            var resultPolynom = new Polynom(Math.Max(messagePolynom.PolyItems.Count, resPolynom.PolyItems.Count));
+            var resultPolynom = new Polynom(Math.Max(messagePolynom.Count, resPolynom.Count) - 1);
             Polynom longPoly, shortPoly;
-            if (messagePolynom.PolyItems.Count >= resPolynom.PolyItems.Count)
+            if (messagePolynom.Count >= resPolynom.Count)
             {
                 longPoly = messagePolynom;
                 shortPoly = resPolynom;
@@ -1028,16 +1027,16 @@ namespace QRCoder
             }
 
             // XOR the coefficients of the two polynomials.
-            for (var i = 0; i < longPoly.PolyItems.Count; i++)
+            for (var i = 1; i < longPoly.Count; i++)
             {
                 var polItemRes = new PolynomItem(
-                    longPoly.PolyItems[i].Coefficient ^
-                    (shortPoly.PolyItems.Count > i ? shortPoly.PolyItems[i].Coefficient : 0),
-                    messagePolynom.PolyItems[0].Exponent - i
+                    longPoly[i].Coefficient ^
+                    (shortPoly.Count > i ? shortPoly[i].Coefficient : 0),
+                    messagePolynom[0].Exponent - i
                 );
-                resultPolynom.PolyItems.Add(polItemRes);
+                resultPolynom.Add(polItemRes);
             }
-            resultPolynom.PolyItems.RemoveAt(0);
+
             return resultPolynom;
         }
 
@@ -1047,15 +1046,15 @@ namespace QRCoder
         /// </summary>
         private static Polynom MultiplyGeneratorPolynomByLeadterm(Polynom genPolynom, PolynomItem leadTerm, int lowerExponentBy)
         {
-            var resultPolynom = new Polynom(genPolynom.PolyItems.Count);
-            foreach (var polItemBase in genPolynom.PolyItems)
+            var resultPolynom = new Polynom(genPolynom.Count);
+            foreach (var polItemBase in genPolynom)
             {
                 var polItemRes = new PolynomItem(
 
                     (polItemBase.Coefficient + leadTerm.Coefficient) % 255,
                     polItemBase.Exponent - lowerExponentBy
                 );
-                resultPolynom.PolyItems.Add(polItemRes);
+                resultPolynom.Add(polItemRes);
             }
             return resultPolynom;
         }
@@ -1069,12 +1068,12 @@ namespace QRCoder
         private static Polynom MultiplyAlphaPolynoms(Polynom polynomBase, Polynom polynomMultiplier)
         {
             // Initialize a new polynomial with a size based on the product of the sizes of the two input polynomials.
-            var resultPolynom = new Polynom(polynomMultiplier.PolyItems.Count * polynomBase.PolyItems.Count);
+            var resultPolynom = new Polynom(polynomMultiplier.Count * polynomBase.Count);
 
             // Multiply each term of the first polynomial by each term of the second polynomial.
-            foreach (var polItemBase in polynomMultiplier.PolyItems)
+            foreach (var polItemBase in polynomMultiplier)
             {
-                foreach (var polItemMulti in polynomBase.PolyItems)
+                foreach (var polItemMulti in polynomBase)
                 {
                     // Create a new polynomial term with the coefficients added (as exponents) and exponents summed.
                     var polItemRes = new PolynomItem
@@ -1082,18 +1081,18 @@ namespace QRCoder
                         ShrinkAlphaExp(polItemBase.Coefficient + polItemMulti.Coefficient),
                         (polItemBase.Exponent + polItemMulti.Exponent)
                     );
-                    resultPolynom.PolyItems.Add(polItemRes);
+                    resultPolynom.Add(polItemRes);
                 }
             }
 
             // Identify and merge terms with the same exponent.
-            var toGlue = GetNotUniqueExponents(resultPolynom.PolyItems);
+            var toGlue = GetNotUniqueExponents(resultPolynom);
             var gluedPolynoms = new PolynomItem[toGlue.Length];
             var gluedPolynomsIndex = 0;
             foreach (var exponent in toGlue)
             {
                 var coefficient = 0;
-                foreach (var polynomOld in resultPolynom.PolyItems)
+                foreach (var polynomOld in resultPolynom)
                 {
                     if (polynomOld.Exponent == exponent)
                         coefficient ^= GetIntValFromAlphaExp(polynomOld.Coefficient);
@@ -1105,18 +1104,18 @@ namespace QRCoder
             }
 
             // Remove duplicated exponents and add the corrected ones back.
-            for (int i = resultPolynom.PolyItems.Count - 1; i >= 0; i--)
-                if (toGlue.Contains(resultPolynom.PolyItems[i].Exponent))
-                    resultPolynom.PolyItems.RemoveAt(i);
+            for (int i = resultPolynom.Count - 1; i >= 0; i--)
+                if (toGlue.Contains(resultPolynom[i].Exponent))
+                    resultPolynom.RemoveAt(i);
             foreach (var polynom in gluedPolynoms)
-                resultPolynom.PolyItems.Add(polynom);
+                resultPolynom.Add(polynom);
 
             // Sort the polynomial terms by exponent in descending order.
-            resultPolynom.PolyItems.Sort((x, y) => -x.Exponent.CompareTo(y.Exponent));
+            resultPolynom.Sort((x, y) => -x.Exponent.CompareTo(y.Exponent));
             return resultPolynom;
 
             // Auxiliary function to identify exponents that appear more than once in the polynomial.
-            int[] GetNotUniqueExponents(List<PolynomItem> list)
+            int[] GetNotUniqueExponents(Polynom list)
             {
                 var dic = new Dictionary<int, bool>(list.Count);
                 foreach (var row in list)
