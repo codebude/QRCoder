@@ -20,4 +20,12 @@ public class QRCodeGenerator
         QRCoder.QRCodeGenerator qrGenerator = new QRCoder.QRCodeGenerator();
         _ = qrGenerator.CreateQrCode(payload, QRCoder.QRCodeGenerator.ECCLevel.H);
     }
+
+    [Benchmark]
+    public void CreateQRCodeLongest()
+    {
+        var str = new string('a', 2600);
+        QRCoder.QRCodeGenerator qrGenerator = new QRCoder.QRCodeGenerator();
+        _ = qrGenerator.CreateQrCode(str, QRCoder.QRCodeGenerator.ECCLevel.L);
+    }
 }
