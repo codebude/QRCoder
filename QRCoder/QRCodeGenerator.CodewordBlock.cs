@@ -1,4 +1,6 @@
-﻿namespace QRCoder
+﻿using System.Collections;
+
+namespace QRCoder
 {
     public partial class QRCodeGenerator
     {
@@ -11,18 +13,25 @@
             /// <summary>
             /// Initializes a new instance of the CodewordBlock struct with specified arrays of code words and error correction (ECC) words.
             /// </summary>
-            /// <param name="codeWords">The array of data codewords for this block. Data codewords carry the actual information.</param>
+            /// <param name="codeWordsOffset">The offset of the data codewords within the main BitArray. Data codewords carry the actual information.</param>
+            /// <param name="codeWordsLength">The length in bits of the data codewords within the main BitArray.</param>
             /// <param name="eccWords">The array of error correction codewords for this block. These codewords help recover the data if the QR code is damaged.</param>
-            public CodewordBlock(byte[] codeWords, byte[] eccWords)
+            public CodewordBlock(int codeWordsOffset, int codeWordsLength, byte[] eccWords)
             {
-                this.CodeWords = codeWords;
+                this.CodeWordsOffset = codeWordsOffset;
+                this.CodeWordsLength = codeWordsLength;
                 this.ECCWords = eccWords;
             }
 
             /// <summary>
-            /// Gets the data codewords associated with this block. 
+            /// Gets the offset of the data codewords in the BitArray.
             /// </summary>
-            public byte[] CodeWords { get; }
+            public int CodeWordsOffset { get; }
+
+            /// <summary>
+            /// Gets the length of the data codewords in the BitArray.
+            /// </summary>
+            public int CodeWordsLength { get; }
 
             /// <summary>
             /// Gets the error correction codewords associated with this block.
