@@ -43,10 +43,12 @@ _(More information on how to use Github Packages in Nuget Package Manager can be
 You only need a couple lines of code, to generate your first QR code.
 
 ```csharp
-QRCodeGenerator qrGenerator = new QRCodeGenerator();
-QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q);
-QRCode qrCode = new PngByteQRCode(qrCodeData);
-byte[] qrCodeImage = qrCode.GetGraphic(20);
+using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
+using (QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q))
+using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
+{
+    byte[] qrCodeImage = qrCode.GetGraphic(20);
+}
 ```
 
 There are a plenty of other options. So feel free to read more on that in our wiki: [Wiki: How to use QRCoder](https://github.com/codebude/QRCoder/wiki/How-to-use-QRCoder)
