@@ -95,6 +95,8 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        disable_search: true
+        fail_ci_if_error: true
         files: ./QRCoderTests/coverage.netcoreapp2.0.opencover.xml
         flags: netcoreapp2.0
 
@@ -102,6 +104,8 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        disable_search: true
+        fail_ci_if_error: true
         files: ./QRCoderTests/coverage.net5.0.opencover.xml
         flags: net5.0
 
@@ -109,6 +113,8 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        disable_search: true
+        fail_ci_if_error: true
         files: ./QRCoderTests/coverage.net5.0-windows.opencover.xml
         flags: net5.0-windows
 
@@ -116,6 +122,8 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        disable_search: true
+        fail_ci_if_error: true
         files: ./QRCoderTests/coverage.net5.0.opencover.xml
         flags: net6.0
 
@@ -123,6 +131,8 @@ jobs:
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+        disable_search: true
+        fail_ci_if_error: true
         files: ./QRCoderTests/coverage.net5.0-windows.opencover.xml
         flags: net6.0-windows
 
