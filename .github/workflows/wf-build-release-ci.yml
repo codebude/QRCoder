@@ -92,35 +92,35 @@ jobs:
       run: dotnet test -c Release --nologo --no-build
 
     - name: Codecov update netcoreapp2.0
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./QRCoderTests/coverage.netcoreapp2.0.opencover.xml
         flags: netcoreapp2.0
 
     - name: Codecov update net5.0
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./QRCoderTests/coverage.net5.0.opencover.xml
         flags: net5.0
 
     - name: Codecov update net5.0-windows
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./QRCoderTests/coverage.net5.0-windows.opencover.xml
         flags: net5.0-windows
 
     - name: Codecov update net6.0
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./QRCoderTests/coverage.net5.0.opencover.xml
         flags: net6.0
 
     - name: Codecov update net6.0-windows
-      uses: codecov/codecov-action@v2
+      uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./QRCoderTests/coverage.net5.0-windows.opencover.xml
