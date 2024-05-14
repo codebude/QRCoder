@@ -524,23 +524,21 @@ namespace QRCoder
         /// <returns>The minimum version of the QR code that can accommodate the given data and settings.</returns>
         private static int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
+            // capacity table is already sorted by version number ascending, so the smallest version that can hold the data is the first one found
+            foreach (var x in capacityTable)
+            {
+                // find the requested ECC level and encoding mode in the capacity table
+                foreach (var y in x.Details)
+                {
+                    if (y.ErrorCorrectionLevel == eccLevel && y.CapacityDict[encMode] >= length)
+                    {
+                        // if the capacity of the current version is enough, return the version number
+                        return x.Version;
+                    }
+                }
+            }
 
-            var fittingVersions = capacityTable.Where(
-                x => x.Details.Any(
-                    y => (y.ErrorCorrectionLevel == eccLevel
-                          && y.CapacityDict[encMode] >= Convert.ToInt32(length)
-                          )
-                    )
-              ).Select(x => new
-              {
-                  version = x.Version,
-                  capacity = x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel)
-                                            .CapacityDict[encMode]
-              });
-
-            if (fittingVersions.Any())
-                return fittingVersions.Min(x => x.version);
-
+            // if no version was found, throw an exception
             var maxSizeByte = capacityTable.Where(
                 x => x.Details.Any(
                     y => (y.ErrorCorrectionLevel == eccLevel))
