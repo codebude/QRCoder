@@ -530,7 +530,7 @@ namespace QRCoder
         public abstract class Payload
         {
             protected Payload() { }
-            public virtual QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; }
+            public virtual QRCoder.QRCodeGenerator.ECCLevel? EccLevel { get; }
             public virtual QRCoder.QRCodeGenerator.EciMode EciMode { get; }
             public virtual int Version { get; }
             public abstract override string ToString() { }
@@ -697,7 +697,7 @@ namespace QRCoder
         {
             public SlovenianUpnQr(string payerName, string payerAddress, string payerPlace, string recipientName, string recipientAddress, string recipientPlace, string recipientIban, string description, double amount, string recipientSiModel = "SI00", string recipientSiReference = "", string code = "OTHR") { }
             public SlovenianUpnQr(string payerName, string payerAddress, string payerPlace, string recipientName, string recipientAddress, string recipientPlace, string recipientIban, string description, double amount, System.DateTime? deadline, string recipientSiModel = "SI99", string recipientSiReference = "", string code = "OTHR") { }
-            public override QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; }
+            public override QRCoder.QRCodeGenerator.ECCLevel? EccLevel { get; }
             public override QRCoder.QRCodeGenerator.EciMode EciMode { get; }
             public override int Version { get; }
             public override string ToString() { }

@@ -15,7 +15,7 @@ namespace QRCoder
         public abstract class Payload
         {
             public virtual int Version { get { return -1; } }
-            public virtual QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
+            public virtual QRCodeGenerator.ECCLevel? EccLevel { get { return null; } } // null is default
             public virtual QRCodeGenerator.EciMode EciMode { get { return QRCodeGenerator.EciMode.Default; } }
             public abstract override string ToString();
         }
@@ -2380,7 +2380,7 @@ namespace QRCoder
             private string _recipientSiReference = "";
 
             public override int Version { get { return 15; } }
-            public override QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
+            public override QRCodeGenerator.ECCLevel? EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
             public override QRCodeGenerator.EciMode EciMode { get { return QRCodeGenerator.EciMode.Iso8859_2; } }
 
             private string LimitLength(string value, int maxLength)

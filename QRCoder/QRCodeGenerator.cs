@@ -93,7 +93,7 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(PayloadGenerator.Payload payload)
         {
-            return GenerateQrCode(payload.ToString(), payload.EccLevel, false, false, payload.EciMode, payload.Version);
+            return GenerateQrCode(payload.ToString(), payload.EccLevel ?? ECCLevel.M, false, false, payload.EciMode, payload.Version);
         }
 
         /// <summary>
@@ -105,6 +105,8 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(PayloadGenerator.Payload payload, ECCLevel eccLevel)
         {
+            if (payload.EccLevel.HasValue && eccLevel != payload.EccLevel.Value)
+                throw new ArgumentException($"The provided payload requires a ECC level of {eccLevel}.", nameof(eccLevel));
             return GenerateQrCode(payload.ToString(), eccLevel, false, false, payload.EciMode, payload.Version);
         }
 
