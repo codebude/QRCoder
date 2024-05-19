@@ -17,10 +17,10 @@ namespace QRCoder
                 /// <summary>
                 /// A dictionary mapping each mask pattern index to its corresponding function that calculates whether a given pixel should be masked.
                 /// </summary>
-                public static readonly Dictionary<int, Func<int, int, bool>> Patterns =
-                    new Dictionary<int, Func<int, int, bool>>(8) {
-                        { 1, MaskPattern.Pattern1 }, {2, MaskPattern.Pattern2 }, {3, MaskPattern.Pattern3 }, {4, MaskPattern.Pattern4 },
-                        { 5, MaskPattern.Pattern5 }, {6, MaskPattern.Pattern6 }, {7, MaskPattern.Pattern7 }, {8, MaskPattern.Pattern8 }
+                public static readonly List<Func<int, int, bool>> Patterns =
+                    new List<Func<int, int, bool>>(8) {
+                        MaskPattern.Pattern1, MaskPattern.Pattern2, MaskPattern.Pattern3, MaskPattern.Pattern4,
+                        MaskPattern.Pattern5, MaskPattern.Pattern6, MaskPattern.Pattern7, MaskPattern.Pattern8
                     };
 
                 /// <summary>

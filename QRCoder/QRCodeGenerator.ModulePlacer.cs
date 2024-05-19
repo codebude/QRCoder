@@ -115,8 +115,10 @@ namespace QRCoder
 
                 // Temporary QRCodeData object to test different mask patterns without altering the original.
                 var qrTemp = new QRCodeData(version);
-                foreach (var pattern in MaskPattern.Patterns)
+                for (var maskPattern = 0; maskPattern < 8; maskPattern++)
                 {
+                    var patternFunc = MaskPattern.Patterns[maskPattern];
+
                     // Reset the temporary QR code to the current state of the actual QR code.
                     for (var y = 0; y < size; y++)
                     {
@@ -127,7 +129,7 @@ namespace QRCoder
                     }
 
                     // Place format information using the current mask pattern.
-                    var formatStr = GetFormatString(eccLevel, pattern.Key - 1);
+                    var formatStr = GetFormatString(eccLevel, maskPattern);
                     ModulePlacer.PlaceFormat(qrTemp, formatStr);
 
                     // Place version information if applicable.
@@ -144,14 +146,14 @@ namespace QRCoder
                         {
                             if (!IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                             {
-                                qrTemp.ModuleMatrix[y][x] ^= pattern.Value(x, y);
-                                qrTemp.ModuleMatrix[x][y] ^= pattern.Value(y, x);
+                                qrTemp.ModuleMatrix[y][x] ^= patternFunc(x, y);
+                                qrTemp.ModuleMatrix[x][y] ^= patternFunc(y, x);
                             }
                         }
 
                         if (!IsBlocked(new Rectangle(x, x, 1, 1), blockedModules))
                         {
-                            qrTemp.ModuleMatrix[x][x] ^= pattern.Value(x, x);
+                            qrTemp.ModuleMatrix[x][x] ^= patternFunc(x, x);
                         }
                     }
 
@@ -160,7 +162,7 @@ namespace QRCoder
                     // Select the pattern with the lowest score, indicating better QR code readability.
                     if (!selectedPattern.HasValue || patternScore > score)
                     {
-                        selectedPattern = pattern.Key;
+                        selectedPattern = maskPattern;
                         patternScore = score;
                     }
                 }
@@ -182,7 +184,7 @@ namespace QRCoder
                         qrCode.ModuleMatrix[x][x] ^= MaskPattern.Patterns[selectedPattern.Value](x, x);
                     }
                 }
-                return selectedPattern.Value - 1;
+                return selectedPattern.Value;
             }
 
             /// <summary>
