@@ -803,6 +803,7 @@ namespace QRCoder
         public static QRCoder.QRCodeData GenerateQrCode(string plainText, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1) { }
         public enum ECCLevel
         {
+            Default = -1,
             L = 0,
             M = 1,
             Q = 2,

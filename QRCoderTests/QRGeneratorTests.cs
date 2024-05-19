@@ -10,6 +10,7 @@ using System.Text;
 using Xunit;
 using ECCLevel = QRCoder.QRCodeGenerator.ECCLevel;
 
+
 namespace QRCoderTests
 {
 
@@ -93,7 +94,7 @@ namespace QRCoderTests
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWX", "C9LlmjRV+TPDkR03MlgDvo/DP+U", 29)]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXY", "+EtALGm0mrDrnZVW54WdXG612P0", 29)]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ789012345", "3nFUvZ/Aa2wUdAj1zlMmSu9x4kU", 29)]
-        // versino 4 alphanumeric
+        // version 4 alphanumeric
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ7890123456", "9K6EinxynS2KRum46iQsVoPgM7k", 33)]
 
         // version 1 binary
@@ -551,6 +552,78 @@ namespace QRCoderTests
                     return false;
                 }
             }
+        }
+
+        [Fact]
+        [Category("QRGenerator/EccLevel")]
+        public void ecc_level_from_payload_works()
+        {
+            var stringValue = "this is a test";
+
+            // set up baselines
+            var expectedL = Encode(QRCodeGenerator.GenerateQrCode(stringValue, QRCodeGenerator.ECCLevel.L));
+            var expectedM = Encode(QRCodeGenerator.GenerateQrCode(stringValue, QRCodeGenerator.ECCLevel.M));
+            var expectedQ = Encode(QRCodeGenerator.GenerateQrCode(stringValue, QRCodeGenerator.ECCLevel.Q));
+            var expectedH = Encode(QRCodeGenerator.GenerateQrCode(stringValue, QRCodeGenerator.ECCLevel.H));
+
+            // ensure that the baselines are different from each other
+            expectedL.ShouldNotBe(expectedM);
+            expectedL.ShouldNotBe(expectedQ);
+            expectedL.ShouldNotBe(expectedH);
+            expectedM.ShouldNotBe(expectedQ);
+            expectedM.ShouldNotBe(expectedH);
+            expectedQ.ShouldNotBe(expectedH);
+
+            // validate that any ECC level can be used when the payload specifies a default ECC level
+            var payloadDefault = new SamplePayload(stringValue, QRCodeGenerator.ECCLevel.Default);
+            Encode(QRCodeGenerator.GenerateQrCode(payloadDefault)).ShouldBe(expectedM);
+            Encode(QRCodeGenerator.GenerateQrCode(payloadDefault, QRCodeGenerator.ECCLevel.Default)).ShouldBe(expectedM);
+            Encode(QRCodeGenerator.GenerateQrCode(payloadDefault, QRCodeGenerator.ECCLevel.L)).ShouldBe(expectedL);
+            Encode(QRCodeGenerator.GenerateQrCode(payloadDefault, QRCodeGenerator.ECCLevel.M)).ShouldBe(expectedM);
+            Encode(QRCodeGenerator.GenerateQrCode(payloadDefault, QRCodeGenerator.ECCLevel.Q)).ShouldBe(expectedQ);
+            Encode(QRCodeGenerator.GenerateQrCode(payloadDefault, QRCodeGenerator.ECCLevel.H)).ShouldBe(expectedH);
+
+            // validate that the ECC level specified in the payload is used when default is specified,
+            //   or checks that the selected ECC level matches the payload ECC level, throwing an exception otherwise
+            Verify(QRCodeGenerator.ECCLevel.L, expectedL);
+            Verify(QRCodeGenerator.ECCLevel.M, expectedM);
+            Verify(QRCodeGenerator.ECCLevel.Q, expectedQ);
+            Verify(QRCodeGenerator.ECCLevel.H, expectedH);
+
+
+            void Verify(QRCodeGenerator.ECCLevel eccLevel, string expected)
+            {
+                var payload = new SamplePayload(stringValue, eccLevel);
+                Encode(QRCodeGenerator.GenerateQrCode(payload)).ShouldBe(expected);
+                foreach (var ecc in Enum.GetValues(typeof(QRCodeGenerator.ECCLevel)).Cast<QRCodeGenerator.ECCLevel>())
+                {
+                    if (ecc == eccLevel || ecc == QRCodeGenerator.ECCLevel.Default)
+                        Encode(QRCodeGenerator.GenerateQrCode(payload, ecc)).ShouldBe(expected);
+                    else
+                        Should.Throw<ArgumentOutOfRangeException>(() => Encode(QRCodeGenerator.GenerateQrCode(payload, ecc)));
+                }
+            }
+
+            string Encode(QRCodeData qrData)
+            {
+                return string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
+            }
+        }
+
+        private class SamplePayload : PayloadGenerator.Payload
+        {
+            private string _data;
+            private QRCodeGenerator.ECCLevel _eccLevel;
+
+            public SamplePayload(string data, QRCodeGenerator.ECCLevel eccLevel)
+            {
+                _data = data;
+                _eccLevel = eccLevel;
+            }
+
+            public override QRCodeGenerator.ECCLevel EccLevel => _eccLevel;
+
+            public override string ToString() => _data;
         }
     }
 
