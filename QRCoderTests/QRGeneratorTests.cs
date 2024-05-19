@@ -93,7 +93,7 @@ namespace QRCoderTests
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWX", "C9LlmjRV+TPDkR03MlgDvo/DP+U", 29)]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXY", "+EtALGm0mrDrnZVW54WdXG612P0", 29)]
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ789012345", "3nFUvZ/Aa2wUdAj1zlMmSu9x4kU", 29)]
-        // versino 4 alphanumeric
+        // version 4 alphanumeric
         [InlineData("ABCDEFGHIJKLMNOPQRSTUVWXYZ7890123456", "9K6EinxynS2KRum46iQsVoPgM7k", 33)]
 
         // version 1 binary
