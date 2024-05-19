@@ -105,6 +105,10 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(PayloadGenerator.Payload payload, ECCLevel eccLevel)
         {
+            if (eccLevel == ECCLevel.Default)
+                eccLevel = payload.EccLevel;
+            else if (payload.EccLevel != ECCLevel.Default && eccLevel != payload.EccLevel)
+                throw new ArgumentOutOfRangeException(nameof(eccLevel), $"The provided payload requires a ECC level of {eccLevel}.");
             return GenerateQrCode(payload.ToString(), eccLevel, false, false, payload.EciMode, payload.Version);
         }
 
@@ -121,6 +125,7 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
         {
+            eccLevel = ValidateECCLevel(eccLevel);
             EncodingMode encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
             var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
             var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
@@ -165,7 +170,6 @@ namespace QRCoder
             return GenerateQrCode(completeBitArray, eccLevel, version);
         }
 
-
         /// <summary>
         /// Calculates the QR code data which than can be used in one of the rendering classes to generate a graphical representation.
         /// </summary>
@@ -175,6 +179,7 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(byte[] binaryData, ECCLevel eccLevel)
         {
+            eccLevel = ValidateECCLevel(eccLevel);
             int version = GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
             int countIndicatorLen = GetCountIndicatorLength(version, EncodingMode.Byte);
@@ -185,6 +190,27 @@ namespace QRCoder
             DecToBin(binaryData.Length, countIndicatorLen, bitArray, index);
 
             return GenerateQrCode(bitArray, eccLevel, version);
+        }
+
+        /// <summary>
+        /// Validates the specified error correction level.
+        /// Returns the provided level if it is valid, or the level M if the provided level is Default.
+        /// Throws an exception if an invalid level is provided.
+        /// </summary>
+        private static ECCLevel ValidateECCLevel(ECCLevel eccLevel)
+        {
+            switch (eccLevel)
+            {
+                case ECCLevel.L:
+                case ECCLevel.M:
+                case ECCLevel.Q:
+                case ECCLevel.H:
+                    return eccLevel;
+                case ECCLevel.Default:
+                    return ECCLevel.M;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eccLevel), eccLevel, "Invalid error correction level.");
+            }
         }
 
         private static readonly BitArray _repeatingPattern = new BitArray(
@@ -200,109 +226,147 @@ namespace QRCoder
         /// <returns>A QRCodeData structure containing the full QR code matrix, which can be used for rendering or analysis.</returns>
         private static QRCodeData GenerateQrCode(BitArray bitArray, ECCLevel eccLevel, int version)
         {
-            //Fill up data code word
             var eccInfo = capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel == eccLevel);
-            var dataLength = eccInfo.TotalDataCodewords * 8;
-            var lengthDiff = dataLength - bitArray.Length;
-            if (lengthDiff > 0)
+
+            // Fill up data code word
+            PadData();
+
+            // Calculate error correction blocks
+            var codeWordWithECC = CalculateECCBlocks();
+
+            // Calculate interleaved code word lengths
+            var interleavedLength = CalculateInterleavedLength();
+
+            // Interleave code words
+            var interleavedData = InterleaveData();
+
+            // Place interleaved data on module matrix
+            var qrData = PlaceModules();
+
+            return qrData;
+
+
+            // fills the bit array with a repeating pattern to reach the required length
+            void PadData()
             {
-                // set 'write index' to end of existing bit array
-                var index = bitArray.Length;
-                // extend bit array to required length
-                bitArray.Length = dataLength;
-                // pad with 4 zeros (or less if lengthDiff < 4)
-                index += Math.Min(lengthDiff, 4);
-                // pad to nearest 8 bit boundary
-                if ((uint)index % 8 != 0)
-                    index += 8 - (int)((uint)index % 8);
-                // pad with repeating pattern
-                var repeatingPatternIndex = 0;
-                while (index < dataLength)
+                var dataLength = eccInfo.TotalDataCodewords * 8;
+                var lengthDiff = dataLength - bitArray.Length;
+                if (lengthDiff > 0)
                 {
-                    bitArray[index++] = _repeatingPattern[repeatingPatternIndex++];
-                    if (repeatingPatternIndex >= _repeatingPattern.Length)
-                        repeatingPatternIndex = 0;
+                    // set 'write index' to end of existing bit array
+                    var index = bitArray.Length;
+                    // extend bit array to required length
+                    bitArray.Length = dataLength;
+                    // pad with 4 zeros (or less if lengthDiff < 4)
+                    index += Math.Min(lengthDiff, 4);
+                    // pad to nearest 8 bit boundary
+                    if ((uint)index % 8 != 0)
+                        index += 8 - (int)((uint)index % 8);
+                    // pad with repeating pattern
+                    var repeatingPatternIndex = 0;
+                    while (index < dataLength)
+                    {
+                        bitArray[index++] = _repeatingPattern[repeatingPatternIndex++];
+                        if (repeatingPatternIndex >= _repeatingPattern.Length)
+                            repeatingPatternIndex = 0;
+                    }
                 }
             }
 
-            // Generate the generator polynomial using the number of ECC words.
-            List<CodewordBlock> codeWordWithECC;
-            using (var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock))
+            List<CodewordBlock> CalculateECCBlocks()
             {
-                //Calculate error correction words
-                codeWordWithECC = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
-                AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, 0, bitArray.Length, generatorPolynom);
-                int offset = eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8;
-                AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, offset, bitArray.Length - offset, generatorPolynom);
-            }
-
-            //Calculate interleaved code word lengths
-            int interleavedLength = 0;
-            for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
-            {
-                foreach (var codeBlock in codeWordWithECC)
-                    if ((uint)codeBlock.CodeWordsLength / 8 > i)
-                        interleavedLength += 8;
-            }
-            for (var i = 0; i < eccInfo.ECCPerBlock; i++)
-            {
-                foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.ECCWords.Length > i)
-                        interleavedLength += 8;
-            }
-            interleavedLength += remainderBits[version - 1];
-
-            //Interleave code words
-            var interleavedData = new BitArray(interleavedLength);
-            int pos = 0;
-            for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
-            {
-                foreach (var codeBlock in codeWordWithECC)
+                List<CodewordBlock> codewordBlocks;
+                // Generate the generator polynomial using the number of ECC words.
+                using (var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock))
                 {
-                    if ((uint)codeBlock.CodeWordsLength / 8 > i)
-                        pos = bitArray.CopyTo(interleavedData, (int)((uint)i * 8) + codeBlock.CodeWordsOffset, pos, 8);
+                    //Calculate error correction words
+                    codewordBlocks = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
+                    AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, 0, bitArray.Length, generatorPolynom);
+                    int offset = eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8;
+                    AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, offset, bitArray.Length - offset, generatorPolynom);
+                    return codewordBlocks;
+                }
+
+                void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, int offset2, int count, Polynom generatorPolynom)
+                {
+                    var groupLength = codewordsInGroup * 8;
+                    for (var i = 0; i < blocksInGroup; i++)
+                    {
+                        var eccWordList = CalculateECCWords(bitArray, offset2, groupLength, eccInfo, generatorPolynom);
+                        codewordBlocks.Add(new CodewordBlock(offset2, groupLength, eccWordList));
+                        offset2 += groupLength;
+                    }
                 }
             }
-            for (var i = 0; i < eccInfo.ECCPerBlock; i++)
+
+            // Calculate the length of the interleaved data
+            int CalculateInterleavedLength()
             {
-                foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.ECCWords.Length > i)
-                        pos = DecToBin(codeBlock.ECCWords[i], 8, interleavedData, pos);
-            }
-
-            //Place interleaved data on module matrix
-            var qr = new QRCodeData(version);
-            var blockedModules = new List<Rectangle>(17);
-            ModulePlacer.PlaceFinderPatterns(qr, blockedModules);
-            ModulePlacer.ReserveSeperatorAreas(qr.ModuleMatrix.Count, blockedModules);
-            ModulePlacer.PlaceAlignmentPatterns(qr, alignmentPatternTable[version].PatternPositions, blockedModules);
-            ModulePlacer.PlaceTimingPatterns(qr, blockedModules);
-            ModulePlacer.PlaceDarkModule(qr, version, blockedModules);
-            ModulePlacer.ReserveVersionAreas(qr.ModuleMatrix.Count, version, blockedModules);
-            ModulePlacer.PlaceDataWords(qr, interleavedData, blockedModules);
-            var maskVersion = ModulePlacer.MaskCode(qr, version, blockedModules, eccLevel);
-            var formatStr = GetFormatString(eccLevel, maskVersion);
-
-            ModulePlacer.PlaceFormat(qr, formatStr);
-            if (version >= 7)
-            {
-                var versionString = GetVersionString(version);
-                ModulePlacer.PlaceVersion(qr, versionString);
-            }
-
-
-            ModulePlacer.AddQuietZone(qr);
-            return qr;
-
-            void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, int offset2, int count, Polynom generatorPolynom)
-            {
-                var groupLength = codewordsInGroup * 8;
-                for (var i = 0; i < blocksInGroup; i++)
+                var length = 0;
+                for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
                 {
-                    var eccWordList = CalculateECCWords(bitArray, offset2, groupLength, eccInfo, generatorPolynom);
-                    codeWordWithECC.Add(new CodewordBlock(offset2, groupLength, eccWordList));
-                    offset2 += groupLength;
+                    foreach (var codeBlock in codeWordWithECC)
+                        if ((uint)codeBlock.CodeWordsLength / 8 > i)
+                            length += 8;
                 }
+                for (var i = 0; i < eccInfo.ECCPerBlock; i++)
+                {
+                    foreach (var codeBlock in codeWordWithECC)
+                        if (codeBlock.ECCWords.Length > i)
+                            length += 8;
+                }
+                length += remainderBits[version - 1];
+                return length;
+            }
+
+            // Interleave the data
+            BitArray InterleaveData()
+            {
+                var data = new BitArray(interleavedLength);
+                int pos = 0;
+                for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
+                {
+                    foreach (var codeBlock in codeWordWithECC)
+                    {
+                        if ((uint)codeBlock.CodeWordsLength / 8 > i)
+                            pos = bitArray.CopyTo(data, (int)((uint)i * 8) + codeBlock.CodeWordsOffset, pos, 8);
+                    }
+                }
+                for (var i = 0; i < eccInfo.ECCPerBlock; i++)
+                {
+                    foreach (var codeBlock in codeWordWithECC)
+                        if (codeBlock.ECCWords.Length > i)
+                            pos = DecToBin(codeBlock.ECCWords[i], 8, data, pos);
+                }
+
+                return data;
+            }
+
+            // Place the modules on the QR code matrix
+            QRCodeData PlaceModules()
+            {
+                var qr = new QRCodeData(version);
+                var blockedModules = new List<Rectangle>(17);
+                ModulePlacer.PlaceFinderPatterns(qr, blockedModules);
+                ModulePlacer.ReserveSeperatorAreas(qr.ModuleMatrix.Count, blockedModules);
+                ModulePlacer.PlaceAlignmentPatterns(qr, alignmentPatternTable[version].PatternPositions, blockedModules);
+                ModulePlacer.PlaceTimingPatterns(qr, blockedModules);
+                ModulePlacer.PlaceDarkModule(qr, version, blockedModules);
+                ModulePlacer.ReserveVersionAreas(qr.ModuleMatrix.Count, version, blockedModules);
+                ModulePlacer.PlaceDataWords(qr, interleavedData, blockedModules);
+                var maskVersion = ModulePlacer.MaskCode(qr, version, blockedModules, eccLevel);
+                var formatStr = GetFormatString(eccLevel, maskVersion);
+
+                ModulePlacer.PlaceFormat(qr, formatStr);
+                if (version >= 7)
+                {
+                    var versionString = GetVersionString(version);
+                    ModulePlacer.PlaceVersion(qr, versionString);
+                }
+
+                ModulePlacer.AddQuietZone(qr);
+
+                return qr;
             }
         }
 
