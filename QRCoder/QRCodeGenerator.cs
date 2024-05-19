@@ -321,22 +321,25 @@ namespace QRCoder
             {
                 var qr = new QRCodeData(version, true);
                 var size = qr.ModuleMatrix.Count - 8;
-                var blockedModules = new ModulePlacer.BlockedModules(size);
-                ModulePlacer.PlaceFinderPatterns(qr, blockedModules);
-                ModulePlacer.ReserveSeperatorAreas(size, blockedModules);
-                ModulePlacer.PlaceAlignmentPatterns(qr, alignmentPatternTable[version].PatternPositions, blockedModules);
-                ModulePlacer.PlaceTimingPatterns(qr, blockedModules);
-                ModulePlacer.PlaceDarkModule(qr, version, blockedModules);
-                ModulePlacer.ReserveVersionAreas(size, version, blockedModules);
-                ModulePlacer.PlaceDataWords(qr, interleavedData, blockedModules);
-                var maskVersion = ModulePlacer.MaskCode(qr, version, blockedModules, eccLevel);
-                var formatStr = GetFormatString(eccLevel, maskVersion);
+                var tempBitArray = new BitArray(18); //version string requires 18 bits
+                using (var blockedModules = new ModulePlacer.BlockedModules(size))
+                {
+                    ModulePlacer.PlaceFinderPatterns(qr, blockedModules);
+                    ModulePlacer.ReserveSeperatorAreas(size, blockedModules);
+                    ModulePlacer.PlaceAlignmentPatterns(qr, alignmentPatternTable[version].PatternPositions, blockedModules);
+                    ModulePlacer.PlaceTimingPatterns(qr, blockedModules);
+                    ModulePlacer.PlaceDarkModule(qr, version, blockedModules);
+                    ModulePlacer.ReserveVersionAreas(size, version, blockedModules);
+                    ModulePlacer.PlaceDataWords(qr, interleavedData, blockedModules);
+                    var maskVersion = ModulePlacer.MaskCode(qr, version, blockedModules, eccLevel);
+                    GetFormatString(tempBitArray, eccLevel, maskVersion);
+                    ModulePlacer.PlaceFormat(qr, tempBitArray, true);
+                }
 
-                ModulePlacer.PlaceFormat(qr, formatStr, true);
                 if (version >= 7)
                 {
-                    var versionString = GetVersionString(version);
-                    ModulePlacer.PlaceVersion(qr, versionString, true);
+                    GetVersionString(tempBitArray, version);
+                    ModulePlacer.PlaceVersion(qr, tempBitArray, true);
                 }
 
                 return qr;
@@ -349,12 +352,14 @@ namespace QRCoder
         /// Generates a BitArray containing the format string for a QR code based on the error correction level and mask pattern version.
         /// The format string includes the error correction level, mask pattern version, and error correction coding.
         /// </summary>
+        /// <param name="bitArray">The <see cref="BitArray"/> to write to, or null to create a new one.</param>
         /// <param name="level">The error correction level to be encoded in the format string.</param>
         /// <param name="maskVersion">The mask pattern version to be encoded in the format string.</param>
         /// <returns>A BitArray containing the 15-bit format string used in QR code generation.</returns>
-        private static BitArray GetFormatString(ECCLevel level, int maskVersion)
+        private static void GetFormatString(BitArray fStrEcc, ECCLevel level, int maskVersion)
         {
-            var fStrEcc = new BitArray(15); // Total length including space for mask version and padding
+            fStrEcc.Length = 15;
+            fStrEcc.SetAll(false);
             WriteEccLevelAndVersion();
 
             // Apply the format generator polynomial to add error correction to the format string.
@@ -378,7 +383,6 @@ namespace QRCoder
 
             // XOR the format string with a predefined mask to add robustness against errors.
             fStrEcc.Xor(_getFormatMask);
-            return fStrEcc;
 
             void WriteEccLevelAndVersion()
             {
@@ -445,11 +449,13 @@ namespace QRCoder
         /// Encodes the version information of a QR code into a BitArray using error correction coding similar to format information encoding.
         /// This method is used for QR codes version 7 and above.
         /// </summary>
+        /// <param name="vStr">A <see cref="BitArray"/> to write the version string to.</param>
         /// <param name="version">The version number of the QR code (7-40).</param>
         /// <returns>A BitArray containing the encoded version information, which includes error correction bits.</returns>
-        private static BitArray GetVersionString(int version)
+        private static void GetVersionString(BitArray vStr, int version)
         {
-            var vStr = new BitArray(18);
+            vStr.Length = 18;
+            vStr.SetAll(false);
             DecToBin(version, 6, vStr, 0); // Convert the version number to a 6-bit binary representation.
 
             var count = vStr.Length;
@@ -471,8 +477,6 @@ namespace QRCoder
             vStr.Length = 12 + 6;
             ShiftAwayFromBit0(vStr, (12 - count) + 6);
             DecToBin(version, 6, vStr, 0);
-
-            return vStr;
         }
 
         /// <summary>

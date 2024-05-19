@@ -114,7 +114,13 @@ namespace QRCoder
 
                 // Temporary QRCodeData object to test different mask patterns without altering the original.
                 var qrTemp = new QRCodeData(version, false);
-                BitArray versionString = version >= 7 ? GetVersionString(version) : null;
+                BitArray versionString = null;
+                if (version >= 7)
+                {
+                    versionString = new BitArray(18);
+                    GetVersionString(versionString, version);
+                }
+                var formatStr = new BitArray(15);
                 foreach (var pattern in MaskPattern.Patterns)
                 {
                     // Reset the temporary QR code to the current state of the actual QR code.
@@ -127,7 +133,7 @@ namespace QRCoder
                     }
 
                     // Place format information using the current mask pattern.
-                    var formatStr = GetFormatString(eccLevel, pattern.Key - 1);
+                    GetFormatString(formatStr, eccLevel, pattern.Key - 1);
                     ModulePlacer.PlaceFormat(qrTemp, formatStr, false);
 
                     // Place version information if applicable.
@@ -181,6 +187,7 @@ namespace QRCoder
                         qrCode.ModuleMatrix[x + 4][x + 4] ^= MaskPattern.Patterns[selectedPattern.Value](x, x);
                     }
                 }
+
                 return selectedPattern.Value - 1;
             }
 
