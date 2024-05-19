@@ -321,7 +321,7 @@ namespace QRCoder
             {
                 var qr = new QRCodeData(version, true);
                 var size = qr.ModuleMatrix.Count - 8;
-                var blockedModules = new ModulePlacer.BlockedModules(17);
+                var blockedModules = new ModulePlacer.BlockedModules(size);
                 ModulePlacer.PlaceFinderPatterns(qr, blockedModules);
                 ModulePlacer.ReserveSeperatorAreas(size, blockedModules);
                 ModulePlacer.PlaceAlignmentPatterns(qr, alignmentPatternTable[version].PatternPositions, blockedModules);

@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
 
 namespace QRCoder
 {
@@ -11,15 +11,19 @@ namespace QRCoder
             /// </summary>
             public struct BlockedModules
             {
-                private readonly List<Rectangle> _blockedModules;
+                private readonly BitArray[] _blockedModules;
 
                 /// <summary>
                 /// Initializes a new instance of the <see cref="BlockedModules"/> struct with a specified capacity.
                 /// </summary>
                 /// <param name="capacity">The initial capacity of the blocked modules list.</param>
-                public BlockedModules(int capacity)
+                public BlockedModules(int size)
                 {
-                    _blockedModules = new List<Rectangle>(capacity);
+                    _blockedModules = new BitArray[size];
+                    for (int i = 0; i < size; i++)
+                    {
+                        _blockedModules[i] = new BitArray(size);
+                    }
                 }
 
                 /// <summary>
@@ -29,7 +33,7 @@ namespace QRCoder
                 /// <param name="y">The y-coordinate of the module.</param>
                 public void Add(int x, int y)
                 {
-                    _blockedModules.Add(new Rectangle(x, y, 1, 1));
+                    _blockedModules[y][x] = true;
                 }
 
                 /// <summary>
@@ -38,7 +42,13 @@ namespace QRCoder
                 /// <param name="rect">The rectangle that defines the blocked module.</param>
                 public void Add(Rectangle rect)
                 {
-                    _blockedModules.Add(rect);
+                    for (int y = rect.Y; y < rect.Y + rect.Height; y++)
+                    {
+                        for (int x = rect.X; x < rect.X + rect.Width; x++)
+                        {
+                            _blockedModules[y][x] = true;
+                        }
+                    }
                 }
 
                 /// <summary>
@@ -49,7 +59,7 @@ namespace QRCoder
                 /// <returns><c>true</c> if the coordinates are blocked; otherwise, <c>false</c>.</returns>
                 public bool IsBlocked(int x, int y)
                 {
-                    return IsBlocked(new Rectangle(x, y, 1, 1));
+                    return _blockedModules[y][x];
                 }
 
                 /// <summary>
@@ -59,12 +69,13 @@ namespace QRCoder
                 /// <returns><c>true</c> if the rectangle is blocked; otherwise, <c>false</c>.</returns>
                 public bool IsBlocked(Rectangle r1)
                 {
-                    // Iterate through the list of blocked modules to check for any intersection.
-                    foreach (var r2 in _blockedModules)
+                    for (int y = r1.Y; y < r1.Y + r1.Height; y++)
                     {
-                        // Check if any part of the rectangles overlap.
-                        if (r2.X < r1.X + r1.Width && r1.X < r2.X + r2.Width && r2.Y < r1.Y + r1.Height && r1.Y < r2.Y + r2.Height)
-                            return true;
+                        for (int x = r1.X; x < r1.X + r1.Width; x++)
+                        {
+                            if (_blockedModules[y][x])
+                                return true;
+                        }
                     }
                     return false;
                 }
