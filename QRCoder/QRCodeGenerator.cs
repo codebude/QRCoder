@@ -319,26 +319,25 @@ namespace QRCoder
             // Place the modules on the QR code matrix
             QRCodeData PlaceModules()
             {
-                var qr = new QRCodeData(version);
-                var blockedModules = new List<Rectangle>(17);
+                var qr = new QRCodeData(version, true);
+                var size = qr.ModuleMatrix.Count - 8;
+                var blockedModules = new ModulePlacer.BlockedModules(17);
                 ModulePlacer.PlaceFinderPatterns(qr, blockedModules);
-                ModulePlacer.ReserveSeperatorAreas(qr.ModuleMatrix.Count, blockedModules);
+                ModulePlacer.ReserveSeperatorAreas(size, blockedModules);
                 ModulePlacer.PlaceAlignmentPatterns(qr, alignmentPatternTable[version].PatternPositions, blockedModules);
                 ModulePlacer.PlaceTimingPatterns(qr, blockedModules);
                 ModulePlacer.PlaceDarkModule(qr, version, blockedModules);
-                ModulePlacer.ReserveVersionAreas(qr.ModuleMatrix.Count, version, blockedModules);
+                ModulePlacer.ReserveVersionAreas(size, version, blockedModules);
                 ModulePlacer.PlaceDataWords(qr, interleavedData, blockedModules);
                 var maskVersion = ModulePlacer.MaskCode(qr, version, blockedModules, eccLevel);
                 var formatStr = GetFormatString(eccLevel, maskVersion);
 
-                ModulePlacer.PlaceFormat(qr, formatStr);
+                ModulePlacer.PlaceFormat(qr, formatStr, true);
                 if (version >= 7)
                 {
                     var versionString = GetVersionString(version);
-                    ModulePlacer.PlaceVersion(qr, versionString);
+                    ModulePlacer.PlaceVersion(qr, versionString, true);
                 }
-
-                ModulePlacer.AddQuietZone(qr);
 
                 return qr;
             }
