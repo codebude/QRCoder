@@ -409,7 +409,7 @@ namespace QRCoder
 #endif
         private static void TrimLeadingZeros(BitArray fStrEcc, ref int index, ref int count)
         {
-            while (!fStrEcc[index])
+            while (count > 0 && !fStrEcc[index])
             {
                 index++;
                 count--;
