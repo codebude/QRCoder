@@ -168,20 +168,21 @@ namespace QRCoder
                 }
 
                 // Apply the best mask pattern to the actual QR code.
+                var selectedPatternFunc = MaskPattern.Patterns[selectedPattern.Value];
                 for (var x = 0; x < size; x++)
                 {
                     for (var y = 0; y < x; y++)
                     {
                         if (!IsBlocked(new Rectangle(x, y, 1, 1), blockedModules))
                         {
-                            qrCode.ModuleMatrix[y][x] ^= MaskPattern.Patterns[selectedPattern.Value](x, y);
-                            qrCode.ModuleMatrix[x][y] ^= MaskPattern.Patterns[selectedPattern.Value](y, x);
+                            qrCode.ModuleMatrix[y][x] ^= selectedPatternFunc(x, y);
+                            qrCode.ModuleMatrix[x][y] ^= selectedPatternFunc(y, x);
                         }
                     }
 
                     if (!IsBlocked(new Rectangle(x, x, 1, 1), blockedModules))
                     {
-                        qrCode.ModuleMatrix[x][x] ^= MaskPattern.Patterns[selectedPattern.Value](x, x);
+                        qrCode.ModuleMatrix[x][x] ^= selectedPatternFunc(x, x);
                     }
                 }
                 return selectedPattern.Value;
