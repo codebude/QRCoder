@@ -1,15 +1,14 @@
 ﻿using QRCoder;
 using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
-using System.Collections.Generic;
-using System.Reflection;
-using Xunit;
-using System.Linq;
-using System.Collections;
-using System.Text;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using Xunit;
 using ECCLevel = QRCoder.QRCodeGenerator.ECCLevel;
-using System.Diagnostics;
 
 namespace QRCoderTests
 {
