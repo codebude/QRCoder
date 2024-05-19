@@ -105,6 +105,10 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(PayloadGenerator.Payload payload, ECCLevel eccLevel)
         {
+            if (eccLevel == ECCLevel.Default)
+                eccLevel = payload.EccLevel;
+            else if (payload.EccLevel != ECCLevel.Default && eccLevel != payload.EccLevel)
+                throw new ArgumentOutOfRangeException(nameof(eccLevel), $"The provided payload requires a ECC level of {eccLevel}.");
             return GenerateQrCode(payload.ToString(), eccLevel, false, false, payload.EciMode, payload.Version);
         }
 
@@ -121,6 +125,7 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
         {
+            eccLevel = ValidateECCLevel(eccLevel);
             EncodingMode encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
             var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
             var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
@@ -165,7 +170,6 @@ namespace QRCoder
             return GenerateQrCode(completeBitArray, eccLevel, version);
         }
 
-
         /// <summary>
         /// Calculates the QR code data which than can be used in one of the rendering classes to generate a graphical representation.
         /// </summary>
@@ -175,6 +179,7 @@ namespace QRCoder
         /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
         public static QRCodeData GenerateQrCode(byte[] binaryData, ECCLevel eccLevel)
         {
+            eccLevel = ValidateECCLevel(eccLevel);
             int version = GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
             int countIndicatorLen = GetCountIndicatorLength(version, EncodingMode.Byte);
@@ -185,6 +190,27 @@ namespace QRCoder
             DecToBin(binaryData.Length, countIndicatorLen, bitArray, index);
 
             return GenerateQrCode(bitArray, eccLevel, version);
+        }
+
+        /// <summary>
+        /// Validates the specified error correction level.
+        /// Returns the provided level if it is valid, or the level M if the provided level is Default.
+        /// Throws an exception if an invalid level is provided.
+        /// </summary>
+        private static ECCLevel ValidateECCLevel(ECCLevel eccLevel)
+        {
+            switch (eccLevel)
+            {
+                case ECCLevel.L:
+                case ECCLevel.M:
+                case ECCLevel.Q:
+                case ECCLevel.H:
+                    return eccLevel;
+                case ECCLevel.Default:
+                    return ECCLevel.M;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eccLevel), eccLevel, "Invalid error correction level.");
+            }
         }
 
         private static readonly BitArray _repeatingPattern = new BitArray(
