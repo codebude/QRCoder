@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Threading;
 
 namespace QRCoder
 {
@@ -12,10 +13,9 @@ namespace QRCoder
             /// </summary>
             public struct BlockedModules : IDisposable
             {
-                private readonly bool[,] _blockedModules;
+                private readonly bool[][] _blockedModules;
 
-                [ThreadStatic]
-                private static bool[,] _staticBlockedModules;
+                private static bool[][] _staticBlockedModules;
 
                 /// <summary>
                 /// Initializes a new instance of the <see cref="BlockedModules"/> struct with a specified capacity.
@@ -23,19 +23,17 @@ namespace QRCoder
                 /// <param name="capacity">The initial capacity of the blocked modules list.</param>
                 public BlockedModules(int size)
                 {
-                    if (_staticBlockedModules != null && _staticBlockedModules.GetUpperBound(0) >= (size - 1))
+                    _blockedModules = Interlocked.Exchange(ref _staticBlockedModules, null);
+                    if (_blockedModules != null && _blockedModules.Length >= size)
                     {
-                        _blockedModules = _staticBlockedModules;
-                        _staticBlockedModules = null;
-#if NET6_0_OR_GREATER
-                        Array.Clear(_blockedModules);
-#else
-                        Array.Clear(_blockedModules, 0, _blockedModules.Length);
-#endif
+                        for (int i = 0; i < size; i++)
+                            Array.Clear(_blockedModules[i], 0, size);
                     }
                     else
                     {
-                        _blockedModules = new bool[size, size];
+                        _blockedModules = new bool[size][];
+                        for (int i = 0; i < size; i++)
+                            _blockedModules[i] = new bool[size];
                     }
                 }
 
@@ -46,7 +44,7 @@ namespace QRCoder
                 /// <param name="y">The y-coordinate of the module.</param>
                 public void Add(int x, int y)
                 {
-                    _blockedModules[y, x] = true;
+                    _blockedModules[y][x] = true;
                 }
 
                 /// <summary>
@@ -59,7 +57,7 @@ namespace QRCoder
                     {
                         for (int x = rect.X; x < rect.X + rect.Width; x++)
                         {
-                            _blockedModules[y, x] = true;
+                            _blockedModules[y][x] = true;
                         }
                     }
                 }
@@ -72,7 +70,7 @@ namespace QRCoder
                 /// <returns><c>true</c> if the coordinates are blocked; otherwise, <c>false</c>.</returns>
                 public bool IsBlocked(int x, int y)
                 {
-                    return _blockedModules[y, x];
+                    return _blockedModules[y][x];
                 }
 
                 /// <summary>
@@ -86,7 +84,7 @@ namespace QRCoder
                     {
                         for (int x = r1.X; x < r1.X + r1.Width; x++)
                         {
-                            if (_blockedModules[y, x])
+                            if (_blockedModules[y][x])
                                 return true;
                         }
                     }
@@ -95,10 +93,7 @@ namespace QRCoder
 
                 public void Dispose()
                 {
-                    if (_staticBlockedModules == null || _staticBlockedModules.GetUpperBound(0) < _blockedModules.GetUpperBound(0))
-                    {
-                        _staticBlockedModules = _blockedModules;
-                    }
+                    Interlocked.CompareExchange(ref _staticBlockedModules, _blockedModules, null);
                 }
             }
         }
