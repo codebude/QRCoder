@@ -5,13 +5,14 @@ namespace QRCoder
     internal static class String40Methods
     {
         /// <summary>
-        /// The IsNullOrWhiteSpace method from Framework4.0
+        /// Indicates whether the specified string is null, empty, or consists only of white-space characters.
         /// </summary>
         /// <returns>
-        ///   <c>true</c> if the <paramref name="value"/> is null or white space; otherwise, <c>false</c>.
+        ///   <see langword="true"/> if the <paramref name="value"/> is null, empty, or white space; otherwise, <see langword="false"/>.
         /// </returns>
         public static bool IsNullOrWhiteSpace(String value)
         {
+#if NET35
             if (value == null) return true;
 
             for (int i = 0; i < value.Length; i++)
@@ -20,29 +21,9 @@ namespace QRCoder
             }
 
             return true;
-        }
-
-        public static string ReverseString(string str)
-        {
-            char[] chars = str.ToCharArray();
-            char[] result = new char[chars.Length];
-            for (int i = 0, j = str.Length - 1; i < str.Length; i++, j--)
-            {
-                result[i] = chars[j];
-            }
-            return new string(result);
-        }
-
-        public static bool IsAllDigit(string str)
-        {
-            foreach (var c in str)
-            {
-                if (!char.IsDigit(c))
-                {
-                    return false;
-                }
-            }
-            return true;
+#else
+            return string.IsNullOrWhiteSpace(value);
+#endif
         }
     }
 }
