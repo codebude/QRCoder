@@ -107,8 +107,8 @@ namespace QRCoder
             /// <returns>The index of the selected mask pattern.</returns>
             public static int MaskCode(QRCodeData qrCode, int version, BlockedModules blockedModules, ECCLevel eccLevel)
             {
-                int? selectedPattern = null;
-                var patternScore = 0;
+                int selectedPattern = -1;        // no pattern selected yet
+                var patternScore = int.MaxValue; // lower score is better
 
                 var size = qrCode.ModuleMatrix.Count - 8;
 
@@ -165,7 +165,7 @@ namespace QRCoder
                     var score = MaskPattern.Score(qrTemp);
 
                     // Select the pattern with the lowest score, indicating better QR code readability.
-                    if (!selectedPattern.HasValue || patternScore > score)
+                    if (patternScore > score)
                     {
                         selectedPattern = maskPattern;
                         patternScore = score;
@@ -173,7 +173,7 @@ namespace QRCoder
                 }
 
                 // Apply the best mask pattern to the actual QR code.
-                var selectedPatternFunc = MaskPattern.Patterns[selectedPattern.Value];
+                var selectedPatternFunc = MaskPattern.Patterns[selectedPattern];
                 for (var x = 0; x < size; x++)
                 {
                     for (var y = 0; y < x; y++)
@@ -191,7 +191,7 @@ namespace QRCoder
                     }
                 }
 
-                return selectedPattern.Value;
+                return selectedPattern;
             }
 
             /// <summary>
