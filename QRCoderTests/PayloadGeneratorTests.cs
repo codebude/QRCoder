@@ -9,6 +9,7 @@ using static QRCoder.PayloadGenerator.BezahlCode;
 using static QRCoder.PayloadGenerator.SwissQrCode.Reference;
 using System.Reflection;
 using static QRCoder.PayloadGenerator.SwissQrCode.AdditionalInformation;
+using static QRCoder.QRCodeGenerator;
 
 namespace QRCoderTests
 {
@@ -1335,6 +1336,21 @@ namespace QRCoderTests
             exception.Message.ShouldBe("Message to the Girocode-User reader texts have to shorter than 71 chars.");
         }
 
+        [Fact]
+        [Category("PayloadGenerator/Girocode")]
+        public void girocode_generator_sets_encoding_parameters()
+        {
+            var iban = "DE33100205000001194700";
+            var bic = "BFSWDE33BER";
+            var name = "Wikimedia Fördergesellschaft";
+            var amount = 10.00m;
+
+            var payload = new PayloadGenerator.Girocode(iban, bic, name, amount);
+
+            payload.EccLevel.ShouldBe<ECCLevel>(ECCLevel.M);
+            payload.EciMode.ShouldBe<EciMode>(EciMode.Default);
+            payload.Version.ShouldBe(-1);
+        }
 
         [Fact]
         [Category("PayloadGenerator/BezahlCode")]
@@ -2567,6 +2583,21 @@ namespace QRCoderTests
                 .ShouldBe("SPC\r\n0200\r\n1\r\nCH2430043000000789012\r\nS\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n100.25\r\nCHF\r\nS\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\nQRR\r\n990005000000000320071012303\r\nThis is my unstructured message.\r\nEPD\r\nSome bill information here...");
         }
 
+        [Fact]
+        [Category("PayloadGenerator/SwissQrCode")]
+        public void swissqrcode_generator_sets_encoding_parameters()
+        {
+            var creditor = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+            var iban = new PayloadGenerator.SwissQrCode.Iban("CH2430043000000789012", PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban);
+            var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR, "990005000000000320071012303", ReferenceTextType.QrReference);
+            var currency = PayloadGenerator.SwissQrCode.Currency.EUR;
+
+            var payload = new PayloadGenerator.SwissQrCode(iban, currency, creditor, reference);
+
+            payload.EccLevel.ShouldBe<ECCLevel>(ECCLevel.M);
+            payload.EciMode.ShouldBe<EciMode>(EciMode.Utf8);
+            payload.Version.ShouldBe(-1);
+        }
 
         [Fact]
         [Category("PayloadGenerator/SwissQrCode")]
