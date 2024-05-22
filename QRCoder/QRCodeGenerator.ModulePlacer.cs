@@ -107,8 +107,8 @@ namespace QRCoder
             /// <returns>The index of the selected mask pattern.</returns>
             public static int MaskCode(QRCodeData qrCode, int version, BlockedModules blockedModules, ECCLevel eccLevel)
             {
-                int? selectedPattern = null;
-                var patternScore = 0;
+                int selectedPattern = -1;        // no pattern selected yet
+                var patternScore = int.MaxValue; // lower score is better
 
                 var size = qrCode.ModuleMatrix.Count - 8;
 
@@ -121,8 +121,10 @@ namespace QRCoder
                     GetVersionString(versionString, version);
                 }
                 var formatStr = new BitArray(15);
-                foreach (var pattern in MaskPattern.Patterns)
+                for (var maskPattern = 0; maskPattern < 8; maskPattern++)
                 {
+                    var patternFunc = MaskPattern.Patterns[maskPattern];
+
                     // Reset the temporary QR code to the current state of the actual QR code.
                     for (var y = 0; y < size; y++)
                     {
@@ -133,7 +135,7 @@ namespace QRCoder
                     }
 
                     // Place format information using the current mask pattern.
-                    GetFormatString(formatStr, eccLevel, pattern.Key - 1);
+                    GetFormatString(formatStr, eccLevel, maskPattern);
                     ModulePlacer.PlaceFormat(qrTemp, formatStr, false);
 
                     // Place version information if applicable.
@@ -149,46 +151,47 @@ namespace QRCoder
                         {
                             if (!blockedModules.IsBlocked(x, y))
                             {
-                                qrTemp.ModuleMatrix[y][x] ^= pattern.Value(x, y);
-                                qrTemp.ModuleMatrix[x][y] ^= pattern.Value(y, x);
+                                qrTemp.ModuleMatrix[y][x] ^= patternFunc(x, y);
+                                qrTemp.ModuleMatrix[x][y] ^= patternFunc(y, x);
                             }
                         }
 
                         if (!blockedModules.IsBlocked(x, x))
                         {
-                            qrTemp.ModuleMatrix[x][x] ^= pattern.Value(x, x);
+                            qrTemp.ModuleMatrix[x][x] ^= patternFunc(x, x);
                         }
                     }
 
                     var score = MaskPattern.Score(qrTemp);
 
                     // Select the pattern with the lowest score, indicating better QR code readability.
-                    if (!selectedPattern.HasValue || patternScore > score)
+                    if (patternScore > score)
                     {
-                        selectedPattern = pattern.Key;
+                        selectedPattern = maskPattern;
                         patternScore = score;
                     }
                 }
 
                 // Apply the best mask pattern to the actual QR code.
+                var selectedPatternFunc = MaskPattern.Patterns[selectedPattern];
                 for (var x = 0; x < size; x++)
                 {
                     for (var y = 0; y < x; y++)
                     {
                         if (!blockedModules.IsBlocked(x, y))
                         {
-                            qrCode.ModuleMatrix[y + 4][x + 4] ^= MaskPattern.Patterns[selectedPattern.Value](x, y);
-                            qrCode.ModuleMatrix[x + 4][y + 4] ^= MaskPattern.Patterns[selectedPattern.Value](y, x);
+                            qrCode.ModuleMatrix[y + 4][x + 4] ^= selectedPatternFunc(x, y);
+                            qrCode.ModuleMatrix[x + 4][y + 4] ^= selectedPatternFunc(y, x);
                         }
                     }
 
                     if (!blockedModules.IsBlocked(x, x))
                     {
-                        qrCode.ModuleMatrix[x + 4][x + 4] ^= MaskPattern.Patterns[selectedPattern.Value](x, x);
+                        qrCode.ModuleMatrix[x + 4][x + 4] ^= selectedPatternFunc(x, x);
                     }
                 }
 
-                return selectedPattern.Value - 1;
+                return selectedPattern;
             }
 
             /// <summary>
