@@ -13,9 +13,9 @@ namespace QRCoder
             /// </summary>
             public struct BlockedModules : IDisposable
             {
-                private readonly bool[][] _blockedModules;
+                private readonly BitArray[] _blockedModules;
 
-                private static bool[][] _staticBlockedModules;
+                private static BitArray[] _staticBlockedModules;
 
                 /// <summary>
                 /// Initializes a new instance of the <see cref="BlockedModules"/> struct with a specified capacity.
@@ -27,13 +27,13 @@ namespace QRCoder
                     if (_blockedModules != null && _blockedModules.Length >= size)
                     {
                         for (int i = 0; i < size; i++)
-                            Array.Clear(_blockedModules[i], 0, size);
+                            _blockedModules[i].SetAll(false);
                     }
                     else
                     {
-                        _blockedModules = new bool[size][];
+                        _blockedModules = new BitArray[size];
                         for (int i = 0; i < size; i++)
-                            _blockedModules[i] = new bool[size];
+                            _blockedModules[i] = new BitArray(size);
                     }
                 }
 
