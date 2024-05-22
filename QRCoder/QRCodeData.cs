@@ -17,7 +17,16 @@ namespace QRCoder
         {
             this.Version = version;
             var size = ModulesPerSideFromVersion(version);
-            this.ModuleMatrix = new List<BitArray>();
+            this.ModuleMatrix = new List<BitArray>(size);
+            for (var i = 0; i < size; i++)
+                this.ModuleMatrix.Add(new BitArray(size));
+        }
+
+        public QRCodeData(int version, bool addPadding)
+        {
+            this.Version = version;
+            var size = ModulesPerSideFromVersion(version) + (addPadding ? 8 : 0);
+            this.ModuleMatrix = new List<BitArray>(size);
             for (var i = 0; i < size; i++)
                 this.ModuleMatrix.Add(new BitArray(size));
         }
