@@ -433,6 +433,7 @@ namespace QRCoder
         public class Girocode : QRCoder.PayloadGenerator.Payload
         {
             public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", QRCoder.PayloadGenerator.Girocode.TypeOfRemittance typeOfRemittance = 1, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", QRCoder.PayloadGenerator.Girocode.GirocodeVersion version = 0, QRCoder.PayloadGenerator.Girocode.GirocodeEncoding encoding = 1) { }
+            public override QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; }
             public override string ToString() { }
             public enum GirocodeEncoding
             {
@@ -710,6 +711,8 @@ namespace QRCoder
         public class SwissQrCode : QRCoder.PayloadGenerator.Payload
         {
             public SwissQrCode(QRCoder.PayloadGenerator.SwissQrCode.Iban iban, QRCoder.PayloadGenerator.SwissQrCode.Currency currency, QRCoder.PayloadGenerator.SwissQrCode.Contact creditor, QRCoder.PayloadGenerator.SwissQrCode.Reference reference, QRCoder.PayloadGenerator.SwissQrCode.AdditionalInformation additionalInformation = null, QRCoder.PayloadGenerator.SwissQrCode.Contact debitor = null, decimal? amount = default, System.DateTime? requestedDateOfPayment = default, QRCoder.PayloadGenerator.SwissQrCode.Contact ultimateCreditor = null, string alternativeProcedure1 = null, string alternativeProcedure2 = null) { }
+            public override QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; }
+            public override QRCoder.QRCodeGenerator.EciMode EciMode { get; }
             public override string ToString() { }
             public class AdditionalInformation
             {
