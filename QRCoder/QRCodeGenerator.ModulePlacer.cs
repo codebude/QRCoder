@@ -9,30 +9,6 @@ namespace QRCoder
         private static partial class ModulePlacer
         {
             /// <summary>
-            /// Adds a quiet zone around the QR code. A quiet zone is a blank margin used to separate the QR code
-            /// from other visual elements, improving scanner readability. This zone consists of white modules
-            /// extending 4 modules wide around the existing QR code pattern.
-            /// </summary>
-            /// <param name="qrCode">The QR code data structure to modify.</param>
-            public static void AddQuietZone(QRCodeData qrCode)
-            {
-                // Calculate the required length for a new quiet line, including existing modules plus 8 additional for the quiet zone.
-                var quietLineLength = qrCode.ModuleMatrix.Count + 8;
-                // Add four new lines at the top of the QR code matrix to create the upper part of the quiet zone.
-                for (var i = 0; i < 4; i++)
-                    qrCode.ModuleMatrix.Insert(0, new BitArray(quietLineLength));
-                // Add four new lines at the bottom of the QR code matrix to create the lower part of the quiet zone.
-                for (var i = 0; i < 4; i++)
-                    qrCode.ModuleMatrix.Add(new BitArray(quietLineLength));
-                // Expand each line of the QR code matrix sideways by 4 modules on each side to complete the quiet zone.
-                for (var i = 4; i < qrCode.ModuleMatrix.Count - 4; i++)
-                {
-                    qrCode.ModuleMatrix[i].Length += 8;
-                    ShiftAwayFromBit0(qrCode.ModuleMatrix[i], 4);
-                }
-            }
-
-            /// <summary>
             /// Places the version information on the QR code matrix for versions 7 and higher. Version information
             /// is encoded into two small rectangular areas near the bottom left and top right corners outside the timing patterns.
             /// </summary>
