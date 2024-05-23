@@ -711,6 +711,9 @@ namespace QRCoder
             private readonly Reference reference;
             private readonly AdditionalInformation additionalInformation;
 
+            public override QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
+            public override QRCodeGenerator.EciMode EciMode { get { return QRCodeGenerator.EciMode.Utf8; } }
+
             /// <summary>
             /// Generates the payload for a SwissQrCode v2.0. (Don't forget to use ECC-Level=M, EncodingMode=UTF-8 and to set the Swiss flag icon to the final QR code.)
             /// </summary>
@@ -1198,6 +1201,7 @@ namespace QRCoder
             private readonly GirocodeEncoding encoding;
             private readonly TypeOfRemittance typeOfRemittance;
 
+            public override QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
 
             /// <summary>
             /// Generates the payload for a Girocode (QR-Code with credit transfer information).
