@@ -2034,7 +2034,7 @@ namespace QRCoder
 
             private void ProcessCommonFields(StringBuilder sb)
             {
-                if (String40Methods.IsNullOrWhiteSpace(Secret))
+                if (Secret.IsNullOrWhiteSpace())
                 {
                     throw new Exception("Secret must be a filled out base32 encoded string");
                 }
@@ -2043,7 +2043,7 @@ namespace QRCoder
                 string escapedLabel = null;
                 string label = null;
 
-                if (!String40Methods.IsNullOrWhiteSpace(Issuer))
+                if (!Issuer.IsNullOrWhiteSpace())
                 {
                     if (Issuer.Contains(":"))
                     {
@@ -2052,7 +2052,7 @@ namespace QRCoder
                     escapedIssuer = Uri.EscapeDataString(Issuer);
                 }
 
-                if (!String40Methods.IsNullOrWhiteSpace(Label))
+                if (!Label.IsNullOrWhiteSpace())
                 {
                     if (Label.Contains(":"))
                     {

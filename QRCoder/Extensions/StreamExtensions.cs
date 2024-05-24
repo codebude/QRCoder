@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace QRCoder.Framework4._0Methods
+﻿#if NET35
+namespace QRCoder
 {
-    class Stream4Methods
+    internal static class StreamExtensions
     {
-        public static void CopyTo(System.IO.Stream input, System.IO.Stream output)
+        /// <summary>
+        /// Copies a stream to another stream.
+        /// </summary>
+        public static void CopyTo(this System.IO.Stream input, System.IO.Stream output)
         {
             byte[] buffer = new byte[16 * 1024];
             int bytesRead;
@@ -18,3 +17,4 @@ namespace QRCoder.Framework4._0Methods
         }
     }
 }
+#endif
