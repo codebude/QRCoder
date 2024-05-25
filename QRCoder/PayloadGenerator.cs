@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 using System.Linq;
 using System.Globalization;
 using System.Text;
@@ -2479,6 +2482,12 @@ namespace QRCoder
             private CharacterSets characterSet;
             private MandatoryFields mFields;
             private OptionalFields oFields;
+#if NET6_0_OR_GREATER
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)]
+            private Type _mFields => typeof(MandatoryFields);
+            [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties)]
+            private Type _oFields => typeof(OptionalFields);
+#endif
             private string separator = "|";
 
             private RussiaPaymentOrder()
@@ -2605,7 +2614,12 @@ namespace QRCoder
                         })
                         .ToList();
 #else
-                return oFields.GetType().GetProperties()
+#if NET6_0_OR_GREATER
+                return _oFields
+#else
+                return oFields.GetType()
+#endif
+                        .GetProperties()
                         .Where(field => field.GetValue(oFields, null) != null)
                         .Select(field => {
                             var objValue = field.GetValue(oFields, null);
@@ -2621,7 +2635,7 @@ namespace QRCoder
             /// Takes all mandatory fields that are not null and returns their string represantion
             /// </summary>
             /// <returns>A List of strings</returns>
-            private List<string> GetMandatoryFieldsAsList()
+            private List<string> GetMandatoryFieldsAsList()            
             {
 #if NETSTANDARD1_3
                 return mFields.GetType().GetRuntimeFields()
@@ -2633,7 +2647,12 @@ namespace QRCoder
                         })
                         .ToList();
 #else
-                return mFields.GetType().GetFields()
+#if NET6_0_OR_GREATER
+                return _mFields
+#else
+                return mFields.GetType()
+#endif
+                        .GetFields()
                         .Where(field => field.GetValue(mFields) != null)
                         .Select(field => {
                             var objValue = field.GetValue(mFields);
