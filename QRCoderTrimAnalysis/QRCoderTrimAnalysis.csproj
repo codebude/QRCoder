@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- This project, when published, verifies that QRCoder is trimmable; see below link for more details. -->
+  <!-- https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/prepare-libraries-for-trimming?pivots=dotnet-6-0 -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<PublishTrimmed>true</PublishTrimmed>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors><!-- Ensure that trim warnings cause the publish to fail -->
+	<IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
+	<TrimmerRootAssembly Include="QRCoder" />
+  </ItemGroup>
+
+</Project>

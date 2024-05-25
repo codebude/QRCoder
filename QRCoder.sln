@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoderTests", "QRCoderTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoder.Xaml", "QRCoder.Xaml\QRCoder.Xaml.csproj", "{A7A7E073-2504-4BA2-A63B-87AC34174789}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderApiTests", "QRCoderApiTests\QRCoderApiTests.csproj", "{5FACE5F6-53C9-4B89-91D4-162677893574}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoderApiTests", "QRCoderApiTests\QRCoderApiTests.csproj", "{5FACE5F6-53C9-4B89-91D4-162677893574}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderBenchmarks", "QRCoderBenchmarks\QRCoderBenchmarks.csproj", "{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoderBenchmarks", "QRCoderBenchmarks\QRCoderBenchmarks.csproj", "{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderTrimAnalysis", "QRCoderTrimAnalysis\QRCoderTrimAnalysis.csproj", "{F046136A-7BEA-49F3-9415-70CE50AD533B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,6 +157,22 @@ Global
 		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|x64.Build.0 = Release|Any CPU
 		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|x86.ActiveCfg = Release|Any CPU
 		{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}.Release|x86.Build.0 = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|x64.Build.0 = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Debug|x86.Build.0 = Debug|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|ARM.Build.0 = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|x64.ActiveCfg = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|x64.Build.0 = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|x86.ActiveCfg = Release|Any CPU
+		{F046136A-7BEA-49F3-9415-70CE50AD533B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
