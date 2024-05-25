@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- This project, when published, verifies that QRCoder is trimmable; see below link for more details. -->
-  <!-- https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/prepare-libraries-for-trimming?pivots=dotnet-6-0 -->
+  <!-- https://learn.microsoft.com/en-us/dotnet/core/deploying/trimming/prepare-libraries-for-trimming -->
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
