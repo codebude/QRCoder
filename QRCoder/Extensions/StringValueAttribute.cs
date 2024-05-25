@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -9,6 +10,7 @@ namespace QRCoder.Extensions
     /// <summary>
     /// Used to represent a string value for a value in an enum
     /// </summary>
+    [Obsolete("This attribute will be removed in a future version of QRCoder.")]
     public class StringValueAttribute : Attribute
     {
 
@@ -31,6 +33,7 @@ namespace QRCoder.Extensions
         }        
     }
 
+    [Obsolete("This class will be removed in a future version of QRCoder.")]
     public static class CustomExtensions
     {
         /// <summary>
@@ -38,6 +41,9 @@ namespace QRCoder.Extensions
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
+#if NET6_0_OR_GREATER
+        [RequiresUnreferencedCode("This method uses reflection to examine the provided enum value.")]
+#endif
         public static string GetStringValue(this Enum value)
         {            
 #if NETSTANDARD1_3

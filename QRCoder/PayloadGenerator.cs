@@ -4,6 +4,7 @@ using System.Linq;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Diagnostics.CodeAnalysis;
 #if NETSTANDARD1_3
 using System.Reflection;
 #endif
@@ -2477,14 +2478,12 @@ namespace QRCoder
 
             //base
             private CharacterSets characterSet;
-            private MandatoryFields mFields;
-            private OptionalFields oFields;
+            private readonly MandatoryFields mFields = new MandatoryFields();
+            private readonly OptionalFields oFields = new OptionalFields();
             private string separator = "|";
 
             private RussiaPaymentOrder()
             {
-                mFields = new MandatoryFields();
-                oFields = new OptionalFields();
             }
 
             /// <summary>
@@ -2596,7 +2595,7 @@ namespace QRCoder
             private List<string> GetOptionalFieldsAsList()
             {
 #if NETSTANDARD1_3
-                return oFields.GetType().GetRuntimeProperties()
+                return typeof(OptionalFields).GetRuntimeProperties()
                         .Where(field => field.GetValue(oFields) != null)
                         .Select(field => {
                             var objValue = field.GetValue(oFields, null);
@@ -2605,7 +2604,7 @@ namespace QRCoder
                         })
                         .ToList();
 #else
-                return oFields.GetType().GetProperties()
+                return typeof(OptionalFields).GetProperties()
                         .Where(field => field.GetValue(oFields, null) != null)
                         .Select(field => {
                             var objValue = field.GetValue(oFields, null);
@@ -2624,7 +2623,7 @@ namespace QRCoder
             private List<string> GetMandatoryFieldsAsList()
             {
 #if NETSTANDARD1_3
-                return mFields.GetType().GetRuntimeFields()
+                return typeof(MandatoryFields).GetRuntimeFields()
                         .Where(field => field.GetValue(mFields) != null)
                         .Select(field => {
                             var objValue = field.GetValue(mFields);
@@ -2633,7 +2632,7 @@ namespace QRCoder
                         })
                         .ToList();
 #else
-                return mFields.GetType().GetFields()
+                return typeof(MandatoryFields).GetFields()
                         .Where(field => field.GetValue(mFields) != null)
                         .Select(field => {
                             var objValue = field.GetValue(mFields);
