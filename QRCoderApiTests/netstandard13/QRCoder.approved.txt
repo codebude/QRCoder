@@ -831,10 +831,12 @@ namespace QRCoder.Exceptions
 }
 namespace QRCoder.Extensions
 {
+    [System.Obsolete("This class will be removed in a future version of QRCoder.")]
     public static class CustomExtensions
     {
         public static string GetStringValue(this System.Enum value) { }
     }
+    [System.Obsolete("This attribute will be removed in a future version of QRCoder.")]
     public class StringValueAttribute : System.Attribute
     {
         public StringValueAttribute(string value) { }
