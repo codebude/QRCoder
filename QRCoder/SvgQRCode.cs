@@ -362,7 +362,7 @@ namespace QRCoder
             /// <returns></returns>
             public string GetDataUri()
             {
-                return $"data:{_mediaType.GetStringValue()};base64,{_logoData}";
+                return $"data:{GetMimeType(_mediaType)};base64,{_logoData}";
             }
 
             /// <summary>
@@ -388,11 +388,29 @@ namespace QRCoder
             /// </summary>
             public enum MediaType : int
             {
+#pragma warning disable CS0618 // Type or member is obsolete
                 [StringValue("image/png")]
-                PNG = 0, 
+#pragma warning restore CS0618 // Type or member is obsolete
+                PNG = 0,
+#pragma warning disable CS0618 // Type or member is obsolete
                 [StringValue("image/svg+xml")]
+#pragma warning restore CS0618 // Type or member is obsolete
                 SVG = 1
             }
+
+            private string GetMimeType(MediaType type)
+            {
+                switch (type)
+                {
+                    case MediaType.PNG:
+                        return "image/png";
+                    case MediaType.SVG:
+                        return "image/svg+xml";
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(type));
+                }
+            }
+                
         }
     }
 

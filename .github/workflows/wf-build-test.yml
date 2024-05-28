@@ -86,7 +86,11 @@ jobs:
     - name: Run test .NET 6.0 Windows
       working-directory: QRCoderTests
       run: dotnet test -c Release -f net6.0-windows --nologo --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
-    
+
+    - name: Run trim analysis
+      working-directory: QRCoderTrimAnalysis
+      run: dotnet publish -c Release -o bin/publish
+
     - name: Run API approval tests
       working-directory: QRCoderApiTests
       run: dotnet test -c Release --nologo --no-build
