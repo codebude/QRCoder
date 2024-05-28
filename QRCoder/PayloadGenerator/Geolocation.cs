@@ -1,8 +1,4 @@
-﻿#if NETSTANDARD1_3
-using System.Reflection;
-#endif
-
-namespace QRCoder
+﻿namespace QRCoder
 {
     public static partial class PayloadGenerator
     {

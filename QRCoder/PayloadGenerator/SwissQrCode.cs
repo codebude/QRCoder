@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-#if NETSTANDARD1_3
-using System.Reflection;
-#endif
 
 namespace QRCoder
 {
