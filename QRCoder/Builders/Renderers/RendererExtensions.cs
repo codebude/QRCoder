@@ -36,6 +36,14 @@ namespace QRCoder
             {
                 return buffer.Array;
             }
+#else
+            try
+            {
+                var buffer = memoryStream.GetBuffer();
+                if (buffer.Length == memoryStream.Length)
+                return buffer;
+            }
+            catch { }
 #endif
             return memoryStream.ToArray();
         }
