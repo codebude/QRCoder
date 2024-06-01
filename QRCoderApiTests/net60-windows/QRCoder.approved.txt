@@ -857,9 +857,9 @@ namespace QRCoder
         public string GetGraphic(int pointsPerModule, bool epsFormat = false) { }
         public string GetGraphic(System.Drawing.Size viewBox, bool drawQuietZones = true, bool epsFormat = false) { }
         public string GetGraphic(System.Drawing.Size viewBox, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, bool epsFormat = false) { }
-        public string GetGraphic(System.Drawing.Size viewBox, string? darkColorHex, string? lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
+        public string GetGraphic(System.Drawing.Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
         public string GetGraphic(int pointsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, bool epsFormat = false) { }
-        public string GetGraphic(int pointsPerModule, string? darkColorHex, string? lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
+        public string GetGraphic(int pointsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
     }
     public static class PostscriptQRCodeHelper
     {
@@ -872,7 +872,7 @@ namespace QRCoder
         public QRCode(QRCoder.QRCodeData data) { }
         public System.Drawing.Bitmap GetGraphic(int pixelsPerModule) { }
         public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true) { }
-        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, string? darkColorHtmlHex, string? lightColorHtmlHex, bool drawQuietZones = true) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true) { }
         public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, System.Drawing.Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true, System.Drawing.Color? iconBackgroundColor = default) { }
     }
     public class QRCodeData : System.IDisposable

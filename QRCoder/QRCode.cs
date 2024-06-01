@@ -23,9 +23,9 @@ namespace QRCoder
             return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
         }
 
-        public Bitmap GetGraphic(int pixelsPerModule, string? darkColorHtmlHex, string? lightColorHtmlHex, bool drawQuietZones = true)
+        public Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true)
         {
-            return this.GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex!), ColorTranslator.FromHtml(lightColorHtmlHex!), drawQuietZones);
+            return this.GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones);
         }
 
         public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
