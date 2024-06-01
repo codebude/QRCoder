@@ -6,7 +6,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// the parameter will not be null even if the corresponding type allows it.
     /// </summary>
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
-    public sealed class NotNullWhenAttribute : Attribute
+    internal sealed class NotNullWhenAttribute : Attribute
     {
         /// <summary>
         /// Initializes the attribute with the specified return value condition.
