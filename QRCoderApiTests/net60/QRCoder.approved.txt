@@ -807,7 +807,7 @@ namespace QRCoder
     }
     public static class PostscriptQRCodeHelper
     {
-        public static string GetQRCode(string plainText, int pointsPerModule, string? darkColorHex, string? lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true, bool epsFormat = false) { }
+        public static string GetQRCode(string plainText, int pointsPerModule, string darkColorHex, string lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true, bool epsFormat = false) { }
     }
     public class QRCodeData : System.IDisposable
     {
