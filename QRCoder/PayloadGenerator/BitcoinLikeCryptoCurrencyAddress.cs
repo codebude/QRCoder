@@ -10,7 +10,8 @@ namespace QRCoder
         public class BitcoinLikeCryptoCurrencyAddress : Payload
         {
             private readonly BitcoinLikeCryptoCurrencyType currencyType;
-            private readonly string address, label, message;
+            private readonly string address;
+            private readonly string? label, message;
             private readonly double? amount;
 
             /// <summary>
@@ -21,7 +22,7 @@ namespace QRCoder
             /// <param name="amount">Amount of coins to transfer</param>
             /// <param name="label">Reference label</param>
             /// <param name="message">Referece text aka message</param>
-            public BitcoinLikeCryptoCurrencyAddress(BitcoinLikeCryptoCurrencyType currencyType, string address, double? amount, string label = null, string message = null)
+            public BitcoinLikeCryptoCurrencyAddress(BitcoinLikeCryptoCurrencyType currencyType, string address, double? amount, string? label = null, string? message = null)
             {
                 this.currencyType = currencyType;
                 this.address = address;
@@ -41,12 +42,12 @@ namespace QRCoder
 
             public override string ToString()
             {
-                string query = null;
+                string? query = null;
 
-                var queryValues = new KeyValuePair<string,string>[]{
-                  new KeyValuePair<string, string>(nameof(label), label),
-                  new KeyValuePair<string, string>(nameof(message), message),
-                  new KeyValuePair<string, string>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
+                var queryValues = new KeyValuePair<string,string?>[]{
+                  new KeyValuePair<string, string?>(nameof(label), label),
+                  new KeyValuePair<string, string?>(nameof(message), message),
+                  new KeyValuePair<string, string?>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
                 };
 
                 if (queryValues.Any(keyPair => !string.IsNullOrEmpty(keyPair.Value)))
@@ -57,7 +58,7 @@ namespace QRCoder
                         .ToArray());
                 }
 
-                return $"{Enum.GetName(typeof(BitcoinLikeCryptoCurrencyType), currencyType).ToLower()}:{address}{query}";
+                return $"{Enum.GetName(typeof(BitcoinLikeCryptoCurrencyType), currencyType)!.ToLower()}:{address}{query}";
             }
 
             public enum BitcoinLikeCryptoCurrencyType

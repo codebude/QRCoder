@@ -9,7 +9,7 @@ namespace QRCoder
         {
             //https://github.com/google/google-authenticator/wiki/Key-Uri-Format
             public OneTimePasswordAuthType Type { get; set; } = OneTimePasswordAuthType.TOTP;
-            public string Secret { get; set; }
+            public string Secret { get; set; } = null!;
 
             public OneTimePasswordAuthAlgorithm AuthAlgorithm { get; set; } = OneTimePasswordAuthAlgorithm.SHA1;
 
@@ -20,8 +20,8 @@ namespace QRCoder
                 set { AuthAlgorithm = (OneTimePasswordAuthAlgorithm)Enum.Parse(typeof(OneTimePasswordAuthAlgorithm), value.ToString()); }
             }
 
-            public string Issuer { get; set; }
-            public string Label { get; set; }
+            public string? Issuer { get; set; }
+            public string? Label { get; set; }
             public int Digits { get; set; } = 6;
             public int? Counter { get; set; } = null;
             public int? Period { get; set; } = 30;
@@ -97,9 +97,9 @@ namespace QRCoder
                     throw new Exception("Secret must be a filled out base32 encoded string");
                 }
                 string strippedSecret = Secret.Replace(" ", "");
-                string escapedIssuer = null;
-                string escapedLabel = null;
-                string label = null;
+                string? escapedIssuer = null;
+                string? escapedLabel = null;
+                string? label = null;
 
                 if (!Issuer.IsNullOrWhiteSpace())
                 {

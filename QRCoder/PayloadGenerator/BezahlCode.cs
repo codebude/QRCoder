@@ -9,7 +9,8 @@ namespace QRCoder
         {
             //BezahlCode specification: http://www.bezahlcode.de/wp-content/uploads/BezahlCode_TechDok.pdf
 
-            private readonly string name, iban, bic, account, bnc, sepaReference, reason, creditorId, mandateId, periodicTimeunit;
+            private readonly string? iban, bic, account, bnc, sepaReference, creditorId, mandateId, periodicTimeunit;
+            private readonly string name, reason;
             private readonly decimal amount;
             private readonly int postingKey, periodicTimeunitRotation;
             private readonly Currency currency;

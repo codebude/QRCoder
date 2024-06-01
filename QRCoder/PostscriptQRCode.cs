@@ -25,7 +25,7 @@ namespace QRCoder
             return this.GetGraphic(viewBox, darkColor, lightColor, drawQuietZones, epsFormat);
         }
 
-        public string GetGraphic(int pointsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true, bool epsFormat = false)
+        public string GetGraphic(int pointsPerModule, string? darkColorHex, string? lightColorHex, bool drawQuietZones = true, bool epsFormat = false)
         {
             var viewBox = new Size(pointsPerModule * this.QrCodeData.ModuleMatrix.Count, pointsPerModule * this.QrCodeData.ModuleMatrix.Count);
             return this.GetGraphic(viewBox, darkColorHex, lightColorHex, drawQuietZones, epsFormat);
@@ -36,9 +36,9 @@ namespace QRCoder
             return this.GetGraphic(viewBox, Color.Black, Color.White, drawQuietZones, epsFormat);
         }
 
-        public string GetGraphic(Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true, bool epsFormat = false)
+        public string GetGraphic(Size viewBox, string? darkColorHex, string? lightColorHex, bool drawQuietZones = true, bool epsFormat = false)
         {
-            return this.GetGraphic(viewBox, ColorTranslator.FromHtml(darkColorHex), ColorTranslator.FromHtml(lightColorHex), drawQuietZones, epsFormat);
+            return this.GetGraphic(viewBox, ColorTranslator.FromHtml(darkColorHex!), ColorTranslator.FromHtml(lightColorHex!), drawQuietZones, epsFormat);
         }
 
         public string GetGraphic(Size viewBox, Color darkColor, Color lightColor, bool drawQuietZones = true, bool epsFormat = false)
@@ -142,7 +142,7 @@ showpage
 
     public static class PostscriptQRCodeHelper
     {
-        public static string GetQRCode(string plainText, int pointsPerModule, string darkColorHex, string lightColorHex, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, bool drawQuietZones = true, bool epsFormat = false)
+        public static string GetQRCode(string plainText, int pointsPerModule, string? darkColorHex, string? lightColorHex, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, bool drawQuietZones = true, bool epsFormat = false)
         {
             using (var qrGenerator = new QRCodeGenerator())
             using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))

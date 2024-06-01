@@ -4,7 +4,7 @@
     {
         public class BitcoinAddress : BitcoinLikeCryptoCurrencyAddress
         {
-            public BitcoinAddress(string address, double? amount, string label = null, string message = null)
+            public BitcoinAddress(string address, double? amount, string? label = null, string? message = null)
                 : base(BitcoinLikeCryptoCurrencyType.Bitcoin, address, amount, label, message) { }
         }
     }

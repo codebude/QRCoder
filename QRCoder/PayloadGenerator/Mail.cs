@@ -8,7 +8,7 @@ namespace QRCoder
     {
         public class Mail : Payload
         {
-            private readonly string mailReceiver, subject, message;
+            private readonly string? mailReceiver, subject, message;
             private readonly MailEncoding encoding;
 
           
@@ -19,7 +19,7 @@ namespace QRCoder
             /// <param name="subject">Subject line of the email</param>
             /// <param name="message">Message content of the email</param>
             /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
-            public Mail(string mailReceiver = null, string subject = null, string message = null, MailEncoding encoding = MailEncoding.MAILTO)
+            public Mail(string? mailReceiver = null, string? subject = null, string? message = null, MailEncoding encoding = MailEncoding.MAILTO)
             {
                 this.mailReceiver = mailReceiver;
                 this.subject = subject;
@@ -42,10 +42,10 @@ namespace QRCoder
                         returnVal = $"mailto:{this.mailReceiver}{queryString}";
                         break;
                     case MailEncoding.MATMSG:
-                        returnVal = $"MATMSG:TO:{this.mailReceiver};SUB:{EscapeInput(this.subject)};BODY:{EscapeInput(this.message)};;";
+                        returnVal = $"MATMSG:TO:{this.mailReceiver};SUB:{EscapeInput(this.subject ?? "")};BODY:{EscapeInput(this.message ?? "")};;";
                         break;
                     case MailEncoding.SMTP:
-                        returnVal = $"SMTP:{this.mailReceiver}:{EscapeInput(this.subject, true)}:{EscapeInput(this.message, true)}";
+                        returnVal = $"SMTP:{this.mailReceiver}:{EscapeInput(this.subject ?? "", true)}:{EscapeInput(this.message ?? "", true)}";
                         break;
                 }
                 return returnVal;

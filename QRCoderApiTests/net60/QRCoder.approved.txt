@@ -308,15 +308,15 @@ namespace QRCoder
         }
         public class BitcoinAddress : QRCoder.PayloadGenerator.BitcoinLikeCryptoCurrencyAddress
         {
-            public BitcoinAddress(string address, double? amount, string label = null, string message = null) { }
+            public BitcoinAddress(string address, double? amount, string? label = null, string? message = null) { }
         }
         public class BitcoinCashAddress : QRCoder.PayloadGenerator.BitcoinLikeCryptoCurrencyAddress
         {
-            public BitcoinCashAddress(string address, double? amount, string label = null, string message = null) { }
+            public BitcoinCashAddress(string address, double? amount, string? label = null, string? message = null) { }
         }
         public class BitcoinLikeCryptoCurrencyAddress : QRCoder.PayloadGenerator.Payload
         {
-            public BitcoinLikeCryptoCurrencyAddress(QRCoder.PayloadGenerator.BitcoinLikeCryptoCurrencyAddress.BitcoinLikeCryptoCurrencyType currencyType, string address, double? amount, string label = null, string message = null) { }
+            public BitcoinLikeCryptoCurrencyAddress(QRCoder.PayloadGenerator.BitcoinLikeCryptoCurrencyAddress.BitcoinLikeCryptoCurrencyType currencyType, string address, double? amount, string? label = null, string? message = null) { }
             public override string ToString() { }
             public enum BitcoinLikeCryptoCurrencyType
             {
@@ -332,8 +332,8 @@ namespace QRCoder
         }
         public class CalendarEvent : QRCoder.PayloadGenerator.Payload
         {
-            public CalendarEvent(string subject, string description, string location, System.DateTime start, System.DateTime end, bool allDayEvent, QRCoder.PayloadGenerator.CalendarEvent.EventEncoding encoding = 1) { }
-            public CalendarEvent(string subject, string description, string location, System.DateTimeOffset start, System.DateTimeOffset end, bool allDayEvent, QRCoder.PayloadGenerator.CalendarEvent.EventEncoding encoding = 1) { }
+            public CalendarEvent(string subject, string? description, string? location, System.DateTime start, System.DateTime end, bool allDayEvent, QRCoder.PayloadGenerator.CalendarEvent.EventEncoding encoding = 1) { }
+            public CalendarEvent(string subject, string? description, string? location, System.DateTimeOffset start, System.DateTimeOffset end, bool allDayEvent, QRCoder.PayloadGenerator.CalendarEvent.EventEncoding encoding = 1) { }
             public override string ToString() { }
             public enum EventEncoding
             {
@@ -347,23 +347,23 @@ namespace QRCoder
                         QRCoder.PayloadGenerator.ContactData.ContactOutputType outputType,
                         string firstname,
                         string lastname,
-                        string nickname = null,
-                        string phone = null,
-                        string mobilePhone = null,
-                        string workPhone = null,
-                        string email = null,
+                        string? nickname = null,
+                        string? phone = null,
+                        string? mobilePhone = null,
+                        string? workPhone = null,
+                        string? email = null,
                         System.DateTime? birthday = default,
-                        string website = null,
-                        string street = null,
-                        string houseNumber = null,
-                        string city = null,
-                        string zipCode = null,
-                        string country = null,
-                        string note = null,
-                        string stateRegion = null,
+                        string? website = null,
+                        string? street = null,
+                        string? houseNumber = null,
+                        string? city = null,
+                        string? zipCode = null,
+                        string? country = null,
+                        string? note = null,
+                        string? stateRegion = null,
                         QRCoder.PayloadGenerator.ContactData.AddressOrder addressOrder = 0,
-                        string org = null,
-                        string orgTitle = null) { }
+                        string? org = null,
+                        string? orgTitle = null) { }
             public override string ToString() { }
             public enum AddressOrder
             {
@@ -423,7 +423,7 @@ namespace QRCoder
         }
         public class LitecoinAddress : QRCoder.PayloadGenerator.BitcoinLikeCryptoCurrencyAddress
         {
-            public LitecoinAddress(string address, double? amount, string label = null, string message = null) { }
+            public LitecoinAddress(string address, double? amount, string? label = null, string? message = null) { }
         }
         public class MMS : QRCoder.PayloadGenerator.Payload
         {
@@ -438,7 +438,7 @@ namespace QRCoder
         }
         public class Mail : QRCoder.PayloadGenerator.Payload
         {
-            public Mail(string mailReceiver = null, string subject = null, string message = null, QRCoder.PayloadGenerator.Mail.MailEncoding encoding = 0) { }
+            public Mail(string? mailReceiver = null, string? subject = null, string? message = null, QRCoder.PayloadGenerator.Mail.MailEncoding encoding = 0) { }
             public override string ToString() { }
             public enum MailEncoding
             {
@@ -449,7 +449,7 @@ namespace QRCoder
         }
         public class MoneroTransaction : QRCoder.PayloadGenerator.Payload
         {
-            public MoneroTransaction(string address, float? txAmount = default, string txPaymentId = null, string recipientName = null, string txDescription = null) { }
+            public MoneroTransaction(string address, float? txAmount = default, string? txPaymentId = null, string? recipientName = null, string? txDescription = null) { }
             public override string ToString() { }
             public class MoneroTransactionException : System.Exception
             {
@@ -466,8 +466,8 @@ namespace QRCoder
             public QRCoder.PayloadGenerator.OneTimePassword.OneTimePasswordAuthAlgorithm AuthAlgorithm { get; set; }
             public int? Counter { get; set; }
             public int Digits { get; set; }
-            public string Issuer { get; set; }
-            public string Label { get; set; }
+            public string? Issuer { get; set; }
+            public string? Label { get; set; }
             public int? Period { get; set; }
             public string Secret { get; set; }
             public QRCoder.PayloadGenerator.OneTimePassword.OneTimePasswordAuthType Type { get; set; }
@@ -506,7 +506,7 @@ namespace QRCoder
         }
         public class RussiaPaymentOrder : QRCoder.PayloadGenerator.Payload
         {
-            public RussiaPaymentOrder(string name, string personalAcc, string bankName, string BIC, string correspAcc, QRCoder.PayloadGenerator.RussiaPaymentOrder.OptionalFields optionalFields = null, QRCoder.PayloadGenerator.RussiaPaymentOrder.CharacterSets characterSet = 2) { }
+            public RussiaPaymentOrder(string name, string personalAcc, string bankName, string BIC, string correspAcc, QRCoder.PayloadGenerator.RussiaPaymentOrder.OptionalFields? optionalFields = null, QRCoder.PayloadGenerator.RussiaPaymentOrder.CharacterSets characterSet = 2) { }
             public byte[] ToBytes() { }
             public override string ToString() { }
             public enum CharacterSets
@@ -518,51 +518,51 @@ namespace QRCoder
             public class OptionalFields
             {
                 public OptionalFields() { }
-                public string AddAmount { get; set; }
+                public string? AddAmount { get; set; }
                 public System.DateTime? BirthDate { get; set; }
-                public string CBC { get; set; }
-                public string Category { get; set; }
-                public string ChildFio { get; set; }
-                public string ClassNum { get; set; }
-                public string Contract { get; set; }
-                public string CounterId { get; set; }
-                public string CounterVal { get; set; }
+                public string? CBC { get; set; }
+                public string? Category { get; set; }
+                public string? ChildFio { get; set; }
+                public string? ClassNum { get; set; }
+                public string? Contract { get; set; }
+                public string? CounterId { get; set; }
+                public string? CounterVal { get; set; }
                 public System.DateTime? DocDate { get; set; }
-                public string DocIdx { get; set; }
-                public string DocNo { get; set; }
-                public string DrawerStatus { get; set; }
-                public string ExecId { get; set; }
-                public string FirstName { get; set; }
-                public string Flat { get; set; }
-                public string InstNum { get; set; }
-                public string KPP { get; set; }
-                public string LastName { get; set; }
-                public string MiddleName { get; set; }
-                public string OKTMO { get; set; }
-                public string PayeeINN { get; set; }
-                public string PayerAddress { get; set; }
-                public string PayerINN { get; set; }
-                public string PayerIdNum { get; set; }
-                public string PayerIdType { get; set; }
-                public string PaymPeriod { get; set; }
-                public string PaymTerm { get; set; }
-                public string PaytReason { get; set; }
-                public string PensAcc { get; set; }
-                public string PersAcc { get; set; }
-                public string PersonalAccount { get; set; }
-                public string Phone { get; set; }
-                public string Purpose { get; set; }
+                public string? DocIdx { get; set; }
+                public string? DocNo { get; set; }
+                public string? DrawerStatus { get; set; }
+                public string? ExecId { get; set; }
+                public string? FirstName { get; set; }
+                public string? Flat { get; set; }
+                public string? InstNum { get; set; }
+                public string? KPP { get; set; }
+                public string? LastName { get; set; }
+                public string? MiddleName { get; set; }
+                public string? OKTMO { get; set; }
+                public string? PayeeINN { get; set; }
+                public string? PayerAddress { get; set; }
+                public string? PayerINN { get; set; }
+                public string? PayerIdNum { get; set; }
+                public string? PayerIdType { get; set; }
+                public string? PaymPeriod { get; set; }
+                public string? PaymTerm { get; set; }
+                public string? PaytReason { get; set; }
+                public string? PensAcc { get; set; }
+                public string? PersAcc { get; set; }
+                public string? PersonalAccount { get; set; }
+                public string? Phone { get; set; }
+                public string? Purpose { get; set; }
                 public System.DateTime? QuittDate { get; set; }
-                public string QuittId { get; set; }
-                public string RegType { get; set; }
-                public string RuleId { get; set; }
-                public string ServiceName { get; set; }
-                public string SpecFio { get; set; }
-                public string Sum { get; set; }
-                public string TaxPaytKind { get; set; }
-                public string TaxPeriod { get; set; }
+                public string? QuittId { get; set; }
+                public string? RegType { get; set; }
+                public string? RuleId { get; set; }
+                public string? ServiceName { get; set; }
+                public string? SpecFio { get; set; }
+                public string? Sum { get; set; }
+                public string? TaxPaytKind { get; set; }
+                public string? TaxPeriod { get; set; }
                 public QRCoder.PayloadGenerator.RussiaPaymentOrder.TechCode? TechCode { get; set; }
-                public string UIN { get; set; }
+                public string? UIN { get; set; }
             }
             public class RussiaPaymentOrderException : System.Exception
             {
@@ -601,9 +601,9 @@ namespace QRCoder
         }
         public class ShadowSocksConfig : QRCoder.PayloadGenerator.Payload
         {
-            public ShadowSocksConfig(string hostname, int port, string password, QRCoder.PayloadGenerator.ShadowSocksConfig.Method method, string tag = null) { }
-            public ShadowSocksConfig(string hostname, int port, string password, QRCoder.PayloadGenerator.ShadowSocksConfig.Method method, System.Collections.Generic.Dictionary<string, string> parameters, string tag = null) { }
-            public ShadowSocksConfig(string hostname, int port, string password, QRCoder.PayloadGenerator.ShadowSocksConfig.Method method, string plugin, string pluginOption, string tag = null) { }
+            public ShadowSocksConfig(string hostname, int port, string password, QRCoder.PayloadGenerator.ShadowSocksConfig.Method method, string? tag = null) { }
+            public ShadowSocksConfig(string hostname, int port, string password, QRCoder.PayloadGenerator.ShadowSocksConfig.Method method, System.Collections.Generic.Dictionary<string, string>? parameters, string? tag = null) { }
+            public ShadowSocksConfig(string hostname, int port, string password, QRCoder.PayloadGenerator.ShadowSocksConfig.Method method, string plugin, string? pluginOption, string? tag = null) { }
             public override string ToString() { }
             public enum Method
             {
@@ -668,16 +668,16 @@ namespace QRCoder
         }
         public class SwissQrCode : QRCoder.PayloadGenerator.Payload
         {
-            public SwissQrCode(QRCoder.PayloadGenerator.SwissQrCode.Iban iban, QRCoder.PayloadGenerator.SwissQrCode.Currency currency, QRCoder.PayloadGenerator.SwissQrCode.Contact creditor, QRCoder.PayloadGenerator.SwissQrCode.Reference reference, QRCoder.PayloadGenerator.SwissQrCode.AdditionalInformation additionalInformation = null, QRCoder.PayloadGenerator.SwissQrCode.Contact debitor = null, decimal? amount = default, System.DateTime? requestedDateOfPayment = default, QRCoder.PayloadGenerator.SwissQrCode.Contact ultimateCreditor = null, string alternativeProcedure1 = null, string alternativeProcedure2 = null) { }
+            public SwissQrCode(QRCoder.PayloadGenerator.SwissQrCode.Iban iban, QRCoder.PayloadGenerator.SwissQrCode.Currency currency, QRCoder.PayloadGenerator.SwissQrCode.Contact creditor, QRCoder.PayloadGenerator.SwissQrCode.Reference reference, QRCoder.PayloadGenerator.SwissQrCode.AdditionalInformation? additionalInformation = null, QRCoder.PayloadGenerator.SwissQrCode.Contact? debitor = null, decimal? amount = default, System.DateTime? requestedDateOfPayment = default, QRCoder.PayloadGenerator.SwissQrCode.Contact? ultimateCreditor = null, string? alternativeProcedure1 = null, string? alternativeProcedure2 = null) { }
             public override QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; }
             public override QRCoder.QRCodeGenerator.EciMode EciMode { get; }
             public override string ToString() { }
             public class AdditionalInformation
             {
-                public AdditionalInformation(string unstructuredMessage = null, string billInformation = null) { }
-                public string BillInformation { get; }
+                public AdditionalInformation(string? unstructuredMessage = null, string? billInformation = null) { }
+                public string? BillInformation { get; }
                 public string Trailer { get; }
-                public string UnstructureMessage { get; }
+                public string? UnstructureMessage { get; }
                 public class SwissQrCodeAdditionalInformationException : System.Exception
                 {
                     public SwissQrCodeAdditionalInformationException() { }
@@ -690,10 +690,10 @@ namespace QRCoder
                 [System.Obsolete("This constructor is deprecated. Use WithCombinedAddress instead.")]
                 public Contact(string name, string country, string addressLine1, string addressLine2) { }
                 [System.Obsolete("This constructor is deprecated. Use WithStructuredAddress instead.")]
-                public Contact(string name, string zipCode, string city, string country, string street = null, string houseNumber = null) { }
+                public Contact(string name, string zipCode, string city, string country, string? street = null, string? houseNumber = null) { }
                 public override string ToString() { }
                 public static QRCoder.PayloadGenerator.SwissQrCode.Contact WithCombinedAddress(string name, string country, string addressLine1, string addressLine2) { }
-                public static QRCoder.PayloadGenerator.SwissQrCode.Contact WithStructuredAddress(string name, string zipCode, string city, string country, string street = null, string houseNumber = null) { }
+                public static QRCoder.PayloadGenerator.SwissQrCode.Contact WithStructuredAddress(string name, string zipCode, string city, string country, string? street = null, string? houseNumber = null) { }
                 public enum AddressType
                 {
                     StructuredAddress = 0,
@@ -730,9 +730,9 @@ namespace QRCoder
             }
             public class Reference
             {
-                public Reference(QRCoder.PayloadGenerator.SwissQrCode.Reference.ReferenceType referenceType, string reference = null, QRCoder.PayloadGenerator.SwissQrCode.Reference.ReferenceTextType? referenceTextType = default) { }
+                public Reference(QRCoder.PayloadGenerator.SwissQrCode.Reference.ReferenceType referenceType, string? reference = null, QRCoder.PayloadGenerator.SwissQrCode.Reference.ReferenceTextType? referenceTextType = default) { }
                 public QRCoder.PayloadGenerator.SwissQrCode.Reference.ReferenceType RefType { get; }
-                public string ReferenceText { get; }
+                public string? ReferenceText { get; }
                 public enum ReferenceTextType
                 {
                     QrReference = 0,
@@ -801,13 +801,13 @@ namespace QRCoder
         public string GetGraphic(int pointsPerModule, bool epsFormat = false) { }
         public string GetGraphic(System.Drawing.Size viewBox, bool drawQuietZones = true, bool epsFormat = false) { }
         public string GetGraphic(System.Drawing.Size viewBox, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, bool epsFormat = false) { }
-        public string GetGraphic(System.Drawing.Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
+        public string GetGraphic(System.Drawing.Size viewBox, string? darkColorHex, string? lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
         public string GetGraphic(int pointsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, bool epsFormat = false) { }
-        public string GetGraphic(int pointsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
+        public string GetGraphic(int pointsPerModule, string? darkColorHex, string? lightColorHex, bool drawQuietZones = true, bool epsFormat = false) { }
     }
     public static class PostscriptQRCodeHelper
     {
-        public static string GetQRCode(string plainText, int pointsPerModule, string darkColorHex, string lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true, bool epsFormat = false) { }
+        public static string GetQRCode(string plainText, int pointsPerModule, string? darkColorHex, string? lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true, bool epsFormat = false) { }
     }
     public class QRCodeData : System.IDisposable
     {
@@ -860,11 +860,11 @@ namespace QRCoder
         public SvgQRCode() { }
         public SvgQRCode(QRCoder.QRCodeData data) { }
         public string GetGraphic(int pixelsPerModule) { }
-        public string GetGraphic(System.Drawing.Size viewBox, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo logo = null) { }
-        public string GetGraphic(System.Drawing.Size viewBox, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo logo = null) { }
-        public string GetGraphic(System.Drawing.Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo logo = null) { }
-        public string GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo logo = null) { }
-        public string GetGraphic(int pixelsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo logo = null) { }
+        public string GetGraphic(System.Drawing.Size viewBox, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }
+        public string GetGraphic(System.Drawing.Size viewBox, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }
+        public string GetGraphic(System.Drawing.Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }
+        public string GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }
+        public string GetGraphic(int pixelsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }
         public enum SizingMode
         {
             WidthHeightAttribute = 0,
@@ -891,7 +891,7 @@ namespace QRCoder
     }
     public static class SvgQRCodeHelper
     {
-        public static string GetQRCode(string plainText, int pixelsPerModule, string darkColorHex, string lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo logo = null) { }
+        public static string GetQRCode(string plainText, int pixelsPerModule, string darkColorHex, string lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }
     }
 }
 namespace QRCoder.Exceptions
@@ -908,7 +908,7 @@ namespace QRCoder.Extensions
     public static class CustomExtensions
     {
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("This method uses reflection to examine the provided enum value.")]
-        public static string GetStringValue(this System.Enum value) { }
+        public static string? GetStringValue(this System.Enum value) { }
     }
     [System.Obsolete("This attribute will be removed in a future version of QRCoder.")]
     public class StringValueAttribute : System.Attribute

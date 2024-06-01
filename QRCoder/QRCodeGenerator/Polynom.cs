@@ -171,7 +171,7 @@ namespace QRCoder
             public void Dispose()
             {
                 ReturnArray(_polyItems);
-                _polyItems = null;
+                _polyItems = null!;
             }
 
             /// <summary>
@@ -219,7 +219,7 @@ namespace QRCoder
 #else
             // Implement a poor-man's array pool for .NET Framework
             [ThreadStatic]
-            private static List<PolynomItem[]> _arrayPool;
+            private static List<PolynomItem[]>? _arrayPool;
             
             /// <summary>
             /// Rents memory for the polynomial terms from a shared memory pool.
@@ -258,7 +258,7 @@ namespace QRCoder
             private static void ReturnArray(PolynomItem[] array)
             {
                 if (array == null)
-                    ThrowArgumentNullException();
+                    return;
 
                 // Initialize the thread-local pool if it's not already done
                 if (_arrayPool == null)
@@ -266,11 +266,6 @@ namespace QRCoder
 
                 // Add the buffer back to the pool
                 _arrayPool.Add(array);
-
-                void ThrowArgumentNullException()
-                {
-                    throw new ArgumentNullException(nameof(array));
-                }
             }
 #endif
 

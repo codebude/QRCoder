@@ -914,7 +914,7 @@ namespace QRCoder
 #else
             Encoding.GetEncoding(28591); // ISO-8859-1
 #endif
-        private static Encoding _iso8859_2;
+        private static Encoding? _iso8859_2;
 
         /// <summary>
         /// Converts plain text into a binary format using byte mode encoding, which supports various character encodings through ECI (Extended Channel Interpretations).
@@ -954,8 +954,7 @@ namespace QRCoder
                         //
                         // Users must install the System.Text.Encoding.CodePages package and call Encoding.RegisterProvider(CodePagesEncodingProvider.Instance)
                         // before using this encoding mode.
-                        if (_iso8859_2 == null)
-                            _iso8859_2 = Encoding.GetEncoding(28592); // ISO-8859-2
+                        _iso8859_2 ??= Encoding.GetEncoding(28592); // ISO-8859-2
                         // Convert text to ISO-8859-2 and encode.
                         targetEncoding = _iso8859_2;
                         utf8BOM = false;
@@ -974,7 +973,7 @@ namespace QRCoder
             const int MAX_STACK_SIZE_IN_BYTES = 512;
 
             int count = targetEncoding.GetByteCount(plainText);
-            byte[] bufferFromPool = null;
+            byte[]? bufferFromPool = null;
             Span<byte> codeBytes = (count <= MAX_STACK_SIZE_IN_BYTES)
                 ? (stackalloc byte[MAX_STACK_SIZE_IN_BYTES])
                 : (bufferFromPool = ArrayPool<byte>.Shared.Rent(count));

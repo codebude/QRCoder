@@ -44,7 +44,7 @@ namespace QRCoder
             /// <param name="correspAcc">Box number / account payee's bank (Номер кор./сч. банка получателя платежа)</param>
             /// <param name="optionalFields">An (optional) object of additional fields</param>
             /// <param name="characterSet">Type of encoding (default UTF-8)</param>
-            public RussiaPaymentOrder(string name, string personalAcc, string bankName, string BIC, string correspAcc, OptionalFields optionalFields = null, CharacterSets characterSet = CharacterSets.utf_8) : this()
+            public RussiaPaymentOrder(string name, string personalAcc, string bankName, string BIC, string correspAcc, OptionalFields? optionalFields = null, CharacterSets characterSet = CharacterSets.utf_8) : this()
             {
                 this.characterSet = characterSet;
                 mFields.Name = ValidateInput(name, "Name", @"^.{1,160}$");
@@ -156,7 +156,7 @@ namespace QRCoder
                         .Where(field => field.GetValue(oFields, null) != null)
                         .Select(field => {
                             var objValue = field.GetValue(oFields, null);
-                            var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
+                            var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
                             return $"{field.Name}={value}";                            
                          })
                         .ToList();
@@ -184,7 +184,7 @@ namespace QRCoder
                         .Where(field => field.GetValue(mFields) != null)
                         .Select(field => {
                             var objValue = field.GetValue(mFields);
-                            var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
+                            var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
                             return $"{field.Name}={value}";                            
                          })
                         .ToList();
@@ -199,7 +199,7 @@ namespace QRCoder
             /// <param name="pattern">A regex pattern to be used for validation</param>
             /// <param name="errorText">An optional error text. If null, a standard error text is generated</param>
             /// <returns>Input value (in case it is valid)</returns>
-            private static string ValidateInput(string input, string fieldname, string pattern, string errorText = null)
+            private static string ValidateInput(string input, string fieldname, string pattern, string? errorText = null)
             {
                 return ValidateInput(input, fieldname, new string[] { pattern }, errorText);
             }
@@ -212,7 +212,7 @@ namespace QRCoder
             /// <param name="patterns">An array of regex patterns to be used for validation</param>
             /// <param name="errorText">An optional error text. If null, a standard error text is generated</param>
             /// <returns>Input value (in case it is valid)</returns>
-            private static string ValidateInput(string input, string fieldname, string[] patterns, string errorText = null)
+            private static string ValidateInput(string input, string fieldname, string[] patterns, string? errorText = null)
             {
                 if (input == null)
                     throw new RussiaPaymentOrderException($"The input for '{fieldname}' must not be null.");
@@ -226,134 +226,134 @@ namespace QRCoder
 
             private class MandatoryFields
             {
-                public string Name;
-                public string PersonalAcc;                              
-                public string BankName;                  
-                public string BIC;                       
-                public string CorrespAcc;                
+                public string Name = null!;
+                public string PersonalAcc = null!;
+                public string BankName = null!;
+                public string BIC = null!;
+                public string CorrespAcc = null!;
             }
 
             public class OptionalFields
             {
-                private string _sum;
+                private string? _sum;
                 /// <summary>
                 /// Payment amount, in kopecks (FTI’s Amount.)
                 /// <para>Сумма платежа, в копейках</para>
                 /// </summary>
-                public string Sum
+                public string? Sum
                 {
                     get { return _sum; }
-                    set { _sum = ValidateInput(value, "Sum", @"^\d{1,18}$"); }
+                    set { _sum = value == null ? null : ValidateInput(value, "Sum", @"^\d{1,18}$"); }
                 }
 
-                private string _purpose;
+                private string? _purpose;
                 /// <summary>
                 /// Payment name (purpose)
                 /// <para>Наименование платежа (назначение)</para>
                 /// </summary>
-                public string Purpose
+                public string? Purpose
                 {
                     get { return _purpose; }
-                    set { _purpose = ValidateInput(value, "Purpose", @"^.{1,160}$"); }
+                    set { _purpose = value == null ? null : ValidateInput(value, "Purpose", @"^.{1,160}$"); }
                 }
 
-                private string _payeeInn;
+                private string? _payeeInn;
                 /// <summary>
                 /// Payee's INN (Resident Tax Identification Number; Text, up to 12 characters.)
                 /// <para>ИНН получателя платежа</para>
                 /// </summary>
-                public string PayeeINN
+                public string? PayeeINN
                 {
                     get { return _payeeInn; }
-                    set { _payeeInn = ValidateInput(value, "PayeeINN", @"^.{1,12}$"); }
+                    set { _payeeInn = value == null ? null : ValidateInput(value, "PayeeINN", @"^.{1,12}$"); }
                 }
 
-                private string _payerInn;
+                private string? _payerInn;
                 /// <summary>
                 /// Payer's INN (Resident Tax Identification Number; Text, up to 12 characters.)
                 /// <para>ИНН плательщика</para>
                 /// </summary>
-                public string PayerINN
+                public string? PayerINN
                 {
                     get { return _payerInn; }
-                    set { _payerInn = ValidateInput(value, "PayerINN", @"^.{1,12}$"); }
+                    set { _payerInn = value == null ? null : ValidateInput(value, "PayerINN", @"^.{1,12}$"); }
                 }
 
-                private string _drawerStatus;
+                private string? _drawerStatus;
                 /// <summary>
                 /// Status compiler payment document
                 /// <para>Статус составителя платежного документа</para>
                 /// </summary>
-                public string DrawerStatus
+                public string? DrawerStatus
                 {
                     get { return _drawerStatus; }
-                    set { _drawerStatus = ValidateInput(value, "DrawerStatus", @"^.{1,2}$"); }
+                    set { _drawerStatus = value == null ? null : ValidateInput(value, "DrawerStatus", @"^.{1,2}$"); }
                 }
 
-                private string _kpp;
+                private string? _kpp;
                 /// <summary>
                 /// KPP of the payee (Tax Registration Code; Text, up to 9 characters.)
                 /// <para>КПП получателя платежа</para>
                 /// </summary>
-                public string KPP
+                public string? KPP
                 {
                     get { return _kpp; }
-                    set { _kpp = ValidateInput(value, "KPP", @"^.{1,9}$"); }
+                    set { _kpp = value == null ? null : ValidateInput(value, "KPP", @"^.{1,9}$"); }
                 }
 
-                private string _cbc;
+                private string? _cbc;
                 /// <summary>
                 /// CBC
                 /// <para>КБК</para>
                 /// </summary>
-                public string CBC
+                public string? CBC
                 {
                     get { return _cbc; }
-                    set { _cbc = ValidateInput(value, "CBC", @"^.{1,20}$"); }
+                    set { _cbc = value == null ? null : ValidateInput(value, "CBC", @"^.{1,20}$"); }
                 }
 
-                private string _oktmo;
+                private string? _oktmo;
                 /// <summary>
                 /// All-Russian classifier territories of municipal formations
                 /// <para>Общероссийский классификатор территорий муниципальных образований</para>
                 /// </summary>
-                public string OKTMO
+                public string? OKTMO
                 {
                     get { return _oktmo; }
-                    set { _oktmo = ValidateInput(value, "OKTMO", @"^.{1,11}$"); }
+                    set { _oktmo = value == null ? null : ValidateInput(value, "OKTMO", @"^.{1,11}$"); }
                 }
 
-                private string _paytReason;
+                private string? _paytReason;
                 /// <summary>
                 /// Basis of tax payment
                 /// <para>Основание налогового платежа</para>
                 /// </summary>
-                public string PaytReason
+                public string? PaytReason
                 {
                     get { return _paytReason; }
-                    set { _paytReason = ValidateInput(value, "PaytReason", @"^.{1,2}$"); }
+                    set { _paytReason = value == null ? null : ValidateInput(value, "PaytReason", @"^.{1,2}$"); }
                 }
 
-                private string _taxPeriod;
+                private string? _taxPeriod;
                 /// <summary>
                 /// Taxable period
                 /// <para>Налоговый период</para>
                 /// </summary>
-                public string TaxPeriod
+                public string? TaxPeriod
                 {
                     get { return _taxPeriod; }
-                    set { _taxPeriod = ValidateInput(value, "ТaxPeriod", @"^.{1,10}$"); }
+                    set { _taxPeriod = value == null ? null : ValidateInput(value, "ТaxPeriod", @"^.{1,10}$"); }
                 }
 
-                private string _docNo;
+                private string? _docNo;
                 /// <summary>
                 /// Document number
                 /// <para>Номер документа</para>
                 /// </summary>
-                public string DocNo
+                public string? DocNo
                 {
                     get { return _docNo; }
-                    set { _docNo = ValidateInput(value, "DocNo", @"^.{1,15}$"); }
+                    set { _docNo = value == null ? null : ValidateInput(value, "DocNo", @"^.{1,15}$"); }
                 }
 
                 /// <summary>
@@ -362,15 +362,15 @@ namespace QRCoder
                 /// </summary>
                 public DateTime? DocDate { get; set; }
 
-                private string _taxPaytKind;
+                private string? _taxPaytKind;
                 /// <summary>
                 /// Payment type
                 /// <para>Тип платежа</para>
                 /// </summary>
-                public string TaxPaytKind
+                public string? TaxPaytKind
                 {
                     get { return _taxPaytKind; }
-                    set { _taxPaytKind = ValidateInput(value, "TaxPaytKind", @"^.{1,2}$"); }
+                    set { _taxPaytKind = value == null ? null : ValidateInput(value, "TaxPaytKind", @"^.{1,2}$"); }
                 }
 
                 /**************************************************************************
@@ -383,85 +383,85 @@ namespace QRCoder
                 /// Payer's surname
                 /// <para>Фамилия плательщика</para>
                 /// </summary>
-                public string LastName { get; set; }
+                public string? LastName { get; set; }
 
                 /// <summary>
                 /// Payer's name
                 /// <para>Имя плательщика</para>
                 /// </summary>
-                public string FirstName { get; set; }
+                public string? FirstName { get; set; }
 
                 /// <summary>
                 /// Payer's patronymic
                 /// <para>Отчество плательщика</para>
                 /// </summary>
-                public string MiddleName { get; set; }
+                public string? MiddleName { get; set; }
 
                 /// <summary>
                 /// Payer's address
                 /// <para>Адрес плательщика</para>
                 /// </summary>
-                public string PayerAddress { get; set; }
+                public string? PayerAddress { get; set; }
 
                 /// <summary>
                 /// Personal account of a budget recipient
                 /// <para>Лицевой счет бюджетного получателя</para>
                 /// </summary>
-                public string PersonalAccount { get; set; }
+                public string? PersonalAccount { get; set; }
 
                 /// <summary>
                 /// Payment document index
                 /// <para>Индекс платежного документа</para>
                 /// </summary>
-                public string DocIdx { get; set; }
+                public string? DocIdx { get; set; }
 
                 /// <summary>
                 /// Personal account number in the personalized accounting system in the Pension Fund of the Russian Federation - SNILS
                 /// <para>№ лицевого счета в системе персонифицированного учета в ПФР - СНИЛС</para>
                 /// </summary>
-                public string PensAcc { get; set; }
+                public string? PensAcc { get; set; }
 
                 /// <summary>
                 /// Number of contract
                 /// <para>Номер договора</para>
                 /// </summary>
-                public string Contract { get; set; }
+                public string? Contract { get; set; }
 
                 /// <summary>
                 /// Personal account number of the payer in the organization (in the accounting system of the PU)
                 /// <para>Номер лицевого счета плательщика в организации (в системе учета ПУ)</para>
                 /// </summary>
-                public string PersAcc { get; set; }
+                public string? PersAcc { get; set; }
 
                 /// <summary>
                 /// Apartment number
                 /// <para>Номер квартиры</para>
                 /// </summary>
-                public string Flat { get; set; }
+                public string? Flat { get; set; }
 
                 /// <summary>
                 /// Phone number
                 /// <para>Номер телефона</para>
                 /// </summary>
-                public string Phone { get; set; }
+                public string? Phone { get; set; }
 
                 /// <summary>
                 /// DUL payer type
                 /// <para>Вид ДУЛ плательщика</para>
                 /// </summary>
-                public string PayerIdType { get; set; }
+                public string? PayerIdType { get; set; }
 
                 /// <summary>
                 /// DUL number of the payer
                 /// <para>Номер ДУЛ плательщика</para>
                 /// </summary>
-                public string PayerIdNum { get; set; }
+                public string? PayerIdNum { get; set; }
 
                 /// <summary>
                 /// FULL NAME. child / student
                 /// <para>Ф.И.О. ребенка/учащегося</para>
                 /// </summary>
-                public string ChildFio { get; set; }
+                public string? ChildFio { get; set; }
 
                 /// <summary>
                 /// Date of birth
@@ -473,43 +473,43 @@ namespace QRCoder
                 /// Due date / Invoice date
                 /// <para>Срок платежа/дата выставления счета</para>
                 /// </summary>
-                public string PaymTerm { get; set; }
+                public string? PaymTerm { get; set; }
 
                 /// <summary>
                 /// Payment period
                 /// <para>Период оплаты</para>
                 /// </summary>
-                public string PaymPeriod { get; set; }
+                public string? PaymPeriod { get; set; }
 
                 /// <summary>
                 /// Payment type
                 /// <para>Вид платежа</para>
                 /// </summary>
-                public string Category { get; set; }
+                public string? Category { get; set; }
 
                 /// <summary>
                 /// Service code / meter name
                 /// <para>Код услуги/название прибора учета</para>
                 /// </summary>
-                public string ServiceName { get; set; }
+                public string? ServiceName { get; set; }
 
                 /// <summary>
                 /// Metering device number
                 /// <para>Номер прибора учета</para>
                 /// </summary>
-                public string CounterId { get; set; }
+                public string? CounterId { get; set; }
 
                 /// <summary>
                 /// Meter reading
                 /// <para>Показание прибора учета</para>
                 /// </summary>
-                public string CounterVal { get; set; }
+                public string? CounterVal { get; set; }
 
                 /// <summary>
                 /// Notification, accrual, account number
                 /// <para>Номер извещения, начисления, счета</para>
                 /// </summary>
-                public string QuittId { get; set; }
+                public string? QuittId { get; set; }
 
                 /// <summary>
                 /// Date of notification / accrual / invoice / resolution (for traffic police)
@@ -521,49 +521,49 @@ namespace QRCoder
                 /// Institution number (educational, medical)
                 /// <para>Номер учреждения (образовательного, медицинского)</para>
                 /// </summary>
-                public string InstNum { get; set; }
+                public string? InstNum { get; set; }
 
                 /// <summary>
                 /// Kindergarten / school class number
                 /// <para>Номер группы детсада/класса школы</para>
                 /// </summary>
-                public string ClassNum { get; set; }
+                public string? ClassNum { get; set; }
 
                 /// <summary>
                 /// Full name of the teacher, specialist providing the service
                 /// <para>ФИО преподавателя, специалиста, оказывающего услугу</para>
                 /// </summary>
-                public string SpecFio { get; set; }
+                public string? SpecFio { get; set; }
 
                 /// <summary>
                 /// Insurance / additional service amount / Penalty amount (in kopecks)
                 /// <para>Сумма страховки/дополнительной услуги/Сумма пени (в копейках)</para>
                 /// </summary>
-                public string AddAmount { get; set; }
+                public string? AddAmount { get; set; }
 
                 /// <summary>
                 /// Resolution number (for traffic police)
                 /// <para>Номер постановления (для ГИБДД)</para>
                 /// </summary>
-                public string RuleId { get; set; }
+                public string? RuleId { get; set; }
 
                 /// <summary>
                 /// Enforcement Proceedings Number
                 /// <para>Номер исполнительного производства</para>
                 /// </summary>
-                public string ExecId { get; set; }
+                public string? ExecId { get; set; }
 
                 /// <summary>
                 /// Type of payment code (for example, for payments to Rosreestr)
                 /// <para>Код вида платежа (например, для платежей в адрес Росреестра)</para>
                 /// </summary>
-                public string RegType { get; set; }
+                public string? RegType { get; set; }
 
                 /// <summary>
                 /// Unique accrual identifier
                 /// <para>Уникальный идентификатор начисления</para>
                 /// </summary>
-                public string UIN { get; set; }
+                public string? UIN { get; set; }
 
                 /// <summary>
                 /// The technical code recommended by the service provider. Maybe used by the receiving organization to call the appropriate processing IT system.
