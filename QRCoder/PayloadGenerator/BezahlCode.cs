@@ -5,6 +5,9 @@ namespace QRCoder
 {
     public static partial class PayloadGenerator
     {
+        /// <summary>
+        /// Represents a BezahlCode payload for QR codes.
+        /// </summary>
         public class BezahlCode : Payload
         {
             //BezahlCode specification: http://www.bezahlcode.de/wp-content/uploads/BezahlCode_TechDok.pdf
@@ -18,7 +21,7 @@ namespace QRCoder
 
 
             /// <summary>
-            /// Constructor for contact data
+            /// Initializes a new instance of the <see cref="BezahlCode"/> class for contact data.
             /// </summary>
             /// <param name="authority">Type of the bank transfer</param>
             /// <param name="name">Name of the receiver (Empfänger)</param>
@@ -33,7 +36,7 @@ namespace QRCoder
 
 
             /// <summary>
-            /// Constructor for non-SEPA payments
+            /// Initializes a new instance of the <see cref="BezahlCode"/> class for non-SEPA payments.
             /// </summary>
             /// <param name="authority">Type of the bank transfer</param>
             /// <param name="name">Name of the receiver (Empfänger)</param>
@@ -53,7 +56,7 @@ namespace QRCoder
             }
 
             /// <summary>
-            /// Constructor for SEPA payments
+            /// Initializes a new instance of the <see cref="BezahlCode"/> class for SEPA payments.
             /// </summary>
             /// <param name="authority">Type of the bank transfer</param>
             /// <param name="name">Name of the receiver (Empfänger)</param>
@@ -80,7 +83,7 @@ namespace QRCoder
 
 
             /// <summary>
-            /// Generic constructor. Please use specific (non-SEPA or SEPA) constructor
+            /// Generic constructor. Please use specific (non-SEPA or SEPA) constructor.
             /// </summary>
             /// <param name="authority">Type of the bank transfer</param>
             /// <param name="name">Name of the receiver (Empfänger)</param>
@@ -238,6 +241,7 @@ namespace QRCoder
 
             }
 
+            /// <inheritdoc/>
             public override string ToString()
             {
                 var bezahlCodePayload = $"bank://{authority}?";
@@ -549,17 +553,32 @@ namespace QRCoder
                 contact_v2
             }
 
+            /// <summary>
+            /// Exception class for BezahlCode errors.
+            /// </summary>
             public class BezahlCodeException : Exception
             {
+                /// <summary>
+                /// Initializes a new instance of the <see cref="BezahlCodeException"/> class.
+                /// </summary>
                 public BezahlCodeException()
                 {
                 }
 
+                /// <summary>
+                /// Initializes a new instance of the <see cref="BezahlCodeException"/> class with a specified error message.
+                /// </summary>
+                /// <param name="message">The message that describes the error.</param>
                 public BezahlCodeException(string message)
                     : base(message)
                 {
                 }
 
+                /// <summary>
+                /// Initializes a new instance of the <see cref="BezahlCodeException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+                /// </summary>
+                /// <param name="message">The message that describes the error.</param>
+                /// <param name="inner">The exception that is the cause of the current exception.</param>
                 public BezahlCodeException(string message, Exception inner)
                     : base(message, inner)
                 {

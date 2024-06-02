@@ -33,14 +33,15 @@ namespace QRCoder.Extensions
         }        
     }
 
+    /// <summary>
+    /// Enumeration extension methods.
+    /// </summary>
     [Obsolete("This class will be removed in a future version of QRCoder.")]
     public static class CustomExtensions
     {
         /// <summary>
         /// Will get the string value for a given enum's value
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
 #if NET6_0_OR_GREATER
         [RequiresUnreferencedCode("This method uses reflection to examine the provided enum value.")]
 #endif

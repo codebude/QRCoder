@@ -6,10 +6,20 @@ using System.IO.Compression;
 
 namespace QRCoder
 {
+    /// <summary>
+    /// Represents the data structure of a QR code.
+    /// </summary>
     public class QRCodeData : IDisposable
     {
+        /// <summary>
+        /// Gets or sets the module matrix of the QR code.
+        /// </summary>
         public List<BitArray> ModuleMatrix { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QRCodeData"/> class with the specified version.
+        /// </summary>
+        /// <param name="version">The version of the QR code.</param>
         public QRCodeData(int version)
         {
             this.Version = version;
@@ -19,6 +29,11 @@ namespace QRCoder
                 this.ModuleMatrix.Add(new BitArray(size));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QRCodeData"/> class with the specified version and padding option.
+        /// </summary>
+        /// <param name="version">The version of the QR code.</param>
+        /// <param name="addPadding">Indicates whether padding should be added to the QR code.</param>
         public QRCodeData(int version, bool addPadding)
         {
             this.Version = version;
@@ -28,10 +43,20 @@ namespace QRCoder
                 this.ModuleMatrix.Add(new BitArray(size));
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QRCodeData"/> class with raw data from a specified path and compression mode.
+        /// </summary>
+        /// <param name="pathToRawData">The path to the raw data file.</param>
+        /// <param name="compressMode">The compression mode used for the raw data.</param>
         public QRCodeData(string pathToRawData, Compression compressMode) : this(File.ReadAllBytes(pathToRawData), compressMode)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QRCodeData"/> class with raw data and compression mode.
+        /// </summary>
+        /// <param name="rawData">The raw data of the QR code.</param>
+        /// <param name="compressMode">The compression mode used for the raw data.</param>
         public QRCodeData(byte[] rawData, Compression compressMode)
         {
             var bytes = new List<byte>(rawData);
@@ -98,6 +123,11 @@ namespace QRCoder
 
         }
 
+        /// <summary>
+        /// Gets the raw data of the QR code with the specified compression mode.
+        /// </summary>
+        /// <param name="compressMode">The compression mode used for the raw data.</param>
+        /// <returns>Returns the raw data of the QR code as a byte array.</returns>
         public byte[] GetRawData(Compression compressMode)
         {
             var bytes = new List<byte>();
@@ -160,18 +190,34 @@ namespace QRCoder
             return rawData;
         }
 
+        /// <summary>
+        /// Saves the raw data of the QR code to a specified file with the specified compression mode.
+        /// </summary>
+        /// <param name="filePath">The path to the file where the raw data will be saved.</param>
+        /// <param name="compressMode">The compression mode used for the raw data.</param>
         public void SaveRawData(string filePath, Compression compressMode)
         {
             File.WriteAllBytes(filePath, GetRawData(compressMode));
         }
 
+        /// <summary>
+        /// Gets the version of the QR code.
+        /// </summary>
         public int Version { get; private set; }
 
+        /// <summary>
+        /// Gets the number of modules per side from the specified version.
+        /// </summary>
+        /// <param name="version">The version of the QR code.</param>
+        /// <returns>Returns the number of modules per side.</returns>
         private static int ModulesPerSideFromVersion(int version)
         {
             return 21 + (version - 1) * 4;
         }
 
+        /// <summary>
+        /// Releases all resources used by the <see cref="QRCodeData"/>.
+        /// </summary>
         public void Dispose()
         {
             this.ModuleMatrix = null;
@@ -179,10 +225,22 @@ namespace QRCoder
 
         }
 
+        /// <summary>
+        /// Specifies the compression mode used for the raw data.
+        /// </summary>
         public enum Compression
         {
+            /// <summary>
+            /// No compression.
+            /// </summary>
             Uncompressed,
+            /// <summary>
+            /// Deflate compression.
+            /// </summary>
             Deflate,
+            /// <summary>
+            /// GZip compression.
+            /// </summary>
             GZip
         }
     }

@@ -7,6 +7,9 @@ namespace QRCoder
 {
     public static partial class PayloadGenerator
     {
+        /// <summary>
+        /// Generates a ShadowSocks proxy config payload.
+        /// </summary>
         public class ShadowSocksConfig : Payload
         {
             private readonly string hostname, password, tag, methodStr, parameter;
@@ -70,6 +73,16 @@ namespace QRCoder
                 this(hostname, port, password, method, null, tag)
             { }
 
+            /// <summary>
+            /// Generates a ShadowSocks proxy config payload with plugin options.
+            /// </summary>
+            /// <param name="hostname">Hostname of the ShadowSocks proxy</param>
+            /// <param name="port">Port of the ShadowSocks proxy</param>
+            /// <param name="password">Password of the SS proxy</param>
+            /// <param name="method">Encryption type</param>
+            /// <param name="plugin">Plugin name</param>
+            /// <param name="pluginOption">Plugin option</param>
+            /// <param name="tag">Optional tag line</param>
             public ShadowSocksConfig(string hostname, int port, string password, Method method, string plugin, string pluginOption, string tag = null) :
                 this(hostname, port, password, method, new Dictionary<string, string>
                 {
@@ -124,6 +137,15 @@ namespace QRCoder
                 return j;
             }
 
+            /// <summary>
+            /// Generates a ShadowSocks proxy config payload with additional parameters.
+            /// </summary>
+            /// <param name="hostname">Hostname of the ShadowSocks proxy</param>
+            /// <param name="port">Port of the ShadowSocks proxy</param>
+            /// <param name="password">Password of the SS proxy</param>
+            /// <param name="method">Encryption type</param>
+            /// <param name="parameters">Additional parameters</param>
+            /// <param name="tag">Optional tag line</param>
             public ShadowSocksConfig(string hostname, int port, string password, Method method, Dictionary<string, string> parameters, string tag = null)
             {
                 this.hostname = Uri.CheckHostName(hostname) == UriHostNameType.IPv6
@@ -145,6 +167,10 @@ namespace QRCoder
                         ).ToArray());
             }
 
+            /// <summary>
+            /// Converts the ShadowSocks config payload to a string.
+            /// </summary>
+            /// <returns>A string representation of the ShadowSocks config payload.</returns>
             public override string ToString()
             {
                 if (string.IsNullOrEmpty(parameter))
@@ -161,6 +187,9 @@ namespace QRCoder
                 return $"ss://{authStringEncoded}@{hostname}:{port}/?{parameter}{(!string.IsNullOrEmpty(tag) ? $"#{tag}" : string.Empty)}";
             }
 
+            /// <summary>
+            /// Specifies the encryption methods used by ShadowSocks.
+            /// </summary>
             public enum Method
             {
                 // AEAD
@@ -198,7 +227,7 @@ namespace QRCoder
                 BfCfb,
                 Rc4Md5,
                 Salsa20,
-                // Not standard and not in acitve use
+                // Not standard and not in active use
                 DesCfb,
                 IdeaCfb,
                 Rc2Cfb,
@@ -209,17 +238,32 @@ namespace QRCoder
                 Table
             }
 
+            /// <summary>
+            /// Represents errors that occur during the generation of a ShadowSocksConfig payload.
+            /// </summary>
             public class ShadowSocksConfigException : Exception
             {
+                /// <summary>
+                /// Initializes a new instance of the <see cref="ShadowSocksConfigException"/> class.
+                /// </summary>
                 public ShadowSocksConfigException()
                 {
                 }
 
+                /// <summary>
+                /// Initializes a new instance of the <see cref="ShadowSocksConfigException"/> class with a specified error message.
+                /// </summary>
+                /// <param name="message">The message that describes the error.</param>
                 public ShadowSocksConfigException(string message)
                     : base(message)
                 {
                 }
 
+                /// <summary>
+                /// Initializes a new instance of the <see cref="ShadowSocksConfigException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+                /// </summary>
+                /// <param name="message">The message that describes the error.</param>
+                /// <param name="inner">The exception that is the cause of the current exception.</param>
                 public ShadowSocksConfigException(string message, Exception inner)
                     : base(message, inner)
                 {

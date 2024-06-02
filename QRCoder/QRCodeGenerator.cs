@@ -11,6 +11,9 @@ using System.Text;
 
 namespace QRCoder
 {
+    /// <summary>
+    /// Provides functionality to generate QR code data that can be used to create QR code images.
+    /// </summary>
     public partial class QRCodeGenerator : IDisposable
     {
         private static readonly char[] alphanumEncTable = { ' ', '$', '%', '*', '+', '-', '.', '/', ':' };
@@ -1391,6 +1394,7 @@ namespace QRCoder
             return localCapacityTable;
         }
 
+        /// <inheritdoc cref="IDisposable.Dispose"/>
         public void Dispose()
         {
             // left for back-compat

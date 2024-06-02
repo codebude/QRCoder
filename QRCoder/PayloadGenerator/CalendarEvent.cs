@@ -4,35 +4,38 @@ namespace QRCoder
 {
     public static partial class PayloadGenerator
     {
+        /// <summary>
+        /// Generates a calendar entry/event payload.
+        /// </summary>
         public class CalendarEvent : Payload
         {
             private readonly string subject, description, location, start, end;
             private readonly EventEncoding encoding;
 
             /// <summary>
-            /// Generates a calender entry/event payload.
+            /// Initializes a new instance of the <see cref="CalendarEvent"/> class.
             /// </summary>
-            /// <param name="subject">Subject/title of the calender event</param>
-            /// <param name="description">Description of the event</param>
-            /// <param name="location">Location (lat:long or address) of the event</param>
-            /// <param name="start">Start time (incl. UTC offset) of the event</param>
-            /// <param name="end">End time (incl. UTC offset) of the event</param>
-            /// <param name="allDayEvent">Is it a full day event?</param>
-            /// <param name="encoding">Type of encoding (universal or iCal)</param>
+            /// <param name="subject">Subject/title of the calendar event.</param>
+            /// <param name="description">Description of the event.</param>
+            /// <param name="location">Location (latitude:longitude or address) of the event.</param>
+            /// <param name="start">Start time (including UTC offset) of the event.</param>
+            /// <param name="end">End time (including UTC offset) of the event.</param>
+            /// <param name="allDayEvent">Indicates if it is a full day event.</param>
+            /// <param name="encoding">Type of encoding (universal or iCal).</param>
             public CalendarEvent(string subject, string description, string location, DateTimeOffset start, DateTimeOffset end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal) : this(subject, description, location, start.UtcDateTime, end.UtcDateTime, allDayEvent, encoding)
             {
             }
 
             /// <summary>
-            /// Generates a calender entry/event payload.
+            /// Initializes a new instance of the <see cref="CalendarEvent"/> class.
             /// </summary>
-            /// <param name="subject">Subject/title of the calender event</param>
-            /// <param name="description">Description of the event</param>
-            /// <param name="location">Location (lat:long or address) of the event</param>
-            /// <param name="start">Start time of the event</param>
-            /// <param name="end">End time of the event</param>
-            /// <param name="allDayEvent">Is it a full day event?</param>
-            /// <param name="encoding">Type of encoding (universal or iCal)</param>
+            /// <param name="subject">Subject/title of the calendar event.</param>
+            /// <param name="description">Description of the event.</param>
+            /// <param name="location">Location (latitude:longitude or address) of the event.</param>
+            /// <param name="start">Start time of the event.</param>
+            /// <param name="end">End time of the event.</param>
+            /// <param name="allDayEvent">Indicates if it is a full day event.</param>
+            /// <param name="encoding">Type of encoding (universal or iCal).</param>
             public CalendarEvent(string subject, string description, string location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
             {
                 this.subject = subject;
@@ -47,11 +50,15 @@ namespace QRCoder
                         dtFormatStart = "yyyyMMddTHHmmssZ";
                     if (end.Kind == DateTimeKind.Utc)
                         dtFormatEnd = "yyyyMMddTHHmmssZ";
-                }                
+                }
                 this.start = start.ToString(dtFormatStart);
                 this.end = end.ToString(dtFormatEnd);
             }
 
+            /// <summary>
+            /// Returns a string representation of the calendar event payload.
+            /// </summary>
+            /// <returns>A string representation of the calendar event in the VEVENT format.</returns>
             public override string ToString()
             {
                 var vEvent = $"BEGIN:VEVENT{Environment.NewLine}";
@@ -68,9 +75,19 @@ namespace QRCoder
                 return vEvent;
             }
 
+            /// <summary>
+            /// Specifies the encoding type for the calendar event.
+            /// </summary>
             public enum EventEncoding
             {
+                /// <summary>
+                /// iCalendar complete encoding.
+                /// </summary>
                 iCalComplete,
+
+                /// <summary>
+                /// Universal encoding.
+                /// </summary>
                 Universal
             }
         }
