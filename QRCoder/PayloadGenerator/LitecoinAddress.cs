@@ -4,7 +4,7 @@
     {
         public class LitecoinAddress : BitcoinLikeCryptoCurrencyAddress
         {
-            public LitecoinAddress(string address, double? amount, string label = null, string message = null)
+            public LitecoinAddress(string address, double? amount, string? label = null, string? message = null)
                 : base(BitcoinLikeCryptoCurrencyType.Litecoin, address, amount, label, message) { }
         }
     }

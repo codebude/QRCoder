@@ -5,6 +5,7 @@
         protected QRCodeData QrCodeData { get; set; }
 
         protected AbstractQRCode() {
+            this.QrCodeData = null!;
         }
 
         protected AbstractQRCode(QRCodeData data) {
@@ -22,7 +23,7 @@
         public void Dispose()
         {
             this.QrCodeData?.Dispose();
-            this.QrCodeData = null;
+            this.QrCodeData = null!;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace QRCoder
         /// </summary>
         /// <param name="backgroundImage">A bitmap object that will be used as background picture</param>
         /// <returns>QRCode graphic as bitmap</returns>
-        public Bitmap GetGraphic(Bitmap backgroundImage = null)
+        public Bitmap GetGraphic(Bitmap? backgroundImage = null)
         {
             return this.GetGraphic(10, Color.Black, Color.White, Color.Transparent, backgroundImage: backgroundImage);
         }
@@ -59,9 +59,9 @@ namespace QRCoder
         /// <param name="backgroundImageStyle">Style of the background image (if set). Fill=spanning complete graphic; DataAreaOnly=Don't paint background into quietzone</param>
         /// <param name="finderPatternImage">Optional image that should be used instead of the default finder patterns</param>
         /// <returns>QRCode graphic as bitmap</returns>
-        public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Color backgroundColor, Bitmap backgroundImage = null, double pixelSizeFactor = 1, 
+        public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Color backgroundColor, Bitmap? backgroundImage = null, double pixelSizeFactor = 1, 
                                  bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Dotted, 
-                                 BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap finderPatternImage = null)
+                                 BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap? finderPatternImage = null)
         {
             if (pixelSizeFactor > 1)
                 throw new Exception("The parameter pixelSize must be between 0 and 1. (0-100%)");
@@ -211,8 +211,6 @@ namespace QRCoder
         /// <returns>Resized image as bitmap</returns>
         private Bitmap Resize(Bitmap image, int newSize)
         {
-            if (image == null) return null;
-
             float scale = Math.Min((float)newSize / image.Width, (float)newSize / image.Height);
             var scaledWidth = (int)(image.Width * scale);
             var scaledHeight = (int)(image.Height * scale);
@@ -284,9 +282,9 @@ namespace QRCoder
         /// <param name="finderPatternImage">Optional image that should be used instead of the default finder patterns</param>
         /// <returns>QRCode graphic as bitmap</returns>
         public static Bitmap GetQRCode(string plainText, int pixelsPerModule, Color darkColor, Color lightColor, Color backgroundColor, ECCLevel eccLevel, bool forceUtf8 = false, 
-                                       bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap backgroundImage = null, double pixelSizeFactor = 1.0,
+                                       bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap? backgroundImage = null, double pixelSizeFactor = 1.0,
                                        bool drawQuietZones = true, QuietZoneStyle quietZoneRenderingStyle = QuietZoneStyle.Flat, 
-                                       BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap finderPatternImage = null)
+                                       BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap? finderPatternImage = null)
         {
             using (var qrGenerator = new QRCodeGenerator())
             using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))

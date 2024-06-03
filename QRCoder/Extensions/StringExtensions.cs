@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace QRCoder
 {
     internal static class StringExtensions
@@ -8,7 +10,9 @@ namespace QRCoder
         /// <returns>
         ///   <see langword="true"/> if the <paramref name="value"/> is null, empty, or white space; otherwise, <see langword="false"/>.
         /// </returns>
-        public static bool IsNullOrWhiteSpace(this string value)
+        public static bool IsNullOrWhiteSpace(
+            [NotNullWhen(false)]
+            this string? value)
         {
 #if NET35
             if (value == null) return true;

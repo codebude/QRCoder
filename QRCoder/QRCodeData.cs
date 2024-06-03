@@ -174,7 +174,7 @@ namespace QRCoder
 
         public void Dispose()
         {
-            this.ModuleMatrix = null;
+            this.ModuleMatrix = null!;
             this.Version = 0;
 
         }
