@@ -11,22 +11,22 @@ namespace QRCoder
         {
             private readonly string firstname;
             private readonly string lastname;
-            private readonly string nickname;
-            private readonly string org;
-            private readonly string orgTitle;
-            private readonly string phone;
-            private readonly string mobilePhone;
-            private readonly string workPhone;
-            private readonly string email;
+            private readonly string? nickname;
+            private readonly string? org;
+            private readonly string? orgTitle;
+            private readonly string? phone;
+            private readonly string? mobilePhone;
+            private readonly string? workPhone;
+            private readonly string? email;
             private readonly DateTime? birthday;
-            private readonly string website;
-            private readonly string street;
-            private readonly string houseNumber;
-            private readonly string city;
-            private readonly string zipCode;
-            private readonly string stateRegion;
-            private readonly string country;
-            private readonly string note;
+            private readonly string? website;
+            private readonly string? street;
+            private readonly string? houseNumber;
+            private readonly string? city;
+            private readonly string? zipCode;
+            private readonly string? stateRegion;
+            private readonly string? country;
+            private readonly string? note;
             private readonly ContactOutputType outputType;
             private readonly AddressOrder addressOrder;
 
@@ -53,9 +53,9 @@ namespace QRCoder
             /// <param name="addressOrder">The address order format to use.</param>
             /// <param name="note">Memo text / notes.</param>            
             /// <param name="org">Organization/Company.</param>            
-            /// <param name="orgTitle">Organization/Company Title.</param>            
-            public ContactData(ContactOutputType outputType, string firstname, string lastname, string nickname = null, string phone = null, string mobilePhone = null, string workPhone = null, string email = null, DateTime? birthday = null, string website = null, string street = null, string houseNumber = null, string city = null, string zipCode = null, string country = null, string note = null, string stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string org = null, string orgTitle = null)
-            {
+            /// <param name="orgTitle">Organization/Company Title.</param> 
+            public ContactData(ContactOutputType outputType, string firstname, string lastname, string? nickname = null, string? phone = null, string? mobilePhone = null, string? workPhone = null, string? email = null, DateTime? birthday = null, string? website = null, string? street = null, string? houseNumber = null, string? city = null, string? zipCode = null, string? country = null, string? note = null, string? stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string? org = null, string? orgTitle = null)
+            {             
                 this.firstname = firstname;
                 this.lastname = lastname;
                 this.nickname = nickname;

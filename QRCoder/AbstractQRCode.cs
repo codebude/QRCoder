@@ -15,6 +15,7 @@
         /// Initializes a new instance of the AbstractQRCode class.
         /// </summary>
         protected AbstractQRCode() {
+            this.QrCodeData = null!;
         }
 
         /// <summary>
@@ -40,7 +41,7 @@
         public void Dispose()
         {
             this.QrCodeData?.Dispose();
-            this.QrCodeData = null;
+            this.QrCodeData = null!;
         }
     }
 }

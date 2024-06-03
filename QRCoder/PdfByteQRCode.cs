@@ -70,7 +70,7 @@ namespace QRCoder
         /// <returns>Returns the QR code graphic as a PDF byte array.</returns>
         public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85)
         {
-            byte[] jpgArray = null, pngArray = null;
+            byte[] jpgArray, pngArray;
             var imgSize = QrCodeData.ModuleMatrix.Count * pixelsPerModule;
             var pdfMediaSize = (imgSize * 72 / dpi).ToString(CultureInfo.InvariantCulture);
 

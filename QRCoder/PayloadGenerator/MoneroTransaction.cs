@@ -9,7 +9,8 @@ namespace QRCoder
         /// </summary>
         public class MoneroTransaction : Payload
         {
-            private readonly string address, txPaymentId, recipientName, txDescription;
+            private readonly string address;
+            private readonly string? txPaymentId, recipientName, txDescription;
             private readonly float? txAmount;
 
             /// <summary>
@@ -21,7 +22,7 @@ namespace QRCoder
             /// <param name="recipientName">Recipient's name.</param>
             /// <param name="txDescription">Reference text / payment description.</param>
             /// <exception cref="MoneroTransactionException">Thrown when the address is null or empty, or when the txAmount is less than or equal to 0.</exception>
-            public MoneroTransaction(string address, float? txAmount = null, string txPaymentId = null, string recipientName = null, string txDescription = null)
+            public MoneroTransaction(string address, float? txAmount = null, string? txPaymentId = null, string? recipientName = null, string? txDescription = null)
             {
                 if (string.IsNullOrEmpty(address))
                     throw new MoneroTransactionException("The address is mandatory and has to be set.");
@@ -43,7 +44,7 @@ namespace QRCoder
                 var moneroUri = $"monero://{address}{(!string.IsNullOrEmpty(txPaymentId) || !string.IsNullOrEmpty(recipientName) || !string.IsNullOrEmpty(txDescription) || txAmount != null ? "?" : string.Empty)}";
                 moneroUri += (!string.IsNullOrEmpty(txPaymentId) ? $"tx_payment_id={Uri.EscapeDataString(txPaymentId)}&" : string.Empty);
                 moneroUri += (!string.IsNullOrEmpty(recipientName) ? $"recipient_name={Uri.EscapeDataString(recipientName)}&" : string.Empty);
-                moneroUri += (txAmount != null ? $"tx_amount={txAmount.ToString().Replace(",",".")}&" : string.Empty);
+                moneroUri += (txAmount != null ? $"tx_amount={txAmount.ToString()!.Replace(",",".")}&" : string.Empty);
                 moneroUri += (!string.IsNullOrEmpty(txDescription) ? $"tx_description={Uri.EscapeDataString(txDescription)}" : string.Empty);
                 return moneroUri.TrimEnd('&');
             }

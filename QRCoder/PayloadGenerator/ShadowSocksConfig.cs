@@ -12,7 +12,8 @@ namespace QRCoder
         /// </summary>
         public class ShadowSocksConfig : Payload
         {
-            private readonly string hostname, password, tag, methodStr, parameter;
+            private readonly string hostname, password, methodStr;
+            private readonly string? tag, parameter;
             private readonly Method method;
             private readonly int port;
             private Dictionary<string, string> encryptionTexts = new Dictionary<string, string>() {
@@ -69,7 +70,7 @@ namespace QRCoder
             /// <param name="password">Password of the SS proxy</param>
             /// <param name="method">Encryption type</param>
             /// <param name="tag">Optional tag line</param>
-            public ShadowSocksConfig(string hostname, int port, string password, Method method, string tag = null) :
+            public ShadowSocksConfig(string hostname, int port, string password, Method method, string? tag = null) :
                 this(hostname, port, password, method, null, tag)
             { }
 
@@ -83,7 +84,7 @@ namespace QRCoder
             /// <param name="plugin">Plugin name</param>
             /// <param name="pluginOption">Plugin option</param>
             /// <param name="tag">Optional tag line</param>
-            public ShadowSocksConfig(string hostname, int port, string password, Method method, string plugin, string pluginOption, string tag = null) :
+            public ShadowSocksConfig(string hostname, int port, string password, Method method, string plugin, string? pluginOption, string? tag = null) :
                 this(hostname, port, password, method, new Dictionary<string, string>
                 {
                     ["plugin"] = plugin + (
@@ -146,7 +147,7 @@ namespace QRCoder
             /// <param name="method">Encryption type</param>
             /// <param name="parameters">Additional parameters</param>
             /// <param name="tag">Optional tag line</param>
-            public ShadowSocksConfig(string hostname, int port, string password, Method method, Dictionary<string, string> parameters, string tag = null)
+            public ShadowSocksConfig(string hostname, int port, string password, Method method, Dictionary<string, string>? parameters, string? tag = null)
             {
                 this.hostname = Uri.CheckHostName(hostname) == UriHostNameType.IPv6
                     ? $"[{hostname}]"

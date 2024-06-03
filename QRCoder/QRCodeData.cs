@@ -220,7 +220,7 @@ namespace QRCoder
         /// </summary>
         public void Dispose()
         {
-            this.ModuleMatrix = null;
+            this.ModuleMatrix = null!;
             this.Version = 0;
 
         }

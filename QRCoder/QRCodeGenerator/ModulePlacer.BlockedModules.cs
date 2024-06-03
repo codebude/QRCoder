@@ -15,7 +15,7 @@ namespace QRCoder
             {
                 private readonly BitArray[] _blockedModules;
 
-                private static BitArray[] _staticBlockedModules;
+                private static BitArray[]? _staticBlockedModules;
 
                 /// <summary>
                 /// Initializes a new instance of the <see cref="BlockedModules"/> struct with a specified capacity.
@@ -23,7 +23,7 @@ namespace QRCoder
                 /// <param name="capacity">The initial capacity of the blocked modules list.</param>
                 public BlockedModules(int size)
                 {
-                    _blockedModules = Interlocked.Exchange(ref _staticBlockedModules, null);
+                    _blockedModules = Interlocked.Exchange(ref _staticBlockedModules, null)!;
                     if (_blockedModules != null && _blockedModules.Length >= size)
                     {
                         for (int i = 0; i < size; i++)

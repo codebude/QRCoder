@@ -15,7 +15,7 @@
             /// <param name="amount">The amount of Bitcoin Cash to transfer.</param>
             /// <param name="label">A reference label.</param>
             /// <param name="message">A reference text or message.</param>
-            public BitcoinCashAddress(string address, double? amount, string label = null, string message = null)
+            public BitcoinCashAddress(string address, double? amount, string? label = null, string? message = null)
                 : base(BitcoinLikeCryptoCurrencyType.BitcoinCash, address, amount, label, message) { }
         }
     }

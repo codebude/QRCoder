@@ -90,7 +90,7 @@ namespace QRCoder
 
                 // Temporary QRCodeData object to test different mask patterns without altering the original.
                 var qrTemp = new QRCodeData(version, false);
-                BitArray versionString = null;
+                BitArray? versionString = null;
                 if (version >= 7)
                 {
                     versionString = new BitArray(18);
@@ -115,7 +115,7 @@ namespace QRCoder
                     ModulePlacer.PlaceFormat(qrTemp, formatStr, false);
 
                     // Place version information if applicable.
-                    if (version >= 7)
+                    if (versionString != null) // aka if (version >= 7)
                     {
                         ModulePlacer.PlaceVersion(qrTemp, versionString, false);
                     }

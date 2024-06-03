@@ -20,7 +20,7 @@ namespace QRCoder
             /// <summary>
             /// The secret key used for OTP generation.
             /// </summary>
-            public string Secret { get; set; }
+            public string Secret { get; set; } = null!;
 
             /// <summary>
             /// The hashing algorithm used for OTP (SHA1, SHA256, SHA512).
@@ -40,12 +40,12 @@ namespace QRCoder
             /// <summary>
             /// The issuer of the OTP (usually the service or company name).
             /// </summary>
-            public string Issuer { get; set; }
+            public string? Issuer { get; set; }
 
             /// <summary>
             /// The label for the OTP (usually the user's email or username).
             /// </summary>
-            public string Label { get; set; }
+            public string? Label { get; set; }
 
             /// <summary>
             /// The number of digits in the OTP (default is 6).
@@ -159,9 +159,9 @@ namespace QRCoder
                     throw new Exception("Secret must be a filled out base32 encoded string");
                 }
                 string strippedSecret = Secret.Replace(" ", "");
-                string escapedIssuer = null;
-                string escapedLabel = null;
-                string label = null;
+                string? escapedIssuer = null;
+                string? escapedLabel = null;
+                string? label = null;
 
                 if (!Issuer.IsNullOrWhiteSpace())
                 {

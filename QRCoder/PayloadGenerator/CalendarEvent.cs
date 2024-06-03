@@ -9,7 +9,8 @@ namespace QRCoder
         /// </summary>
         public class CalendarEvent : Payload
         {
-            private readonly string subject, description, location, start, end;
+            private readonly string subject, start, end;
+            private readonly string? description, location;
             private readonly EventEncoding encoding;
 
             /// <summary>
@@ -22,7 +23,7 @@ namespace QRCoder
             /// <param name="end">End time (including UTC offset) of the event.</param>
             /// <param name="allDayEvent">Indicates if it is a full day event.</param>
             /// <param name="encoding">Type of encoding (universal or iCal).</param>
-            public CalendarEvent(string subject, string description, string location, DateTimeOffset start, DateTimeOffset end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal) : this(subject, description, location, start.UtcDateTime, end.UtcDateTime, allDayEvent, encoding)
+            public CalendarEvent(string subject, string? description, string? location, DateTimeOffset start, DateTimeOffset end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal) : this(subject, description, location, start.UtcDateTime, end.UtcDateTime, allDayEvent, encoding)
             {
             }
 
@@ -36,7 +37,7 @@ namespace QRCoder
             /// <param name="end">End time of the event.</param>
             /// <param name="allDayEvent">Indicates if it is a full day event.</param>
             /// <param name="encoding">Type of encoding (universal or iCal).</param>
-            public CalendarEvent(string subject, string description, string location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
+            public CalendarEvent(string subject, string? description, string? location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
             {
                 this.subject = subject;
                 this.description = description;

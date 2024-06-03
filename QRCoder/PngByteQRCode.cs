@@ -150,7 +150,7 @@ namespace QRCoder
             public void Dispose()
             {
                 this.stream?.Dispose();
-                this.stream = null;
+                this.stream = null!;
             }
 
             public byte[] GetBytes()

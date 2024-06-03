@@ -102,7 +102,7 @@ namespace QRCoder
         /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
         /// <param name="iconBackgroundColor">The background color of the icon.</param>
         /// <returns>Returns the QR code graphic as a bitmap.</returns>
-        public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon=null, int iconSizePercent=15, int iconBorderWidth = 0, bool drawQuietZones = true, Color? iconBackgroundColor = null)
+        public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true, Color? iconBackgroundColor = null)
         {
             var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
             var offset = drawQuietZones ? 0 : 4 * pixelsPerModule;
@@ -123,14 +123,14 @@ namespace QRCoder
                     for (var y = 0; y < size + offset; y = y + pixelsPerModule)
                     {
                         var moduleBrush = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1] ? darkBrush : lightBrush;
-                        gfx.FillRectangle(moduleBrush , new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
+                        gfx.FillRectangle(moduleBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
                     }
                 }
 
                 if (drawIconFlag)
                 {
                     float iconDestWidth = iconSizePercent * bmp.Width / 100f;
-                    float iconDestHeight = drawIconFlag ? iconDestWidth * icon.Height / icon.Width : 0;
+                    float iconDestHeight = drawIconFlag ? iconDestWidth * icon!.Height / icon.Width : 0;
                     float iconX = (bmp.Width - iconDestWidth) / 2;
                     float iconY = (bmp.Height - iconDestHeight) / 2;
                     var centerDest = new RectangleF(iconX - iconBorderWidth, iconY - iconBorderWidth, iconDestWidth + iconBorderWidth * 2, iconDestHeight + iconBorderWidth * 2);
@@ -144,7 +144,7 @@ namespace QRCoder
                             gfx.FillPath(iconBgBrush, iconPath);
                         }
                     }
-                    gfx.DrawImage(icon, iconDestRect, new RectangleF(0, 0, icon.Width, icon.Height), GraphicsUnit.Pixel);
+                    gfx.DrawImage(icon!, iconDestRect, new RectangleF(0, 0, icon!.Width, icon.Height), GraphicsUnit.Pixel);
                 }
 
                 gfx.Save();
@@ -200,7 +200,7 @@ namespace QRCoder
         /// <param name="iconBorderWidth">The width of the border around the icon.</param>
         /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
         /// <returns>Returns the QR code graphic as a bitmap.</returns>
-        public static Bitmap GetQRCode(string plainText, int pixelsPerModule, Color darkColor, Color lightColor, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true)
+        public static Bitmap GetQRCode(string plainText, int pixelsPerModule, Color darkColor, Color lightColor, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true)
         {
             using (var qrGenerator = new QRCodeGenerator())
             using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))

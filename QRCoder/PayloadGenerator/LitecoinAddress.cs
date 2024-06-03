@@ -15,7 +15,7 @@
             /// <param name="amount">The amount of Litecoin to transfer.</param>
             /// <param name="label">A reference label.</param>
             /// <param name="message">A reference text or message.</param>
-            public LitecoinAddress(string address, double? amount, string label = null, string message = null)
+            public LitecoinAddress(string address, double? amount, string? label = null, string? message = null)
                 : base(BitcoinLikeCryptoCurrencyType.Litecoin, address, amount, label, message) { }
         }
     }

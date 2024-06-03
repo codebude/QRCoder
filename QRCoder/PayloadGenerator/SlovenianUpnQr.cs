@@ -96,7 +96,7 @@ namespace QRCoder
                 _amount = FormatAmount(amount);
                 _code = LimitLength(code.Trim().ToUpper(), 4);
                 _purpose = LimitLength(description.Trim(), 42);
-                _deadLine = (deadline == null) ? "" : deadline?.ToString("dd.MM.yyyy");
+                _deadLine = (deadline == null) ? "" : deadline.Value.ToString("dd.MM.yyyy");
                 _recipientIban = LimitLength(recipientIban.Trim(), 34);
                 _recipientName = LimitLength(recipientName.Trim(), 33);
                 _recipientAddress = LimitLength(recipientAddress.Trim(), 33);
