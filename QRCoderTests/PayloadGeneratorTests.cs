@@ -1225,7 +1225,7 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
-            exception.Message.ShouldBe("Amount has to at least 0.01 and must be smaller or equal to 999999999.99.");
+            exception.Message.ShouldBe("Amount has to be at least 0.01 and must be smaller or equal to 999999999.99.");
         }
 
 
@@ -1248,7 +1248,7 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
-            exception.Message.ShouldBe("Amount has to at least 0.01 and must be smaller or equal to 999999999.99.");
+            exception.Message.ShouldBe("Amount has to be at least 0.01 and must be smaller or equal to 999999999.99.");
         }
 
 
@@ -1291,7 +1291,7 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
-            exception.Message.ShouldBe("Unstructured reference texts have to shorter than 141 chars.");
+            exception.Message.ShouldBe("Unstructured reference texts have to be shorter than 141 chars.");
         }
 
         [Fact]
@@ -1312,7 +1312,7 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
-            exception.Message.ShouldBe("Structured reference texts have to shorter than 36 chars.");
+            exception.Message.ShouldBe("Structured reference texts have to be shorter than 36 chars.");
         }
 
         [Fact]
@@ -1333,7 +1333,7 @@ namespace QRCoderTests
 
             Assert.NotNull(exception);
             Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
-            exception.Message.ShouldBe("Message to the Girocode-User reader texts have to shorter than 71 chars.");
+            exception.Message.ShouldBe("Message to the Girocode-User reader texts have to be shorter than 71 chars.");
         }
 
         [Fact]

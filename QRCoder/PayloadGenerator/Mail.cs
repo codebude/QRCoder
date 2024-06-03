@@ -6,18 +6,21 @@ namespace QRCoder
 {
     public static partial class PayloadGenerator
     {
+        /// <summary>
+        /// Generates an email payload that can be used to create a QR code for sending an email.
+        /// </summary>
         public class Mail : Payload
         {
             private readonly string? mailReceiver, subject, message;
             private readonly MailEncoding encoding;
 
-          
+
             /// <summary>
-            /// Creates an email payload with subject and message/text
+            /// Creates an email payload with subject and message/text.
             /// </summary>
-            /// <param name="mailReceiver">Receiver's email address</param>
-            /// <param name="subject">Subject line of the email</param>
-            /// <param name="message">Message content of the email</param>
+            /// <param name="mailReceiver">Receiver's email address.</param>
+            /// <param name="subject">Subject line of the email.</param>
+            /// <param name="message">Message content of the email.</param>
             /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
             public Mail(string? mailReceiver = null, string? subject = null, string? message = null, MailEncoding encoding = MailEncoding.MAILTO)
             {
@@ -27,6 +30,10 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
+            /// <summary>
+            /// Returns the email payload as a string.
+            /// </summary>
+            /// <returns>The email payload as a string.</returns>
             public override string ToString()
             {
                 var returnVal = string.Empty;
@@ -51,10 +58,24 @@ namespace QRCoder
                 return returnVal;
             }
 
+            /// <summary>
+            /// Defines the encoding types for the email payload.
+            /// </summary>
             public enum MailEncoding
             {
+                /// <summary>
+                /// Uses the "mailto:" URI scheme.
+                /// </summary>
                 MAILTO,
+
+                /// <summary>
+                /// Uses the "MATMSG:" format.
+                /// </summary>
                 MATMSG,
+
+                /// <summary>
+                /// Uses the "SMTP:" format.
+                /// </summary>
                 SMTP
             }
         }

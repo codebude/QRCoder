@@ -5,6 +5,9 @@ using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder
 {
+    /// <summary>
+    /// Represents an ASCII-style QR code generator that provides functionality to render QR codes as textual representations.
+    /// </summary>
     public class AsciiQRCode : AbstractQRCode, IDisposable
     {
         /// <summary>
@@ -124,6 +127,9 @@ namespace QRCoder
     }
 
 
+    /// <summary>
+    /// Provides static methods for generating ASCII-style QR codes.
+    /// </summary>
     public static class AsciiQRCodeHelper
     {
         public static string GetQRCode(string plainText, int pixelsPerModule, string darkColorString, string whiteSpaceString, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, string endOfLine = "\n", bool drawQuietZones = true)

@@ -7,6 +7,9 @@ namespace QRCoder
 {
     public static partial class PayloadGenerator
     {
+        /// <summary>
+        /// Generates the payload for a SwissQrCode.
+        /// </summary>
         public class SwissQrCode : Payload
         {
             //Keep in mind, that the ECC level has to be set to "M" when generating a SwissQrCode!
@@ -26,7 +29,9 @@ namespace QRCoder
             private readonly Reference reference;
             private readonly AdditionalInformation additionalInformation;
 
+            /// <inheritdoc/>
             public override QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
+            /// <inheritdoc/>
             public override QRCodeGenerator.EciMode EciMode { get { return QRCodeGenerator.EciMode.Utf8; } }
 
             /// <summary>
@@ -73,6 +78,9 @@ namespace QRCoder
                 this.alternativeProcedure2 = alternativeProcedure2;
             }
 
+            /// <summary>
+            /// Represents additional information for the SwissQrCode.
+            /// </summary>
             public class AdditionalInformation
             {
                 private readonly string trailer;
@@ -92,33 +100,57 @@ namespace QRCoder
                     this.trailer = "EPD";
                 }
 
+                /// <summary>
+                /// Gets the unstructured message.
+                /// </summary>
                 public string? UnstructureMessage
                 {
                     get { return !string.IsNullOrEmpty(unstructuredMessage) ? unstructuredMessage!.Replace("\n", "") : null; }
                 }
-                
+
+                /// <summary>
+                /// Gets the bill information.
+                /// </summary>
                 public string? BillInformation
                 {
                     get { return !string.IsNullOrEmpty(billInformation) ? billInformation!.Replace("\n", "") : null; }
                 }
-                
+
+                /// <summary>
+                /// Gets the trailer.
+                /// </summary>
                 public string Trailer
                 {
                     get { return trailer; }
                 }
 
 
+                /// <summary>
+                /// Represents exceptions specific to SwissQrCode additional information.
+                /// </summary>
                 public class SwissQrCodeAdditionalInformationException : Exception
                 {
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeAdditionalInformationException"/> class.
+                    /// </summary>
                     public SwissQrCodeAdditionalInformationException()
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeAdditionalInformationException"/> class with a specified error message.
+                    /// </summary>
+                    /// <param name="message">The message that describes the error.</param>
                     public SwissQrCodeAdditionalInformationException(string message)
                         : base(message)
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeAdditionalInformationException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+                    /// </summary>
+                    /// <param name="message">The error message that explains the reason for the exception.</param>
+                    /// <param name="inner">The exception that is the cause of the current exception.</param>
                     public SwissQrCodeAdditionalInformationException(string message, Exception inner)
                         : base(message, inner)
                     {
@@ -126,6 +158,9 @@ namespace QRCoder
                 }
             }
 
+            /// <summary>
+            /// Represents reference information for the SwissQrCode.
+            /// </summary>
             public class Reference
             {
                 private readonly ReferenceType referenceType;
@@ -159,42 +194,81 @@ namespace QRCoder
                     this.reference = reference;                   
                 }
 
+                /// <summary>
+                /// Gets the reference type.
+                /// </summary>
                 public ReferenceType RefType {
                     get { return referenceType; }
                 }
 
+                /// <summary>
+                /// Gets the reference text.
+                /// </summary>
                 public string? ReferenceText
                 {
                     get { return !string.IsNullOrEmpty(reference) ? reference!.Replace("\n", "") : null; }
                 }
-                
+
                 /// <summary>
-                /// Reference type. When using a QR-IBAN you have to use either "QRR" or "SCOR"
+                /// Reference type. When using a QR-IBAN you have to use either "QRR" or "SCOR".
                 /// </summary>
                 public enum ReferenceType
                 {
+                    /// <summary>
+                    /// QR Reference
+                    /// </summary>
                     QRR,
+                    /// <summary>
+                    /// Creditor Reference
+                    /// </summary>
                     SCOR,
+                    /// <summary>
+                    /// No Reference
+                    /// </summary>
                     NON
                 }
 
+                /// <summary>
+                /// Represents the text type for the reference.
+                /// </summary>
                 public enum ReferenceTextType
                 {
+                    /// <summary>
+                    /// QR Reference Text
+                    /// </summary>
                     QrReference,
+                    /// <summary>
+                    /// Creditor Reference ISO 11649
+                    /// </summary>
                     CreditorReferenceIso11649
                 }
 
+                /// <summary>
+                /// Represents exceptions specific to SwissQrCode references.
+                /// </summary>
                 public class SwissQrCodeReferenceException : Exception
                 {
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeReferenceException"/> class.
+                    /// </summary>
                     public SwissQrCodeReferenceException()
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeReferenceException"/> class with a specified error message.
+                    /// </summary>
+                    /// <param name="message">The message that describes the error.</param>
                     public SwissQrCodeReferenceException(string message)
                         : base(message)
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeReferenceException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+                    /// </summary>
+                    /// <param name="message">The error message that explains the reason for the exception.</param>
+                    /// <param name="inner">The exception that is the cause of the current exception.</param>
                     public SwissQrCodeReferenceException(string message, Exception inner)
                         : base(message, inner)
                     {
@@ -202,6 +276,9 @@ namespace QRCoder
                 }
             }
 
+            /// <summary>
+            /// Represents an IBAN with type information.
+            /// </summary>
             public class Iban
             {
                 private string iban;
@@ -224,33 +301,64 @@ namespace QRCoder
                     this.ibanType = ibanType;
                 }
 
+                /// <summary>
+                /// Gets a value indicating whether this is a QR-IBAN.
+                /// </summary>
                 public bool IsQrIban
                 {
                     get { return ibanType == IbanType.QrIban; }
                 }
 
+                /// <summary>
+                /// Converts the IBAN object to its string representation.
+                /// </summary>
+                /// <returns>A string representation of the IBAN.</returns>
                 public override string ToString()
                 {
                     return iban.Replace("-", "").Replace("\n", "").Replace(" ","");
                 }
 
+                /// <summary>
+                /// Represents the type of IBAN.
+                /// </summary>
                 public enum IbanType
                 {
+                    /// <summary>
+                    /// Regular IBAN
+                    /// </summary>
                     Iban,
+                    /// <summary>
+                    /// QR-IBAN
+                    /// </summary>
                     QrIban
                 }
 
+                /// <summary>
+                /// Represents exceptions specific to SwissQrCode IBANs.
+                /// </summary>
                 public class SwissQrCodeIbanException : Exception
                 {
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeIbanException"/> class.
+                    /// </summary>
                     public SwissQrCodeIbanException()
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeIbanException"/> class with a specified error message.
+                    /// </summary>
+                    /// <param name="message">The message that describes the error.</param>
                     public SwissQrCodeIbanException(string message)
                         : base(message)
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeIbanException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+                    /// </summary>
+                    /// <param name="message">The error message that explains the reason for the exception.</param>
+                    /// <param name="inner">The exception that is the cause of the current exception.</param>
                     public SwissQrCodeIbanException(string message, Exception inner)
                         : base(message, inner)
                     {
@@ -258,6 +366,9 @@ namespace QRCoder
                 }
             }
 
+            /// <summary>
+            /// Represents contact information.
+            /// </summary>
             public class Contact
             {
                 private static readonly HashSet<string> twoLetterCodes = ValidTwoLetterCodes();
@@ -293,11 +404,17 @@ namespace QRCoder
                 {
                 }
 
+                /// <summary>
+                /// Creates a contact with structured address.
+                /// </summary>
                 public static Contact WithStructuredAddress(string name, string zipCode, string city, string country, string? street = null, string? houseNumber = null)
                 {
                     return new Contact(name, zipCode, city, country, street, houseNumber, AddressType.StructuredAddress);
                 }
 
+                /// <summary>
+                /// Creates a contact with combined address.
+                /// </summary>
                 public static Contact WithCombinedAddress(string name, string country, string addressLine1, string addressLine2)
                 {
                     return new Contact(name, null, null, country, addressLine1, addressLine2, AddressType.CombinedAddress);
@@ -384,6 +501,10 @@ namespace QRCoder
                     return new HashSet<string>(codes, StringComparer.OrdinalIgnoreCase);
                 }
 
+                /// <summary>
+                /// Returns a string that represents the contact information in the format required for Swiss QR codes.
+                /// </summary>
+                /// <returns>A string representing the contact information.</returns>
                 public override string ToString()
                 {
                     string contactData = $"{(AddressType.StructuredAddress == adrType ? "S" : "K")}{br}"; //AdrTp
@@ -396,23 +517,47 @@ namespace QRCoder
                     return contactData;
                 }
 
+                /// <summary>
+                /// Defines the type of address.
+                /// </summary>
                 public enum AddressType
                 {
+                    /// <summary>
+                    /// Structured Address
+                    /// </summary>
                     StructuredAddress,
+                    /// <summary>
+                    /// Combined Address
+                    /// </summary>
                     CombinedAddress
                 }
 
+                /// <summary>
+                /// Represents errors that occur during the creation of a Swiss QR code contact.
+                /// </summary>
                 public class SwissQrCodeContactException : Exception
                 {
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeContactException"/> class.
+                    /// </summary>
                     public SwissQrCodeContactException()
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeContactException"/> class with a specified error message.
+                    /// </summary>
+                    /// <param name="message">The message that describes the error.</param>
                     public SwissQrCodeContactException(string message)
                         : base(message)
                     {
                     }
 
+                    /// <summary>
+                    /// Initializes a new instance of the <see cref="SwissQrCodeContactException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+                    /// </summary>
+                    /// <param name="message">The error message that explains the reason for the exception.</param>
+                    /// <param name="inner">The exception that is the cause of the current exception, or a null reference if no inner exception is specified.</param>
                     public SwissQrCodeContactException(string message, Exception inner)
                         : base(message, inner)
                     {
@@ -420,6 +565,10 @@ namespace QRCoder
                 }
             }
 
+            /// <summary>
+            /// Returns a string that represents the entire Swiss QR code payload.
+            /// </summary>
+            /// <returns>A string representing the Swiss QR code payload.</returns>
             public override string ToString()
             {
                 //Header "logical" element
@@ -480,25 +629,46 @@ namespace QRCoder
 
 
             /// <summary>
-            /// ISO 4217 currency codes
+            /// ISO 4217 currency codes.
             /// </summary>
             public enum Currency
             {
+                /// <summary>
+                /// Swiss Franc
+                /// </summary>
                 CHF = 756,
+                /// <summary>
+                /// Euro
+                /// </summary>
                 EUR = 978
             }
 
+            /// <summary>
+            /// Represents errors that occur during Swiss QR Code generation.
+            /// </summary>
             public class SwissQrCodeException : Exception
             {
+                /// <summary>
+                /// Initializes a new instance of the <see cref="SwissQrCodeException"/> class.
+                /// </summary>
                 public SwissQrCodeException()
                 {
                 }
 
+                /// <summary>
+                /// Initializes a new instance of the <see cref="SwissQrCodeException"/> class with a specified error message.
+                /// </summary>
+                /// <param name="message">The message that describes the error.</param>
                 public SwissQrCodeException(string message)
                     : base(message)
                 {
                 }
 
+                /// <summary>
+                /// Initializes a new instance of the <see cref="SwissQrCodeException"/> class with a specified error message and a reference to the inner exception that is the cause of this exception.
+                /// </summary>
+                /// <param name="message">The error message that explains the reason for the exception.</param>
+                /// <param name="inner">The exception that is the cause of the current exception, or a null reference if no inner exception is specified.</param>
                 public SwissQrCodeException(string message, Exception inner)
                     : base(message, inner)
                 {

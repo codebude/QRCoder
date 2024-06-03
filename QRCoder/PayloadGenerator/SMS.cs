@@ -4,16 +4,19 @@ namespace QRCoder
 {
     public static partial class PayloadGenerator
     {
+        /// <summary>
+        /// Generates an SMS payload.
+        /// </summary>
         public class SMS : Payload
         {
             private readonly string number, subject;
             private readonly SMSEncoding encoding;
 
             /// <summary>
-            /// Creates a SMS payload without text
+            /// Creates an SMS payload without text.
             /// </summary>
-            /// <param name="number">Receiver phone number</param>
-            /// <param name="encoding">Encoding type</param>
+            /// <param name="number">Receiver phone number.</param>
+            /// <param name="encoding">Encoding type.</param>
             public SMS(string number, SMSEncoding encoding = SMSEncoding.SMS)
             {
                 this.number = number;
@@ -22,11 +25,11 @@ namespace QRCoder
             }
 
             /// <summary>
-            /// Creates a SMS payload with text (subject)
+            /// Creates an SMS payload with text (subject).
             /// </summary>
-            /// <param name="number">Receiver phone number</param>
-            /// <param name="subject">Text of the SMS</param>
-            /// <param name="encoding">Encoding type</param>
+            /// <param name="number">Receiver phone number.</param>
+            /// <param name="subject">Text of the SMS.</param>
+            /// <param name="encoding">Encoding type.</param>
             public SMS(string number, string subject, SMSEncoding encoding = SMSEncoding.SMS)
             {
                 this.number = number;
@@ -34,15 +37,19 @@ namespace QRCoder
                 this.encoding = encoding;
             }
 
+            /// <summary>
+            /// Returns the SMS payload as a string.
+            /// </summary>
+            /// <returns>The SMS payload as a string.</returns>
             public override string ToString()
             {
                 var returnVal = string.Empty;
                 switch (this.encoding)
-                {                    
+                {
                     case SMSEncoding.SMS:
                         var queryString = string.Empty;
                         if (!string.IsNullOrEmpty(this.subject))
-                            queryString = $"?body={Uri.EscapeDataString(this.subject)}";                        
+                            queryString = $"?body={Uri.EscapeDataString(this.subject)}";
                         returnVal = $"sms:{this.number}{queryString}";
                         break;
                     case SMSEncoding.SMS_iOS:
@@ -53,15 +60,27 @@ namespace QRCoder
                         break;
                     case SMSEncoding.SMSTO:
                         returnVal = $"SMSTO:{this.number}:{this.subject}";
-                        break;                    
+                        break;
                 }
                 return returnVal;
             }
 
+            /// <summary>
+            /// Specifies the encoding type for the SMS payload.
+            /// </summary>
             public enum SMSEncoding
             {
+                /// <summary>
+                /// Standard SMS encoding.
+                /// </summary>
                 SMS,
+                /// <summary>
+                /// SMSTO encoding.
+                /// </summary>
                 SMSTO,
+                /// <summary>
+                /// SMS encoding for iOS.
+                /// </summary>
                 SMS_iOS
             }
         }

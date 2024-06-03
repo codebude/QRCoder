@@ -11,6 +11,9 @@ namespace QRCoder
 {
     public static partial class PayloadGenerator
     {
+        /// <summary>
+        /// Generates a payload for a Russian payment order.
+        /// </summary>
         public class RussiaPaymentOrder : Payload
         {
             // Specification of RussianPaymentOrder
@@ -35,8 +38,8 @@ namespace QRCoder
             }
 
             /// <summary>
-            /// Generates a RussiaPaymentOrder payload
-            /// </summary>            
+            /// Initializes a new instance of the <see cref="RussiaPaymentOrder"/> class.
+            /// </summary>
             /// <param name="name">Name of the payee (Наименование получателя платежа)</param>
             /// <param name="personalAcc">Beneficiary account number (Номер счета получателя платежа)</param>
             /// <param name="bankName">Name of the beneficiary's bank (Наименование банка получателя платежа)</param>
@@ -58,10 +61,10 @@ namespace QRCoder
             }
 
             /// <summary>
-            /// Returns payload as string.
+            /// Returns the payload as a string.
             /// </summary>
             /// <remarks>⚠ Attention: If CharacterSets was set to windows-1251 or koi8-r you should use ToBytes() instead of ToString() and pass the bytes to CreateQrCode()!</remarks>
-            /// <returns></returns>
+            /// <returns>The payload as a string.</returns>
             public override string ToString()
             {
                 var cp = characterSet.ToString().Replace("_", "-");
@@ -74,10 +77,10 @@ namespace QRCoder
             }
 
             /// <summary>
-            /// Returns payload as byte[].
+            /// Returns the payload as a byte array.
             /// </summary>
-            /// <remarks>Should be used if CharacterSets equals windows-1251 or koi8-r</remarks>
-            /// <returns></returns>
+            /// <remarks>Should be used if CharacterSets equals windows-1251 or koi8-r.</remarks>
+            /// <returns>The payload as a byte array.</returns>
 
             public byte[] ToBytes()
             {
@@ -233,6 +236,9 @@ namespace QRCoder
                 public string CorrespAcc = null!;
             }
 
+            /// <summary>
+            /// Represents optional fields for the RussiaPaymentOrder.
+            /// </summary>
             public class OptionalFields
             {
                 private string? _sum;
@@ -595,16 +601,36 @@ namespace QRCoder
                 Прочие_услуги = 15
             }
 
+            /// <summary>
+            /// Specifies character sets for encoding the RussiaPaymentOrder payload.
+            /// </summary>
             public enum CharacterSets
             {
-                windows_1251 = 1,       // Encoding.GetEncoding("windows-1251")
-                utf_8 = 2,              // Encoding.UTF8                          
-                koi8_r = 3              // Encoding.GetEncoding("koi8-r")
+                /// <summary>
+                /// Windows-1251 encoding.
+                /// </summary>
+                windows_1251 = 1,
 
+                /// <summary>
+                /// UTF-8 encoding.
+                /// </summary>
+                utf_8 = 2,
+
+                /// <summary>
+                /// KOI8-R encoding.
+                /// </summary>
+                koi8_r = 3
             }
 
+            /// <summary>
+            /// Represents errors that occur during the generation of a RussiaPaymentOrder payload.
+            /// </summary>
             public class RussiaPaymentOrderException : Exception
             {
+                /// <summary>
+                /// Initializes a new instance of the <see cref="RussiaPaymentOrderException"/> class with a specified error message.
+                /// </summary>
+                /// <param name="message">The message that describes the error.</param>
                 public RussiaPaymentOrderException(string message)
                     : base(message)
                 {
