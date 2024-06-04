@@ -37,22 +37,22 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var returnVal = string.Empty;
-            switch (this.encoding)
+            switch (encoding)
             {
                 case MailEncoding.MAILTO:
                     var parts = new List<string>();
-                    if (!string.IsNullOrEmpty(this.subject))
-                        parts.Add("subject=" + Uri.EscapeDataString(this.subject));
-                    if (!string.IsNullOrEmpty(this.message))
-                        parts.Add("body=" + Uri.EscapeDataString(this.message));
+                    if (!string.IsNullOrEmpty(subject))
+                        parts.Add("subject=" + Uri.EscapeDataString(subject));
+                    if (!string.IsNullOrEmpty(message))
+                        parts.Add("body=" + Uri.EscapeDataString(message));
                     var queryString = parts.Any() ? $"?{string.Join("&", parts.ToArray())}" : "";
-                    returnVal = $"mailto:{this.mailReceiver}{queryString}";
+                    returnVal = $"mailto:{mailReceiver}{queryString}";
                     break;
                 case MailEncoding.MATMSG:
-                    returnVal = $"MATMSG:TO:{this.mailReceiver};SUB:{EscapeInput(this.subject ?? "")};BODY:{EscapeInput(this.message ?? "")};;";
+                    returnVal = $"MATMSG:TO:{mailReceiver};SUB:{EscapeInput(subject ?? "")};BODY:{EscapeInput(message ?? "")};;";
                     break;
                 case MailEncoding.SMTP:
-                    returnVal = $"SMTP:{this.mailReceiver}:{EscapeInput(this.subject ?? "", true)}:{EscapeInput(this.message ?? "", true)}";
+                    returnVal = $"SMTP:{mailReceiver}:{EscapeInput(subject ?? "", true)}:{EscapeInput(message ?? "", true)}";
                     break;
             }
             return returnVal;

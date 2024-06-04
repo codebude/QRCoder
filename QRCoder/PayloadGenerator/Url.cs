@@ -26,7 +26,7 @@ public static partial class PayloadGenerator
         /// <returns>The URL payload as a string, ensuring it starts with "http://" if no protocol is specified.</returns>
         public override string ToString()
         {
-            return (!this.url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "http://" + this.url : this.url);
+            return (!url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "http://" + url : url);
         }
     }
 }

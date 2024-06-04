@@ -36,7 +36,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <returns>QRCode graphic as bitmap</returns>
     public Bitmap GetGraphic(int pixelsPerModule)
     {
-        return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, Color.Transparent);
+        return GetGraphic(pixelsPerModule, Color.Black, Color.White, Color.Transparent);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <returns>QRCode graphic as bitmap</returns>
     public Bitmap GetGraphic(Bitmap? backgroundImage = null)
     {
-        return this.GetGraphic(10, Color.Black, Color.White, Color.Transparent, backgroundImage: backgroundImage);
+        return GetGraphic(10, Color.Black, Color.White, Color.Transparent, backgroundImage: backgroundImage);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
                         {
                             var rectangleF = new Rectangle(x * pixelsPerModule, y * pixelsPerModule, pixelsPerModule, pixelsPerModule);
 
-                            var pixelIsDark = this.QrCodeData.ModuleMatrix[offset + y][offset + x];
+                            var pixelIsDark = QrCodeData.ModuleMatrix[offset + y][offset + x];
                             var solidBrush = pixelIsDark ? darkBrush : lightBrush;
                             var pixelImage = pixelIsDark ? darkModulePixel : lightModulePixel;
 

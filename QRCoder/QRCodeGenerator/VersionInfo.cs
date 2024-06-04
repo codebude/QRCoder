@@ -16,8 +16,8 @@ public partial class QRCodeGenerator
         /// <param name="versionInfoDetails">A list of detailed information related to error correction levels and capacity for each encoding mode.</param>
         public VersionInfo(int version, List<VersionInfoDetails> versionInfoDetails)
         {
-            this.Version = version;
-            this.Details = versionInfoDetails;
+            Version = version;
+            Details = versionInfoDetails;
         }
 
         /// <summary>

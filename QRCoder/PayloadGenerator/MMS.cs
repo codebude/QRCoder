@@ -20,7 +20,7 @@ public static partial class PayloadGenerator
         public MMS(string number, MMSEncoding encoding = MMSEncoding.MMS)
         {
             this.number = number;
-            this.subject = string.Empty;
+            subject = string.Empty;
             this.encoding = encoding;
         }
 
@@ -44,19 +44,19 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var returnVal = string.Empty;
-            switch (this.encoding)
+            switch (encoding)
             {
                 case MMSEncoding.MMSTO:
                     var queryStringMmsTo = string.Empty;
-                    if (!string.IsNullOrEmpty(this.subject))
-                        queryStringMmsTo = $"?subject={Uri.EscapeDataString(this.subject)}";
-                    returnVal = $"mmsto:{this.number}{queryStringMmsTo}";
+                    if (!string.IsNullOrEmpty(subject))
+                        queryStringMmsTo = $"?subject={Uri.EscapeDataString(subject)}";
+                    returnVal = $"mmsto:{number}{queryStringMmsTo}";
                     break;
                 case MMSEncoding.MMS:
                     var queryStringMms = string.Empty;
-                    if (!string.IsNullOrEmpty(this.subject))
-                        queryStringMms = $"?body={Uri.EscapeDataString(this.subject)}";
-                    returnVal = $"mms:{this.number}{queryStringMms}";
+                    if (!string.IsNullOrEmpty(subject))
+                        queryStringMms = $"?body={Uri.EscapeDataString(subject)}";
+                    returnVal = $"mms:{number}{queryStringMms}";
                     break;
             }
             return returnVal;

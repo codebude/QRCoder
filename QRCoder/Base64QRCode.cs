@@ -35,7 +35,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a base64-encoded string.</returns>
     public string GetGraphic(int pixelsPerModule)
     {
-        return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
+        return GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
     }
 
     /// <summary>
@@ -49,7 +49,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a base64-encoded string.</returns>
     public string GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
     {
-        return this.GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones, imgType);
+        return GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones, imgType);
     }
 
     /// <summary>

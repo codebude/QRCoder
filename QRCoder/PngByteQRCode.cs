@@ -35,9 +35,9 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
     {
         using (var png = new PngBuilder())
         {
-            var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
+            var size = (QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
             png.WriteHeader(size, size, 1, PngBuilder.ColorType.Greyscale);
-            png.WriteScanlines(this.DrawScanlines(pixelsPerModule, drawQuietZones));
+            png.WriteScanlines(DrawScanlines(pixelsPerModule, drawQuietZones));
             png.WriteEnd();
             return png.GetBytes();
         }
@@ -55,10 +55,10 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
     {
         using (var png = new PngBuilder())
         {
-            var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
+            var size = (QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
             png.WriteHeader(size, size, 1, PngBuilder.ColorType.Indexed);
             png.WritePalette(darkColorRgba, lightColorRgba);
-            png.WriteScanlines(this.DrawScanlines(pixelsPerModule, drawQuietZones));
+            png.WriteScanlines(DrawScanlines(pixelsPerModule, drawQuietZones));
             png.WriteEnd();
             return png.GetBytes();
         }
@@ -72,7 +72,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the bitmap as a byte array.</returns>
     private byte[] DrawScanlines(int pixelsPerModule, bool drawQuietZones)
     {
-        var moduleMatrix = this.QrCodeData.ModuleMatrix;
+        var moduleMatrix = QrCodeData.ModuleMatrix;
         var matrixSize = moduleMatrix.Count - (drawQuietZones ? 0 : 8);
         var quietZoneOffset = (drawQuietZones ? 0 : 4);
         var bytesPerScanline = (matrixSize * pixelsPerModule + 7) / 8 + 1; // A monochrome scanline is one byte for filter type then one bit per pixel.
@@ -149,13 +149,13 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
 
         public void Dispose()
         {
-            this.stream?.Dispose();
-            this.stream = null!;
+            stream?.Dispose();
+            stream = null!;
         }
 
         public byte[] GetBytes()
         {
-            var bytes = this.stream.ToArray();
+            var bytes = stream.ToArray();
 
             // Enumerate chunks in file and insert their CRC32 checksums.
             var chunkOffset = PngSignature.Length;
@@ -186,23 +186,23 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         /// </summary>
         public void WriteHeader(int width, int height, byte bitDepth, ColorType colorType)
         {
-            this.stream.Write(PngSignature, 0, PngSignature.Length);
-            this.WriteChunkStart(IHDR, 13);
+            stream.Write(PngSignature, 0, PngSignature.Length);
+            WriteChunkStart(IHDR, 13);
 
             // Size.
-            this.WriteIntBigEndian((uint)width);
-            this.WriteIntBigEndian((uint)height);
+            WriteIntBigEndian((uint)width);
+            WriteIntBigEndian((uint)height);
 
             // Color.
-            this.stream.WriteByte(bitDepth);
-            this.stream.WriteByte((byte)colorType);
+            stream.WriteByte(bitDepth);
+            stream.WriteByte((byte)colorType);
 
             // Constants.
-            this.stream.WriteByte(0);
-            this.stream.WriteByte(0);
-            this.stream.WriteByte(0);
+            stream.WriteByte(0);
+            stream.WriteByte(0);
+            stream.WriteByte(0);
 
-            this.WriteChunkEnd();
+            WriteChunkEnd();
         }
 
         /// <summary>
@@ -214,27 +214,27 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
             const byte Opaque = 255;
             var hasAlpha = false;
 
-            this.WriteChunkStart(PLTE, 3 * rgbaColors.Length);
+            WriteChunkStart(PLTE, 3 * rgbaColors.Length);
             foreach (var color in rgbaColors)
             {
                 hasAlpha |= color.Length > Alpha && color[Alpha] < Opaque;
-                this.stream.WriteByte(color[Red]);
-                this.stream.WriteByte(color[Green]);
-                this.stream.WriteByte(color[Blue]);
+                stream.WriteByte(color[Red]);
+                stream.WriteByte(color[Green]);
+                stream.WriteByte(color[Blue]);
             }
-            this.WriteChunkEnd();
+            WriteChunkEnd();
 
             if (!hasAlpha)
             {
                 return;
             }
 
-            this.WriteChunkStart(tRNS, rgbaColors.Length);
+            WriteChunkStart(tRNS, rgbaColors.Length);
             foreach (var color in rgbaColors)
             {
-                this.stream.WriteByte(color.Length > Alpha ? color[Alpha] : Opaque);
+                stream.WriteByte(color.Length > Alpha ? color[Alpha] : Opaque);
             }
-            this.WriteChunkEnd();
+            WriteChunkEnd();
         }
 
         /// <summary>
@@ -246,24 +246,24 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
             {
                 Deflate(idatStream, scanlines);
 
-                this.WriteChunkStart(IDAT, (int)(idatStream.Length + 6));
+                WriteChunkStart(IDAT, (int)(idatStream.Length + 6));
 
                 // Deflate header.
-                this.stream.WriteByte(0x78); // 8 Deflate algorithm, 7 max window size
-                this.stream.WriteByte(0x9C); // Check bits.
+                stream.WriteByte(0x78); // 8 Deflate algorithm, 7 max window size
+                stream.WriteByte(0x9C); // Check bits.
 
                 // Compressed data.
                 idatStream.Position = 0;
 #if NET35
-                idatStream.WriteTo(this.stream);
+                idatStream.WriteTo(stream);
 #else
-                idatStream.CopyTo(this.stream);
+                idatStream.CopyTo(stream);
 #endif
                 // Deflate checksum.
                 var adler = Adler32(scanlines, 0, scanlines.Length);
-                this.WriteIntBigEndian(adler);
+                WriteIntBigEndian(adler);
 
-                this.WriteChunkEnd();
+                WriteChunkEnd();
             }
         }
 
@@ -272,29 +272,29 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         /// </summary>
         public void WriteEnd()
         {
-            this.WriteChunkStart(IEND, 0);
-            this.WriteChunkEnd();
+            WriteChunkStart(IEND, 0);
+            WriteChunkEnd();
         }
 
         private void WriteChunkStart(byte[] type, int length)
         {
-            this.WriteIntBigEndian((uint)length);
-            this.stream.Write(type, 0, 4);
+            WriteIntBigEndian((uint)length);
+            stream.Write(type, 0, 4);
         }
 
         private void WriteChunkEnd()
         {
             // Reserves 4 bytes space for crc32 so GetBytes can add it later.
-            this.stream.SetLength(this.stream.Length + 4);
-            this.stream.Position += 4;
+            stream.SetLength(stream.Length + 4);
+            stream.Position += 4;
         }
 
         private void WriteIntBigEndian(uint value)
         {
-            this.stream.WriteByte((byte)(value >> 24));
-            this.stream.WriteByte((byte)(value >> 16));
-            this.stream.WriteByte((byte)(value >> 8));
-            this.stream.WriteByte((byte)value);
+            stream.WriteByte((byte)(value >> 24));
+            stream.WriteByte((byte)(value >> 16));
+            stream.WriteByte((byte)(value >> 8));
+            stream.WriteByte((byte)value);
         }
 
         private static void Deflate(Stream output, byte[] bytes)

@@ -33,7 +33,7 @@ public static partial class PayloadGenerator
         /// <param name="message">The message to be sent.</param>
         public WhatsAppMessage(string message)
         {
-            this.number = string.Empty;
+            number = string.Empty;
             this.message = message;
         }
 
@@ -43,7 +43,7 @@ public static partial class PayloadGenerator
         /// <returns>The WhatsApp message URL as a string.</returns>
         public override string ToString()
         {
-            var cleanedPhone = Regex.Replace(this.number, @"^[0+]+|[ ()-]", string.Empty);
+            var cleanedPhone = Regex.Replace(number, @"^[0+]+|[ ()-]", string.Empty);
             return ($"https://wa.me/{cleanedPhone}?text={Uri.EscapeDataString(message)}");
         }
     }

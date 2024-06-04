@@ -24,7 +24,7 @@ public static partial class PayloadGenerator
         /// <returns>A string representation of the Skype call payload.</returns>
         public override string ToString()
         {
-            return $"skype:{this.skypeUsername}?call";
+            return $"skype:{skypeUsername}?call";
         }
     }
 }

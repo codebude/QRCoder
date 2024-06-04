@@ -16,9 +16,9 @@ public partial class QRCodeGenerator
         /// <param name="eccWords">The array of error correction codewords for this block. These codewords help recover the data if the QR code is damaged.</param>
         public CodewordBlock(int codeWordsOffset, int codeWordsLength, byte[] eccWords)
         {
-            this.CodeWordsOffset = codeWordsOffset;
-            this.CodeWordsLength = codeWordsLength;
-            this.ECCWords = eccWords;
+            CodeWordsOffset = codeWordsOffset;
+            CodeWordsLength = codeWordsLength;
+            ECCWords = eccWords;
         }
 
         /// <summary>

@@ -157,11 +157,11 @@ public static partial class PayloadGenerator
             this.port = port;
             this.password = password;
             this.method = method;
-            this.methodStr = encryptionTexts[method.ToString()];
+            methodStr = encryptionTexts[method.ToString()];
             this.tag = tag;
 
             if (parameters != null)
-                this.parameter =
+                parameter =
                     string.Join("&",
                     parameters.Select(
                         kv => $"{UrlEncode(kv.Key)}={UrlEncode(kv.Value)}"

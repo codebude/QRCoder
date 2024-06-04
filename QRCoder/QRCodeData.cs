@@ -22,11 +22,11 @@ public class QRCodeData : IDisposable
     /// <param name="version">The version of the QR code.</param>
     public QRCodeData(int version)
     {
-        this.Version = version;
+        Version = version;
         var size = ModulesPerSideFromVersion(version);
-        this.ModuleMatrix = new List<BitArray>(size);
+        ModuleMatrix = new List<BitArray>(size);
         for (var i = 0; i < size; i++)
-            this.ModuleMatrix.Add(new BitArray(size));
+            ModuleMatrix.Add(new BitArray(size));
     }
 
     /// <summary>
@@ -36,11 +36,11 @@ public class QRCodeData : IDisposable
     /// <param name="addPadding">Indicates whether padding should be added to the QR code.</param>
     public QRCodeData(int version, bool addPadding)
     {
-        this.Version = version;
+        Version = version;
         var size = ModulesPerSideFromVersion(version) + (addPadding ? 8 : 0);
-        this.ModuleMatrix = new List<BitArray>(size);
+        ModuleMatrix = new List<BitArray>(size);
         for (var i = 0; i < size; i++)
-            this.ModuleMatrix.Add(new BitArray(size));
+            ModuleMatrix.Add(new BitArray(size));
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public class QRCodeData : IDisposable
         //Set QR code version
         var sideLen = (int)bytes[4];
         bytes.RemoveRange(0, 5);
-        this.Version = (sideLen - 21 - 8) / 4 + 1;
+        Version = (sideLen - 21 - 8) / 4 + 1;
 
         //Unpack
         var modules = new Queue<bool>(8 * bytes.Count);
@@ -111,13 +111,13 @@ public class QRCodeData : IDisposable
         }
 
         //Build module matrix
-        this.ModuleMatrix = new List<BitArray>(sideLen);
+        ModuleMatrix = new List<BitArray>(sideLen);
         for (int y = 0; y < sideLen; y++)
         {
-            this.ModuleMatrix.Add(new BitArray(sideLen));
+            ModuleMatrix.Add(new BitArray(sideLen));
             for (int x = 0; x < sideLen; x++)
             {
-                this.ModuleMatrix[y][x] = modules.Dequeue();
+                ModuleMatrix[y][x] = modules.Dequeue();
             }
         }
 
@@ -220,8 +220,8 @@ public class QRCodeData : IDisposable
     /// </summary>
     public void Dispose()
     {
-        this.ModuleMatrix = null!;
-        this.Version = 0;
+        ModuleMatrix = null!;
+        Version = 0;
 
     }
 

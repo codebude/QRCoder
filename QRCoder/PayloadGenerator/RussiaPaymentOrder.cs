@@ -89,7 +89,7 @@ public static partial class PayloadGenerator
 #if !NETFRAMEWORK
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
-            var cp = this.characterSet.ToString().Replace("_", "-");
+            var cp = characterSet.ToString().Replace("_", "-");
 
             //Calculate the seperator
             separator = DetermineSeparator();

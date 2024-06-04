@@ -33,7 +33,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a bitmap.</returns>
     public Bitmap GetGraphic(int pixelsPerModule)
     {
-        return this.GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
+        return GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a bitmap.</returns>
     public Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true)
     {
-        return this.GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones);
+        return GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a bitmap.</returns>
     public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
     {
-        var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
+        var size = (QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
         var offset = drawQuietZones ? 0 : 4 * pixelsPerModule;
 
         var bmp = new Bitmap(size, size);
@@ -71,7 +71,7 @@ public class QRCode : AbstractQRCode, IDisposable
             {
                 for (var y = 0; y < size + offset; y = y + pixelsPerModule)
                 {
-                    var module = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
+                    var module = QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1];
 
                     if (module)
                     {
@@ -104,7 +104,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a bitmap.</returns>
     public Bitmap GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true, Color? iconBackgroundColor = null)
     {
-        var size = (this.QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
+        var size = (QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
         var offset = drawQuietZones ? 0 : 4 * pixelsPerModule;
 
         var bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -122,7 +122,7 @@ public class QRCode : AbstractQRCode, IDisposable
             {
                 for (var y = 0; y < size + offset; y = y + pixelsPerModule)
                 {
-                    var moduleBrush = this.QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1] ? darkBrush : lightBrush;
+                    var moduleBrush = QrCodeData.ModuleMatrix[(y + pixelsPerModule) / pixelsPerModule - 1][(x + pixelsPerModule) / pixelsPerModule - 1] ? darkBrush : lightBrush;
                     gfx.FillRectangle(moduleBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
                 }
             }

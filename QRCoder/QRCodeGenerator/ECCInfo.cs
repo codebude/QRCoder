@@ -21,14 +21,14 @@ public partial class QRCodeGenerator
         public ECCInfo(int version, ECCLevel errorCorrectionLevel, int totalDataCodewords, int eccPerBlock, int blocksInGroup1,
             int codewordsInGroup1, int blocksInGroup2, int codewordsInGroup2)
         {
-            this.Version = version;
-            this.ErrorCorrectionLevel = errorCorrectionLevel;
-            this.TotalDataCodewords = totalDataCodewords;
-            this.ECCPerBlock = eccPerBlock;
-            this.BlocksInGroup1 = blocksInGroup1;
-            this.CodewordsInGroup1 = codewordsInGroup1;
-            this.BlocksInGroup2 = blocksInGroup2;
-            this.CodewordsInGroup2 = codewordsInGroup2;
+            Version = version;
+            ErrorCorrectionLevel = errorCorrectionLevel;
+            TotalDataCodewords = totalDataCodewords;
+            ECCPerBlock = eccPerBlock;
+            BlocksInGroup1 = blocksInGroup1;
+            CodewordsInGroup1 = codewordsInGroup1;
+            BlocksInGroup2 = blocksInGroup2;
+            CodewordsInGroup2 = codewordsInGroup2;
         }
 
         /// <summary>

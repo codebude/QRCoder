@@ -15,8 +15,8 @@ public partial class QRCodeGenerator
         /// <param name="exponent">The exponent of the polynomial term. For example, in the term 3x², the exponent is 2.</param>
         public PolynomItem(int coefficient, int exponent)
         {
-            this.Coefficient = coefficient;
-            this.Exponent = exponent;
+            Coefficient = coefficient;
+            Exponent = exponent;
         }
 
         /// <summary>

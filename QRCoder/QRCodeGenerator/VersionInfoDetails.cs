@@ -16,8 +16,8 @@ public partial class QRCodeGenerator
         /// <param name="capacityDict">A dictionary mapping each encoding mode to its capacity for the specific error correction level.</param>
         public VersionInfoDetails(ECCLevel errorCorrectionLevel, Dictionary<EncodingMode, int> capacityDict)
         {
-            this.ErrorCorrectionLevel = errorCorrectionLevel;
-            this.CapacityDict = capacityDict;
+            ErrorCorrectionLevel = errorCorrectionLevel;
+            CapacityDict = capacityDict;
         }
 
         /// <summary>

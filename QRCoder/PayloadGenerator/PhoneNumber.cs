@@ -24,7 +24,7 @@ public static partial class PayloadGenerator
         /// <returns>The phone call payload as a string.</returns>
         public override string ToString()
         {
-            return $"tel:{this.number}";
+            return $"tel:{number}";
         }
     }
 }

@@ -18,8 +18,8 @@ namespace QRCoderDemoUWP
     {
         public MainPage()
         {
-            this.InitializeComponent();
-            this.DataContext = this;
+            InitializeComponent();
+            DataContext = this;
             comboBoxECC.SelectedIndex = 0;
         }
 

@@ -63,14 +63,14 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var vEvent = $"BEGIN:VEVENT{Environment.NewLine}";
-            vEvent += $"SUMMARY:{this.subject}{Environment.NewLine}";
-            vEvent += !string.IsNullOrEmpty(this.description) ? $"DESCRIPTION:{this.description}{Environment.NewLine}" : "";
-            vEvent += !string.IsNullOrEmpty(this.location) ? $"LOCATION:{this.location}{Environment.NewLine}" : "";
-            vEvent += $"DTSTART:{this.start}{Environment.NewLine}";
-            vEvent += $"DTEND:{this.end}{Environment.NewLine}";
+            vEvent += $"SUMMARY:{subject}{Environment.NewLine}";
+            vEvent += !string.IsNullOrEmpty(description) ? $"DESCRIPTION:{description}{Environment.NewLine}" : "";
+            vEvent += !string.IsNullOrEmpty(location) ? $"LOCATION:{location}{Environment.NewLine}" : "";
+            vEvent += $"DTSTART:{start}{Environment.NewLine}";
+            vEvent += $"DTEND:{end}{Environment.NewLine}";
             vEvent += "END:VEVENT";
 
-            if (this.encoding == EventEncoding.iCalComplete)
+            if (encoding == EventEncoding.iCalComplete)
                 vEvent = $@"BEGIN:VCALENDAR{Environment.NewLine}VERSION:2.0{Environment.NewLine}{vEvent}{Environment.NewLine}END:VCALENDAR";
 
             return vEvent;

@@ -20,7 +20,7 @@ public static partial class PayloadGenerator
         public SMS(string number, SMSEncoding encoding = SMSEncoding.SMS)
         {
             this.number = number;
-            this.subject = string.Empty;
+            subject = string.Empty;
             this.encoding = encoding;
         }
 
@@ -44,22 +44,22 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var returnVal = string.Empty;
-            switch (this.encoding)
+            switch (encoding)
             {
                 case SMSEncoding.SMS:
                     var queryString = string.Empty;
-                    if (!string.IsNullOrEmpty(this.subject))
-                        queryString = $"?body={Uri.EscapeDataString(this.subject)}";
-                    returnVal = $"sms:{this.number}{queryString}";
+                    if (!string.IsNullOrEmpty(subject))
+                        queryString = $"?body={Uri.EscapeDataString(subject)}";
+                    returnVal = $"sms:{number}{queryString}";
                     break;
                 case SMSEncoding.SMS_iOS:
                     var queryStringiOS = string.Empty;
-                    if (!string.IsNullOrEmpty(this.subject))
-                        queryStringiOS = $";body={Uri.EscapeDataString(this.subject)}";
-                    returnVal = $"sms:{this.number}{queryStringiOS}";
+                    if (!string.IsNullOrEmpty(subject))
+                        queryStringiOS = $";body={Uri.EscapeDataString(subject)}";
+                    returnVal = $"sms:{number}{queryStringiOS}";
                     break;
                 case SMSEncoding.SMSTO:
-                    returnVal = $"SMSTO:{this.number}:{this.subject}";
+                    returnVal = $"SMSTO:{number}:{subject}";
                     break;
             }
             return returnVal;

@@ -28,8 +28,8 @@ public partial class QRCodeGenerator
         /// <param name="y">The Y-coordinate of the point.</param>
         public Point(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ public partial class QRCodeGenerator
         /// </remarks>
         public bool Equals(Point other)
         {
-            return this.X == other.X && this.Y == other.Y;
+            return X == other.X && Y == other.Y;
         }
     }
 }

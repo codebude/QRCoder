@@ -97,7 +97,7 @@ public static partial class PayloadGenerator
                     throw new SwissQrCodeAdditionalInformationException("Unstructured message and bill information must be shorter than 141 chars in total/combined.");
                 this.unstructuredMessage = unstructuredMessage;
                 this.billInformation = billInformation;
-                this.trailer = "EPD";
+                trailer = "EPD";
             }
 
             /// <summary>
@@ -426,7 +426,7 @@ public static partial class PayloadGenerator
                 //Pattern extracted from https://qr-validation.iso-payments.ch as explained in https://github.com/codebude/QRCoder/issues/97
                 var charsetPattern = @"^([a-zA-Z0-9\.,;:'\ \+\-/\(\)?\*\[\]\{\}\\`´~ ^|]|[!""#%&<>÷=@_$£¡¢¤¥¦§¨©ª«¬®¯°±²³µ¶·¸¹º»¼½¾¿×Ø€]|[àáâäãåāăąçćĉċčďđèéêëēĕėęěĝğġģĥħìíîïĩīĭįıĳķĸĺļľŀłñńņňŉŋòóôöōŏőõŕŗřśŝşšșţťŧțùúûüũūŭůűųŵýÿŷźżžßÀÁÂÄÃÅĀĂĄÇĆĈĊČĎĐÈÉÊËĒĔĖĘĚĜĞĠĢĤĦÌÍÎÏĨĪĬĮİĲĴĵĶĹĻĽĿŁÑŃŅŇŊÒÓÔÖÕŌŎŐŔŖŘŚŜŞŠȘŢŤŦȚÙÚÛÜŨŪŬŮŰŲŴÝŶŸŹŻŽÆÐÞæðøþŒœſ])*$";
 
-                this.adrType = addressType;
+                adrType = addressType;
 
                 if (string.IsNullOrEmpty(name))
                     throw new SwissQrCodeContactException("Name must not be empty.");
@@ -436,7 +436,7 @@ public static partial class PayloadGenerator
                     throw new SwissQrCodeContactException($"Name must match the following pattern as defined in pain.001: {charsetPattern}");
                 this.name = name;
 
-                if (AddressType.StructuredAddress == this.adrType)
+                if (AddressType.StructuredAddress == adrType)
                 {
                     if (!string.IsNullOrEmpty(streetOrAddressline1) && (streetOrAddressline1!.Length > 70))
                         throw new SwissQrCodeContactException("Street must be shorter than 71 chars.");
@@ -465,7 +465,7 @@ public static partial class PayloadGenerator
                     this.houseNumberOrAddressline2 = houseNumberOrAddressline2;
                 }
 
-                if (AddressType.StructuredAddress == this.adrType) {
+                if (AddressType.StructuredAddress == adrType) {
                     if (string.IsNullOrEmpty(zipCode))
                         throw new SwissQrCodeContactException("Zip code must not be empty.");
                     if (zipCode!.Length > 16)

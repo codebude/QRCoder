@@ -55,7 +55,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a bitmap byte array.</returns>
     public byte[] GetGraphic(int pixelsPerModule, byte[] darkColorRgb, byte[] lightColorRgb)
     {
-        var sideLength = this.QrCodeData.ModuleMatrix.Count * pixelsPerModule;
+        var sideLength = QrCodeData.ModuleMatrix.Count * pixelsPerModule;
 
         var moduleDark = darkColorRgb.Reverse();
         var moduleLight = lightColorRgb.Reverse();
@@ -81,7 +81,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
                 for (var y = 0; y < sideLength; y = y + pixelsPerModule)
                 {
                     var module =
-                        this.QrCodeData.ModuleMatrix[(x + pixelsPerModule)/pixelsPerModule - 1][(y + pixelsPerModule)/pixelsPerModule - 1];
+                        QrCodeData.ModuleMatrix[(x + pixelsPerModule)/pixelsPerModule - 1][(y + pixelsPerModule)/pixelsPerModule - 1];
                     for (int i = 0; i < pixelsPerModule; i++)
                     {
                         bmp.AddRange(module ? moduleDark : moduleLight);

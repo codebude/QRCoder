@@ -25,7 +25,7 @@ public static partial class PayloadGenerator
             this.password = EscapeInput(password);
             this.password = escapeHexStrings && isHexStyle(this.password) ? "\"" + this.password + "\"" : this.password;
             this.authenticationMode = authenticationMode.ToString();
-            this.isHiddenSsid = isHiddenSSID;
+            isHiddenSsid = isHiddenSSID;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             return
-                $"WIFI:T:{this.authenticationMode};S:{this.ssid};P:{this.password};{(this.isHiddenSsid ? "H:true" : string.Empty)};";
+                $"WIFI:T:{authenticationMode};S:{ssid};P:{password};{(isHiddenSsid ? "H:true" : string.Empty)};";
         }
 
         /// <summary>

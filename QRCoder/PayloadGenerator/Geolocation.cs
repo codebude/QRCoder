@@ -30,12 +30,12 @@ public static partial class PayloadGenerator
         /// <returns>A string representation of the geolocation payload in the specified encoding format.</returns>
         public override string ToString()
         {
-            switch (this.encoding)
+            switch (encoding)
             {
                 case GeolocationEncoding.GEO:
-                    return $"geo:{this.latitude},{this.longitude}";
+                    return $"geo:{latitude},{longitude}";
                 case GeolocationEncoding.GoogleMaps:
-                    return $"http://maps.google.com/maps?q={this.latitude},{this.longitude}";
+                    return $"http://maps.google.com/maps?q={latitude},{longitude}";
                 default:
                     return "geo:";
             }

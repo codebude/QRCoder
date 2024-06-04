@@ -41,9 +41,9 @@ namespace QRCoderDemo
                 pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, GetPrimaryColor(), GetBackgroundColor(),
                     GetIconBitmap(), (int)iconSize.Value);
 
-                this.pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
+                pictureBoxQRCode.Size = new System.Drawing.Size(pictureBoxQRCode.Width, pictureBoxQRCode.Height);
                 //Set the SizeMode to center the image.
-                this.pictureBoxQRCode.SizeMode = PictureBoxSizeMode.CenterImage;
+                pictureBoxQRCode.SizeMode = PictureBoxSizeMode.CenterImage;
 
                 pictureBoxQRCode.SizeMode = PictureBoxSizeMode.StretchImage;
             }
