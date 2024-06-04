@@ -19,7 +19,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoderApiTests", "QRCoderA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoderBenchmarks", "QRCoderBenchmarks\QRCoderBenchmarks.csproj", "{C33AB74A-2AB3-4BEA-A67F-EAB578E74E25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderTrimAnalysis", "QRCoderTrimAnalysis\QRCoderTrimAnalysis.csproj", "{F046136A-7BEA-49F3-9415-70CE50AD533B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCoderTrimAnalysis", "QRCoderTrimAnalysis\QRCoderTrimAnalysis.csproj", "{F046136A-7BEA-49F3-9415-70CE50AD533B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A402660A-59F5-43E2-B5B0-69CE5E56DEA1}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

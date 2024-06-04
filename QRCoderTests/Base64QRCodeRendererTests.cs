@@ -1,4 +1,4 @@
-﻿#if !NETCOREAPP1_1
+#if !NETCOREAPP1_1
 using QRCoder;
 using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
@@ -7,71 +7,70 @@ using System.Drawing;
 using System.IO;
 using Xunit;
 
-namespace QRCoderTests
+namespace QRCoderTests;
+
+public class Base64QRCodeRendererTests
 {
-    public class Base64QRCodeRendererTests
+    private readonly QRCodeData data;
+
+    public Base64QRCodeRendererTests()
     {
-        private readonly QRCodeData data;
+        var gen = new QRCodeGenerator();
+        data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
+    }
 
-        public Base64QRCodeRendererTests()
-        {
-            var gen = new QRCodeGenerator();
-            data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
-        }
+    [Fact]
+    [Category("QRRenderer/Base64QRCode")]
+    public void can_render_base64_qrcode_blackwhite()
+    {
+        var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5);
+        var base64QRCode = new Base64QRCode(data).GetGraphic(5);
+        base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
+    }
 
-        [Fact]
-        [Category("QRRenderer/Base64QRCode")]
-        public void can_render_base64_qrcode_blackwhite()
-        {
-            var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5);
-            var base64QRCode = new Base64QRCode(data).GetGraphic(5);
-            base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
-        }
+    [Fact]
+    [Category("QRRenderer/Base64QRCode")]
+    public void can_render_base64_qrcode_noquietzones()
+    {
+        var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5, false);
+        var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Black, Color.White, false);
+        base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
+    }
 
-        [Fact]
-        [Category("QRRenderer/Base64QRCode")]
-        public void can_render_base64_qrcode_noquietzones()
-        {
-            var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5, false);
-            var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Black, Color.White, false);
-            base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
-        }
+    [Fact]
+    [Category("QRRenderer/Base64QRCode")]
+    public void can_render_base64_qrcode_color()
+    {
+        var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5, new byte[] { 255, 0, 0 }, new byte[] { 0, 0, 255 });
+        var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Red, Color.Blue);
+        base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
+    }
 
-        [Fact]
-        [Category("QRRenderer/Base64QRCode")]
-        public void can_render_base64_qrcode_color()
-        {
-            var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5, new byte[] { 255, 0, 0 }, new byte[] { 0, 0, 255 });
-            var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Red, Color.Blue);
-            base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
-        }
-
-        [Fact]
-        [Category("QRRenderer/Base64QRCode")]
-        public void can_render_base64_qrcode_transparent()
-        {
-            var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5, new byte[] { 0, 255, 0, 255 }, new byte[] { 255, 255, 255, 0 });
-            var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Lime, Color.Transparent);
-            base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
-        }
+    [Fact]
+    [Category("QRRenderer/Base64QRCode")]
+    public void can_render_base64_qrcode_transparent()
+    {
+        var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5, new byte[] { 0, 255, 0, 255 }, new byte[] { 255, 255, 255, 0 });
+        var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Lime, Color.Transparent);
+        base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
+    }
 
 #if SYSTEM_DRAWING
-        [Fact]
-        [Category("QRRenderer/Base64QRCode")]
-        public void can_render_base64_qrcode_jpeg()
+    [Fact]
+    [Category("QRRenderer/Base64QRCode")]
+    public void can_render_base64_qrcode_jpeg()
+    {
+        var ms = new MemoryStream();
+        using (var bitmap = new QRCode(data).GetGraphic(5, Color.Black, Color.White, true))
         {
-            var ms = new MemoryStream();
-            using (var bitmap = new QRCode(data).GetGraphic(5, Color.Black, Color.White, true))
-            {
-                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-            }
-            ms.Position = 0;
-            var jpgString = Convert.ToBase64String(ms.ToArray());
-            var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Black, Color.White, true, Base64QRCode.ImageType.Jpeg);
-            base64QRCode.ShouldBe(jpgString);
+            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
         }
-#endif
+        ms.Position = 0;
+        var jpgString = Convert.ToBase64String(ms.ToArray());
+        var base64QRCode = new Base64QRCode(data).GetGraphic(5, Color.Black, Color.White, true, Base64QRCode.ImageType.Jpeg);
+        base64QRCode.ShouldBe(jpgString);
     }
+#endif
 }
 
 #endif
