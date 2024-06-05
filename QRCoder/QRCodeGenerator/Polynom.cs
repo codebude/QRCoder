@@ -262,8 +262,7 @@ public partial class QRCodeGenerator
                 return;
 
             // Initialize the thread-local pool if it's not already done
-            if (_arrayPool == null)
-                _arrayPool = new List<PolynomItem[]>(8);
+            _arrayPool ??= new List<PolynomItem[]>(8);
 
             // Add the buffer back to the pool
             _arrayPool.Add(array);
