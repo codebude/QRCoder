@@ -1,12 +1,12 @@
 #if !NETCOREAPP1_1
 using System;
-using Xunit;
-using QRCoder;
-using Shouldly;
-using QRCoderTests.Helpers.XUnitExtenstions;
-using System.IO;
-using QRCoderTests.Helpers;
 using System.Drawing;
+using System.IO;
+using QRCoder;
+using QRCoderTests.Helpers;
+using QRCoderTests.Helpers.XUnitExtenstions;
+using Shouldly;
+using Xunit;
 
 
 namespace QRCoderTests;

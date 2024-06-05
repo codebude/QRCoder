@@ -1,11 +1,11 @@
 using System;
 using System.Drawing.Imaging;
 using System.IO;
-using NDesk.Options;
-using QRCoderConsole.DataObjects;
-using QRCoder;
 using System.Text;
 using System.Windows.Markup;
+using NDesk.Options;
+using QRCoder;
+using QRCoderConsole.DataObjects;
 
 namespace QRCoderConsole;
 

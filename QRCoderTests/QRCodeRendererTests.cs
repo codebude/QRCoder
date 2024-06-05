@@ -1,10 +1,10 @@
 #if SYSTEM_DRAWING
-using Xunit;
-using QRCoder;
-using Shouldly;
-using QRCoderTests.Helpers.XUnitExtenstions;
-using QRCoderTests.Helpers;
 using System.Drawing;
+using QRCoder;
+using QRCoderTests.Helpers;
+using QRCoderTests.Helpers.XUnitExtenstions;
+using Shouldly;
+using Xunit;
 
 
 namespace QRCoderTests;

@@ -1,11 +1,11 @@
 #if !NETSTANDARD1_3
-using QRCoder.Extensions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Text.RegularExpressions;
+using QRCoder.Extensions;
 using static QRCoder.QRCodeGenerator;
 using static QRCoder.SvgQRCode;
 
