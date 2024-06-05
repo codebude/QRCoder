@@ -40,7 +40,7 @@ public static partial class PayloadGenerator
             var n = (i == 0 ? "" : m.ToString()) + sum.Substring(start, Math.Min(9 - offset, sum.Length - start));
             if (!int.TryParse(n, NumberStyles.Any, CultureInfo.InvariantCulture, out m))
                 break;
-            m = m % 97;
+            m %= 97;
         }
         checksumValid = m == 1;
         return structurallyValid && checksumValid;

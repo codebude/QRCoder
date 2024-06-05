@@ -1236,7 +1236,7 @@ public partial class QRCodeGenerator : IDisposable
     {
         var localAlignmentPatternTable = new Dictionary<int, AlignmentPattern>(40);
 
-        for (var i = 0; i < (7 * 40); i = i + 7)
+        for (var i = 0; i < (7 * 40); i += 7)
         {
             var points = new List<Point>(50);
             for (var x = 0; x < 7; x++)
@@ -1275,7 +1275,7 @@ public partial class QRCodeGenerator : IDisposable
     private static List<ECCInfo> CreateCapacityECCTable()
     {
         var localCapacityECCTable = new List<ECCInfo>(160);
-        for (var i = 0; i < (4 * 6 * 40); i = i + (4 * 6))
+        for (var i = 0; i < (4 * 6 * 40); i += (4 * 6))
         {
             localCapacityECCTable.AddRange(
             new[]
@@ -1335,7 +1335,7 @@ public partial class QRCodeGenerator : IDisposable
     private static List<VersionInfo> CreateCapacityTable()
     {
         var localCapacityTable = new List<VersionInfo>(40);
-        for (var i = 0; i < (16 * 40); i = i + 16)
+        for (var i = 0; i < (16 * 40); i += 16)
         {
             localCapacityTable.Add(new VersionInfo(
 
