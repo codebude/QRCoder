@@ -12,10 +12,10 @@ public static partial class PayloadGenerator
     /// </summary>
     public class BitcoinLikeCryptoCurrencyAddress : Payload
     {
-        private readonly BitcoinLikeCryptoCurrencyType currencyType;
-        private readonly string address;
-        private readonly string? label, message;
-        private readonly double? amount;
+        private readonly BitcoinLikeCryptoCurrencyType _currencyType;
+        private readonly string _address;
+        private readonly string? _label, _message;
+        private readonly double? _amount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BitcoinLikeCryptoCurrencyAddress"/> class.
@@ -28,20 +28,20 @@ public static partial class PayloadGenerator
         /// <param name="message">A reference text or message.</param>           
         public BitcoinLikeCryptoCurrencyAddress(BitcoinLikeCryptoCurrencyType currencyType, string address, double? amount, string? label = null, string? message = null)
         {
-            this.currencyType = currencyType;
-            this.address = address;
+            this._currencyType = currencyType;
+            this._address = address;
 
             if (!string.IsNullOrEmpty(label))
             {
-                this.label = Uri.EscapeDataString(label);
+                this._label = Uri.EscapeDataString(label);
             }
 
             if (!string.IsNullOrEmpty(message))
             {
-                this.message = Uri.EscapeDataString(message);
+                this._message = Uri.EscapeDataString(message);
             }
 
-            this.amount = amount;
+            this._amount = amount;
         }
 
         /// <summary>
@@ -53,9 +53,9 @@ public static partial class PayloadGenerator
             string? query = null;
 
             var queryValues = new KeyValuePair<string, string?>[]{
-              new KeyValuePair<string, string?>(nameof(label), label),
-              new KeyValuePair<string, string?>(nameof(message), message),
-              new KeyValuePair<string, string?>(nameof(amount), amount.HasValue ? amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
+              new KeyValuePair<string, string?>(nameof(_label), _label),
+              new KeyValuePair<string, string?>(nameof(_message), _message),
+              new KeyValuePair<string, string?>(nameof(_amount), _amount.HasValue ? _amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
             };
 
             if (queryValues.Any(keyPair => !string.IsNullOrEmpty(keyPair.Value)))
@@ -66,7 +66,7 @@ public static partial class PayloadGenerator
                     .ToArray());
             }
 
-            return $"{Enum.GetName(typeof(BitcoinLikeCryptoCurrencyType), currencyType)!.ToLower()}:{address}{query}";
+            return $"{Enum.GetName(typeof(BitcoinLikeCryptoCurrencyType), _currencyType)!.ToLower()}:{_address}{query}";
         }
 
         /// <summary>

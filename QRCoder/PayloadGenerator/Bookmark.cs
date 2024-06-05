@@ -7,7 +7,7 @@ public static partial class PayloadGenerator
     /// </summary>
     public class Bookmark : Payload
     {
-        private readonly string url, title;
+        private readonly string _url, _title;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Bookmark"/> class.
@@ -16,8 +16,8 @@ public static partial class PayloadGenerator
         /// <param name="title">The title of the bookmark.</param>
         public Bookmark(string url, string title)
         {
-            this.url = EscapeInput(url);
-            this.title = EscapeInput(title);
+            this._url = EscapeInput(url);
+            this._title = EscapeInput(title);
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ public static partial class PayloadGenerator
         /// <returns>A string representation of the bookmark payload in the MEBKM format.</returns>
         public override string ToString()
         {
-            return $"MEBKM:TITLE:{title};URL:{url};;";
+            return $"MEBKM:TITLE:{_title};URL:{_url};;";
         }
     }
 }

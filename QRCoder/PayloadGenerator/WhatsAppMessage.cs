@@ -10,7 +10,7 @@ public static partial class PayloadGenerator
     /// </summary>
     public class WhatsAppMessage : Payload
     {
-        private readonly string number, message;
+        private readonly string _number, _message;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WhatsAppMessage"/> class with a receiver number and message.
@@ -22,8 +22,8 @@ public static partial class PayloadGenerator
         /// <param name="message">The message to be sent.</param>
         public WhatsAppMessage(string number, string message)
         {
-            this.number = number;
-            this.message = message;
+            this._number = number;
+            this._message = message;
         }
 
         /// <summary>
@@ -33,8 +33,8 @@ public static partial class PayloadGenerator
         /// <param name="message">The message to be sent.</param>
         public WhatsAppMessage(string message)
         {
-            number = string.Empty;
-            this.message = message;
+            _number = string.Empty;
+            this._message = message;
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ public static partial class PayloadGenerator
         /// <returns>The WhatsApp message URL as a string.</returns>
         public override string ToString()
         {
-            var cleanedPhone = Regex.Replace(number, @"^[0+]+|[ ()-]", string.Empty);
-            return ($"https://wa.me/{cleanedPhone}?text={Uri.EscapeDataString(message)}");
+            var cleanedPhone = Regex.Replace(_number, @"^[0+]+|[ ()-]", string.Empty);
+            return ($"https://wa.me/{cleanedPhone}?text={Uri.EscapeDataString(_message)}");
         }
     }
 }

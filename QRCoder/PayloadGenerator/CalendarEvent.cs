@@ -9,9 +9,9 @@ public static partial class PayloadGenerator
     /// </summary>
     public class CalendarEvent : Payload
     {
-        private readonly string subject, start, end;
-        private readonly string? description, location;
-        private readonly EventEncoding encoding;
+        private readonly string _subject, _start, _end;
+        private readonly string? _description, _location;
+        private readonly EventEncoding _encoding;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CalendarEvent"/> class.
@@ -39,10 +39,10 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Type of encoding (universal or iCal).</param>
         public CalendarEvent(string subject, string? description, string? location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
         {
-            this.subject = subject;
-            this.description = description;
-            this.location = location;
-            this.encoding = encoding;
+            this._subject = subject;
+            this._description = description;
+            this._location = location;
+            this._encoding = encoding;
             string dtFormatStart = "yyyyMMdd", dtFormatEnd = "yyyyMMdd";
             if (!allDayEvent)
             {
@@ -52,8 +52,8 @@ public static partial class PayloadGenerator
                 if (end.Kind == DateTimeKind.Utc)
                     dtFormatEnd = "yyyyMMddTHHmmssZ";
             }
-            this.start = start.ToString(dtFormatStart);
-            this.end = end.ToString(dtFormatEnd);
+            this._start = start.ToString(dtFormatStart);
+            this._end = end.ToString(dtFormatEnd);
         }
 
         /// <summary>
@@ -63,14 +63,14 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var vEvent = $"BEGIN:VEVENT{Environment.NewLine}";
-            vEvent += $"SUMMARY:{subject}{Environment.NewLine}";
-            vEvent += !string.IsNullOrEmpty(description) ? $"DESCRIPTION:{description}{Environment.NewLine}" : "";
-            vEvent += !string.IsNullOrEmpty(location) ? $"LOCATION:{location}{Environment.NewLine}" : "";
-            vEvent += $"DTSTART:{start}{Environment.NewLine}";
-            vEvent += $"DTEND:{end}{Environment.NewLine}";
+            vEvent += $"SUMMARY:{_subject}{Environment.NewLine}";
+            vEvent += !string.IsNullOrEmpty(_description) ? $"DESCRIPTION:{_description}{Environment.NewLine}" : "";
+            vEvent += !string.IsNullOrEmpty(_location) ? $"LOCATION:{_location}{Environment.NewLine}" : "";
+            vEvent += $"DTSTART:{_start}{Environment.NewLine}";
+            vEvent += $"DTEND:{_end}{Environment.NewLine}";
             vEvent += "END:VEVENT";
 
-            if (encoding == EventEncoding.iCalComplete)
+            if (_encoding == EventEncoding.iCalComplete)
                 vEvent = $@"BEGIN:VCALENDAR{Environment.NewLine}VERSION:2.0{Environment.NewLine}{vEvent}{Environment.NewLine}END:VCALENDAR";
 
             return vEvent;

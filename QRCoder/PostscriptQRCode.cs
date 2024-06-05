@@ -106,11 +106,11 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         var drawableModulesCount = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
         var pointsPerModule = (double)Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
 
-        string psFile = string.Format(psHeader, new object[] {
+        string psFile = string.Format(PS_HEADER, new object[] {
             DateTime.Now.ToString("s"), CleanSvgVal(viewBox.Width), CleanSvgVal(pointsPerModule),
             epsFormat ? "EPSF-3.0" : string.Empty
         });
-        psFile += string.Format(psFunctions, new object[] {
+        psFile += string.Format(PS_FUNCTIONS, new object[] {
             CleanSvgVal(darkColor.R /255.0), CleanSvgVal(darkColor.G /255.0), CleanSvgVal(darkColor.B /255.0),
             CleanSvgVal(lightColor.R /255.0), CleanSvgVal(lightColor.G /255.0), CleanSvgVal(lightColor.B /255.0),
             drawableModulesCount
@@ -126,7 +126,7 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
             }
             psFile += "\n";
         }
-        return psFile + psFooter;
+        return psFile + PS_FOOTER;
     }
 
     /// <summary>
@@ -139,7 +139,7 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         return input.ToString(System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    private const string psHeader = @"%!PS-Adobe-3.0 {3}
+    private const string PS_HEADER = @"%!PS-Adobe-3.0 {3}
 %%Creator: QRCoder.NET
 %%Title: QRCode
 %%CreationDate: {0}
@@ -160,7 +160,7 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
 %%EndFeature
 ";
 
-    private const string psFunctions = @"%%BeginFunctions 
+    private const string PS_FUNCTIONS = @"%%BeginFunctions 
 /csquare {{
     newpath
     0 0 moveto
@@ -196,7 +196,7 @@ sc sc scale
 0 {6} 1 sub translate
 ";
 
-    private const string psFooter = @"%%EndBody
+    private const string PS_FOOTER = @"%%EndBody
 grestore
 showpage   
 %%EOF

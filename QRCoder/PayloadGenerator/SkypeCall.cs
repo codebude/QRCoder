@@ -7,7 +7,7 @@ public static partial class PayloadGenerator
     /// </summary>
     public class SkypeCall : Payload
     {
-        private readonly string skypeUsername;
+        private readonly string _skypeUsername;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SkypeCall"/> class.
@@ -15,7 +15,7 @@ public static partial class PayloadGenerator
         /// <param name="skypeUsername">Skype username which will be called</param>
         public SkypeCall(string skypeUsername)
         {
-            this.skypeUsername = skypeUsername;
+            this._skypeUsername = skypeUsername;
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ public static partial class PayloadGenerator
         /// <returns>A string representation of the Skype call payload.</returns>
         public override string ToString()
         {
-            return $"skype:{skypeUsername}?call";
+            return $"skype:{_skypeUsername}?call";
         }
     }
 }

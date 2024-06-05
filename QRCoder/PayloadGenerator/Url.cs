@@ -9,7 +9,7 @@ public static partial class PayloadGenerator
     /// </summary>
     public class Url : Payload
     {
-        private readonly string url;
+        private readonly string _url;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Url"/> class.
@@ -17,7 +17,7 @@ public static partial class PayloadGenerator
         /// <param name="url">The target URL. If the protocol is not specified, the http protocol will be added.</param>
         public Url(string url)
         {
-            this.url = url;
+            this._url = url;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ public static partial class PayloadGenerator
         /// <returns>The URL payload as a string, ensuring it starts with "http://" if no protocol is specified.</returns>
         public override string ToString()
         {
-            return (!url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "http://" + url : url);
+            return (!_url.StartsWith("http", StringComparison.OrdinalIgnoreCase) ? "http://" + _url : _url);
         }
     }
 }

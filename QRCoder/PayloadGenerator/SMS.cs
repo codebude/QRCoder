@@ -9,8 +9,8 @@ public static partial class PayloadGenerator
     /// </summary>
     public class SMS : Payload
     {
-        private readonly string number, subject;
-        private readonly SMSEncoding encoding;
+        private readonly string _number, _subject;
+        private readonly SMSEncoding _encoding;
 
         /// <summary>
         /// Creates an SMS payload without text.
@@ -19,9 +19,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type.</param>
         public SMS(string number, SMSEncoding encoding = SMSEncoding.SMS)
         {
-            this.number = number;
-            subject = string.Empty;
-            this.encoding = encoding;
+            this._number = number;
+            _subject = string.Empty;
+            this._encoding = encoding;
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type.</param>
         public SMS(string number, string subject, SMSEncoding encoding = SMSEncoding.SMS)
         {
-            this.number = number;
-            this.subject = subject;
-            this.encoding = encoding;
+            this._number = number;
+            this._subject = subject;
+            this._encoding = encoding;
         }
 
         /// <summary>
@@ -44,22 +44,22 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var returnVal = string.Empty;
-            switch (encoding)
+            switch (_encoding)
             {
                 case SMSEncoding.SMS:
                     var queryString = string.Empty;
-                    if (!string.IsNullOrEmpty(subject))
-                        queryString = $"?body={Uri.EscapeDataString(subject)}";
-                    returnVal = $"sms:{number}{queryString}";
+                    if (!string.IsNullOrEmpty(_subject))
+                        queryString = $"?body={Uri.EscapeDataString(_subject)}";
+                    returnVal = $"sms:{_number}{queryString}";
                     break;
                 case SMSEncoding.SMS_iOS:
                     var queryStringiOS = string.Empty;
-                    if (!string.IsNullOrEmpty(subject))
-                        queryStringiOS = $";body={Uri.EscapeDataString(subject)}";
-                    returnVal = $"sms:{number}{queryStringiOS}";
+                    if (!string.IsNullOrEmpty(_subject))
+                        queryStringiOS = $";body={Uri.EscapeDataString(_subject)}";
+                    returnVal = $"sms:{_number}{queryStringiOS}";
                     break;
                 case SMSEncoding.SMSTO:
-                    returnVal = $"SMSTO:{number}:{subject}";
+                    returnVal = $"SMSTO:{_number}:{_subject}";
                     break;
             }
             return returnVal;

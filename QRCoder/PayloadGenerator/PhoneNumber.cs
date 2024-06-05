@@ -7,7 +7,7 @@ public static partial class PayloadGenerator
     /// </summary>
     public class PhoneNumber : Payload
     {
-        private readonly string number;
+        private readonly string _number;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PhoneNumber"/> class.
@@ -15,7 +15,7 @@ public static partial class PayloadGenerator
         /// <param name="number">Phone number of the receiver.</param>
         public PhoneNumber(string number)
         {
-            this.number = number;
+            this._number = number;
         }
 
         /// <summary>
@@ -24,7 +24,7 @@ public static partial class PayloadGenerator
         /// <returns>The phone call payload as a string.</returns>
         public override string ToString()
         {
-            return $"tel:{number}";
+            return $"tel:{_number}";
         }
     }
 }

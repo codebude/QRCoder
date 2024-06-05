@@ -12,13 +12,13 @@ public static partial class PayloadGenerator
     {
         //BezahlCode specification: http://www.bezahlcode.de/wp-content/uploads/BezahlCode_TechDok.pdf
 
-        private readonly string? iban, bic, account, bnc, sepaReference, creditorId, mandateId, periodicTimeunit;
-        private readonly string name, reason;
-        private readonly decimal amount;
-        private readonly int postingKey, periodicTimeunitRotation;
-        private readonly Currency currency;
-        private readonly AuthorityType authority;
-        private readonly DateTime executionDate, dateOfSignature, periodicFirstExecutionDate, periodicLastExecutionDate;
+        private readonly string? _iban, _bic, _account, _bnc, _sepaReference, _creditorId, _mandateId, _periodicTimeunit;
+        private readonly string _name, _reason;
+        private readonly decimal _amount;
+        private readonly int _postingKey, _periodicTimeunitRotation;
+        private readonly Currency _currency;
+        private readonly AuthorityType _authority;
+        private readonly DateTime _executionDate, _dateOfSignature, _periodicFirstExecutionDate, _periodicLastExecutionDate;
 
 
         /// <summary>
@@ -141,15 +141,15 @@ public static partial class PayloadGenerator
                     throw new BezahlCodeException("When using 'periodicsinglepaymentsepa' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
             }
 
-            this.authority = authority;
+            this._authority = authority;
 
             if (name.Length > 70)
                 throw new BezahlCodeException("(Payee-)Name must be shorter than 71 chars.");
-            this.name = name;
+            this._name = name;
 
             if (reason.Length > 27)
                 throw new BezahlCodeException("Reasons texts have to be shorter than 28 chars.");
-            this.reason = reason;
+            this._reason = reason;
 
             var oldWayFilled = (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc));
             var newWayFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
@@ -161,16 +161,16 @@ public static partial class PayloadGenerator
 #pragma warning restore CS0612
                 if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The account entered isn't valid.");
-                this.account = account.Replace(" ", "").ToUpper();
+                this._account = account.Replace(" ", "").ToUpper();
                 if (!Regex.IsMatch(bnc.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The bnc entered isn't valid.");
-                this.bnc = bnc.Replace(" ", "").ToUpper();
+                this._bnc = bnc.Replace(" ", "").ToUpper();
 
                 if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                 {
                     if (postingKey < 0 || postingKey >= 100)
                         throw new BezahlCodeException("PostingKey must be within 0 and 99.");
-                    this.postingKey = postingKey;
+                    this._postingKey = postingKey;
                 }
             }
 
@@ -179,25 +179,25 @@ public static partial class PayloadGenerator
             {
                 if (!IsValidIban(iban))
                     throw new BezahlCodeException("The IBAN entered isn't valid.");
-                this.iban = iban.Replace(" ", "").ToUpper();
+                this._iban = iban.Replace(" ", "").ToUpper();
                 if (!IsValidBic(bic))
                     throw new BezahlCodeException("The BIC entered isn't valid.");
-                this.bic = bic.Replace(" ", "").ToUpper();
+                this._bic = bic.Replace(" ", "").ToUpper();
 
                 if (authority != AuthorityType.contact_v2)
                 {
                     if (sepaReference.Length > 35)
                         throw new BezahlCodeException("SEPA reference texts have to be shorter than 36 chars.");
-                    this.sepaReference = sepaReference;
+                    this._sepaReference = sepaReference;
 
                     if (!string.IsNullOrEmpty(creditorId) && !Regex.IsMatch(creditorId.Replace(" ", ""), @"^[a-zA-Z]{2,2}[0-9]{2,2}([A-Za-z0-9]|[\+|\?|/|\-|:|\(|\)|\.|,|']){3,3}([A-Za-z0-9]|[\+|\?|/|\-|:|\(|\)|\.|,|']){1,28}$"))
                         throw new BezahlCodeException("The creditorId entered isn't valid.");
-                    this.creditorId = creditorId;
+                    this._creditorId = creditorId;
                     if (!string.IsNullOrEmpty(mandateId) && !Regex.IsMatch(mandateId.Replace(" ", ""), @"^([A-Za-z0-9]|[\+|\?|/|\-|:|\(|\)|\.|,|']){1,35}$"))
                         throw new BezahlCodeException("The mandateId entered isn't valid.");
-                    this.mandateId = mandateId;
+                    this._mandateId = mandateId;
                     if (dateOfSignature != null)
-                        this.dateOfSignature = (DateTime)dateOfSignature;
+                        this._dateOfSignature = (DateTime)dateOfSignature;
                 }
             }
 
@@ -208,17 +208,17 @@ public static partial class PayloadGenerator
                     throw new BezahlCodeException("Amount must have less than 3 digits after decimal point.");
                 if (amount < 0.01m || amount > 999999999.99m)
                     throw new BezahlCodeException("Amount has to at least 0.01 and must be smaller or equal to 999999999.99.");
-                this.amount = amount;
+                this._amount = amount;
 
-                this.currency = currency;
+                this._currency = currency;
 
                 if (executionDate == null)
-                    this.executionDate = DateTime.Now;
+                    this._executionDate = DateTime.Now;
                 else
                 {
                     if (DateTime.Today.Ticks > executionDate.Value.Ticks)
                         throw new BezahlCodeException("Execution date must be today or in future.");
-                    this.executionDate = (DateTime)executionDate;
+                    this._executionDate = (DateTime)executionDate;
                 }
 #pragma warning disable CS0612
                 if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
@@ -226,14 +226,14 @@ public static partial class PayloadGenerator
                 {
                     if (periodicTimeunit.ToUpper() != "M" && periodicTimeunit.ToUpper() != "W")
                         throw new BezahlCodeException("The periodicTimeunit must be either 'M' (monthly) or 'W' (weekly).");
-                    this.periodicTimeunit = periodicTimeunit;
+                    this._periodicTimeunit = periodicTimeunit;
                     if (periodicTimeunitRotation < 1 || periodicTimeunitRotation > 52)
                         throw new BezahlCodeException("The periodicTimeunitRotation must be 1 or greater. (It means repeat the payment every 'periodicTimeunitRotation' weeks/months.");
-                    this.periodicTimeunitRotation = periodicTimeunitRotation;
+                    this._periodicTimeunitRotation = periodicTimeunitRotation;
                     if (periodicFirstExecutionDate != null)
-                        this.periodicFirstExecutionDate = (DateTime)periodicFirstExecutionDate;
+                        this._periodicFirstExecutionDate = (DateTime)periodicFirstExecutionDate;
                     if (periodicLastExecutionDate != null)
-                        this.periodicLastExecutionDate = (DateTime)periodicLastExecutionDate;
+                        this._periodicLastExecutionDate = (DateTime)periodicLastExecutionDate;
                 }
 
             }
@@ -245,82 +245,82 @@ public static partial class PayloadGenerator
         /// <inheritdoc/>
         public override string ToString()
         {
-            var bezahlCodePayload = $"bank://{authority}?";
+            var bezahlCodePayload = $"bank://{_authority}?";
 
-            bezahlCodePayload += $"name={Uri.EscapeDataString(name)}&";
+            bezahlCodePayload += $"name={Uri.EscapeDataString(_name)}&";
 
-            if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
+            if (_authority != AuthorityType.contact && _authority != AuthorityType.contact_v2)
             {
                 //Handle what is same for all payments
 #pragma warning disable CS0612
-                if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment)
+                if (_authority == AuthorityType.periodicsinglepayment || _authority == AuthorityType.singledirectdebit || _authority == AuthorityType.singlepayment)
 #pragma warning restore CS0612
                 {
-                    bezahlCodePayload += $"account={account}&";
-                    bezahlCodePayload += $"bnc={bnc}&";
-                    if (postingKey > 0)
-                        bezahlCodePayload += $"postingkey={postingKey}&";
+                    bezahlCodePayload += $"account={_account}&";
+                    bezahlCodePayload += $"bnc={_bnc}&";
+                    if (_postingKey > 0)
+                        bezahlCodePayload += $"postingkey={_postingKey}&";
                 }
                 else
                 {
-                    bezahlCodePayload += $"iban={iban}&";
-                    bezahlCodePayload += $"bic={bic}&";
+                    bezahlCodePayload += $"iban={_iban}&";
+                    bezahlCodePayload += $"bic={_bic}&";
 
-                    if (!string.IsNullOrEmpty(sepaReference))
-                        bezahlCodePayload += $"separeference={Uri.EscapeDataString(sepaReference)}&";
+                    if (!string.IsNullOrEmpty(_sepaReference))
+                        bezahlCodePayload += $"separeference={Uri.EscapeDataString(_sepaReference)}&";
 
-                    if (authority == AuthorityType.singledirectdebitsepa)
+                    if (_authority == AuthorityType.singledirectdebitsepa)
                     {
-                        if (!string.IsNullOrEmpty(creditorId))
-                            bezahlCodePayload += $"creditorid={Uri.EscapeDataString(creditorId)}&";
-                        if (!string.IsNullOrEmpty(mandateId))
-                            bezahlCodePayload += $"mandateid={Uri.EscapeDataString(mandateId)}&";
-                        if (dateOfSignature != DateTime.MinValue)
-                            bezahlCodePayload += $"dateofsignature={dateOfSignature.ToString("ddMMyyyy")}&";
+                        if (!string.IsNullOrEmpty(_creditorId))
+                            bezahlCodePayload += $"creditorid={Uri.EscapeDataString(_creditorId)}&";
+                        if (!string.IsNullOrEmpty(_mandateId))
+                            bezahlCodePayload += $"mandateid={Uri.EscapeDataString(_mandateId)}&";
+                        if (_dateOfSignature != DateTime.MinValue)
+                            bezahlCodePayload += $"dateofsignature={_dateOfSignature.ToString("ddMMyyyy")}&";
                     }
                 }
-                bezahlCodePayload += $"amount={amount:0.00}&".Replace(".", ",");
+                bezahlCodePayload += $"amount={_amount:0.00}&".Replace(".", ",");
 
-                if (!string.IsNullOrEmpty(reason))
-                    bezahlCodePayload += $"reason={Uri.EscapeDataString(reason)}&";
-                bezahlCodePayload += $"currency={currency}&";
-                bezahlCodePayload += $"executiondate={executionDate.ToString("ddMMyyyy")}&";
+                if (!string.IsNullOrEmpty(_reason))
+                    bezahlCodePayload += $"reason={Uri.EscapeDataString(_reason)}&";
+                bezahlCodePayload += $"currency={_currency}&";
+                bezahlCodePayload += $"executiondate={_executionDate.ToString("ddMMyyyy")}&";
 #pragma warning disable CS0612
-                if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
+                if (_authority == AuthorityType.periodicsinglepayment || _authority == AuthorityType.periodicsinglepaymentsepa)
                 {
-                    bezahlCodePayload += $"periodictimeunit={periodicTimeunit}&";
-                    bezahlCodePayload += $"periodictimeunitrotation={periodicTimeunitRotation}&";
-                    if (periodicFirstExecutionDate != DateTime.MinValue)
-                        bezahlCodePayload += $"periodicfirstexecutiondate={periodicFirstExecutionDate.ToString("ddMMyyyy")}&";
-                    if (periodicLastExecutionDate != DateTime.MinValue)
-                        bezahlCodePayload += $"periodiclastexecutiondate={periodicLastExecutionDate.ToString("ddMMyyyy")}&";
+                    bezahlCodePayload += $"periodictimeunit={_periodicTimeunit}&";
+                    bezahlCodePayload += $"periodictimeunitrotation={_periodicTimeunitRotation}&";
+                    if (_periodicFirstExecutionDate != DateTime.MinValue)
+                        bezahlCodePayload += $"periodicfirstexecutiondate={_periodicFirstExecutionDate.ToString("ddMMyyyy")}&";
+                    if (_periodicLastExecutionDate != DateTime.MinValue)
+                        bezahlCodePayload += $"periodiclastexecutiondate={_periodicLastExecutionDate.ToString("ddMMyyyy")}&";
                 }
 #pragma warning restore CS0612
             }
             else
             {
                 //Handle what is same for all contacts
-                if (authority == AuthorityType.contact)
+                if (_authority == AuthorityType.contact)
                 {
-                    bezahlCodePayload += $"account={account}&";
-                    bezahlCodePayload += $"bnc={bnc}&";
+                    bezahlCodePayload += $"account={_account}&";
+                    bezahlCodePayload += $"bnc={_bnc}&";
                 }
-                else if (authority == AuthorityType.contact_v2)
+                else if (_authority == AuthorityType.contact_v2)
                 {
-                    if (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc))
+                    if (!string.IsNullOrEmpty(_account) && !string.IsNullOrEmpty(_bnc))
                     {
-                        bezahlCodePayload += $"account={account}&";
-                        bezahlCodePayload += $"bnc={bnc}&";
+                        bezahlCodePayload += $"account={_account}&";
+                        bezahlCodePayload += $"bnc={_bnc}&";
                     }
                     else
                     {
-                        bezahlCodePayload += $"iban={iban}&";
-                        bezahlCodePayload += $"bic={bic}&";
+                        bezahlCodePayload += $"iban={_iban}&";
+                        bezahlCodePayload += $"bic={_bic}&";
                     }
                 }
 
-                if (!string.IsNullOrEmpty(reason))
-                    bezahlCodePayload += $"reason={Uri.EscapeDataString(reason)}&";
+                if (!string.IsNullOrEmpty(_reason))
+                    bezahlCodePayload += $"reason={Uri.EscapeDataString(_reason)}&";
             }
 
             return bezahlCodePayload.Trim('&');

@@ -28,10 +28,10 @@ public static partial class PayloadGenerator
         // https://www.sbqr.ru/validator/index.html
 
         //base
-        private CharacterSets characterSet;
-        private readonly MandatoryFields mFields = new MandatoryFields();
-        private readonly OptionalFields oFields = new OptionalFields();
-        private string separator = "|";
+        private CharacterSets _characterSet;
+        private readonly MandatoryFields _mFields = new MandatoryFields();
+        private readonly OptionalFields _oFields = new OptionalFields();
+        private string _separator = "|";
 
         private RussiaPaymentOrder()
         {
@@ -49,15 +49,15 @@ public static partial class PayloadGenerator
         /// <param name="characterSet">Type of encoding (default UTF-8)</param>
         public RussiaPaymentOrder(string name, string personalAcc, string bankName, string BIC, string correspAcc, OptionalFields? optionalFields = null, CharacterSets characterSet = CharacterSets.utf_8) : this()
         {
-            this.characterSet = characterSet;
-            mFields.Name = ValidateInput(name, "Name", @"^.{1,160}$");
-            mFields.PersonalAcc = ValidateInput(personalAcc, "PersonalAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
-            mFields.BankName = ValidateInput(bankName, "BankName", @"^.{1,45}$");
-            mFields.BIC = ValidateInput(BIC, "BIC", @"^\d{9}$");
-            mFields.CorrespAcc = ValidateInput(correspAcc, "CorrespAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
+            this._characterSet = characterSet;
+            _mFields.Name = ValidateInput(name, "Name", @"^.{1,160}$");
+            _mFields.PersonalAcc = ValidateInput(personalAcc, "PersonalAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
+            _mFields.BankName = ValidateInput(bankName, "BankName", @"^.{1,45}$");
+            _mFields.BIC = ValidateInput(BIC, "BIC", @"^\d{9}$");
+            _mFields.CorrespAcc = ValidateInput(correspAcc, "CorrespAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
 
             if (optionalFields != null)
-                oFields = optionalFields;
+                _oFields = optionalFields;
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ public static partial class PayloadGenerator
         /// <returns>The payload as a string.</returns>
         public override string ToString()
         {
-            var cp = characterSet.ToString().Replace("_", "-");
+            var cp = _characterSet.ToString().Replace("_", "-");
             var bytes = ToBytes();
 
 #if !NETFRAMEWORK
@@ -89,18 +89,18 @@ public static partial class PayloadGenerator
 #if !NETFRAMEWORK
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 #endif
-            var cp = characterSet.ToString().Replace("_", "-");
+            var cp = _characterSet.ToString().Replace("_", "-");
 
             //Calculate the seperator
-            separator = DetermineSeparator();
+            _separator = DetermineSeparator();
 
             //Create the payload string
-            string ret = $"ST0001" + ((int)characterSet).ToString() + //(separator != "|" ? separator : "") + 
-                $"{separator}Name={mFields.Name}" +
-                $"{separator}PersonalAcc={mFields.PersonalAcc}" +
-                $"{separator}BankName={mFields.BankName}" +
-                $"{separator}BIC={mFields.BIC}" +
-                $"{separator}CorrespAcc={mFields.CorrespAcc}";
+            string ret = $"ST0001" + ((int)_characterSet).ToString() + //(separator != "|" ? separator : "") + 
+                $"{_separator}Name={_mFields.Name}" +
+                $"{_separator}PersonalAcc={_mFields.PersonalAcc}" +
+                $"{_separator}BankName={_mFields.BankName}" +
+                $"{_separator}BIC={_mFields.BIC}" +
+                $"{_separator}CorrespAcc={_mFields.CorrespAcc}";
 
             //Check length of mandatory field block (-8 => Removing service data block bytes from ret length)
             int bytesMandatoryLen = Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding(cp), Encoding.UTF8.GetBytes(ret)).Length - 8;
@@ -112,7 +112,7 @@ public static partial class PayloadGenerator
             var optionalFieldsList = GetOptionalFieldsAsList();
             if (optionalFieldsList.Count > 0)
                 ret += $"|{string.Join("|", optionalFieldsList.ToArray())}";
-            ret += separator;
+            ret += _separator;
 
             return Encoding.Convert(Encoding.UTF8, Encoding.GetEncoding(cp), Encoding.UTF8.GetBytes(ret));
         }
@@ -147,20 +147,20 @@ public static partial class PayloadGenerator
         {
 #if NETSTANDARD1_3
             return typeof(OptionalFields).GetRuntimeProperties()
-                    .Where(field => field.GetValue(oFields) != null)
+                    .Where(field => field.GetValue(_oFields) != null)
                     .Select(field =>
                     {
-                        var objValue = field.GetValue(oFields, null);
+                        var objValue = field.GetValue(_oFields, null);
                         var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
 #else
             return typeof(OptionalFields).GetProperties()
-                    .Where(field => field.GetValue(oFields, null) != null)
+                    .Where(field => field.GetValue(_oFields, null) != null)
                     .Select(field =>
                     {
-                        var objValue = field.GetValue(oFields, null);
+                        var objValue = field.GetValue(_oFields, null);
                         var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
                         return $"{field.Name}={value}";
                     })
@@ -177,20 +177,20 @@ public static partial class PayloadGenerator
         {
 #if NETSTANDARD1_3
             return typeof(MandatoryFields).GetRuntimeFields()
-                    .Where(field => field.GetValue(mFields) != null)
+                    .Where(field => field.GetValue(_mFields) != null)
                     .Select(field =>
                     {
-                        var objValue = field.GetValue(mFields);
+                        var objValue = field.GetValue(_mFields);
                         var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
 #else
             return typeof(MandatoryFields).GetFields()
-                    .Where(field => field.GetValue(mFields) != null)
+                    .Where(field => field.GetValue(_mFields) != null)
                     .Select(field =>
                     {
-                        var objValue = field.GetValue(mFields);
+                        var objValue = field.GetValue(_mFields);
                         var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
                         return $"{field.Name}={value}";
                     })

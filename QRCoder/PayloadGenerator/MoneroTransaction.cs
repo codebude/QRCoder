@@ -9,9 +9,9 @@ public static partial class PayloadGenerator
     /// </summary>
     public class MoneroTransaction : Payload
     {
-        private readonly string address;
-        private readonly string? txPaymentId, recipientName, txDescription;
-        private readonly float? txAmount;
+        private readonly string _address;
+        private readonly string? _txPaymentId, _recipientName, _txDescription;
+        private readonly float? _txAmount;
 
         /// <summary>
         /// Creates a Monero transaction payload.
@@ -26,13 +26,13 @@ public static partial class PayloadGenerator
         {
             if (string.IsNullOrEmpty(address))
                 throw new MoneroTransactionException("The address is mandatory and has to be set.");
-            this.address = address;
+            this._address = address;
             if (txAmount != null && txAmount <= 0)
                 throw new MoneroTransactionException("Value of 'txAmount' must be greater than 0.");
-            this.txAmount = txAmount;
-            this.txPaymentId = txPaymentId;
-            this.recipientName = recipientName;
-            this.txDescription = txDescription;
+            this._txAmount = txAmount;
+            this._txPaymentId = txPaymentId;
+            this._recipientName = recipientName;
+            this._txDescription = txDescription;
         }
 
         /// <summary>
@@ -41,11 +41,11 @@ public static partial class PayloadGenerator
         /// <returns>The Monero transaction payload as a URI string.</returns>
         public override string ToString()
         {
-            var moneroUri = $"monero://{address}{(!string.IsNullOrEmpty(txPaymentId) || !string.IsNullOrEmpty(recipientName) || !string.IsNullOrEmpty(txDescription) || txAmount != null ? "?" : string.Empty)}";
-            moneroUri += (!string.IsNullOrEmpty(txPaymentId) ? $"tx_payment_id={Uri.EscapeDataString(txPaymentId)}&" : string.Empty);
-            moneroUri += (!string.IsNullOrEmpty(recipientName) ? $"recipient_name={Uri.EscapeDataString(recipientName)}&" : string.Empty);
-            moneroUri += (txAmount != null ? $"tx_amount={txAmount.ToString()!.Replace(",", ".")}&" : string.Empty);
-            moneroUri += (!string.IsNullOrEmpty(txDescription) ? $"tx_description={Uri.EscapeDataString(txDescription)}" : string.Empty);
+            var moneroUri = $"monero://{_address}{(!string.IsNullOrEmpty(_txPaymentId) || !string.IsNullOrEmpty(_recipientName) || !string.IsNullOrEmpty(_txDescription) || _txAmount != null ? "?" : string.Empty)}";
+            moneroUri += (!string.IsNullOrEmpty(_txPaymentId) ? $"tx_payment_id={Uri.EscapeDataString(_txPaymentId)}&" : string.Empty);
+            moneroUri += (!string.IsNullOrEmpty(_recipientName) ? $"recipient_name={Uri.EscapeDataString(_recipientName)}&" : string.Empty);
+            moneroUri += (_txAmount != null ? $"tx_amount={_txAmount.ToString()!.Replace(",", ".")}&" : string.Empty);
+            moneroUri += (!string.IsNullOrEmpty(_txDescription) ? $"tx_description={Uri.EscapeDataString(_txDescription)}" : string.Empty);
             return moneroUri.TrimEnd('&');
         }
 

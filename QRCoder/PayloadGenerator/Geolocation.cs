@@ -7,8 +7,8 @@ public static partial class PayloadGenerator
     /// </summary>
     public class Geolocation : Payload
     {
-        private readonly string latitude, longitude;
-        private readonly GeolocationEncoding encoding;
+        private readonly string _latitude, _longitude;
+        private readonly GeolocationEncoding _encoding;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Geolocation"/> class.
@@ -19,9 +19,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type - GEO or GoogleMaps.</param>
         public Geolocation(string latitude, string longitude, GeolocationEncoding encoding = GeolocationEncoding.GEO)
         {
-            this.latitude = latitude.Replace(",", ".");
-            this.longitude = longitude.Replace(",", ".");
-            this.encoding = encoding;
+            this._latitude = latitude.Replace(",", ".");
+            this._longitude = longitude.Replace(",", ".");
+            this._encoding = encoding;
         }
 
         /// <summary>
@@ -30,10 +30,10 @@ public static partial class PayloadGenerator
         /// <returns>A string representation of the geolocation payload in the specified encoding format.</returns>
         public override string ToString()
         {
-            return encoding switch
+            return _encoding switch
             {
-                GeolocationEncoding.GEO => $"geo:{latitude},{longitude}",
-                GeolocationEncoding.GoogleMaps => $"http://maps.google.com/maps?q={latitude},{longitude}",
+                GeolocationEncoding.GEO => $"geo:{_latitude},{_longitude}",
+                GeolocationEncoding.GoogleMaps => $"http://maps.google.com/maps?q={_latitude},{_longitude}",
                 _ => "geo:",
             };
         }

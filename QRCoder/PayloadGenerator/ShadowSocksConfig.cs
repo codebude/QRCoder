@@ -12,11 +12,11 @@ public static partial class PayloadGenerator
     /// </summary>
     public class ShadowSocksConfig : Payload
     {
-        private readonly string hostname, password, methodStr;
-        private readonly string? tag, parameter;
-        private readonly Method method;
-        private readonly int port;
-        private Dictionary<string, string> encryptionTexts = new Dictionary<string, string>() {
+        private readonly string _hostname, _password, _methodStr;
+        private readonly string? _tag, _parameter;
+        private readonly Method _method;
+        private readonly int _port;
+        private Dictionary<string, string> _encryptionTexts = new Dictionary<string, string>() {
             { "Chacha20IetfPoly1305", "chacha20-ietf-poly1305" },
             { "Aes128Gcm", "aes-128-gcm" },
             { "Aes192Gcm", "aes-192-gcm" },
@@ -94,7 +94,7 @@ public static partial class PayloadGenerator
             )
             }, tag)
         { }
-        private Dictionary<string, string> UrlEncodeTable = new Dictionary<string, string>
+        private Dictionary<string, string> _urlEncodeTable = new Dictionary<string, string>
         {
             [" "] = "+",
             ["\0"] = "%00",
@@ -131,7 +131,7 @@ public static partial class PayloadGenerator
         private string UrlEncode(string i)
         {
             string j = i;
-            foreach (var kv in UrlEncodeTable)
+            foreach (var kv in _urlEncodeTable)
             {
                 j = j.Replace(kv.Key, kv.Value);
             }
@@ -149,19 +149,19 @@ public static partial class PayloadGenerator
         /// <param name="tag">Optional tag line</param>
         public ShadowSocksConfig(string hostname, int port, string password, Method method, Dictionary<string, string>? parameters, string? tag = null)
         {
-            this.hostname = Uri.CheckHostName(hostname) == UriHostNameType.IPv6
+            this._hostname = Uri.CheckHostName(hostname) == UriHostNameType.IPv6
                 ? $"[{hostname}]"
                 : hostname;
             if (port < 1 || port > 65535)
                 throw new ShadowSocksConfigException("Value of 'port' must be within 0 and 65535.");
-            this.port = port;
-            this.password = password;
-            this.method = method;
-            methodStr = encryptionTexts[method.ToString()];
-            this.tag = tag;
+            this._port = port;
+            this._password = password;
+            this._method = method;
+            _methodStr = _encryptionTexts[method.ToString()];
+            this._tag = tag;
 
             if (parameters != null)
-                parameter =
+                _parameter =
                     string.Join("&",
                     parameters.Select(
                         kv => $"{UrlEncode(kv.Key)}={UrlEncode(kv.Value)}"
@@ -174,18 +174,18 @@ public static partial class PayloadGenerator
         /// <returns>A string representation of the ShadowSocks config payload.</returns>
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(parameter))
+            if (string.IsNullOrEmpty(_parameter))
             {
-                var connectionString = $"{methodStr}:{password}@{hostname}:{port}";
+                var connectionString = $"{_methodStr}:{_password}@{_hostname}:{_port}";
                 var connectionStringEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(connectionString));
-                return $"ss://{connectionStringEncoded}{(!string.IsNullOrEmpty(tag) ? $"#{tag}" : string.Empty)}";
+                return $"ss://{connectionStringEncoded}{(!string.IsNullOrEmpty(_tag) ? $"#{_tag}" : string.Empty)}";
             }
-            var authString = $"{methodStr}:{password}";
+            var authString = $"{_methodStr}:{_password}";
             var authStringEncoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(authString))
                 .Replace('+', '-')
                 .Replace('/', '_')
                 .TrimEnd('=');
-            return $"ss://{authStringEncoded}@{hostname}:{port}/?{parameter}{(!string.IsNullOrEmpty(tag) ? $"#{tag}" : string.Empty)}";
+            return $"ss://{authStringEncoded}@{_hostname}:{_port}/?{_parameter}{(!string.IsNullOrEmpty(_tag) ? $"#{_tag}" : string.Empty)}";
         }
 
         /// <summary>

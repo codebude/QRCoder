@@ -11,8 +11,8 @@ public static partial class PayloadGenerator
     /// </summary>
     public class Mail : Payload
     {
-        private readonly string? mailReceiver, subject, message;
-        private readonly MailEncoding encoding;
+        private readonly string? _mailReceiver, _subject, _message;
+        private readonly MailEncoding _encoding;
 
 
         /// <summary>
@@ -24,10 +24,10 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
         public Mail(string? mailReceiver = null, string? subject = null, string? message = null, MailEncoding encoding = MailEncoding.MAILTO)
         {
-            this.mailReceiver = mailReceiver;
-            this.subject = subject;
-            this.message = message;
-            this.encoding = encoding;
+            this._mailReceiver = mailReceiver;
+            this._subject = subject;
+            this._message = message;
+            this._encoding = encoding;
         }
 
         /// <summary>
@@ -37,22 +37,22 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var returnVal = string.Empty;
-            switch (encoding)
+            switch (_encoding)
             {
                 case MailEncoding.MAILTO:
                     var parts = new List<string>();
-                    if (!string.IsNullOrEmpty(subject))
-                        parts.Add("subject=" + Uri.EscapeDataString(subject));
-                    if (!string.IsNullOrEmpty(message))
-                        parts.Add("body=" + Uri.EscapeDataString(message));
+                    if (!string.IsNullOrEmpty(_subject))
+                        parts.Add("subject=" + Uri.EscapeDataString(_subject));
+                    if (!string.IsNullOrEmpty(_message))
+                        parts.Add("body=" + Uri.EscapeDataString(_message));
                     var queryString = parts.Any() ? $"?{string.Join("&", parts.ToArray())}" : "";
-                    returnVal = $"mailto:{mailReceiver}{queryString}";
+                    returnVal = $"mailto:{_mailReceiver}{queryString}";
                     break;
                 case MailEncoding.MATMSG:
-                    returnVal = $"MATMSG:TO:{mailReceiver};SUB:{EscapeInput(subject ?? "")};BODY:{EscapeInput(message ?? "")};;";
+                    returnVal = $"MATMSG:TO:{_mailReceiver};SUB:{EscapeInput(_subject ?? "")};BODY:{EscapeInput(_message ?? "")};;";
                     break;
                 case MailEncoding.SMTP:
-                    returnVal = $"SMTP:{mailReceiver}:{EscapeInput(subject ?? "", true)}:{EscapeInput(message ?? "", true)}";
+                    returnVal = $"SMTP:{_mailReceiver}:{EscapeInput(_subject ?? "", true)}:{EscapeInput(_message ?? "", true)}";
                     break;
             }
             return returnVal;

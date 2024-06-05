@@ -7,8 +7,8 @@ public static partial class PayloadGenerator
     /// </summary>
     public class WiFi : Payload
     {
-        private readonly string ssid, password, authenticationMode;
-        private readonly bool isHiddenSsid;
+        private readonly string _ssid, _password, _authenticationMode;
+        private readonly bool _isHiddenSsid;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WiFi"/> class.
@@ -20,12 +20,12 @@ public static partial class PayloadGenerator
         /// <param name="escapeHexStrings">Set flag if ssid/password is delivered as HEX string. Note: May not be supported on iOS devices.</param>
         public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false, bool escapeHexStrings = true)
         {
-            this.ssid = EscapeInput(ssid);
-            this.ssid = escapeHexStrings && isHexStyle(this.ssid) ? "\"" + this.ssid + "\"" : this.ssid;
-            this.password = EscapeInput(password);
-            this.password = escapeHexStrings && isHexStyle(this.password) ? "\"" + this.password + "\"" : this.password;
-            this.authenticationMode = authenticationMode.ToString();
-            isHiddenSsid = isHiddenSSID;
+            this._ssid = EscapeInput(ssid);
+            this._ssid = escapeHexStrings && isHexStyle(this._ssid) ? "\"" + this._ssid + "\"" : this._ssid;
+            this._password = EscapeInput(password);
+            this._password = escapeHexStrings && isHexStyle(this._password) ? "\"" + this._password + "\"" : this._password;
+            this._authenticationMode = authenticationMode.ToString();
+            _isHiddenSsid = isHiddenSSID;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             return
-                $"WIFI:T:{authenticationMode};S:{ssid};P:{password};{(isHiddenSsid ? "H:true" : string.Empty)};";
+                $"WIFI:T:{_authenticationMode};S:{_ssid};P:{_password};{(_isHiddenSsid ? "H:true" : string.Empty)};";
         }
 
         /// <summary>

@@ -12,12 +12,12 @@ public static partial class PayloadGenerator
         //Keep in mind, that the ECC level has to be set to "M" when generating a Girocode!
         //Girocode specification: http://www.europeanpaymentscouncil.eu/index.cfm/knowledge-bank/epc-documents/quick-response-code-guidelines-to-enable-data-capture-for-the-initiation-of-a-sepa-credit-transfer/epc069-12-quick-response-code-guidelines-to-enable-data-capture-for-the-initiation-of-a-sepa-credit-transfer1/
 
-        private string br = "\n";
-        private readonly string iban, bic, name, purposeOfCreditTransfer, remittanceInformation, messageToGirocodeUser;
-        private readonly decimal amount;
-        private readonly GirocodeVersion version;
-        private readonly GirocodeEncoding encoding;
-        private readonly TypeOfRemittance typeOfRemittance;
+        private string _br = "\n";
+        private readonly string _iban, _bic, _name, _purposeOfCreditTransfer, _remittanceInformation, _messageToGirocodeUser;
+        private readonly decimal _amount;
+        private readonly GirocodeVersion _version;
+        private readonly GirocodeEncoding _encoding;
+        private readonly TypeOfRemittance _typeOfRemittance;
 
         /// <summary>
         /// Gets the ECC level required for Girocode, which is always set to M.
@@ -40,34 +40,34 @@ public static partial class PayloadGenerator
         /// <exception cref="GirocodeException">Thrown when the input values are not valid according to the Girocode specification.</exception>
         public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", TypeOfRemittance typeOfRemittance = TypeOfRemittance.Unstructured, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", GirocodeVersion version = GirocodeVersion.Version1, GirocodeEncoding encoding = GirocodeEncoding.ISO_8859_1)
         {
-            this.version = version;
-            this.encoding = encoding;
+            this._version = version;
+            this._encoding = encoding;
             if (!IsValidIban(iban))
                 throw new GirocodeException("The IBAN entered isn't valid.");
-            this.iban = iban.Replace(" ", "").ToUpper();
+            this._iban = iban.Replace(" ", "").ToUpper();
             if (!IsValidBic(bic))
                 throw new GirocodeException("The BIC entered isn't valid.");
-            this.bic = bic.Replace(" ", "").ToUpper();
+            this._bic = bic.Replace(" ", "").ToUpper();
             if (name.Length > 70)
                 throw new GirocodeException("(Payee-)Name must be shorter than 71 chars.");
-            this.name = name;
+            this._name = name;
             if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",", ".").Split('.')[1].TrimEnd('0').Length > 2)
                 throw new GirocodeException("Amount must have less than 3 digits after decimal point.");
             if (amount < 0.01m || amount > 999999999.99m)
                 throw new GirocodeException("Amount has to be at least 0.01 and must be smaller or equal to 999999999.99.");
-            this.amount = amount;
+            this._amount = amount;
             if (purposeOfCreditTransfer.Length > 4)
                 throw new GirocodeException("Purpose of credit transfer can only have 4 chars at maximum.");
-            this.purposeOfCreditTransfer = purposeOfCreditTransfer;
+            this._purposeOfCreditTransfer = purposeOfCreditTransfer;
             if (typeOfRemittance == TypeOfRemittance.Unstructured && remittanceInformation.Length > 140)
                 throw new GirocodeException("Unstructured reference texts have to be shorter than 141 chars.");
             if (typeOfRemittance == TypeOfRemittance.Structured && remittanceInformation.Length > 35)
                 throw new GirocodeException("Structured reference texts have to be shorter than 36 chars.");
-            this.typeOfRemittance = typeOfRemittance;
-            this.remittanceInformation = remittanceInformation;
+            this._typeOfRemittance = typeOfRemittance;
+            this._remittanceInformation = remittanceInformation;
             if (messageToGirocodeUser.Length > 70)
                 throw new GirocodeException("Message to the Girocode-User reader texts have to be shorter than 71 chars.");
-            this.messageToGirocodeUser = messageToGirocodeUser;
+            this._messageToGirocodeUser = messageToGirocodeUser;
         }
 
         /// <summary>
@@ -76,24 +76,24 @@ public static partial class PayloadGenerator
         /// <returns>The Girocode payload as a string.</returns>
         public override string ToString()
         {
-            var girocodePayload = "BCD" + br;
-            girocodePayload += ((version == GirocodeVersion.Version1) ? "001" : "002") + br;
-            girocodePayload += (int)encoding + 1 + br;
-            girocodePayload += "SCT" + br;
-            girocodePayload += bic + br;
-            girocodePayload += name + br;
-            girocodePayload += iban + br;
-            girocodePayload += $"EUR{amount:0.00}".Replace(",", ".") + br;
-            girocodePayload += purposeOfCreditTransfer + br;
-            girocodePayload += ((typeOfRemittance == TypeOfRemittance.Structured)
-                ? remittanceInformation
-                : string.Empty) + br;
-            girocodePayload += ((typeOfRemittance == TypeOfRemittance.Unstructured)
-                ? remittanceInformation
-                : string.Empty) + br;
-            girocodePayload += messageToGirocodeUser;
+            var girocodePayload = "BCD" + _br;
+            girocodePayload += ((_version == GirocodeVersion.Version1) ? "001" : "002") + _br;
+            girocodePayload += (int)_encoding + 1 + _br;
+            girocodePayload += "SCT" + _br;
+            girocodePayload += _bic + _br;
+            girocodePayload += _name + _br;
+            girocodePayload += _iban + _br;
+            girocodePayload += $"EUR{_amount:0.00}".Replace(",", ".") + _br;
+            girocodePayload += _purposeOfCreditTransfer + _br;
+            girocodePayload += ((_typeOfRemittance == TypeOfRemittance.Structured)
+                ? _remittanceInformation
+                : string.Empty) + _br;
+            girocodePayload += ((_typeOfRemittance == TypeOfRemittance.Unstructured)
+                ? _remittanceInformation
+                : string.Empty) + _br;
+            girocodePayload += _messageToGirocodeUser;
 
-            return ConvertStringToEncoding(girocodePayload, encoding.ToString().Replace("_", "-"));
+            return ConvertStringToEncoding(girocodePayload, _encoding.ToString().Replace("_", "-"));
         }
 
         /// <summary>

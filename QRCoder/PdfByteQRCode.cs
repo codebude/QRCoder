@@ -20,7 +20,7 @@ namespace QRCoder;
 // ReSharper disable once InconsistentNaming
 public class PdfByteQRCode : AbstractQRCode, IDisposable
 {
-    private readonly byte[] pdfBinaryComment = new byte[] { 0x25, 0xe2, 0xe3, 0xcf, 0xd3 };
+    private readonly byte[] _pdfBinaryComment = new byte[] { 0x25, 0xe2, 0xe3, 0xcf, 0xd3 };
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PdfByteQRCode"/> class.
@@ -105,7 +105,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         writer.Write("%PDF-1.5\r\n");
         writer.Flush();
 
-        stream.Write(pdfBinaryComment, 0, pdfBinaryComment.Length);
+        stream.Write(_pdfBinaryComment, 0, _pdfBinaryComment.Length);
         writer.WriteLine();
 
         writer.Flush();

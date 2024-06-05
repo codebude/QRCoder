@@ -9,26 +9,26 @@ public static partial class PayloadGenerator
     /// </summary>
     public class ContactData : Payload
     {
-        private readonly string firstname;
-        private readonly string lastname;
-        private readonly string? nickname;
-        private readonly string? org;
-        private readonly string? orgTitle;
-        private readonly string? phone;
-        private readonly string? mobilePhone;
-        private readonly string? workPhone;
-        private readonly string? email;
-        private readonly DateTime? birthday;
-        private readonly string? website;
-        private readonly string? street;
-        private readonly string? houseNumber;
-        private readonly string? city;
-        private readonly string? zipCode;
-        private readonly string? stateRegion;
-        private readonly string? country;
-        private readonly string? note;
-        private readonly ContactOutputType outputType;
-        private readonly AddressOrder addressOrder;
+        private readonly string _firstname;
+        private readonly string _lastname;
+        private readonly string? _nickname;
+        private readonly string? _org;
+        private readonly string? _orgTitle;
+        private readonly string? _phone;
+        private readonly string? _mobilePhone;
+        private readonly string? _workPhone;
+        private readonly string? _email;
+        private readonly DateTime? _birthday;
+        private readonly string? _website;
+        private readonly string? _street;
+        private readonly string? _houseNumber;
+        private readonly string? _city;
+        private readonly string? _zipCode;
+        private readonly string? _stateRegion;
+        private readonly string? _country;
+        private readonly string? _note;
+        private readonly ContactOutputType _outputType;
+        private readonly AddressOrder _addressOrder;
 
 
         /// <summary>
@@ -56,26 +56,26 @@ public static partial class PayloadGenerator
         /// <param name="orgTitle">Organization/Company Title.</param> 
         public ContactData(ContactOutputType outputType, string firstname, string lastname, string? nickname = null, string? phone = null, string? mobilePhone = null, string? workPhone = null, string? email = null, DateTime? birthday = null, string? website = null, string? street = null, string? houseNumber = null, string? city = null, string? zipCode = null, string? country = null, string? note = null, string? stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string? org = null, string? orgTitle = null)
         {
-            this.firstname = firstname;
-            this.lastname = lastname;
-            this.nickname = nickname;
-            this.org = org;
-            this.orgTitle = orgTitle;
-            this.phone = phone;
-            this.mobilePhone = mobilePhone;
-            this.workPhone = workPhone;
-            this.email = email;
-            this.birthday = birthday;
-            this.website = website;
-            this.street = street;
-            this.houseNumber = houseNumber;
-            this.city = city;
-            this.stateRegion = stateRegion;
-            this.zipCode = zipCode;
-            this.country = country;
-            this.addressOrder = addressOrder;
-            this.note = note;
-            this.outputType = outputType;
+            this._firstname = firstname;
+            this._lastname = lastname;
+            this._nickname = nickname;
+            this._org = org;
+            this._orgTitle = orgTitle;
+            this._phone = phone;
+            this._mobilePhone = mobilePhone;
+            this._workPhone = workPhone;
+            this._email = email;
+            this._birthday = birthday;
+            this._website = website;
+            this._street = street;
+            this._houseNumber = houseNumber;
+            this._city = city;
+            this._stateRegion = stateRegion;
+            this._zipCode = zipCode;
+            this._country = country;
+            this._addressOrder = addressOrder;
+            this._note = note;
+            this._outputType = outputType;
         }
 
         /// <summary>
@@ -85,48 +85,48 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             string payload = string.Empty;
-            if (outputType == ContactOutputType.MeCard)
+            if (_outputType == ContactOutputType.MeCard)
             {
                 payload += "MECARD+\r\n";
-                if (!string.IsNullOrEmpty(firstname) && !string.IsNullOrEmpty(lastname))
-                    payload += $"N:{lastname}, {firstname}\r\n";
-                else if (!string.IsNullOrEmpty(firstname) || !string.IsNullOrEmpty(lastname))
-                    payload += $"N:{firstname}{lastname}\r\n";
-                if (!string.IsNullOrEmpty(org))
-                    payload += $"ORG:{org}\r\n";
-                if (!string.IsNullOrEmpty(orgTitle))
-                    payload += $"TITLE:{orgTitle}\r\n";
-                if (!string.IsNullOrEmpty(phone))
-                    payload += $"TEL:{phone}\r\n";
-                if (!string.IsNullOrEmpty(mobilePhone))
-                    payload += $"TEL:{mobilePhone}\r\n";
-                if (!string.IsNullOrEmpty(workPhone))
-                    payload += $"TEL:{workPhone}\r\n";
-                if (!string.IsNullOrEmpty(email))
-                    payload += $"EMAIL:{email}\r\n";
-                if (!string.IsNullOrEmpty(note))
-                    payload += $"NOTE:{note}\r\n";
-                if (birthday != null)
-                    payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";
+                if (!string.IsNullOrEmpty(_firstname) && !string.IsNullOrEmpty(_lastname))
+                    payload += $"N:{_lastname}, {_firstname}\r\n";
+                else if (!string.IsNullOrEmpty(_firstname) || !string.IsNullOrEmpty(_lastname))
+                    payload += $"N:{_firstname}{_lastname}\r\n";
+                if (!string.IsNullOrEmpty(_org))
+                    payload += $"ORG:{_org}\r\n";
+                if (!string.IsNullOrEmpty(_orgTitle))
+                    payload += $"TITLE:{_orgTitle}\r\n";
+                if (!string.IsNullOrEmpty(_phone))
+                    payload += $"TEL:{_phone}\r\n";
+                if (!string.IsNullOrEmpty(_mobilePhone))
+                    payload += $"TEL:{_mobilePhone}\r\n";
+                if (!string.IsNullOrEmpty(_workPhone))
+                    payload += $"TEL:{_workPhone}\r\n";
+                if (!string.IsNullOrEmpty(_email))
+                    payload += $"EMAIL:{_email}\r\n";
+                if (!string.IsNullOrEmpty(_note))
+                    payload += $"NOTE:{_note}\r\n";
+                if (_birthday != null)
+                    payload += $"BDAY:{((DateTime)_birthday).ToString("yyyyMMdd")}\r\n";
                 string addressString = string.Empty;
-                if (addressOrder == AddressOrder.Default)
+                if (_addressOrder == AddressOrder.Default)
                 {
-                    addressString = $"ADR:,,{(!string.IsNullOrEmpty(street) ? street + " " : "")}{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")},{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(city) ? city : "")},{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    addressString = $"ADR:,,{(!string.IsNullOrEmpty(_street) ? _street + " " : "")}{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber : "")},{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")},{(!string.IsNullOrEmpty(_city) ? _city : "")},{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")},{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
                 }
                 else
                 {
-                    addressString = $"ADR:,,{(!string.IsNullOrEmpty(houseNumber) ? houseNumber + " " : "")}{(!string.IsNullOrEmpty(street) ? street : "")},{(!string.IsNullOrEmpty(city) ? city : "")},{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")},{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    addressString = $"ADR:,,{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber + " " : "")}{(!string.IsNullOrEmpty(_street) ? _street : "")},{(!string.IsNullOrEmpty(_city) ? _city : "")},{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")},{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")},{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
                 }
                 payload += addressString;
-                if (!string.IsNullOrEmpty(website))
-                    payload += $"URL:{website}\r\n";
-                if (!string.IsNullOrEmpty(nickname))
-                    payload += $"NICKNAME:{nickname}\r\n";
+                if (!string.IsNullOrEmpty(_website))
+                    payload += $"URL:{_website}\r\n";
+                if (!string.IsNullOrEmpty(_nickname))
+                    payload += $"NICKNAME:{_nickname}\r\n";
                 payload = payload.Trim(new char[] { '\r', '\n' });
             }
             else
             {
-                var version = outputType.ToString().Substring(5);
+                var version = _outputType.ToString().Substring(5);
                 if (version.Length > 1)
                     version = version.Insert(1, ".");
                 else
@@ -135,81 +135,81 @@ public static partial class PayloadGenerator
                 payload += "BEGIN:VCARD\r\n";
                 payload += $"VERSION:{version}\r\n";
 
-                payload += $"N:{(!string.IsNullOrEmpty(lastname) ? lastname : "")};{(!string.IsNullOrEmpty(firstname) ? firstname : "")};;;\r\n";
-                payload += $"FN:{(!string.IsNullOrEmpty(firstname) ? firstname + " " : "")}{(!string.IsNullOrEmpty(lastname) ? lastname : "")}\r\n";
-                if (!string.IsNullOrEmpty(org))
+                payload += $"N:{(!string.IsNullOrEmpty(_lastname) ? _lastname : "")};{(!string.IsNullOrEmpty(_firstname) ? _firstname : "")};;;\r\n";
+                payload += $"FN:{(!string.IsNullOrEmpty(_firstname) ? _firstname + " " : "")}{(!string.IsNullOrEmpty(_lastname) ? _lastname : "")}\r\n";
+                if (!string.IsNullOrEmpty(_org))
                 {
-                    payload += $"ORG:" + org + "\r\n";
+                    payload += $"ORG:" + _org + "\r\n";
                 }
-                if (!string.IsNullOrEmpty(orgTitle))
+                if (!string.IsNullOrEmpty(_orgTitle))
                 {
-                    payload += $"TITLE:" + orgTitle + "\r\n";
+                    payload += $"TITLE:" + _orgTitle + "\r\n";
                 }
-                if (!string.IsNullOrEmpty(phone))
+                if (!string.IsNullOrEmpty(_phone))
                 {
                     payload += $"TEL;";
-                    if (outputType == ContactOutputType.VCard21)
-                        payload += $"HOME;VOICE:{phone}";
-                    else if (outputType == ContactOutputType.VCard3)
-                        payload += $"TYPE=HOME,VOICE:{phone}";
+                    if (_outputType == ContactOutputType.VCard21)
+                        payload += $"HOME;VOICE:{_phone}";
+                    else if (_outputType == ContactOutputType.VCard3)
+                        payload += $"TYPE=HOME,VOICE:{_phone}";
                     else
-                        payload += $"TYPE=home,voice;VALUE=uri:tel:{phone}";
+                        payload += $"TYPE=home,voice;VALUE=uri:tel:{_phone}";
                     payload += "\r\n";
                 }
 
-                if (!string.IsNullOrEmpty(mobilePhone))
+                if (!string.IsNullOrEmpty(_mobilePhone))
                 {
                     payload += $"TEL;";
-                    if (outputType == ContactOutputType.VCard21)
-                        payload += $"HOME;CELL:{mobilePhone}";
-                    else if (outputType == ContactOutputType.VCard3)
-                        payload += $"TYPE=HOME,CELL:{mobilePhone}";
+                    if (_outputType == ContactOutputType.VCard21)
+                        payload += $"HOME;CELL:{_mobilePhone}";
+                    else if (_outputType == ContactOutputType.VCard3)
+                        payload += $"TYPE=HOME,CELL:{_mobilePhone}";
                     else
-                        payload += $"TYPE=home,cell;VALUE=uri:tel:{mobilePhone}";
+                        payload += $"TYPE=home,cell;VALUE=uri:tel:{_mobilePhone}";
                     payload += "\r\n";
                 }
 
-                if (!string.IsNullOrEmpty(workPhone))
+                if (!string.IsNullOrEmpty(_workPhone))
                 {
                     payload += $"TEL;";
-                    if (outputType == ContactOutputType.VCard21)
-                        payload += $"WORK;VOICE:{workPhone}";
-                    else if (outputType == ContactOutputType.VCard3)
-                        payload += $"TYPE=WORK,VOICE:{workPhone}";
+                    if (_outputType == ContactOutputType.VCard21)
+                        payload += $"WORK;VOICE:{_workPhone}";
+                    else if (_outputType == ContactOutputType.VCard3)
+                        payload += $"TYPE=WORK,VOICE:{_workPhone}";
                     else
-                        payload += $"TYPE=work,voice;VALUE=uri:tel:{workPhone}";
+                        payload += $"TYPE=work,voice;VALUE=uri:tel:{_workPhone}";
                     payload += "\r\n";
                 }
 
 
                 payload += "ADR;";
-                if (outputType == ContactOutputType.VCard21)
+                if (_outputType == ContactOutputType.VCard21)
                     payload += "HOME;PREF:";
-                else if (outputType == ContactOutputType.VCard3)
+                else if (_outputType == ContactOutputType.VCard3)
                     payload += "TYPE=HOME,PREF:";
                 else
                     payload += "TYPE=home,pref:";
                 string addressString = string.Empty;
-                if (addressOrder == AddressOrder.Default)
+                if (_addressOrder == AddressOrder.Default)
                 {
-                    addressString = $";;{(!string.IsNullOrEmpty(street) ? street + " " : "")}{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")};{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(city) ? city : "")};{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    addressString = $";;{(!string.IsNullOrEmpty(_street) ? _street + " " : "")}{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber : "")};{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")};{(!string.IsNullOrEmpty(_city) ? _city : "")};{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")};{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
                 }
                 else
                 {
-                    addressString = $";;{(!string.IsNullOrEmpty(houseNumber) ? houseNumber + " " : "")}{(!string.IsNullOrEmpty(street) ? street : "")};{(!string.IsNullOrEmpty(city) ? city : "")};{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")};{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
+                    addressString = $";;{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber + " " : "")}{(!string.IsNullOrEmpty(_street) ? _street : "")};{(!string.IsNullOrEmpty(_city) ? _city : "")};{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")};{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")};{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
                 }
                 payload += addressString;
 
-                if (birthday != null)
-                    payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";
-                if (!string.IsNullOrEmpty(website))
-                    payload += $"URL:{website}\r\n";
-                if (!string.IsNullOrEmpty(email))
-                    payload += $"EMAIL:{email}\r\n";
-                if (!string.IsNullOrEmpty(note))
-                    payload += $"NOTE:{note}\r\n";
-                if (outputType != ContactOutputType.VCard21 && !string.IsNullOrEmpty(nickname))
-                    payload += $"NICKNAME:{nickname}\r\n";
+                if (_birthday != null)
+                    payload += $"BDAY:{((DateTime)_birthday).ToString("yyyyMMdd")}\r\n";
+                if (!string.IsNullOrEmpty(_website))
+                    payload += $"URL:{_website}\r\n";
+                if (!string.IsNullOrEmpty(_email))
+                    payload += $"EMAIL:{_email}\r\n";
+                if (!string.IsNullOrEmpty(_note))
+                    payload += $"NOTE:{_note}\r\n";
+                if (_outputType != ContactOutputType.VCard21 && !string.IsNullOrEmpty(_nickname))
+                    payload += $"NICKNAME:{_nickname}\r\n";
 
                 payload += "END:VCARD";
             }

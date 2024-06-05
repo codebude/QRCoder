@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Storage.Streams;
@@ -23,7 +23,9 @@ namespace QRCoderDemoUWP
             comboBoxECC.SelectedIndex = 0;
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         private async void button_Click(object sender, RoutedEventArgs e)
+#pragma warning restore IDE1006 // Naming Styles
         {
             if (comboBoxECC.SelectedItem != null)
             {

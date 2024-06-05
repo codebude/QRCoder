@@ -9,8 +9,8 @@ public static partial class PayloadGenerator
     /// </summary>
     public class MMS : Payload
     {
-        private readonly string number, subject;
-        private readonly MMSEncoding encoding;
+        private readonly string _number, _subject;
+        private readonly MMSEncoding _encoding;
 
         /// <summary>
         /// Creates a MMS payload without text.
@@ -19,9 +19,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type.</param>
         public MMS(string number, MMSEncoding encoding = MMSEncoding.MMS)
         {
-            this.number = number;
-            subject = string.Empty;
-            this.encoding = encoding;
+            this._number = number;
+            _subject = string.Empty;
+            this._encoding = encoding;
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type.</param>
         public MMS(string number, string subject, MMSEncoding encoding = MMSEncoding.MMS)
         {
-            this.number = number;
-            this.subject = subject;
-            this.encoding = encoding;
+            this._number = number;
+            this._subject = subject;
+            this._encoding = encoding;
         }
 
         /// <summary>
@@ -44,19 +44,19 @@ public static partial class PayloadGenerator
         public override string ToString()
         {
             var returnVal = string.Empty;
-            switch (encoding)
+            switch (_encoding)
             {
                 case MMSEncoding.MMSTO:
                     var queryStringMmsTo = string.Empty;
-                    if (!string.IsNullOrEmpty(subject))
-                        queryStringMmsTo = $"?subject={Uri.EscapeDataString(subject)}";
-                    returnVal = $"mmsto:{number}{queryStringMmsTo}";
+                    if (!string.IsNullOrEmpty(_subject))
+                        queryStringMmsTo = $"?subject={Uri.EscapeDataString(_subject)}";
+                    returnVal = $"mmsto:{_number}{queryStringMmsTo}";
                     break;
                 case MMSEncoding.MMS:
                     var queryStringMms = string.Empty;
-                    if (!string.IsNullOrEmpty(subject))
-                        queryStringMms = $"?body={Uri.EscapeDataString(subject)}";
-                    returnVal = $"mms:{number}{queryStringMms}";
+                    if (!string.IsNullOrEmpty(_subject))
+                        queryStringMms = $"?body={Uri.EscapeDataString(_subject)}";
+                    returnVal = $"mms:{_number}{queryStringMms}";
                     break;
             }
             return returnVal;
