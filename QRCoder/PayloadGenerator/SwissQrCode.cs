@@ -83,7 +83,6 @@ public static partial class PayloadGenerator
         /// </summary>
         public class AdditionalInformation
         {
-            private readonly string _trailer;
             private readonly string? _unstructuredMessage, _billInformation;
 
             /// <summary>
@@ -97,7 +96,7 @@ public static partial class PayloadGenerator
                     throw new SwissQrCodeAdditionalInformationException("Unstructured message and bill information must be shorter than 141 chars in total/combined.");
                 _unstructuredMessage = unstructuredMessage;
                 _billInformation = billInformation;
-                _trailer = "EPD";
+                Trailer = "EPD";
             }
 
             /// <summary>
@@ -113,7 +112,7 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Gets the trailer.
             /// </summary>
-            public string Trailer => _trailer;
+            public string Trailer { get; }
 
 
             /// <summary>
@@ -154,7 +153,6 @@ public static partial class PayloadGenerator
         /// </summary>
         public class Reference
         {
-            private readonly ReferenceType _referenceType;
             private readonly string? _reference;
             private readonly ReferenceTextType? _referenceTextType;
 
@@ -166,7 +164,7 @@ public static partial class PayloadGenerator
             /// <param name="referenceTextType">Type of the reference text (QR-reference or Creditor Reference)</param>                
             public Reference(ReferenceType referenceType, string? reference = null, ReferenceTextType? referenceTextType = null)
             {
-                _referenceType = referenceType;
+                RefType = referenceType;
                 _referenceTextType = referenceTextType;
 
                 if (referenceType == ReferenceType.NON && reference != null)
@@ -188,7 +186,7 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Gets the reference type.
             /// </summary>
-            public ReferenceType RefType => _referenceType;
+            public ReferenceType RefType { get; }
 
             /// <summary>
             /// Gets the reference text.

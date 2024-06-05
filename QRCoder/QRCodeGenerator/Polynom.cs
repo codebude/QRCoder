@@ -13,7 +13,6 @@ public partial class QRCodeGenerator
     private struct Polynom : IDisposable
     {
         private PolynomItem[] _polyItems;
-        private int _length;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Polynom"/> struct with a specified number of initial capacity for polynomial terms.
@@ -21,7 +20,7 @@ public partial class QRCodeGenerator
         /// <param name="count">The initial capacity of the polynomial items list.</param>
         public Polynom(int count)
         {
-            _length = 0;
+            Count = 0;
             _polyItems = RentArray(count);
         }
 
@@ -30,8 +29,8 @@ public partial class QRCodeGenerator
         /// </summary>
         public void Add(PolynomItem item)
         {
-            AssertCapacity(_length + 1);
-            _polyItems[_length++] = item;
+            AssertCapacity(Count + 1);
+            _polyItems[Count++] = item;
         }
 
         /// <summary>
@@ -39,13 +38,13 @@ public partial class QRCodeGenerator
         /// </summary>
         public void RemoveAt(int index)
         {
-            if ((uint)index >= (uint)_length)
+            if ((uint)index >= (uint)Count)
                 throw new IndexOutOfRangeException();
 
-            if (index < _length - 1)
-                Array.Copy(_polyItems, index + 1, _polyItems, index, _length - index - 1);
+            if (index < Count - 1)
+                Array.Copy(_polyItems, index + 1, _polyItems, index, Count - index - 1);
 
-            _length--;
+            Count--;
         }
 
         /// <summary>
@@ -55,13 +54,13 @@ public partial class QRCodeGenerator
         {
             get
             {
-                if ((uint)index >= _length)
+                if ((uint)index >= Count)
                     ThrowIndexOutOfRangeException();
                 return _polyItems[index];
             }
             set
             {
-                if ((uint)index >= _length)
+                if ((uint)index >= Count)
                     ThrowIndexOutOfRangeException();
                 _polyItems[index] = value;
             }
@@ -79,14 +78,14 @@ public partial class QRCodeGenerator
         /// <summary>
         /// Gets the number of polynomial terms in the polynomial.
         /// </summary>
-        public int Count => _length;
+        public int Count { get; private set; }
 
         /// <summary>
         /// Removes all polynomial terms from the polynomial.
         /// </summary>
         public void Clear()
         {
-            _length = 0;
+            Count = 0;
         }
 
         /// <summary>
@@ -94,9 +93,9 @@ public partial class QRCodeGenerator
         /// </summary>
         public Polynom Clone()
         {
-            var newPolynom = new Polynom(_length);
-            Array.Copy(_polyItems, newPolynom._polyItems, _length);
-            newPolynom._length = _length;
+            var newPolynom = new Polynom(Count);
+            Array.Copy(_polyItems, newPolynom._polyItems, Count);
+            newPolynom.Count = Count;
             return newPolynom;
         }
 
@@ -116,7 +115,7 @@ public partial class QRCodeGenerator
             if (items == null)
                 throw new ObjectDisposedException(nameof(Polynom));
 
-            if (_length <= 1)
+            if (Count <= 1)
             {
                 return; // Nothing to sort if the list is empty or contains only one element
             }
@@ -152,7 +151,7 @@ public partial class QRCodeGenerator
                     QuickSort(i, right);
             }
 
-            QuickSort(0, _length - 1);
+            QuickSort(0, Count - 1);
         }
 
         /// <summary>
@@ -298,7 +297,7 @@ public partial class QRCodeGenerator
 
             public PolynomItem Current => _polynom[_index];
 
-            public bool MoveNext() => ++_index < _polynom._length;
+            public bool MoveNext() => ++_index < _polynom.Count;
         }
     }
 }
