@@ -252,8 +252,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? Sum
             {
-                get { return _sum; }
-                set { _sum = value == null ? null : ValidateInput(value, "Sum", @"^\d{1,18}$"); }
+                get => _sum;
+                set => _sum = value == null ? null : ValidateInput(value, "Sum", @"^\d{1,18}$");
             }
 
             private string? _purpose;
@@ -263,8 +263,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? Purpose
             {
-                get { return _purpose; }
-                set { _purpose = value == null ? null : ValidateInput(value, "Purpose", @"^.{1,160}$"); }
+                get => _purpose;
+                set => _purpose = value == null ? null : ValidateInput(value, "Purpose", @"^.{1,160}$");
             }
 
             private string? _payeeInn;
@@ -274,8 +274,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? PayeeINN
             {
-                get { return _payeeInn; }
-                set { _payeeInn = value == null ? null : ValidateInput(value, "PayeeINN", @"^.{1,12}$"); }
+                get => _payeeInn;
+                set => _payeeInn = value == null ? null : ValidateInput(value, "PayeeINN", @"^.{1,12}$");
             }
 
             private string? _payerInn;
@@ -285,8 +285,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? PayerINN
             {
-                get { return _payerInn; }
-                set { _payerInn = value == null ? null : ValidateInput(value, "PayerINN", @"^.{1,12}$"); }
+                get => _payerInn;
+                set => _payerInn = value == null ? null : ValidateInput(value, "PayerINN", @"^.{1,12}$");
             }
 
             private string? _drawerStatus;
@@ -296,8 +296,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? DrawerStatus
             {
-                get { return _drawerStatus; }
-                set { _drawerStatus = value == null ? null : ValidateInput(value, "DrawerStatus", @"^.{1,2}$"); }
+                get => _drawerStatus;
+                set => _drawerStatus = value == null ? null : ValidateInput(value, "DrawerStatus", @"^.{1,2}$");
             }
 
             private string? _kpp;
@@ -307,8 +307,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? KPP
             {
-                get { return _kpp; }
-                set { _kpp = value == null ? null : ValidateInput(value, "KPP", @"^.{1,9}$"); }
+                get => _kpp;
+                set => _kpp = value == null ? null : ValidateInput(value, "KPP", @"^.{1,9}$");
             }
 
             private string? _cbc;
@@ -318,8 +318,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? CBC
             {
-                get { return _cbc; }
-                set { _cbc = value == null ? null : ValidateInput(value, "CBC", @"^.{1,20}$"); }
+                get => _cbc;
+                set => _cbc = value == null ? null : ValidateInput(value, "CBC", @"^.{1,20}$");
             }
 
             private string? _oktmo;
@@ -329,8 +329,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? OKTMO
             {
-                get { return _oktmo; }
-                set { _oktmo = value == null ? null : ValidateInput(value, "OKTMO", @"^.{1,11}$"); }
+                get => _oktmo;
+                set => _oktmo = value == null ? null : ValidateInput(value, "OKTMO", @"^.{1,11}$");
             }
 
             private string? _paytReason;
@@ -340,8 +340,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? PaytReason
             {
-                get { return _paytReason; }
-                set { _paytReason = value == null ? null : ValidateInput(value, "PaytReason", @"^.{1,2}$"); }
+                get => _paytReason;
+                set => _paytReason = value == null ? null : ValidateInput(value, "PaytReason", @"^.{1,2}$");
             }
 
             private string? _taxPeriod;
@@ -351,8 +351,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? TaxPeriod
             {
-                get { return _taxPeriod; }
-                set { _taxPeriod = value == null ? null : ValidateInput(value, "ТaxPeriod", @"^.{1,10}$"); }
+                get => _taxPeriod;
+                set => _taxPeriod = value == null ? null : ValidateInput(value, "ТaxPeriod", @"^.{1,10}$");
             }
 
             private string? _docNo;
@@ -362,8 +362,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? DocNo
             {
-                get { return _docNo; }
-                set { _docNo = value == null ? null : ValidateInput(value, "DocNo", @"^.{1,15}$"); }
+                get => _docNo;
+                set => _docNo = value == null ? null : ValidateInput(value, "DocNo", @"^.{1,15}$");
             }
 
             /// <summary>
@@ -379,8 +379,8 @@ public static partial class PayloadGenerator
             /// </summary>
             public string? TaxPaytKind
             {
-                get { return _taxPaytKind; }
-                set { _taxPaytKind = value == null ? null : ValidateInput(value, "TaxPaytKind", @"^.{1,2}$"); }
+                get => _taxPaytKind;
+                set => _taxPaytKind = value == null ? null : ValidateInput(value, "TaxPaytKind", @"^.{1,2}$");
             }
 
             /**************************************************************************

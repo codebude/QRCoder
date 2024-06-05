@@ -33,8 +33,8 @@ public static partial class PayloadGenerator
         [Obsolete("This property is obsolete, use " + nameof(AuthAlgorithm) + " instead", false)]
         public OoneTimePasswordAuthAlgorithm Algorithm
         {
-            get { return (OoneTimePasswordAuthAlgorithm)Enum.Parse(typeof(OoneTimePasswordAuthAlgorithm), AuthAlgorithm.ToString()); }
-            set { AuthAlgorithm = (OneTimePasswordAuthAlgorithm)Enum.Parse(typeof(OneTimePasswordAuthAlgorithm), value.ToString()); }
+            get => (OoneTimePasswordAuthAlgorithm)Enum.Parse(typeof(OoneTimePasswordAuthAlgorithm), AuthAlgorithm.ToString());
+            set => AuthAlgorithm = (OneTimePasswordAuthAlgorithm)Enum.Parse(typeof(OneTimePasswordAuthAlgorithm), value.ToString());
         }
 
         /// <summary>
