@@ -103,24 +103,14 @@ namespace QRCoderDemo
                 // NOTE that the FilterIndex property is one-based.
 
                 ImageFormat imageFormat = null;
-                switch (saveFileDialog1.FilterIndex)
+                imageFormat = saveFileDialog1.FilterIndex switch
                 {
-                    case 1:
-                        imageFormat = ImageFormat.Bmp;
-                        break;
-                    case 2:
-                        imageFormat = ImageFormat.Png;
-                        break;
-                    case 3:
-                        imageFormat = ImageFormat.Jpeg;
-                        break;
-                    case 4:
-                        imageFormat = ImageFormat.Gif;
-                        break;
-                    default:
-                        throw new NotSupportedException("File extension is not supported");
-                }
-
+                    1 => ImageFormat.Bmp,
+                    2 => ImageFormat.Png,
+                    3 => ImageFormat.Jpeg,
+                    4 => ImageFormat.Gif,
+                    _ => throw new NotSupportedException("File extension is not supported"),
+                };
                 pictureBoxQRCode.BackgroundImage.Save(fs, imageFormat);
             }
         }

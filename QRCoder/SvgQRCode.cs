@@ -402,15 +402,12 @@ public class SvgQRCode : AbstractQRCode, IDisposable
 
         private string GetMimeType(MediaType type)
         {
-            switch (type)
+            return type switch
             {
-                case MediaType.PNG:
-                    return "image/png";
-                case MediaType.SVG:
-                    return "image/svg+xml";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type));
-            }
+                MediaType.PNG => "image/png",
+                MediaType.SVG => "image/svg+xml",
+                _ => throw new ArgumentOutOfRangeException(nameof(type)),
+            };
         }
 
     }

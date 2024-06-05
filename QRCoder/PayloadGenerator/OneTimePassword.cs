@@ -98,15 +98,12 @@ public static partial class PayloadGenerator
         /// <returns>The OTP payload as a string.</returns>
         public override string ToString()
         {
-            switch (Type)
+            return Type switch
             {
-                case OneTimePasswordAuthType.TOTP:
-                    return TimeToString();
-                case OneTimePasswordAuthType.HOTP:
-                    return HMACToString();
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+                OneTimePasswordAuthType.TOTP => TimeToString(),
+                OneTimePasswordAuthType.HOTP => HMACToString(),
+                _ => throw new ArgumentOutOfRangeException(),
+            };
         }
 
         // Note: Issuer:Label must only contain 1 : if either of the Issuer or the Label has a : then it is invalid.

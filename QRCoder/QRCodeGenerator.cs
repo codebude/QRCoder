@@ -202,18 +202,12 @@ public partial class QRCodeGenerator : IDisposable
     /// </summary>
     private static ECCLevel ValidateECCLevel(ECCLevel eccLevel)
     {
-        switch (eccLevel)
+        return eccLevel switch
         {
-            case ECCLevel.L:
-            case ECCLevel.M:
-            case ECCLevel.Q:
-            case ECCLevel.H:
-                return eccLevel;
-            case ECCLevel.Default:
-                return ECCLevel.M;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(eccLevel), eccLevel, "Invalid error correction level.");
-        }
+            ECCLevel.L or ECCLevel.M or ECCLevel.Q or ECCLevel.H => eccLevel,
+            ECCLevel.Default => ECCLevel.M,
+            _ => throw new ArgumentOutOfRangeException(nameof(eccLevel), eccLevel, "Invalid error correction level."),
+        };
     }
 
     private static readonly BitArray _repeatingPattern = new BitArray(
@@ -814,19 +808,13 @@ public partial class QRCodeGenerator : IDisposable
     /// <returns>A BitArray containing the binary representation of the encoded data.</returns>
     private static BitArray PlainTextToBinary(string plainText, EncodingMode encMode, EciMode eciMode, bool utf8BOM, bool forceUtf8)
     {
-        switch (encMode)
+        return encMode switch
         {
-            case EncodingMode.Alphanumeric:
-                return PlainTextToBinaryAlphanumeric(plainText);
-            case EncodingMode.Numeric:
-                return PlainTextToBinaryNumeric(plainText);
-            case EncodingMode.Byte:
-                return PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8);
-            case EncodingMode.Kanji:
-            case EncodingMode.ECI:
-            default:
-                return _emptyBitArray;
-        }
+            EncodingMode.Alphanumeric => PlainTextToBinaryAlphanumeric(plainText),
+            EncodingMode.Numeric => PlainTextToBinaryNumeric(plainText),
+            EncodingMode.Byte => PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8),
+            _ => _emptyBitArray,
+        };
     }
 
     private static readonly BitArray _emptyBitArray = new BitArray(0);

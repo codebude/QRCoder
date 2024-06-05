@@ -241,22 +241,15 @@ public class OptionSetter
 #endif
     public ImageFormat GetImageFormat(string value)
     {
-        switch (value.ToLower())
+        return value.ToLower() switch
         {
-            case "jpg":
-                return ImageFormat.Jpeg;
-            case "jpeg":
-                return ImageFormat.Jpeg;
-            case "gif":
-                return ImageFormat.Gif;
-            case "bmp":
-                return ImageFormat.Bmp;
-            case "tiff":
-                return ImageFormat.Tiff;
-            case "png":
-            default:
-                return ImageFormat.Png;
-        }
+            "jpg" => ImageFormat.Jpeg,
+            "jpeg" => ImageFormat.Jpeg,
+            "gif" => ImageFormat.Gif,
+            "bmp" => ImageFormat.Bmp,
+            "tiff" => ImageFormat.Tiff,
+            _ => ImageFormat.Png,
+        };
     }
 }
 
