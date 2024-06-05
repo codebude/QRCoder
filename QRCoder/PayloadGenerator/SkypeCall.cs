@@ -22,9 +22,6 @@ public static partial class PayloadGenerator
         /// Converts the Skype call payload to a string.
         /// </summary>
         /// <returns>A string representation of the Skype call payload.</returns>
-        public override string ToString()
-        {
-            return $"skype:{_skypeUsername}?call";
-        }
+        public override string ToString() => $"skype:{_skypeUsername}?call";
     }
 }

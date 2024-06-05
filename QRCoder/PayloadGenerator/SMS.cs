@@ -41,29 +41,13 @@ public static partial class PayloadGenerator
         /// Returns the SMS payload as a string.
         /// </summary>
         /// <returns>The SMS payload as a string.</returns>
-        public override string ToString()
+        public override string ToString() => _encoding switch
         {
-            var returnVal = string.Empty;
-            switch (_encoding)
-            {
-                case SMSEncoding.SMS:
-                    var queryString = string.Empty;
-                    if (!string.IsNullOrEmpty(_subject))
-                        queryString = $"?body={Uri.EscapeDataString(_subject)}";
-                    returnVal = $"sms:{_number}{queryString}";
-                    break;
-                case SMSEncoding.SMS_iOS:
-                    var queryStringiOS = string.Empty;
-                    if (!string.IsNullOrEmpty(_subject))
-                        queryStringiOS = $";body={Uri.EscapeDataString(_subject)}";
-                    returnVal = $"sms:{_number}{queryStringiOS}";
-                    break;
-                case SMSEncoding.SMSTO:
-                    returnVal = $"SMSTO:{_number}:{_subject}";
-                    break;
-            }
-            return returnVal;
-        }
+            SMSEncoding.SMS => $"sms:{_number}{(string.IsNullOrEmpty(_subject) ? string.Empty : $"?body={Uri.EscapeDataString(_subject)}")}",
+            SMSEncoding.SMS_iOS => $"sms:{_number}{(string.IsNullOrEmpty(_subject) ? string.Empty : $";body={Uri.EscapeDataString(_subject)}")}",
+            SMSEncoding.SMSTO => $"SMSTO:{_number}:{_subject}",
+            _ => string.Empty,
+        };
 
         /// <summary>
         /// Specifies the encoding type for the SMS payload.

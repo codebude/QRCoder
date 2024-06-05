@@ -96,15 +96,12 @@ public static partial class PayloadGenerator
         /// Returns the OTP payload as a string.
         /// </summary>
         /// <returns>The OTP payload as a string.</returns>
-        public override string ToString()
+        public override string ToString() => Type switch
         {
-            return Type switch
-            {
-                OneTimePasswordAuthType.TOTP => TimeToString(),
-                OneTimePasswordAuthType.HOTP => HMACToString(),
-                _ => throw new ArgumentOutOfRangeException(),
-            };
-        }
+            OneTimePasswordAuthType.TOTP => TimeToString(),
+            OneTimePasswordAuthType.HOTP => HMACToString(),
+            _ => throw new ArgumentOutOfRangeException(),
+        };
 
         // Note: Issuer:Label must only contain 1 : if either of the Issuer or the Label has a : then it is invalid.
         // Defaults are 6 digits and 30 for Period

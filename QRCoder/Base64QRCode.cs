@@ -149,7 +149,6 @@ public class Base64QRCode : AbstractQRCode, IDisposable
 #endif
     private string BitmapToBase64(Bitmap bmp, ImageType imgType)
     {
-        var base64 = string.Empty;
         var iFormat = imgType switch
         {
             ImageType.Png => ImageFormat.Png,
@@ -157,12 +156,9 @@ public class Base64QRCode : AbstractQRCode, IDisposable
             ImageType.Gif => ImageFormat.Gif,
             _ => ImageFormat.Png,
         };
-        using (var memoryStream = new MemoryStream())
-        {
-            bmp.Save(memoryStream, iFormat);
-            base64 = Convert.ToBase64String(memoryStream.ToArray(), Base64FormattingOptions.None);
-        }
-        return base64;
+        using var memoryStream = new MemoryStream();
+        bmp.Save(memoryStream, iFormat);
+        return Convert.ToBase64String(memoryStream.ToArray(), Base64FormattingOptions.None);
     }
 #endif
 

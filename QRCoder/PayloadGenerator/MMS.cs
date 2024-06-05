@@ -41,26 +41,12 @@ public static partial class PayloadGenerator
         /// Returns the MMS payload as a string.
         /// </summary>
         /// <returns>The MMS payload as a string.</returns>
-        public override string ToString()
+        public override string ToString() => _encoding switch
         {
-            var returnVal = string.Empty;
-            switch (_encoding)
-            {
-                case MMSEncoding.MMSTO:
-                    var queryStringMmsTo = string.Empty;
-                    if (!string.IsNullOrEmpty(_subject))
-                        queryStringMmsTo = $"?subject={Uri.EscapeDataString(_subject)}";
-                    returnVal = $"mmsto:{_number}{queryStringMmsTo}";
-                    break;
-                case MMSEncoding.MMS:
-                    var queryStringMms = string.Empty;
-                    if (!string.IsNullOrEmpty(_subject))
-                        queryStringMms = $"?body={Uri.EscapeDataString(_subject)}";
-                    returnVal = $"mms:{_number}{queryStringMms}";
-                    break;
-            }
-            return returnVal;
-        }
+            MMSEncoding.MMSTO => $"mmsto:{_number}{(string.IsNullOrEmpty(_subject) ? string.Empty : $"?subject={Uri.EscapeDataString(_subject)}")}",
+            MMSEncoding.MMS => $"mms:{_number}{(string.IsNullOrEmpty(_subject) ? string.Empty : $"?body={Uri.EscapeDataString(_subject)}")}",
+            _ => string.Empty,
+        };
 
         /// <summary>
         /// Defines the encoding types for the MMS payload.

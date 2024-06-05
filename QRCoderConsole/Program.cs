@@ -238,17 +238,14 @@ public class OptionSetter
 #if NET6_0_WINDOWS
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-    public ImageFormat GetImageFormat(string value)
+    public ImageFormat GetImageFormat(string value) => value.ToLower() switch
     {
-        return value.ToLower() switch
-        {
-            "jpg" => ImageFormat.Jpeg,
-            "jpeg" => ImageFormat.Jpeg,
-            "gif" => ImageFormat.Gif,
-            "bmp" => ImageFormat.Bmp,
-            "tiff" => ImageFormat.Tiff,
-            _ => ImageFormat.Png,
-        };
-    }
+        "jpg" => ImageFormat.Jpeg,
+        "jpeg" => ImageFormat.Jpeg,
+        "gif" => ImageFormat.Gif,
+        "bmp" => ImageFormat.Bmp,
+        "tiff" => ImageFormat.Tiff,
+        _ => ImageFormat.Png,
+    };
 }
 

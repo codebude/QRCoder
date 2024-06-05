@@ -114,14 +114,10 @@ public partial class Form1 : Form
     }
 
     private void textBoxQRCode_TextChanged(object sender, EventArgs e)
-    {
-        RenderQrCode();
-    }
+        => RenderQrCode();
 
     private void comboBoxECC_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        RenderQrCode();
-    }
+        => RenderQrCode();
 
     private void panelPreviewPrimaryColor_Click(object sender, EventArgs e)
     {
@@ -141,13 +137,7 @@ public partial class Form1 : Form
         }
     }
 
-    private Color GetPrimaryColor()
-    {
-        return panelPreviewPrimaryColor.BackColor;
-    }
+    private Color GetPrimaryColor() => panelPreviewPrimaryColor.BackColor;
 
-    private Color GetBackgroundColor()
-    {
-        return panelPreviewBackgroundColor.BackColor;
-    }
+    private Color GetBackgroundColor() => panelPreviewBackgroundColor.BackColor;
 }

@@ -1,10 +1,7 @@
 #if !NETSTANDARD1_3
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using System.Text.RegularExpressions;
 using QRCoder.Extensions;
 using static QRCoder.QRCodeGenerator;
 using static QRCoder.SvgQRCode;
@@ -84,9 +81,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <param name="logo">An optional logo to be rendered on the code (either Bitmap or SVG).</param>
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic(Size viewBox, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo? logo = null)
-    {
-        return GetGraphic(viewBox, Color.Black, Color.White, drawQuietZones, sizingMode, logo);
-    }
+        => GetGraphic(viewBox, Color.Black, Color.White, drawQuietZones, sizingMode, logo);
 
     /// <summary>
     /// Returns a QR code as an SVG string with custom colors and optional quiet zones and an optional logo.
@@ -99,9 +94,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <param name="logo">An optional logo to be rendered on the code (either Bitmap or SVG).</param>
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic(Size viewBox, Color darkColor, Color lightColor, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo? logo = null)
-    {
-        return GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())), drawQuietZones, sizingMode, logo);
-    }
+        => GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())), drawQuietZones, sizingMode, logo);
 
     /// <summary>
     /// Returns a QR code as an SVG string with custom colors (in HEX syntax), optional quiet zones, and an optional logo.
@@ -220,9 +213,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     }
 
     private bool IsBlockedByLogo(double x, double y, ImageAttributes attr, double pixelPerModule)
-    {
-        return x + pixelPerModule >= attr.X && x <= attr.X + attr.Width && y + pixelPerModule >= attr.Y && y <= attr.Y + attr.Height;
-    }
+        => x + pixelPerModule >= attr.X && x <= attr.X + attr.Width && y + pixelPerModule >= attr.Y && y <= attr.Y + attr.Height;
 
     private ImageAttributes GetLogoAttributes(SvgLogo logo, Size viewBox)
     {
@@ -247,13 +238,11 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         public double Y;
     }
 
+    //Clean double values for international use/formats
+    //We use explicitly "G15" to avoid differences between .NET full and Core platforms
+    //https://stackoverflow.com/questions/64898117/tostring-has-a-different-behavior-between-net-462-and-net-core-3-1
     private string CleanSvgVal(double input)
-    {
-        //Clean double values for international use/formats
-        //We use explicitly "G15" to avoid differences between .NET full and Core platforms
-        //https://stackoverflow.com/questions/64898117/tostring-has-a-different-behavior-between-net-462-and-net-core-3-1
-        return input.ToString("G15", System.Globalization.CultureInfo.InvariantCulture);
-    }
+        => input.ToString("G15", System.Globalization.CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Mode of sizing attribution on svg root node
@@ -338,52 +327,35 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         /// <summary>
         /// Returns the raw logo's data
         /// </summary>
-        public object GetRawLogo()
-        {
-            return _logoRaw;
-        }
+        public object GetRawLogo() => _logoRaw;
 
         /// <summary>
         /// Defines, if the logo shall be natively embedded.
         /// true=native svg embedding, false=embedding via image-tag
         /// </summary>
-        public bool IsEmbedded()
-        {
-            return _isEmbedded;
-        }
+        public bool IsEmbedded() => _isEmbedded;
 
         /// <summary>
         /// Returns the media type of the logo
         /// </summary>
         /// <returns></returns>
-        public MediaType GetMediaType()
-        {
-            return _mediaType;
-        }
+        public MediaType GetMediaType() => _mediaType;
 
         /// <summary>
         /// Returns the logo as data-uri
         /// </summary>
         public string GetDataUri()
-        {
-            return $"data:{GetMimeType(_mediaType)};base64,{_logoData}";
-        }
+            => $"data:{GetMimeType(_mediaType)};base64,{_logoData}";
 
         /// <summary>
         /// Returns how much of the QR code should be covered by the logo (in percent)
         /// </summary>
-        public int GetIconSizePercent()
-        {
-            return _iconSizePercent;
-        }
+        public int GetIconSizePercent() => _iconSizePercent;
 
         /// <summary>
         /// Returns if the background of the logo should be cleaned (no QR modules will be rendered behind the logo)
         /// </summary>
-        public bool FillLogoBackground()
-        {
-            return _fillLogoBackground;
-        }
+        public bool FillLogoBackground() => _fillLogoBackground;
 
         /// <summary>
         /// Media types for SvgLogos
@@ -400,15 +372,12 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             SVG = 1
         }
 
-        private string GetMimeType(MediaType type)
+        private string GetMimeType(MediaType type) => type switch
         {
-            return type switch
-            {
-                MediaType.PNG => "image/png",
-                MediaType.SVG => "image/svg+xml",
-                _ => throw new ArgumentOutOfRangeException(nameof(type)),
-            };
-        }
+            MediaType.PNG => "image/png",
+            MediaType.SVG => "image/svg+xml",
+            _ => throw new ArgumentOutOfRangeException(nameof(type)),
+        };
 
     }
 }

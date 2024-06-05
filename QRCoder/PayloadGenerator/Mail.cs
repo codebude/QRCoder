@@ -36,7 +36,6 @@ public static partial class PayloadGenerator
         /// <returns>The email payload as a string.</returns>
         public override string ToString()
         {
-            var returnVal = string.Empty;
             switch (_encoding)
             {
                 case MailEncoding.MAILTO:
@@ -46,16 +45,14 @@ public static partial class PayloadGenerator
                     if (!string.IsNullOrEmpty(_message))
                         parts.Add("body=" + Uri.EscapeDataString(_message));
                     var queryString = parts.Any() ? $"?{string.Join("&", parts.ToArray())}" : "";
-                    returnVal = $"mailto:{_mailReceiver}{queryString}";
-                    break;
+                    return $"mailto:{_mailReceiver}{queryString}";
                 case MailEncoding.MATMSG:
-                    returnVal = $"MATMSG:TO:{_mailReceiver};SUB:{EscapeInput(_subject ?? "")};BODY:{EscapeInput(_message ?? "")};;";
-                    break;
+                    return $"MATMSG:TO:{_mailReceiver};SUB:{EscapeInput(_subject ?? "")};BODY:{EscapeInput(_message ?? "")};;";
                 case MailEncoding.SMTP:
-                    returnVal = $"SMTP:{_mailReceiver}:{EscapeInput(_subject ?? "", true)}:{EscapeInput(_message ?? "", true)}";
-                    break;
+                    return $"SMTP:{_mailReceiver}:{EscapeInput(_subject ?? "", true)}:{EscapeInput(_message ?? "", true)}";
+                default:
+                    return string.Empty;
             }
-            return returnVal;
         }
 
         /// <summary>
