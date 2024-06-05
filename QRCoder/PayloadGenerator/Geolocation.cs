@@ -19,9 +19,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type - GEO or GoogleMaps.</param>
         public Geolocation(string latitude, string longitude, GeolocationEncoding encoding = GeolocationEncoding.GEO)
         {
-            this._latitude = latitude.Replace(",", ".");
-            this._longitude = longitude.Replace(",", ".");
-            this._encoding = encoding;
+            _latitude = latitude.Replace(",", ".");
+            _longitude = longitude.Replace(",", ".");
+            _encoding = encoding;
         }
 
         /// <summary>

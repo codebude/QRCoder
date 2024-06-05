@@ -40,34 +40,34 @@ public static partial class PayloadGenerator
         /// <exception cref="GirocodeException">Thrown when the input values are not valid according to the Girocode specification.</exception>
         public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", TypeOfRemittance typeOfRemittance = TypeOfRemittance.Unstructured, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", GirocodeVersion version = GirocodeVersion.Version1, GirocodeEncoding encoding = GirocodeEncoding.ISO_8859_1)
         {
-            this._version = version;
-            this._encoding = encoding;
+            _version = version;
+            _encoding = encoding;
             if (!IsValidIban(iban))
                 throw new GirocodeException("The IBAN entered isn't valid.");
-            this._iban = iban.Replace(" ", "").ToUpper();
+            _iban = iban.Replace(" ", "").ToUpper();
             if (!IsValidBic(bic))
                 throw new GirocodeException("The BIC entered isn't valid.");
-            this._bic = bic.Replace(" ", "").ToUpper();
+            _bic = bic.Replace(" ", "").ToUpper();
             if (name.Length > 70)
                 throw new GirocodeException("(Payee-)Name must be shorter than 71 chars.");
-            this._name = name;
+            _name = name;
             if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",", ".").Split('.')[1].TrimEnd('0').Length > 2)
                 throw new GirocodeException("Amount must have less than 3 digits after decimal point.");
             if (amount < 0.01m || amount > 999999999.99m)
                 throw new GirocodeException("Amount has to be at least 0.01 and must be smaller or equal to 999999999.99.");
-            this._amount = amount;
+            _amount = amount;
             if (purposeOfCreditTransfer.Length > 4)
                 throw new GirocodeException("Purpose of credit transfer can only have 4 chars at maximum.");
-            this._purposeOfCreditTransfer = purposeOfCreditTransfer;
+            _purposeOfCreditTransfer = purposeOfCreditTransfer;
             if (typeOfRemittance == TypeOfRemittance.Unstructured && remittanceInformation.Length > 140)
                 throw new GirocodeException("Unstructured reference texts have to be shorter than 141 chars.");
             if (typeOfRemittance == TypeOfRemittance.Structured && remittanceInformation.Length > 35)
                 throw new GirocodeException("Structured reference texts have to be shorter than 36 chars.");
-            this._typeOfRemittance = typeOfRemittance;
-            this._remittanceInformation = remittanceInformation;
+            _typeOfRemittance = typeOfRemittance;
+            _remittanceInformation = remittanceInformation;
             if (messageToGirocodeUser.Length > 70)
                 throw new GirocodeException("Message to the Girocode-User reader texts have to be shorter than 71 chars.");
-            this._messageToGirocodeUser = messageToGirocodeUser;
+            _messageToGirocodeUser = messageToGirocodeUser;
         }
 
         /// <summary>

@@ -56,26 +56,26 @@ public static partial class PayloadGenerator
         /// <param name="orgTitle">Organization/Company Title.</param> 
         public ContactData(ContactOutputType outputType, string firstname, string lastname, string? nickname = null, string? phone = null, string? mobilePhone = null, string? workPhone = null, string? email = null, DateTime? birthday = null, string? website = null, string? street = null, string? houseNumber = null, string? city = null, string? zipCode = null, string? country = null, string? note = null, string? stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string? org = null, string? orgTitle = null)
         {
-            this._firstname = firstname;
-            this._lastname = lastname;
-            this._nickname = nickname;
-            this._org = org;
-            this._orgTitle = orgTitle;
-            this._phone = phone;
-            this._mobilePhone = mobilePhone;
-            this._workPhone = workPhone;
-            this._email = email;
-            this._birthday = birthday;
-            this._website = website;
-            this._street = street;
-            this._houseNumber = houseNumber;
-            this._city = city;
-            this._stateRegion = stateRegion;
-            this._zipCode = zipCode;
-            this._country = country;
-            this._addressOrder = addressOrder;
-            this._note = note;
-            this._outputType = outputType;
+            _firstname = firstname;
+            _lastname = lastname;
+            _nickname = nickname;
+            _org = org;
+            _orgTitle = orgTitle;
+            _phone = phone;
+            _mobilePhone = mobilePhone;
+            _workPhone = workPhone;
+            _email = email;
+            _birthday = birthday;
+            _website = website;
+            _street = street;
+            _houseNumber = houseNumber;
+            _city = city;
+            _stateRegion = stateRegion;
+            _zipCode = zipCode;
+            _country = country;
+            _addressOrder = addressOrder;
+            _note = note;
+            _outputType = outputType;
         }
 
         /// <summary>

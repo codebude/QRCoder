@@ -24,10 +24,10 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Payload encoding type. Choose dependent on your QR Code scanner app.</param>
         public Mail(string? mailReceiver = null, string? subject = null, string? message = null, MailEncoding encoding = MailEncoding.MAILTO)
         {
-            this._mailReceiver = mailReceiver;
-            this._subject = subject;
-            this._message = message;
-            this._encoding = encoding;
+            _mailReceiver = mailReceiver;
+            _subject = subject;
+            _message = message;
+            _encoding = encoding;
         }
 
         /// <summary>

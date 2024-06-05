@@ -49,7 +49,7 @@ public static partial class PayloadGenerator
         /// <param name="characterSet">Type of encoding (default UTF-8)</param>
         public RussiaPaymentOrder(string name, string personalAcc, string bankName, string BIC, string correspAcc, OptionalFields? optionalFields = null, CharacterSets characterSet = CharacterSets.utf_8) : this()
         {
-            this._characterSet = characterSet;
+            _characterSet = characterSet;
             _mFields.Name = ValidateInput(name, "Name", @"^.{1,160}$");
             _mFields.PersonalAcc = ValidateInput(personalAcc, "PersonalAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
             _mFields.BankName = ValidateInput(bankName, "BankName", @"^.{1,45}$");

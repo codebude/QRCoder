@@ -15,7 +15,7 @@ public static partial class PayloadGenerator
         /// <param name="number">Phone number of the receiver.</param>
         public PhoneNumber(string number)
         {
-            this._number = number;
+            _number = number;
         }
 
         /// <summary>

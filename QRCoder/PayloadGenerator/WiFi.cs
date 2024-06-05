@@ -20,11 +20,11 @@ public static partial class PayloadGenerator
         /// <param name="escapeHexStrings">Set flag if ssid/password is delivered as HEX string. Note: May not be supported on iOS devices.</param>
         public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false, bool escapeHexStrings = true)
         {
-            this._ssid = EscapeInput(ssid);
-            this._ssid = escapeHexStrings && isHexStyle(this._ssid) ? "\"" + this._ssid + "\"" : this._ssid;
-            this._password = EscapeInput(password);
-            this._password = escapeHexStrings && isHexStyle(this._password) ? "\"" + this._password + "\"" : this._password;
-            this._authenticationMode = authenticationMode.ToString();
+            _ssid = EscapeInput(ssid);
+            _ssid = escapeHexStrings && isHexStyle(_ssid) ? "\"" + _ssid + "\"" : _ssid;
+            _password = EscapeInput(password);
+            _password = escapeHexStrings && isHexStyle(_password) ? "\"" + _password + "\"" : _password;
+            _authenticationMode = authenticationMode.ToString();
             _isHiddenSsid = isHiddenSSID;
         }
 

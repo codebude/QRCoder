@@ -19,9 +19,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type.</param>
         public SMS(string number, SMSEncoding encoding = SMSEncoding.SMS)
         {
-            this._number = number;
+            _number = number;
             _subject = string.Empty;
-            this._encoding = encoding;
+            _encoding = encoding;
         }
 
         /// <summary>
@@ -32,9 +32,9 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Encoding type.</param>
         public SMS(string number, string subject, SMSEncoding encoding = SMSEncoding.SMS)
         {
-            this._number = number;
-            this._subject = subject;
-            this._encoding = encoding;
+            _number = number;
+            _subject = subject;
+            _encoding = encoding;
         }
 
         /// <summary>

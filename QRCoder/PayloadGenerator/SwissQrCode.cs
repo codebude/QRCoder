@@ -49,33 +49,33 @@ public static partial class PayloadGenerator
         /// <param name="alternativeProcedure2">Optional command for alternative processing mode - line 2</param>
         public SwissQrCode(Iban iban, Currency currency, Contact creditor, Reference reference, AdditionalInformation? additionalInformation = null, Contact? debitor = null, decimal? amount = null, DateTime? requestedDateOfPayment = null, Contact? ultimateCreditor = null, string? alternativeProcedure1 = null, string? alternativeProcedure2 = null)
         {
-            this._iban = iban;
+            _iban = iban;
 
-            this._creditor = creditor;
-            this._ultimateCreditor = ultimateCreditor;
+            _creditor = creditor;
+            _ultimateCreditor = ultimateCreditor;
 
-            this._additionalInformation = additionalInformation ?? new AdditionalInformation();
+            _additionalInformation = additionalInformation ?? new AdditionalInformation();
 
             if (amount != null && amount.ToString()!.Length > 12)
                 throw new SwissQrCodeException("Amount (including decimals) must be shorter than 13 places.");
-            this._amount = amount;
+            _amount = amount;
 
-            this._currency = currency;
-            this._requestedDateOfPayment = requestedDateOfPayment;
-            this._debitor = debitor;
+            _currency = currency;
+            _requestedDateOfPayment = requestedDateOfPayment;
+            _debitor = debitor;
 
             if (iban.IsQrIban && reference.RefType != Reference.ReferenceType.QRR)
                 throw new SwissQrCodeException("If QR-IBAN is used, you have to choose \"QRR\" as reference type!");
             if (!iban.IsQrIban && reference.RefType == Reference.ReferenceType.QRR)
                 throw new SwissQrCodeException("If non QR-IBAN is used, you have to choose either \"SCOR\" or \"NON\" as reference type!");
-            this._reference = reference;
+            _reference = reference;
 
             if (alternativeProcedure1 != null && alternativeProcedure1.Length > 100)
                 throw new SwissQrCodeException("Alternative procedure information block 1 must be shorter than 101 chars.");
-            this._alternativeProcedure1 = alternativeProcedure1;
+            _alternativeProcedure1 = alternativeProcedure1;
             if (alternativeProcedure2 != null && alternativeProcedure2.Length > 100)
                 throw new SwissQrCodeException("Alternative procedure information block 2 must be shorter than 101 chars.");
-            this._alternativeProcedure2 = alternativeProcedure2;
+            _alternativeProcedure2 = alternativeProcedure2;
         }
 
         /// <summary>
@@ -95,8 +95,8 @@ public static partial class PayloadGenerator
             {
                 if (((unstructuredMessage != null ? unstructuredMessage.Length : 0) + (billInformation != null ? billInformation.Length : 0)) > 140)
                     throw new SwissQrCodeAdditionalInformationException("Unstructured message and bill information must be shorter than 141 chars in total/combined.");
-                this._unstructuredMessage = unstructuredMessage;
-                this._billInformation = billInformation;
+                _unstructuredMessage = unstructuredMessage;
+                _billInformation = billInformation;
                 _trailer = "EPD";
             }
 
@@ -175,8 +175,8 @@ public static partial class PayloadGenerator
             /// <param name="referenceTextType">Type of the reference text (QR-reference or Creditor Reference)</param>                
             public Reference(ReferenceType referenceType, string? reference = null, ReferenceTextType? referenceTextType = null)
             {
-                this._referenceType = referenceType;
-                this._referenceTextType = referenceTextType;
+                _referenceType = referenceType;
+                _referenceTextType = referenceTextType;
 
                 if (referenceType == ReferenceType.NON && reference != null)
                     throw new SwissQrCodeReferenceException("Reference is only allowed when referenceType not equals \"NON\"");
@@ -191,7 +191,7 @@ public static partial class PayloadGenerator
                 if (referenceTextType == ReferenceTextType.CreditorReferenceIso11649 && reference != null && (reference.Length > 25))
                     throw new SwissQrCodeReferenceException("Creditor references (ISO 11649) have to be shorter than 26 chars.");
 
-                this._reference = reference;
+                _reference = reference;
             }
 
             /// <summary>
@@ -298,8 +298,8 @@ public static partial class PayloadGenerator
                     throw new SwissQrCodeIbanException("The QR-IBAN entered isn't valid.");
                 if (!iban.StartsWith("CH") && !iban.StartsWith("LI"))
                     throw new SwissQrCodeIbanException("The IBAN must start with \"CH\" or \"LI\".");
-                this._iban = iban;
-                this._ibanType = ibanType;
+                _iban = iban;
+                _ibanType = ibanType;
             }
 
             /// <summary>
@@ -435,7 +435,7 @@ public static partial class PayloadGenerator
                     throw new SwissQrCodeContactException("Name must be shorter than 71 chars.");
                 if (!Regex.IsMatch(name, charsetPattern))
                     throw new SwissQrCodeContactException($"Name must match the following pattern as defined in pain.001: {charsetPattern}");
-                this._name = name;
+                _name = name;
 
                 if (AddressType.StructuredAddress == _adrType)
                 {
@@ -443,11 +443,11 @@ public static partial class PayloadGenerator
                         throw new SwissQrCodeContactException("Street must be shorter than 71 chars.");
                     if (!string.IsNullOrEmpty(streetOrAddressline1) && !Regex.IsMatch(streetOrAddressline1, charsetPattern))
                         throw new SwissQrCodeContactException($"Street must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this._streetOrAddressline1 = streetOrAddressline1;
+                    _streetOrAddressline1 = streetOrAddressline1;
 
                     if (!string.IsNullOrEmpty(houseNumberOrAddressline2) && houseNumberOrAddressline2!.Length > 16)
                         throw new SwissQrCodeContactException("House number must be shorter than 17 chars.");
-                    this._houseNumberOrAddressline2 = houseNumberOrAddressline2;
+                    _houseNumberOrAddressline2 = houseNumberOrAddressline2;
                 }
                 else
                 {
@@ -455,7 +455,7 @@ public static partial class PayloadGenerator
                         throw new SwissQrCodeContactException("Address line 1 must be shorter than 71 chars.");
                     if (!string.IsNullOrEmpty(streetOrAddressline1) && !Regex.IsMatch(streetOrAddressline1, charsetPattern))
                         throw new SwissQrCodeContactException($"Address line 1 must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this._streetOrAddressline1 = streetOrAddressline1;
+                    _streetOrAddressline1 = streetOrAddressline1;
 
                     if (string.IsNullOrEmpty(houseNumberOrAddressline2))
                         throw new SwissQrCodeContactException("Address line 2 must be provided for combined addresses (address line-based addresses).");
@@ -463,7 +463,7 @@ public static partial class PayloadGenerator
                         throw new SwissQrCodeContactException("Address line 2 must be shorter than 71 chars.");
                     if (!string.IsNullOrEmpty(houseNumberOrAddressline2) && !Regex.IsMatch(houseNumberOrAddressline2, charsetPattern))
                         throw new SwissQrCodeContactException($"Address line 2 must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this._houseNumberOrAddressline2 = houseNumberOrAddressline2;
+                    _houseNumberOrAddressline2 = houseNumberOrAddressline2;
                 }
 
                 if (AddressType.StructuredAddress == _adrType)
@@ -474,7 +474,7 @@ public static partial class PayloadGenerator
                         throw new SwissQrCodeContactException("Zip code must be shorter than 17 chars.");
                     if (!Regex.IsMatch(zipCode, charsetPattern))
                         throw new SwissQrCodeContactException($"Zip code must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this._zipCode = zipCode;
+                    _zipCode = zipCode;
 
                     if (string.IsNullOrEmpty(city))
                         throw new SwissQrCodeContactException("City must not be empty.");
@@ -482,17 +482,17 @@ public static partial class PayloadGenerator
                         throw new SwissQrCodeContactException("City name must be shorter than 36 chars.");
                     if (!Regex.IsMatch(city, charsetPattern))
                         throw new SwissQrCodeContactException($"City name must match the following pattern as defined in pain.001: {charsetPattern}");
-                    this._city = city;
+                    _city = city;
                 }
                 else
                 {
-                    this._zipCode = this._city = string.Empty;
+                    _zipCode = _city = string.Empty;
                 }
 
                 if (!IsValidTwoLetterCode(country))
                     throw new SwissQrCodeContactException("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
 
-                this._country = country;
+                _country = country;
             }
 
             private static bool IsValidTwoLetterCode(string code) => _twoLetterCodes.Contains(code);

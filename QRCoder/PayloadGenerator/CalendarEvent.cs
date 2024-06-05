@@ -39,10 +39,10 @@ public static partial class PayloadGenerator
         /// <param name="encoding">Type of encoding (universal or iCal).</param>
         public CalendarEvent(string subject, string? description, string? location, DateTime start, DateTime end, bool allDayEvent, EventEncoding encoding = EventEncoding.Universal)
         {
-            this._subject = subject;
-            this._description = description;
-            this._location = location;
-            this._encoding = encoding;
+            _subject = subject;
+            _description = description;
+            _location = location;
+            _encoding = encoding;
             string dtFormatStart = "yyyyMMdd", dtFormatEnd = "yyyyMMdd";
             if (!allDayEvent)
             {
@@ -52,8 +52,8 @@ public static partial class PayloadGenerator
                 if (end.Kind == DateTimeKind.Utc)
                     dtFormatEnd = "yyyyMMddTHHmmssZ";
             }
-            this._start = start.ToString(dtFormatStart);
-            this._end = end.ToString(dtFormatEnd);
+            _start = start.ToString(dtFormatStart);
+            _end = end.ToString(dtFormatEnd);
         }
 
         /// <summary>

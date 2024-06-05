@@ -28,20 +28,20 @@ public static partial class PayloadGenerator
         /// <param name="message">A reference text or message.</param>           
         public BitcoinLikeCryptoCurrencyAddress(BitcoinLikeCryptoCurrencyType currencyType, string address, double? amount, string? label = null, string? message = null)
         {
-            this._currencyType = currencyType;
-            this._address = address;
+            _currencyType = currencyType;
+            _address = address;
 
             if (!string.IsNullOrEmpty(label))
             {
-                this._label = Uri.EscapeDataString(label);
+                _label = Uri.EscapeDataString(label);
             }
 
             if (!string.IsNullOrEmpty(message))
             {
-                this._message = Uri.EscapeDataString(message);
+                _message = Uri.EscapeDataString(message);
             }
 
-            this._amount = amount;
+            _amount = amount;
         }
 
         /// <summary>

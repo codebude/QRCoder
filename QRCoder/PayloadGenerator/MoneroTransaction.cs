@@ -26,13 +26,13 @@ public static partial class PayloadGenerator
         {
             if (string.IsNullOrEmpty(address))
                 throw new MoneroTransactionException("The address is mandatory and has to be set.");
-            this._address = address;
+            _address = address;
             if (txAmount != null && txAmount <= 0)
                 throw new MoneroTransactionException("Value of 'txAmount' must be greater than 0.");
-            this._txAmount = txAmount;
-            this._txPaymentId = txPaymentId;
-            this._recipientName = recipientName;
-            this._txDescription = txDescription;
+            _txAmount = txAmount;
+            _txPaymentId = txPaymentId;
+            _recipientName = recipientName;
+            _txDescription = txDescription;
         }
 
         /// <summary>

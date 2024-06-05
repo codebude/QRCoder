@@ -141,15 +141,15 @@ public static partial class PayloadGenerator
                     throw new BezahlCodeException("When using 'periodicsinglepaymentsepa' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
             }
 
-            this._authority = authority;
+            _authority = authority;
 
             if (name.Length > 70)
                 throw new BezahlCodeException("(Payee-)Name must be shorter than 71 chars.");
-            this._name = name;
+            _name = name;
 
             if (reason.Length > 27)
                 throw new BezahlCodeException("Reasons texts have to be shorter than 28 chars.");
-            this._reason = reason;
+            _reason = reason;
 
             var oldWayFilled = (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc));
             var newWayFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
@@ -161,16 +161,16 @@ public static partial class PayloadGenerator
 #pragma warning restore CS0612
                 if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The account entered isn't valid.");
-                this._account = account.Replace(" ", "").ToUpper();
+                _account = account.Replace(" ", "").ToUpper();
                 if (!Regex.IsMatch(bnc.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The bnc entered isn't valid.");
-                this._bnc = bnc.Replace(" ", "").ToUpper();
+                _bnc = bnc.Replace(" ", "").ToUpper();
 
                 if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                 {
                     if (postingKey < 0 || postingKey >= 100)
                         throw new BezahlCodeException("PostingKey must be within 0 and 99.");
-                    this._postingKey = postingKey;
+                    _postingKey = postingKey;
                 }
             }
 
@@ -179,25 +179,25 @@ public static partial class PayloadGenerator
             {
                 if (!IsValidIban(iban))
                     throw new BezahlCodeException("The IBAN entered isn't valid.");
-                this._iban = iban.Replace(" ", "").ToUpper();
+                _iban = iban.Replace(" ", "").ToUpper();
                 if (!IsValidBic(bic))
                     throw new BezahlCodeException("The BIC entered isn't valid.");
-                this._bic = bic.Replace(" ", "").ToUpper();
+                _bic = bic.Replace(" ", "").ToUpper();
 
                 if (authority != AuthorityType.contact_v2)
                 {
                     if (sepaReference.Length > 35)
                         throw new BezahlCodeException("SEPA reference texts have to be shorter than 36 chars.");
-                    this._sepaReference = sepaReference;
+                    _sepaReference = sepaReference;
 
                     if (!string.IsNullOrEmpty(creditorId) && !Regex.IsMatch(creditorId.Replace(" ", ""), @"^[a-zA-Z]{2,2}[0-9]{2,2}([A-Za-z0-9]|[\+|\?|/|\-|:|\(|\)|\.|,|']){3,3}([A-Za-z0-9]|[\+|\?|/|\-|:|\(|\)|\.|,|']){1,28}$"))
                         throw new BezahlCodeException("The creditorId entered isn't valid.");
-                    this._creditorId = creditorId;
+                    _creditorId = creditorId;
                     if (!string.IsNullOrEmpty(mandateId) && !Regex.IsMatch(mandateId.Replace(" ", ""), @"^([A-Za-z0-9]|[\+|\?|/|\-|:|\(|\)|\.|,|']){1,35}$"))
                         throw new BezahlCodeException("The mandateId entered isn't valid.");
-                    this._mandateId = mandateId;
+                    _mandateId = mandateId;
                     if (dateOfSignature != null)
-                        this._dateOfSignature = (DateTime)dateOfSignature;
+                        _dateOfSignature = (DateTime)dateOfSignature;
                 }
             }
 
@@ -208,17 +208,17 @@ public static partial class PayloadGenerator
                     throw new BezahlCodeException("Amount must have less than 3 digits after decimal point.");
                 if (amount < 0.01m || amount > 999999999.99m)
                     throw new BezahlCodeException("Amount has to at least 0.01 and must be smaller or equal to 999999999.99.");
-                this._amount = amount;
+                _amount = amount;
 
-                this._currency = currency;
+                _currency = currency;
 
                 if (executionDate == null)
-                    this._executionDate = DateTime.Now;
+                    _executionDate = DateTime.Now;
                 else
                 {
                     if (DateTime.Today.Ticks > executionDate.Value.Ticks)
                         throw new BezahlCodeException("Execution date must be today or in future.");
-                    this._executionDate = (DateTime)executionDate;
+                    _executionDate = (DateTime)executionDate;
                 }
 #pragma warning disable CS0612
                 if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
@@ -226,14 +226,14 @@ public static partial class PayloadGenerator
                 {
                     if (periodicTimeunit.ToUpper() != "M" && periodicTimeunit.ToUpper() != "W")
                         throw new BezahlCodeException("The periodicTimeunit must be either 'M' (monthly) or 'W' (weekly).");
-                    this._periodicTimeunit = periodicTimeunit;
+                    _periodicTimeunit = periodicTimeunit;
                     if (periodicTimeunitRotation < 1 || periodicTimeunitRotation > 52)
                         throw new BezahlCodeException("The periodicTimeunitRotation must be 1 or greater. (It means repeat the payment every 'periodicTimeunitRotation' weeks/months.");
-                    this._periodicTimeunitRotation = periodicTimeunitRotation;
+                    _periodicTimeunitRotation = periodicTimeunitRotation;
                     if (periodicFirstExecutionDate != null)
-                        this._periodicFirstExecutionDate = (DateTime)periodicFirstExecutionDate;
+                        _periodicFirstExecutionDate = (DateTime)periodicFirstExecutionDate;
                     if (periodicLastExecutionDate != null)
-                        this._periodicLastExecutionDate = (DateTime)periodicLastExecutionDate;
+                        _periodicLastExecutionDate = (DateTime)periodicLastExecutionDate;
                 }
 
             }

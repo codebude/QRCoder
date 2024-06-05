@@ -16,8 +16,8 @@ public static partial class PayloadGenerator
         /// <param name="title">The title of the bookmark.</param>
         public Bookmark(string url, string title)
         {
-            this._url = EscapeInput(url);
-            this._title = EscapeInput(title);
+            _url = EscapeInput(url);
+            _title = EscapeInput(title);
         }
 
         /// <summary>

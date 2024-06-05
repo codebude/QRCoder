@@ -17,7 +17,7 @@ public static partial class PayloadGenerator
         /// <param name="url">The target URL. If the protocol is not specified, the http protocol will be added.</param>
         public Url(string url)
         {
-            this._url = url;
+            _url = url;
         }
 
         /// <summary>

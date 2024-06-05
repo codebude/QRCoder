@@ -22,8 +22,8 @@ public static partial class PayloadGenerator
         /// <param name="message">The message to be sent.</param>
         public WhatsAppMessage(string number, string message)
         {
-            this._number = number;
-            this._message = message;
+            _number = number;
+            _message = message;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ public static partial class PayloadGenerator
         public WhatsAppMessage(string message)
         {
             _number = string.Empty;
-            this._message = message;
+            _message = message;
         }
 
         /// <summary>

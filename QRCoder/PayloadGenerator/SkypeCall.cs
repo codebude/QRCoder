@@ -15,7 +15,7 @@ public static partial class PayloadGenerator
         /// <param name="skypeUsername">Skype username which will be called</param>
         public SkypeCall(string skypeUsername)
         {
-            this._skypeUsername = skypeUsername;
+            _skypeUsername = skypeUsername;
         }
 
         /// <summary>

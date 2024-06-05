@@ -149,16 +149,16 @@ public static partial class PayloadGenerator
         /// <param name="tag">Optional tag line</param>
         public ShadowSocksConfig(string hostname, int port, string password, Method method, Dictionary<string, string>? parameters, string? tag = null)
         {
-            this._hostname = Uri.CheckHostName(hostname) == UriHostNameType.IPv6
+            _hostname = Uri.CheckHostName(hostname) == UriHostNameType.IPv6
                 ? $"[{hostname}]"
                 : hostname;
             if (port < 1 || port > 65535)
                 throw new ShadowSocksConfigException("Value of 'port' must be within 0 and 65535.");
-            this._port = port;
-            this._password = password;
-            this._method = method;
+            _port = port;
+            _password = password;
+            _method = method;
             _methodStr = _encryptionTexts[method.ToString()];
-            this._tag = tag;
+            _tag = tag;
 
             if (parameters != null)
                 _parameter =
