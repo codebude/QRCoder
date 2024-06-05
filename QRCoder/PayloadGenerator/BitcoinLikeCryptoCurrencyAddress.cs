@@ -53,9 +53,9 @@ public static partial class PayloadGenerator
             string? query = null;
 
             var queryValues = new KeyValuePair<string, string?>[]{
-              new KeyValuePair<string, string?>(nameof(_label), _label),
-              new KeyValuePair<string, string?>(nameof(_message), _message),
-              new KeyValuePair<string, string?>(nameof(_amount), _amount.HasValue ? _amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
+              new KeyValuePair<string, string?>("label", _label),
+              new KeyValuePair<string, string?>("message", _message),
+              new KeyValuePair<string, string?>("amount", _amount.HasValue ? _amount.Value.ToString("#.########", CultureInfo.InvariantCulture) : null)
             };
 
             if (queryValues.Any(keyPair => !string.IsNullOrEmpty(keyPair.Value)))
