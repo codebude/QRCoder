@@ -26,5 +26,5 @@ jobs:
     - name: Restore NuGet Packages
       run: dotnet restore
 
-    - name: Build library
-      run: dotnet format --verify-no-changes --verbosity detailed
+    - name: Format QRCoder
+      run: dotnet format --verify-no-changes --severity error

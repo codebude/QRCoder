@@ -10,7 +10,6 @@
     <DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <NoWarn>$(NoWarn);NU1903</NoWarn>
   </PropertyGroup>
