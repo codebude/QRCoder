@@ -11,7 +11,6 @@ namespace QRCoderConsole;
 
 #if NET6_0_WINDOWS
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-internal
 #endif
 internal class MainClass
 {
