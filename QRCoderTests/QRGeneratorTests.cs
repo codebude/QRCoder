@@ -604,10 +604,7 @@ public class QRGeneratorTests
             }
         }
 
-        string Encode(QRCodeData qrData)
-        {
-            return string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
-        }
+        string Encode(QRCodeData qrData) => string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
     }
 
     private class SamplePayload : PayloadGenerator.Payload

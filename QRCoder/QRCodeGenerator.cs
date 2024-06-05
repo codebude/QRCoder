@@ -773,10 +773,7 @@ public partial class QRCodeGenerator : IDisposable
         // If UTF-8 is forced or the text is detected as UTF-8, return the number of bytes, otherwise return the character count.
         return forceUtf8 || IsUtf8() ? (int)((uint)codedText.Length / 8) : plainText.Length;
 
-        bool IsUtf8()
-        {
-            return (encoding == EncodingMode.Byte && (forceUtf8 || !IsValidISO(plainText)));
-        }
+        bool IsUtf8() => (encoding == EncodingMode.Byte && (forceUtf8 || !IsValidISO(plainText)));
     }
 
     private static readonly Encoding _iso88591ExceptionFallback = Encoding.GetEncoding(28591, new EncoderExceptionFallback(), new DecoderExceptionFallback()); // ISO-8859-1

@@ -201,10 +201,7 @@ public partial class QRCodeGenerator
 #if NET6_0_OR_GREATER
             [StackTraceHidden]
 #endif
-            void ThrowNotSupportedException()
-            {
-                throw new NotSupportedException("The polynomial capacity is fixed and cannot be increased.");
-            }
+            void ThrowNotSupportedException() => throw new NotSupportedException("The polynomial capacity is fixed and cannot be increased.");
         }
 
 #if NETCOREAPP
@@ -253,10 +250,7 @@ public partial class QRCodeGenerator
             // No suitable buffer found; create a new one
             return new PolynomItem[count];
 
-            void ThrowArgumentOutOfRangeException()
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), "The count must be a positive number.");
-            }
+            void ThrowArgumentOutOfRangeException() => throw new ArgumentOutOfRangeException(nameof(count), "The count must be a positive number.");
         }
 
         /// <summary>
