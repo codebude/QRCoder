@@ -13,19 +13,19 @@ public static partial class PayloadGenerator
         //Keep in mind, that the ECC level has to be set to "M", version to 15 and ECI to EciMode.Iso8859_2 when generating a SlovenianUpnQr!
         //SlovenianUpnQr specification: https://www.upn-qr.si/uploads/files/NavodilaZaProgramerjeUPNQR.pdf
 
-        private string _payerName = "";
-        private string _payerAddress = "";
-        private string _payerPlace = "";
-        private string _amount = "";
-        private string _code = "";
-        private string _purpose = "";
-        private string _deadLine = "";
-        private string _recipientIban = "";
-        private string _recipientName = "";
-        private string _recipientAddress = "";
-        private string _recipientPlace = "";
-        private string _recipientSiModel = "";
-        private string _recipientSiReference = "";
+        private readonly string _payerName = "";
+        private readonly string _payerAddress = "";
+        private readonly string _payerPlace = "";
+        private readonly string _amount = "";
+        private readonly string _code = "";
+        private readonly string _purpose = "";
+        private readonly string _deadLine = "";
+        private readonly string _recipientIban = "";
+        private readonly string _recipientName = "";
+        private readonly string _recipientAddress = "";
+        private readonly string _recipientPlace = "";
+        private readonly string _recipientSiModel = "";
+        private readonly string _recipientSiReference = "";
 
         /// <summary>
         /// Gets the version of the QR code, which is 15 for Slovenian UPN QR.

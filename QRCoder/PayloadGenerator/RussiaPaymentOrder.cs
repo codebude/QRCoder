@@ -28,7 +28,7 @@ public static partial class PayloadGenerator
         // https://www.sbqr.ru/validator/index.html
 
         //base
-        private CharacterSets _characterSet;
+        private readonly CharacterSets _characterSet;
         private readonly MandatoryFields _mFields = new MandatoryFields();
         private readonly OptionalFields _oFields = new OptionalFields();
         private string _separator = "|";

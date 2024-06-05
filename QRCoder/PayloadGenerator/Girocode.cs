@@ -12,7 +12,7 @@ public static partial class PayloadGenerator
         //Keep in mind, that the ECC level has to be set to "M" when generating a Girocode!
         //Girocode specification: http://www.europeanpaymentscouncil.eu/index.cfm/knowledge-bank/epc-documents/quick-response-code-guidelines-to-enable-data-capture-for-the-initiation-of-a-sepa-credit-transfer/epc069-12-quick-response-code-guidelines-to-enable-data-capture-for-the-initiation-of-a-sepa-credit-transfer1/
 
-        private string _br = "\n";
+        private readonly string _br = "\n";
         private readonly string _iban, _bic, _name, _purposeOfCreditTransfer, _remittanceInformation, _messageToGirocodeUser;
         private readonly decimal _amount;
         private readonly GirocodeVersion _version;

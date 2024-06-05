@@ -16,7 +16,7 @@ public static partial class PayloadGenerator
         private readonly string? _tag, _parameter;
         private readonly Method _method;
         private readonly int _port;
-        private Dictionary<string, string> _encryptionTexts = new Dictionary<string, string>() {
+        private readonly Dictionary<string, string> _encryptionTexts = new Dictionary<string, string>() {
             { "Chacha20IetfPoly1305", "chacha20-ietf-poly1305" },
             { "Aes128Gcm", "aes-128-gcm" },
             { "Aes192Gcm", "aes-192-gcm" },
@@ -94,7 +94,7 @@ public static partial class PayloadGenerator
             )
             }, tag)
         { }
-        private Dictionary<string, string> _urlEncodeTable = new Dictionary<string, string>
+        private readonly Dictionary<string, string> _urlEncodeTable = new Dictionary<string, string>
         {
             [" "] = "+",
             ["\0"] = "%00",

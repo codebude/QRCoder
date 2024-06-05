@@ -609,8 +609,8 @@ public class QRGeneratorTests
 
     private class SamplePayload : PayloadGenerator.Payload
     {
-        private string _data;
-        private QRCodeGenerator.ECCLevel _eccLevel;
+        private readonly string _data;
+        private readonly QRCodeGenerator.ECCLevel _eccLevel;
 
         public SamplePayload(string data, QRCodeGenerator.ECCLevel eccLevel)
         {

@@ -265,8 +265,8 @@ public static partial class PayloadGenerator
         /// </summary>
         public class Iban
         {
-            private string _iban;
-            private IbanType _ibanType;
+            private readonly string _iban;
+            private readonly IbanType _ibanType;
 
             /// <summary>
             /// IBAN object with type information
@@ -353,10 +353,10 @@ public static partial class PayloadGenerator
         public class Contact
         {
             private static readonly HashSet<string> _twoLetterCodes = ValidTwoLetterCodes();
-            private string _br = "\r\n";
-            private string _name, _zipCode, _city, _country;
-            private string? _streetOrAddressline1, _houseNumberOrAddressline2;
-            private AddressType _adrType;
+            private readonly string _br = "\r\n";
+            private readonly string _name, _zipCode, _city, _country;
+            private readonly string? _streetOrAddressline1, _houseNumberOrAddressline2;
+            private readonly AddressType _adrType;
 
             /// <summary>
             /// Contact type. Can be used for payee, ultimate payee, etc. with address in structured mode (S).

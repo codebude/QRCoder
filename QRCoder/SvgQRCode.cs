@@ -269,12 +269,12 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// </summary>
     public class SvgLogo
     {
-        private string _logoData;
-        private MediaType _mediaType;
-        private int _iconSizePercent;
-        private bool _fillLogoBackground;
-        private object _logoRaw;
-        private bool _isEmbedded;
+        private readonly string _logoData;
+        private readonly MediaType _mediaType;
+        private readonly int _iconSizePercent;
+        private readonly bool _fillLogoBackground;
+        private readonly object _logoRaw;
+        private readonly bool _isEmbedded;
 
 #if SYSTEM_DRAWING
         /// <summary>
