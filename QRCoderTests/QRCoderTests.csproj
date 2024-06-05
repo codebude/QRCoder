@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net35;net452;netcoreapp1.1;netcoreapp2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
-    <TargetFrameworks Condition="'$(CIFormatting)' == 'yes'">net35;net452;netcoreapp2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
     <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWPF>
     <DefineConstants Condition="'$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'netcoreapp1.1'">$(DefineConstants);SYSTEM_DRAWING</DefineConstants>
