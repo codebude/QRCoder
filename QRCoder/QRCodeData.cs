@@ -169,7 +169,7 @@ public class QRCodeData : IDisposable
         else if (compressMode == Compression.GZip)
         {
             using var output = new MemoryStream();
-            using (GZipStream gzipStream = new GZipStream(output, CompressionMode.Compress, true))
+            using (var gzipStream = new GZipStream(output, CompressionMode.Compress, true))
             {
                 gzipStream.Write(rawData, 0, rawData.Length);
             }

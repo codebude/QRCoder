@@ -385,7 +385,7 @@ public class QRGeneratorTests
     public void can_recognize_enconding_numeric()
     {
         var gen = new QRCodeGenerator();
-        MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (int)method.Invoke(gen, new object[] { "0123456789", false });
 
         result.ShouldBe(1);
@@ -397,7 +397,7 @@ public class QRGeneratorTests
     public void can_recognize_enconding_alphanumeric()
     {
         var gen = new QRCodeGenerator();
-        MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (int)method.Invoke(gen, new object[] { "0123456789ABC", false });
 
         result.ShouldBe(2);
@@ -409,7 +409,7 @@ public class QRGeneratorTests
     public void can_recognize_enconding_forced_bytemode()
     {
         var gen = new QRCodeGenerator();
-        MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (int)method.Invoke(gen, new object[] { "0123456789", true });
 
         result.ShouldBe(4);
@@ -421,7 +421,7 @@ public class QRGeneratorTests
     public void can_recognize_enconding_byte()
     {
         var gen = new QRCodeGenerator();
-        MethodInfo method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (int)method.Invoke(gen, new object[] { "0123456789äöüß", false });
 
         result.ShouldBe(4);
@@ -534,7 +534,7 @@ public class QRGeneratorTests
     {
         // see private method: QRCodeGenerator.IsValidISO
 
-        Encoding _iso88591ExceptionFallback = Encoding.GetEncoding(28591, new EncoderExceptionFallback(), new DecoderExceptionFallback()); // ISO-8859-1
+        var _iso88591ExceptionFallback = Encoding.GetEncoding(28591, new EncoderExceptionFallback(), new DecoderExceptionFallback()); // ISO-8859-1
 
         IsValidISO("abc").ShouldBeTrue();
         IsValidISO("äöü").ShouldBeTrue();

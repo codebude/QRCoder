@@ -938,7 +938,7 @@ public class PayloadGeneratorTests
     {
         var iban = "DE15268500010154131577";
 
-        MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (bool)method.Invoke(null, new object[] { iban });
 
         result.ShouldBe<bool>(true);
@@ -951,7 +951,7 @@ public class PayloadGeneratorTests
     {
         var iban = "CH1900767000U00121977";
 
-        MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (bool)method.Invoke(null, new object[] { iban });
 
         result.ShouldBe<bool>(true);
@@ -964,7 +964,7 @@ public class PayloadGeneratorTests
     {
         var iban = "DE29268500010154131577";
 
-        MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = typeof(PayloadGenerator).GetMethod("IsValidIban", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (bool)method.Invoke(null, new object[] { iban });
 
         result.ShouldBe<bool>(false);
@@ -977,7 +977,7 @@ public class PayloadGeneratorTests
     {
         var iban = "CH2430043000000789012";
 
-        MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidQRIban", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = typeof(PayloadGenerator).GetMethod("IsValidQRIban", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (bool)method.Invoke(null, new object[] { iban });
 
         result.ShouldBe<bool>(true);
@@ -989,7 +989,7 @@ public class PayloadGeneratorTests
     {
         var iban = "CH3908704016075473007";
 
-        MethodInfo method = typeof(PayloadGenerator).GetMethod("IsValidQRIban", BindingFlags.NonPublic | BindingFlags.Static);
+        var method = typeof(PayloadGenerator).GetMethod("IsValidQRIban", BindingFlags.NonPublic | BindingFlags.Static);
         var result = (bool)method.Invoke(null, new object[] { iban });
 
         result.ShouldBe<bool>(false);
@@ -1378,7 +1378,7 @@ public class PayloadGeneratorTests
         var reason = "Thanks for all your efforts";
         var amount = 10.00m;
         var postingKey = 69;
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 #pragma warning disable CS0612
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, DateTime.Now);
 #pragma warning restore CS0612
@@ -1398,7 +1398,7 @@ public class PayloadGeneratorTests
         var reason = "Thanks for all your efforts";
         var amount = 10.00m;
         var postingKey = 69;
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 #pragma warning disable CS0612
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebit, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, DateTime.Now);
 #pragma warning restore CS0612
@@ -1422,7 +1422,7 @@ public class PayloadGeneratorTests
         var periodicTimeunitRotation = 2;
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 #pragma warning disable CS0612
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepayment, name, account, bnc, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, reason, postingKey, currency, DateTime.Now);
 #pragma warning restore CS0612
@@ -1459,7 +1459,7 @@ public class PayloadGeneratorTests
         var reason = "Thanks for all your efforts";
         var sepaReference = "Fake SEPA reference";
         var amount = 10.00m;
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban, bic, amount, "", 0, null, null, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now);
 
@@ -1481,7 +1481,7 @@ public class PayloadGeneratorTests
         var mandateId = "987543CB2";
         var sepaReference = "Fake SEPA reference";
         var amount = 10.00m;
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now);
 
@@ -1505,7 +1505,7 @@ public class PayloadGeneratorTests
         var periodicTimeunitRotation = 1;
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now);
 
@@ -1745,7 +1745,7 @@ public class PayloadGeneratorTests
         var periodicTimeunitRotation = 2;
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 #pragma warning disable CS0612
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepayment, name, account, bnc, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, reason, postingKey, currency, DateTime.Now));
 #pragma warning restore CS0612
@@ -1786,7 +1786,7 @@ public class PayloadGeneratorTests
         var periodicTimeunitRotation = 0;
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
@@ -1934,7 +1934,7 @@ public class PayloadGeneratorTests
         var mandateId = "987543CB2";
         var sepaReference = "Fake SEPA reference which is also much to long for the reference field.";
         var amount = 10.00m;
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
@@ -1957,7 +1957,7 @@ public class PayloadGeneratorTests
         var mandateId = "987543CB2";
         var sepaReference = "Fake SEPA reference.";
         var amount = 10.00m;
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
@@ -1979,7 +1979,7 @@ public class PayloadGeneratorTests
         var mandateId = "ÄÖ987543CB2 1990 2017";
         var sepaReference = "Fake SEPA reference.";
         var amount = 10.00m;
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
@@ -2035,7 +2035,7 @@ public class PayloadGeneratorTests
         var amount = 10.00m;
         var postingKey = 69;
         var executionDate = new DateTime(2017, 1, 1);
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 #pragma warning disable CS0612
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, executionDate));
 #pragma warning restore CS0612
@@ -2059,7 +2059,7 @@ public class PayloadGeneratorTests
         var periodicTimeunitRotation = 1;
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
@@ -2083,7 +2083,7 @@ public class PayloadGeneratorTests
         var periodicTimeunitRotation = 128;
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
-        Currency currency = Currency.USD;
+        var currency = Currency.USD;
 
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 

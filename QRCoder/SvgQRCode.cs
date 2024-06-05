@@ -128,7 +128,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         int[,] matrix = new int[drawableModulesCount, drawableModulesCount];
         for (int yi = 0; yi < drawableModulesCount; yi += 1)
         {
-            BitArray bitArray = QrCodeData.ModuleMatrix[yi + offset];
+            var bitArray = QrCodeData.ModuleMatrix[yi + offset];
 
             int x0 = -1;
             int xL = 0;
@@ -160,7 +160,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             }
         }
 
-        StringBuilder svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"" xmlns:xlink=""http://www.w3.org/1999/xlink"">");
+        var svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"" xmlns:xlink=""http://www.w3.org/1999/xlink"">");
         svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{CleanSvgVal(qrSize)}"" height=""{CleanSvgVal(qrSize)}"" fill=""{lightColorHex}"" />");
         for (int yi = 0; yi < drawableModulesCount; yi += 1)
         {

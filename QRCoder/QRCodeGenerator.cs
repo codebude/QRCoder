@@ -129,7 +129,7 @@ public partial class QRCodeGenerator : IDisposable
     public static QRCodeData GenerateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
     {
         eccLevel = ValidateECCLevel(eccLevel);
-        EncodingMode encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
+        var encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
         var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
         var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
         int version = requestedVersion;
@@ -624,7 +624,7 @@ public partial class QRCodeGenerator : IDisposable
     {
         if (forceUtf8)
             return EncodingMode.Byte;
-        EncodingMode result = EncodingMode.Numeric; // assume numeric
+        var result = EncodingMode.Numeric; // assume numeric
         foreach (char c in plainText)
         {
             if (IsInRange(c, '0', '9'))

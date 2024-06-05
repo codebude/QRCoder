@@ -83,8 +83,8 @@ public static partial class PayloadGenerator
     /// <returns>The converted string.</returns>
     private static string ConvertStringToEncoding(string message, string encoding)
     {
-        Encoding iso = Encoding.GetEncoding(encoding);
-        Encoding utf8 = Encoding.UTF8;
+        var iso = Encoding.GetEncoding(encoding);
+        var utf8 = Encoding.UTF8;
         byte[] utfBytes = utf8.GetBytes(message);
         byte[] isoBytes = Encoding.Convert(utf8, iso, utfBytes);
         return iso.GetString(isoBytes);

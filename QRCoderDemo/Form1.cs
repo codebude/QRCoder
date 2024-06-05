@@ -33,10 +33,10 @@ namespace QRCoderDemo
         private void RenderQrCode()
         {
             string level = comboBoxECC.SelectedItem.ToString();
-            QRCodeGenerator.ECCLevel eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
-            using QRCodeGenerator qrGenerator = new QRCodeGenerator();
-            using QRCodeData qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
-            using QRCode qrCode = new QRCode(qrCodeData);
+            var eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
+            using var qrGenerator = new QRCodeGenerator();
+            using var qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
+            using var qrCode = new QRCode(qrCodeData);
             pictureBoxQRCode.BackgroundImage = qrCode.GetGraphic(20, GetPrimaryColor(), GetBackgroundColor(),
                 GetIconBitmap(), (int)iconSize.Value);
 
@@ -65,7 +65,7 @@ namespace QRCoderDemo
 
         private void selectIconBtn_Click(object sender, EventArgs e)
         {
-            OpenFileDialog openFileDlg = new OpenFileDialog();
+            var openFileDlg = new OpenFileDialog();
             openFileDlg.Title = "Select icon";
             openFileDlg.Multiselect = false;
             openFileDlg.CheckFileExists = true;
@@ -88,7 +88,7 @@ namespace QRCoderDemo
         {
 
             // Displays a SaveFileDialog so the user can save the Image
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            var saveFileDialog1 = new SaveFileDialog();
             saveFileDialog1.Filter = "Bitmap Image|*.bmp|PNG Image|*.png|JPeg Image|*.jpg|Gif Image|*.gif";
             saveFileDialog1.Title = "Save an Image File";
             saveFileDialog1.ShowDialog();
@@ -97,7 +97,7 @@ namespace QRCoderDemo
             if (saveFileDialog1.FileName != "")
             {
                 // Saves the Image via a FileStream created by the OpenFile method.
-                using FileStream fs = (System.IO.FileStream)saveFileDialog1.OpenFile();
+                using var fs = (System.IO.FileStream)saveFileDialog1.OpenFile();
                 // Saves the Image in the appropriate ImageFormat based upon the
                 // File type selected in the dialog box.
                 // NOTE that the FilterIndex property is one-based.

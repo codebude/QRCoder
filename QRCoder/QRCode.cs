@@ -139,7 +139,7 @@ public class QRCode : AbstractQRCode, IDisposable
                 //Only render icon/logo background, if iconBorderWith is set > 0
                 if (iconBorderWidth > 0)
                 {
-                    using GraphicsPath iconPath = CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
+                    using var iconPath = CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
                     gfx.FillPath(iconBgBrush, iconPath);
                 }
                 gfx.DrawImage(icon!, iconDestRect, new RectangleF(0, 0, icon!.Width, icon.Height), GraphicsUnit.Pixel);

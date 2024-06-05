@@ -98,7 +98,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
 #pragma warning disable CA1416 // Validate platform compatibility
         var qr = new QRCode(QrCodeData);
         var base64 = string.Empty;
-        using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones))
+        using (var bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones))
         {
             base64 = BitmapToBase64(bmp, imgType);
         }
@@ -129,7 +129,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     {
         var qr = new QRCode(QrCodeData);
         var base64 = string.Empty;
-        using (Bitmap bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones))
+        using (var bmp = qr.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones))
         {
             base64 = BitmapToBase64(bmp, imgType);
         }
@@ -166,7 +166,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
                 iFormat = ImageFormat.Png;
                 break;
         }
-        using (MemoryStream memoryStream = new MemoryStream())
+        using (var memoryStream = new MemoryStream())
         {
             bmp.Save(memoryStream, iFormat);
             base64 = Convert.ToBase64String(memoryStream.ToArray(), Base64FormattingOptions.None);

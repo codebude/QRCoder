@@ -60,7 +60,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
         var moduleDark = darkColorRgb.Reverse();
         var moduleLight = lightColorRgb.Reverse();
 
-        List<byte> bmp = new List<byte>();
+        var bmp = new List<byte>();
 
         //header
         bmp.AddRange(new byte[] { 0x42, 0x4D, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1A, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00 });

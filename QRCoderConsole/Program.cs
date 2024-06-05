@@ -22,8 +22,8 @@ class MainClass
 
         String fileName = null, outputFileName = null, payload = null;
 
-        QRCodeGenerator.ECCLevel eccLevel = QRCodeGenerator.ECCLevel.L;
-        SupportedImageFormat imageFormat = SupportedImageFormat.Png;
+        var eccLevel = QRCodeGenerator.ECCLevel.L;
+        var imageFormat = SupportedImageFormat.Png;
 
         int pixelsPerModule = 20;
         string foregroundColor = "#000000";

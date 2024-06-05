@@ -21,24 +21,24 @@ public static class HelperFunctions
 #if TEST_XAML
     public static BitmapSource ToBitmapSource(DrawingImage source)
     {
-        DrawingVisual drawingVisual = new DrawingVisual();
-        DrawingContext drawingContext = drawingVisual.RenderOpen();
+        var drawingVisual = new DrawingVisual();
+        var drawingContext = drawingVisual.RenderOpen();
         drawingContext.DrawImage(source, new SW.Rect(new SW.Point(0, 0), new SW.Size(source.Width, source.Height)));
         drawingContext.Close();
 
-        RenderTargetBitmap bmp = new RenderTargetBitmap((int)source.Width, (int)source.Height, 96, 96, PixelFormats.Pbgra32);
+        var bmp = new RenderTargetBitmap((int)source.Width, (int)source.Height, 96, 96, PixelFormats.Pbgra32);
         bmp.Render(drawingVisual);
         return bmp;
     }
 
     public static Bitmap BitmapSourceToBitmap(DrawingImage xamlImg)
     {
-        using MemoryStream ms = new MemoryStream();
-        PngBitmapEncoder encoder = new PngBitmapEncoder();
+        using var ms = new MemoryStream();
+        var encoder = new PngBitmapEncoder();
         encoder.Frames.Add(BitmapFrame.Create(ToBitmapSource(xamlImg)));
         encoder.Save(ms);
 
-        using Bitmap bmp = new Bitmap(ms);
+        using var bmp = new Bitmap(ms);
         return new Bitmap(bmp);
     }
 #endif

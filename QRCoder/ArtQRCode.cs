@@ -221,7 +221,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
 
         var bm = new Bitmap(newSize, newSize);
 
-        using (Graphics graphics = Graphics.FromImage(bm))
+        using (var graphics = Graphics.FromImage(bm))
         {
             using var brush = new SolidBrush(Color.Transparent);
             graphics.FillRectangle(brush, new Rectangle(0, 0, newSize, newSize));

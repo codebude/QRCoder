@@ -45,7 +45,7 @@ public class XamlQRCode : AbstractQRCode, IDisposable
         var unitsPerModule = qrSize / drawableModulesCount;
         var offsetModules = drawQuietZones ? 0 : 4;
 
-        DrawingGroup drawing = new DrawingGroup();
+        var drawing = new DrawingGroup();
         drawing.Children.Add(new GeometryDrawing(lightBrush, null, new RectangleGeometry(new Rect(new Point(0, 0), new Size(qrSize, qrSize)))));
 
         var group = new GeometryGroup();

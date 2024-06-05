@@ -125,7 +125,7 @@ public partial class QRCodeGenerator
             {
                 int i = left;
                 int j = right;
-                PolynomItem pivot = items[(left + right) / 2];
+                var pivot = items[(left + right) / 2];
 
                 while (i <= j)
                 {
@@ -137,7 +137,7 @@ public partial class QRCodeGenerator
                     if (i <= j)
                     {
                         // Swap items[i] and items[j]
-                        PolynomItem temp = items[i];
+                        var temp = items[i];
                         items[i] = items[j];
                         items[j] = temp;
                         i++;
