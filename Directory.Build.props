@@ -2,5 +2,6 @@
   <PropertyGroup>
     <LangVersion>10</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>$(WarningsNotAsErrors);IDE0005</WarningsNotAsErrors>
   </PropertyGroup>
 </Project>
