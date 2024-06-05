@@ -27,72 +27,56 @@ public partial class QRCodeGenerator
             /// Applies a checkerboard mask on the QR code.
             /// </summary>
             public static bool Pattern1(int x, int y)
-            {
-                return (x + y) % 2 == 0;
-            }
+                => (x + y) % 2 == 0;
 
             /// <summary>
             /// Mask pattern 2: y % 2 == 0
             /// Applies a horizontal striping mask on the QR code.
             /// </summary>
             public static bool Pattern2(int x, int y)
-            {
-                return y % 2 == 0;
-            }
+                => y % 2 == 0;
 
             /// <summary>
             /// Mask pattern 3: x % 3 == 0
             /// Applies a vertical striping mask on the QR code.
             /// </summary>
             public static bool Pattern3(int x, int y)
-            {
-                return x % 3 == 0;
-            }
+                => x % 3 == 0;
 
             /// <summary>
             /// Mask pattern 4: (x + y) % 3 == 0
             /// Applies a diagonal striping mask on the QR code.
             /// </summary>
             public static bool Pattern4(int x, int y)
-            {
-                return (x + y) % 3 == 0;
-            }
+                => (x + y) % 3 == 0;
 
             /// <summary>
             /// Mask pattern 5: ((y / 2) + (x / 3)) % 2 == 0
             /// Applies a complex pattern mask on the QR code, mixing horizontal and vertical rules.
             /// </summary>
             public static bool Pattern5(int x, int y)
-            {
-                return ((int)(Math.Floor(y / 2d) + Math.Floor(x / 3d)) % 2) == 0;
-            }
+                => ((int)(Math.Floor(y / 2d) + Math.Floor(x / 3d)) % 2) == 0;
 
             /// <summary>
             /// Mask pattern 6: ((x * y) % 2 + (x * y) % 3) == 0
             /// Applies a mask based on the product of x and y coordinates modulo 2 and 3.
             /// </summary>
             public static bool Pattern6(int x, int y)
-            {
-                return ((x * y) % 2) + ((x * y) % 3) == 0;
-            }
+                => ((x * y) % 2) + ((x * y) % 3) == 0;
 
             /// <summary>
             /// Mask pattern 7: (((x * y) % 2 + (x * y) % 3) % 2) == 0
             /// Applies a mask based on a more complex function involving the product of x and y coordinates.
             /// </summary>
             public static bool Pattern7(int x, int y)
-            {
-                return (((x * y) % 2) + ((x * y) % 3)) % 2 == 0;
-            }
+                => (((x * y) % 2) + ((x * y) % 3)) % 2 == 0;
 
             /// <summary>
             /// Mask pattern 8: (((x + y) % 2) + ((x * y) % 3) % 2) == 0
             /// Combines rules of checkers and complex multiplicative masks.
             /// </summary>
             public static bool Pattern8(int x, int y)
-            {
-                return (((x + y) % 2) + ((x * y) % 3)) % 2 == 0;
-            }
+                => (((x + y) % 2) + ((x * y) % 3)) % 2 == 0;
 
             /// <summary>
             /// Calculates a penalty score for a QR code to evaluate the effectiveness of a mask pattern.

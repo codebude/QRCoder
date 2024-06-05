@@ -389,17 +389,13 @@ public static partial class PayloadGenerator
             /// Creates a contact with structured address.
             /// </summary>
             public static Contact WithStructuredAddress(string name, string zipCode, string city, string country, string? street = null, string? houseNumber = null)
-            {
-                return new Contact(name, zipCode, city, country, street, houseNumber, AddressType.StructuredAddress);
-            }
+                => new Contact(name, zipCode, city, country, street, houseNumber, AddressType.StructuredAddress);
 
             /// <summary>
             /// Creates a contact with combined address.
             /// </summary>
             public static Contact WithCombinedAddress(string name, string country, string addressLine1, string addressLine2)
-            {
-                return new Contact(name, null, null, country, addressLine1, addressLine2, AddressType.CombinedAddress);
-            }
+                => new Contact(name, null, null, country, addressLine1, addressLine2, AddressType.CombinedAddress);
 
 
             private Contact(string name, string? zipCode, string? city, string country, string? streetOrAddressline1, string? houseNumberOrAddressline2, AddressType addressType)

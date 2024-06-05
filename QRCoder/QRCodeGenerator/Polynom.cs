@@ -69,10 +69,7 @@ public partial class QRCodeGenerator
 #if NET6_0_OR_GREATER
         [StackTraceHidden]
 #endif
-        private static void ThrowIndexOutOfRangeException()
-        {
-            throw new IndexOutOfRangeException();
-        }
+        private static void ThrowIndexOutOfRangeException() => throw new IndexOutOfRangeException();
 
 
         /// <summary>
@@ -83,10 +80,7 @@ public partial class QRCodeGenerator
         /// <summary>
         /// Removes all polynomial terms from the polynomial.
         /// </summary>
-        public void Clear()
-        {
-            Count = 0;
-        }
+        public void Clear() => Count = 0;
 
         /// <summary>
         /// Clones the polynomial, creating a new instance with the same polynomial terms.
@@ -207,17 +201,13 @@ public partial class QRCodeGenerator
         /// Rents memory for the polynomial terms from the shared memory pool.
         /// </summary>
         private static PolynomItem[] RentArray(int count)
-        {
-            return System.Buffers.ArrayPool<PolynomItem>.Shared.Rent(count);
-        }
+            => System.Buffers.ArrayPool<PolynomItem>.Shared.Rent(count);
 
         /// <summary>
         /// Returns memory allocated for the polynomial terms back to the shared memory pool.
         /// </summary>
         private static void ReturnArray(PolynomItem[] array)
-        {
-            System.Buffers.ArrayPool<PolynomItem>.Shared.Return(array);
-        }
+            => System.Buffers.ArrayPool<PolynomItem>.Shared.Return(array);
 #else
         // Implement a poor-man's array pool for .NET Framework
         [ThreadStatic]

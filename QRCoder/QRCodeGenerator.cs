@@ -43,9 +43,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <exception cref="QRCoder.Exceptions.DataTooLongException">Thrown when the payload is too big to be encoded in a QR code.</exception>
     /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
     public QRCodeData CreateQrCode(PayloadGenerator.Payload payload)
-    {
-        return GenerateQrCode(payload);
-    }
+        => GenerateQrCode(payload);
 
     /// <summary>
     /// Calculates the QR code data which than can be used in one of the rendering classes to generate a graphical representation.
@@ -55,9 +53,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <exception cref="QRCoder.Exceptions.DataTooLongException">Thrown when the payload is too big to be encoded in a QR code.</exception>
     /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
     public QRCodeData CreateQrCode(PayloadGenerator.Payload payload, ECCLevel eccLevel)
-    {
-        return GenerateQrCode(payload, eccLevel);
-    }
+        => GenerateQrCode(payload, eccLevel);
 
     /// <summary>
     /// Calculates the QR code data which than can be used in one of the rendering classes to generate a graphical representation.
@@ -71,9 +67,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <exception cref="QRCoder.Exceptions.DataTooLongException">Thrown when the payload is too big to be encoded in a QR code.</exception>
     /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
     public QRCodeData CreateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
-    {
-        return GenerateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion);
-    }
+        => GenerateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion);
 
     /// <summary>
     /// Calculates the QR code data which than can be used in one of the rendering classes to generate a graphical representation.
@@ -83,9 +77,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <exception cref="QRCoder.Exceptions.DataTooLongException">Thrown when the payload is too big to be encoded in a QR code.</exception>
     /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
     public QRCodeData CreateQrCode(byte[] binaryData, ECCLevel eccLevel)
-    {
-        return GenerateQrCode(binaryData, eccLevel);
-    }
+        => GenerateQrCode(binaryData, eccLevel);
 
 
     /// <summary>
@@ -95,9 +87,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <exception cref="QRCoder.Exceptions.DataTooLongException">Thrown when the payload is too big to be encoded in a QR code.</exception>
     /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
     public static QRCodeData GenerateQrCode(PayloadGenerator.Payload payload)
-    {
-        return GenerateQrCode(payload.ToString(), payload.EccLevel, false, false, payload.EciMode, payload.Version);
-    }
+        => GenerateQrCode(payload.ToString(), payload.EccLevel, false, false, payload.EciMode, payload.Version);
 
     /// <summary>
     /// Calculates the QR code data which than can be used in one of the rendering classes to generate a graphical representation.
@@ -635,9 +625,7 @@ public partial class QRCodeGenerator : IDisposable
     /// Checks if a character falls within a specified range.
     /// </summary>
     private static bool IsInRange(char c, char min, char max)
-    {
-        return (uint)(c - min) <= (uint)(max - min);
-    }
+        => (uint)(c - min) <= (uint)(max - min);
 
     /// <summary>
     /// Calculates the message polynomial from a bit array which represents the encoded data.
@@ -1178,9 +1166,7 @@ public partial class QRCodeGenerator : IDisposable
     /// This is used in Reed-Solomon and other error correction calculations involving Galois fields.
     /// </summary>
     private static int GetIntValFromAlphaExp(int exp)
-    {
-        return _galoisFieldByExponentAlpha[exp];
-    }
+        => _galoisFieldByExponentAlpha[exp];
 
     /// <summary>
     /// Retrieves the exponent from the Galois field that corresponds to a given integer value.
@@ -1200,9 +1186,7 @@ public partial class QRCodeGenerator : IDisposable
     /// This is particularly necessary when performing multiplications in the field which can result in exponents exceeding the field's maximum.
     /// </summary>
     private static int ShrinkAlphaExp(int alphaExp)
-    {
-        return (int)((alphaExp % 256) + Math.Floor((double)(alphaExp / 256)));
-    }
+        => (int)((alphaExp % 256) + Math.Floor((double)(alphaExp / 256)));
 
     /// <summary>
     /// Creates a dictionary mapping alphanumeric characters to their respective positions used in QR code encoding.

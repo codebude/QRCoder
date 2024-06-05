@@ -263,3 +263,4 @@ dotnet_diagnostic.IDE0005.severity = warning
 # Enforce formatting https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/formatting-rules#rule-id-ide0055-fix-formatting
 dotnet_diagnostic.IDE0055.severity = error
 dotnet_diagnostic.IDE1006.severity = error
+dotnet_diagnostic.IDE0022.severity = error

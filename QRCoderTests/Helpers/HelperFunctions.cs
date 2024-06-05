@@ -103,7 +103,5 @@ public static class HelperFunctions
     }
 
     public static string StringToHash(string data)
-    {
-        return ByteArrayToHash(Encoding.UTF8.GetBytes(data));
-    }
+        => ByteArrayToHash(Encoding.UTF8.GetBytes(data));
 }

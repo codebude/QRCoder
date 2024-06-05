@@ -15,9 +15,7 @@ public class XamlQRCode : AbstractQRCode, IDisposable
     public XamlQRCode(QRCodeData data) : base(data) { }
 
     public DrawingImage GetGraphic(int pixelsPerModule)
-    {
-        return GetGraphic(pixelsPerModule, true);
-    }
+        => GetGraphic(pixelsPerModule, true);
 
     public DrawingImage GetGraphic(int pixelsPerModule, bool drawQuietZones)
     {
@@ -27,9 +25,7 @@ public class XamlQRCode : AbstractQRCode, IDisposable
     }
 
     public DrawingImage GetGraphic(Size viewBox, bool drawQuietZones = true)
-    {
-        return GetGraphic(viewBox, new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.White), drawQuietZones);
-    }
+        => GetGraphic(viewBox, new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.White), drawQuietZones);
 
     public DrawingImage GetGraphic(int pixelsPerModule, string darkColorHex, string lightColorHex, bool drawQuietZones = true)
     {
@@ -69,9 +65,7 @@ public class XamlQRCode : AbstractQRCode, IDisposable
     }
 
     private int GetDrawableModulesCount(bool drawQuietZones = true)
-    {
-        return QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
-    }
+        => QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
 
     public double GetUnitsPerModule(Size viewBox, bool drawQuietZones = true)
     {
