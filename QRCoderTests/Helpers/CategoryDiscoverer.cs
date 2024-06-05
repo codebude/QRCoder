@@ -12,7 +12,9 @@ namespace QRCoderTests.Helpers.XUnitExtenstions;
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 public class CategoryAttribute : Attribute
 {
+#pragma warning disable IDE0060 // Remove unused parameter
     public CategoryAttribute(string category) { }
+#pragma warning restore IDE0060 // Remove unused parameter
 }
 #else
 public class CategoryDiscoverer : ITraitDiscoverer

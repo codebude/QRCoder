@@ -111,9 +111,7 @@ public partial class QRCodeGenerator
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
 
-            var items = _polyItems;
-            if (items == null)
-                throw new ObjectDisposedException(nameof(Polynom));
+            var items = _polyItems ?? throw new ObjectDisposedException(nameof(Polynom));
 
             if (Count <= 1)
             {

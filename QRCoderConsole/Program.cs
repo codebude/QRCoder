@@ -11,8 +11,9 @@ namespace QRCoderConsole;
 
 #if NET6_0_WINDOWS
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+internal
 #endif
-class MainClass
+internal class MainClass
 {
     public static void Main(string[] args)
     {
@@ -20,7 +21,7 @@ class MainClass
         var newLine = Environment.NewLine;
         var setter = new OptionSetter();
 
-        String fileName = null, outputFileName = null, payload = null;
+        string fileName = null, outputFileName = null, payload = null;
 
         var eccLevel = QRCodeGenerator.ECCLevel.L;
         var imageFormat = SupportedImageFormat.Png;
@@ -39,7 +40,7 @@ class MainClass
             },
             {   "f|output-format=",
                 $"Image format for outputfile. Possible values: {string.Join(", ", Enum.GetNames(typeof(SupportedImageFormat)))} (default: png)",
-                value => { Enum.TryParse(value, true, out imageFormat); }
+                value => Enum.TryParse(value, true, out imageFormat)
             },
             {
                 "i|in=",
@@ -229,9 +230,8 @@ public class OptionSetter
 {
     public QRCodeGenerator.ECCLevel GetECCLevel(string value)
     {
-        QRCodeGenerator.ECCLevel level;
 
-        Enum.TryParse(value, out level);
+        Enum.TryParse(value, out QRCodeGenerator.ECCLevel level);
 
         return level;
     }

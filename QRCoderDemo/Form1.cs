@@ -59,10 +59,12 @@ public partial class Form1 : Form
 
     private void selectIconBtn_Click(object sender, EventArgs e)
     {
-        var openFileDlg = new OpenFileDialog();
-        openFileDlg.Title = "Select icon";
-        openFileDlg.Multiselect = false;
-        openFileDlg.CheckFileExists = true;
+        var openFileDlg = new OpenFileDialog
+        {
+            Title = "Select icon",
+            Multiselect = false,
+            CheckFileExists = true
+        };
         if (openFileDlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
             iconPath.Text = openFileDlg.FileName;
@@ -82,9 +84,11 @@ public partial class Form1 : Form
     {
 
         // Displays a SaveFileDialog so the user can save the Image
-        var saveFileDialog1 = new SaveFileDialog();
-        saveFileDialog1.Filter = "Bitmap Image|*.bmp|PNG Image|*.png|JPeg Image|*.jpg|Gif Image|*.gif";
-        saveFileDialog1.Title = "Save an Image File";
+        var saveFileDialog1 = new SaveFileDialog
+        {
+            Filter = "Bitmap Image|*.bmp|PNG Image|*.png|JPeg Image|*.jpg|Gif Image|*.gif",
+            Title = "Save an Image File"
+        };
         saveFileDialog1.ShowDialog();
 
         // If the file name is not an empty string open it for saving.
@@ -107,11 +111,6 @@ public partial class Form1 : Form
             };
             pictureBoxQRCode.BackgroundImage.Save(fs, imageFormat);
         }
-    }
-
-    public void ExportToBmp(string path)
-    {
-
     }
 
     private void textBoxQRCode_TextChanged(object sender, EventArgs e)
