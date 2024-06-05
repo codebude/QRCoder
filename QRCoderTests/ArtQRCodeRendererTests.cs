@@ -76,7 +76,7 @@ public class ArtQRCodeRendererTests
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
         var aCode = new ArtQRCode(data);
-        
+
         var exception = Record.Exception(() => aCode.GetGraphic(10, Color.Black, Color.White, Color.Transparent, pixelSizeFactor: 2));
         Assert.NotNull(exception);
         Assert.IsType<System.Exception>(exception);

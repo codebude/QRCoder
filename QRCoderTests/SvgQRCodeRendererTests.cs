@@ -30,7 +30,7 @@ public class SvgQRCodeRendererTests
     [Fact]
     [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode()
-    {        
+    {
         //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
@@ -47,7 +47,7 @@ public class SvgQRCodeRendererTests
         //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
-        var svg = new SvgQRCode(data).GetGraphic(new Size(128,128));
+        var svg = new SvgQRCode(data).GetGraphic(new Size(128, 128));
 
         var result = HelperFunctions.StringToHash(svg);
         result.ShouldBe("56719c7db39937c74377855a5dc4af0a");
@@ -179,14 +179,14 @@ public class SvgQRCodeRendererTests
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909361
-        var logoSvg = File.ReadAllText(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_Scientist_2909361.svg");            
+        var logoSvg = File.ReadAllText(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_Scientist_2909361.svg");
         var logoObj = new SvgQRCode.SvgLogo(logoSvg, 20);
         logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.SVG);
 
         var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
 
         var result = HelperFunctions.StringToHash(svg);
-        result.ShouldBe("855eb988d3af035abd273ed1629aa952");            
+        result.ShouldBe("855eb988d3af035abd273ed1629aa952");
     }
 
     [Fact]

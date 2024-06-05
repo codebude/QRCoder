@@ -44,14 +44,14 @@ public static partial class PayloadGenerator
             this.encoding = encoding;
             if (!IsValidIban(iban))
                 throw new GirocodeException("The IBAN entered isn't valid.");
-            this.iban = iban.Replace(" ","").ToUpper();
+            this.iban = iban.Replace(" ", "").ToUpper();
             if (!IsValidBic(bic))
                 throw new GirocodeException("The BIC entered isn't valid.");
             this.bic = bic.Replace(" ", "").ToUpper();
             if (name.Length > 70)
                 throw new GirocodeException("(Payee-)Name must be shorter than 71 chars.");
             this.name = name;
-            if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",",".").Split('.')[1].TrimEnd('0').Length > 2)
+            if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",", ".").Split('.')[1].TrimEnd('0').Length > 2)
                 throw new GirocodeException("Amount must have less than 3 digits after decimal point.");
             if (amount < 0.01m || amount > 999999999.99m)
                 throw new GirocodeException("Amount has to be at least 0.01 and must be smaller or equal to 999999999.99.");
@@ -83,7 +83,7 @@ public static partial class PayloadGenerator
             girocodePayload += bic + br;
             girocodePayload += name + br;
             girocodePayload += iban + br;
-            girocodePayload += $"EUR{amount:0.00}".Replace(",",".") + br;
+            girocodePayload += $"EUR{amount:0.00}".Replace(",", ".") + br;
             girocodePayload += purposeOfCreditTransfer + br;
             girocodePayload += ((typeOfRemittance == TypeOfRemittance.Structured)
                 ? remittanceInformation
@@ -93,7 +93,7 @@ public static partial class PayloadGenerator
                 : string.Empty) + br;
             girocodePayload += messageToGirocodeUser;
 
-            return ConvertStringToEncoding(girocodePayload, encoding.ToString().Replace("_","-"));
+            return ConvertStringToEncoding(girocodePayload, encoding.ToString().Replace("_", "-"));
         }
 
         /// <summary>

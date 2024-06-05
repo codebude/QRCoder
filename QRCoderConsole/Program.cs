@@ -14,11 +14,11 @@ namespace QRCoderConsole;
 #endif
 class MainClass
 {
-    public static void Main (string[] args)
+    public static void Main(string[] args)
     {
         var friendlyName = AppDomain.CurrentDomain.FriendlyName;
         var newLine = Environment.NewLine;
-        var setter = new OptionSetter ();
+        var setter = new OptionSetter();
 
         String fileName = null, outputFileName = null, payload = null;
 
@@ -237,7 +237,7 @@ public class OptionSetter
     }
 
 #if NET6_0_WINDOWS
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
     public ImageFormat GetImageFormat(string value)
     {

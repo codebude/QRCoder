@@ -162,7 +162,7 @@ public static partial class PayloadGenerator
                 if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The account entered isn't valid.");
                 this.account = account.Replace(" ", "").ToUpper();
-                if(!Regex.IsMatch(bnc.Replace(" ", ""), @"^[0-9]{1,9}$"))
+                if (!Regex.IsMatch(bnc.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The bnc entered isn't valid.");
                 this.bnc = bnc.Replace(" ", "").ToUpper();
 
@@ -267,14 +267,14 @@ public static partial class PayloadGenerator
                     bezahlCodePayload += $"bic={bic}&";
 
                     if (!string.IsNullOrEmpty(sepaReference))
-                        bezahlCodePayload += $"separeference={ Uri.EscapeDataString(sepaReference)}&";
+                        bezahlCodePayload += $"separeference={Uri.EscapeDataString(sepaReference)}&";
 
                     if (authority == AuthorityType.singledirectdebitsepa)
                     {
                         if (!string.IsNullOrEmpty(creditorId))
-                            bezahlCodePayload += $"creditorid={ Uri.EscapeDataString(creditorId)}&";
+                            bezahlCodePayload += $"creditorid={Uri.EscapeDataString(creditorId)}&";
                         if (!string.IsNullOrEmpty(mandateId))
-                            bezahlCodePayload += $"mandateid={ Uri.EscapeDataString(mandateId)}&";
+                            bezahlCodePayload += $"mandateid={Uri.EscapeDataString(mandateId)}&";
                         if (dateOfSignature != DateTime.MinValue)
                             bezahlCodePayload += $"dateofsignature={dateOfSignature.ToString("ddMMyyyy")}&";
                     }
@@ -282,7 +282,7 @@ public static partial class PayloadGenerator
                 bezahlCodePayload += $"amount={amount:0.00}&".Replace(".", ",");
 
                 if (!string.IsNullOrEmpty(reason))
-                    bezahlCodePayload += $"reason={ Uri.EscapeDataString(reason)}&";
+                    bezahlCodePayload += $"reason={Uri.EscapeDataString(reason)}&";
                 bezahlCodePayload += $"currency={currency}&";
                 bezahlCodePayload += $"executiondate={executionDate.ToString("ddMMyyyy")}&";
 #pragma warning disable CS0612
@@ -320,7 +320,7 @@ public static partial class PayloadGenerator
                 }
 
                 if (!string.IsNullOrEmpty(reason))
-                    bezahlCodePayload += $"reason={ Uri.EscapeDataString(reason)}&";
+                    bezahlCodePayload += $"reason={Uri.EscapeDataString(reason)}&";
             }
 
             return bezahlCodePayload.Trim('&');

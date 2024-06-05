@@ -37,7 +37,7 @@ namespace QRCoderDemoUWP
 
                 //Create byte/raw bitmap qr code
                 BitmapByteQRCode qrCodeBmp = new BitmapByteQRCode(qrCodeData);
-                byte[] qrCodeImageBmp = qrCodeBmp.GetGraphic(20, new byte[] { 118, 126, 152 },new byte[] { 144, 201, 111 });
+                byte[] qrCodeImageBmp = qrCodeBmp.GetGraphic(20, new byte[] { 118, 126, 152 }, new byte[] { 144, 201, 111 });
                 using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
                 {
                     using (DataWriter writer = new DataWriter(stream.GetOutputStreamAt(0)))

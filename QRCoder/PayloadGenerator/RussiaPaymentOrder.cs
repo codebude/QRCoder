@@ -55,7 +55,7 @@ public static partial class PayloadGenerator
             mFields.BankName = ValidateInput(bankName, "BankName", @"^.{1,45}$");
             mFields.BIC = ValidateInput(BIC, "BIC", @"^\d{9}$");
             mFields.CorrespAcc = ValidateInput(correspAcc, "CorrespAcc", @"^[1-9]\d{4}[0-9ABCEHKMPTX]\d{14}$");
-                           
+
             if (optionalFields != null)
                 oFields = optionalFields;
         }
@@ -130,7 +130,7 @@ public static partial class PayloadGenerator
             var optionalValues = GetOptionalFieldsAsList();
 
             // Possible candidates for field separation
-            var separatorCandidates = new string[]{ "|", "#", ";", ":", "^", "_", "~", "{", "}", "!", "#", "$", "%", "&", "(", ")", "*", "+", ",", "/", "@" };
+            var separatorCandidates = new string[] { "|", "#", ";", ":", "^", "_", "~", "{", "}", "!", "#", "$", "%", "&", "(", ")", "*", "+", ",", "/", "@" };
             foreach (var sepCandidate in separatorCandidates)
             {
                 if (!mandatoryValues.Any(x => x.Contains(sepCandidate)) && !optionalValues.Any(x => x.Contains(sepCandidate)))
@@ -148,7 +148,8 @@ public static partial class PayloadGenerator
 #if NETSTANDARD1_3
             return typeof(OptionalFields).GetRuntimeProperties()
                     .Where(field => field.GetValue(oFields) != null)
-                    .Select(field => {
+                    .Select(field =>
+                    {
                         var objValue = field.GetValue(oFields, null);
                         var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
                         return $"{field.Name}={value}";
@@ -157,11 +158,12 @@ public static partial class PayloadGenerator
 #else
             return typeof(OptionalFields).GetProperties()
                     .Where(field => field.GetValue(oFields, null) != null)
-                    .Select(field => {
+                    .Select(field =>
+                    {
                         var objValue = field.GetValue(oFields, null);
                         var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
-                        return $"{field.Name}={value}";                            
-                     })
+                        return $"{field.Name}={value}";
+                    })
                     .ToList();
 #endif
         }
@@ -176,7 +178,8 @@ public static partial class PayloadGenerator
 #if NETSTANDARD1_3
             return typeof(MandatoryFields).GetRuntimeFields()
                     .Where(field => field.GetValue(mFields) != null)
-                    .Select(field => {
+                    .Select(field =>
+                    {
                         var objValue = field.GetValue(mFields);
                         var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
                         return $"{field.Name}={value}";
@@ -185,11 +188,12 @@ public static partial class PayloadGenerator
 #else
             return typeof(MandatoryFields).GetFields()
                     .Where(field => field.GetValue(mFields) != null)
-                    .Select(field => {
+                    .Select(field =>
+                    {
                         var objValue = field.GetValue(mFields);
                         var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
-                        return $"{field.Name}={value}";                            
-                     })
+                        return $"{field.Name}={value}";
+                    })
                     .ToList();
 #endif
         }

@@ -8,14 +8,14 @@ namespace QRCoderTests;
 
 
 public class AsciiQRCodeRendererTests
-{                        
+{
 
     [Fact]
     [Category("QRRenderer/AsciiQRCode")]
     public void can_render_ascii_qrcode()
     {
         var targetCode = "                                                          \n                                                          \n                                                          \n                                                          \n        ██████████████  ████  ██    ██████████████        \n        ██          ██  ████    ██  ██          ██        \n        ██  ██████  ██  ██  ██  ██  ██  ██████  ██        \n        ██  ██████  ██  ██      ██  ██  ██████  ██        \n        ██  ██████  ██  ██████████  ██  ██████  ██        \n        ██          ██              ██          ██        \n        ██████████████  ██  ██  ██  ██████████████        \n                        ██████████                        \n          ████  ██  ████    ██████  ██  ██████████        \n        ██        ██        ██      ██    ██  ████        \n            ████  ██████  ██████        ██████  ██        \n        ████      ██  ██████  ██    ██        ██          \n          ████    ████  ██  ██      ██  ██  ████          \n                        ██    ██  ██  ██  ██              \n        ██████████████  ██  ████  ██████    ██            \n        ██          ██    ██    ████  ██████              \n        ██  ██████  ██  ██████  ████████    ██  ██        \n        ██  ██████  ██    ██        ██      ████          \n        ██  ██████  ██  ██████  ██      ██      ██        \n        ██          ██  ██  ██      ██      ██████        \n        ██████████████    ██    ██  ██  ██  ██  ██        \n                                                          \n                                                          \n                                                          \n                                                          ";
-        
+
         //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
@@ -85,11 +85,11 @@ public class AsciiQRCodeRendererTests
     public void can_render_ascii_qrcode_without_quietzones()
     {
         var targetCode = "██████████████  ████  ██    ██████████████\n██          ██  ████    ██  ██          ██\n██  ██████  ██  ██  ██  ██  ██  ██████  ██\n██  ██████  ██  ██      ██  ██  ██████  ██\n██  ██████  ██  ██████████  ██  ██████  ██\n██          ██              ██          ██\n██████████████  ██  ██  ██  ██████████████\n                ██████████                \n  ████  ██  ████    ██████  ██  ██████████\n██        ██        ██      ██    ██  ████\n    ████  ██████  ██████        ██████  ██\n████      ██  ██████  ██    ██        ██  \n  ████    ████  ██  ██      ██  ██  ████  \n                ██    ██  ██  ██  ██      \n██████████████  ██  ████  ██████    ██    \n██          ██    ██    ████  ██████      \n██  ██████  ██  ██████  ████████    ██  ██\n██  ██████  ██    ██        ██      ████  \n██  ██████  ██  ██████  ██      ██      ██\n██          ██  ██  ██      ██      ██████\n██████████████    ██    ██  ██  ██  ██  ██";
-        
+
         //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("A05", QRCodeGenerator.ECCLevel.Q);
-        var asciiCode = new AsciiQRCode(data).GetGraphic(1, drawQuietZones : false);
+        var asciiCode = new AsciiQRCode(data).GetGraphic(1, drawQuietZones: false);
 
         asciiCode.ShouldBe(targetCode);
     }

@@ -55,7 +55,7 @@ public static partial class PayloadGenerator
         /// <param name="org">Organization/Company.</param>            
         /// <param name="orgTitle">Organization/Company Title.</param> 
         public ContactData(ContactOutputType outputType, string firstname, string lastname, string? nickname = null, string? phone = null, string? mobilePhone = null, string? workPhone = null, string? email = null, DateTime? birthday = null, string? website = null, string? street = null, string? houseNumber = null, string? city = null, string? zipCode = null, string? country = null, string? note = null, string? stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string? org = null, string? orgTitle = null)
-        {             
+        {
             this.firstname = firstname;
             this.lastname = lastname;
             this.nickname = nickname;
@@ -109,7 +109,7 @@ public static partial class PayloadGenerator
                 if (birthday != null)
                     payload += $"BDAY:{((DateTime)birthday).ToString("yyyyMMdd")}\r\n";
                 string addressString = string.Empty;
-                if(addressOrder == AddressOrder.Default)
+                if (addressOrder == AddressOrder.Default)
                 {
                     addressString = $"ADR:,,{(!string.IsNullOrEmpty(street) ? street + " " : "")}{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")},{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")},{(!string.IsNullOrEmpty(city) ? city : "")},{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")},{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
                 }
@@ -190,7 +190,7 @@ public static partial class PayloadGenerator
                 else
                     payload += "TYPE=home,pref:";
                 string addressString = string.Empty;
-                if(addressOrder == AddressOrder.Default)
+                if (addressOrder == AddressOrder.Default)
                 {
                     addressString = $";;{(!string.IsNullOrEmpty(street) ? street + " " : "")}{(!string.IsNullOrEmpty(houseNumber) ? houseNumber : "")};{(!string.IsNullOrEmpty(zipCode) ? zipCode : "")};{(!string.IsNullOrEmpty(city) ? city : "")};{(!string.IsNullOrEmpty(stateRegion) ? stateRegion : "")};{(!string.IsNullOrEmpty(country) ? country : "")}\r\n";
                 }

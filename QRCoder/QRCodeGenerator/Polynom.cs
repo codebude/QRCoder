@@ -53,12 +53,14 @@ public partial class QRCodeGenerator
         /// </summary>
         public PolynomItem this[int index]
         {
-            get {
+            get
+            {
                 if ((uint)index >= _length)
                     ThrowIndexOutOfRangeException();
                 return _polyItems[index];
             }
-            set {
+            set
+            {
                 if ((uint)index >= _length)
                     ThrowIndexOutOfRangeException();
                 _polyItems[index] = value;
@@ -107,10 +109,12 @@ public partial class QRCodeGenerator
         /// </param>
         public void Sort(Func<PolynomItem, PolynomItem, int> comparer)
         {
-            if (comparer == null) throw new ArgumentNullException(nameof(comparer));
+            if (comparer == null)
+                throw new ArgumentNullException(nameof(comparer));
 
             var items = _polyItems;
-            if (items == null) throw new ObjectDisposedException(nameof(Polynom));
+            if (items == null)
+                throw new ObjectDisposedException(nameof(Polynom));
 
             if (_length <= 1)
             {
@@ -125,8 +129,10 @@ public partial class QRCodeGenerator
 
                 while (i <= j)
                 {
-                    while (comparer(items[i], pivot) < 0) i++;
-                    while (comparer(items[j], pivot) > 0) j--;
+                    while (comparer(items[i], pivot) < 0)
+                        i++;
+                    while (comparer(items[j], pivot) > 0)
+                        j--;
 
                     if (i <= j)
                     {
@@ -140,8 +146,10 @@ public partial class QRCodeGenerator
                 }
 
                 // Recursively sort the sub-arrays
-                if (left < j) QuickSort(left, j);
-                if (i < right) QuickSort(i, right);
+                if (left < j)
+                    QuickSort(left, j);
+                if (i < right)
+                    QuickSort(i, right);
             }
 
             QuickSort(0, _length - 1);
@@ -220,7 +228,7 @@ public partial class QRCodeGenerator
         // Implement a poor-man's array pool for .NET Framework
         [ThreadStatic]
         private static List<PolynomItem[]>? _arrayPool;
-        
+
         /// <summary>
         /// Rents memory for the polynomial terms from a shared memory pool.
         /// </summary>
@@ -251,7 +259,7 @@ public partial class QRCodeGenerator
                 throw new ArgumentOutOfRangeException(nameof(count), "The count must be a positive number.");
             }
         }
-        
+
         /// <summary>
         /// Returns memory allocated for the polynomial terms back to a shared memory pool.
         /// </summary>

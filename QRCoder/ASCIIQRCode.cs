@@ -17,7 +17,7 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
 
     public AsciiQRCode(QRCodeData data) : base(data) { }
 
-   
+
     /// <summary>
     /// Returns a strings that contains the resulting QR code as textual representation.
     /// </summary>
@@ -59,7 +59,7 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
             var lineBuilder = new StringBuilder();
             for (var x = 0; x < QrCodeData.ModuleMatrix.Count - quietZonesModifier; x++)
             {
-                var module = QrCodeData.ModuleMatrix[((y + verticalNumberOfRepeats) / verticalNumberOfRepeats - 1)+quietZonesOffset][x + quietZonesOffset];
+                var module = QrCodeData.ModuleMatrix[((y + verticalNumberOfRepeats) / verticalNumberOfRepeats - 1) + quietZonesOffset][x + quietZonesOffset];
                 for (var i = 0; i < repeatPerModule; i++)
                 {
                     lineBuilder.Append(module ? darkColorString : whiteSpaceString);
@@ -109,7 +109,7 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
                 // Fill next with value, if in data range
                 if (nextRowId < QrCodeData.ModuleMatrix.Count)
                     next = moduleData[col + quietZonesOffset][nextRowId] ^ invert;
-                    
+
                 if (current == WHITE && next == WHITE)
                     lineBuilder.Append(palette.WHITE_ALL);
                 else if (current == WHITE && next == BLACK)

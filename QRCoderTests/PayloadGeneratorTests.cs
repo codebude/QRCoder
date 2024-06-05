@@ -3300,14 +3300,14 @@ public class PayloadGeneratorTests
 
         byte[] targetBytes = new byte[] { 83, 84, 48, 48, 48, 49, 51, 124, 78, 97, 109, 101, 61, 239, 239, 239, 32, 60, 244, 210, 201, 32, 203, 201, 212, 193, 62, 124, 80, 101, 114, 115, 111, 110, 97, 108, 65, 99, 99, 61, 52, 48, 55, 48, 50, 56, 49, 48, 49, 51, 56, 50, 53, 48, 49, 50, 51, 48, 49, 55, 124, 66, 97, 110, 107, 78, 97, 109, 101, 61, 239, 225, 239, 32, 34, 226, 225, 238, 235, 34, 124, 66, 73, 67, 61, 48, 52, 52, 53, 50, 53, 50, 50, 53, 124, 67, 111, 114, 114, 101, 115, 112, 65, 99, 99, 61, 51, 48, 49, 48, 49, 56, 49, 48, 57, 54, 53, 55, 55, 48, 48, 48, 48, 52, 49, 51, 124 };
         var payloadBytes = generator.ToBytes();
-      
-        Assert.True(targetBytes.Length == payloadBytes.Length, $"Byte array lengths different. Expected: {targetBytes.Length}, Actual: {payloadBytes.Length}");            
+
+        Assert.True(targetBytes.Length == payloadBytes.Length, $"Byte array lengths different. Expected: {targetBytes.Length}, Actual: {payloadBytes.Length}");
         for (int i = 0; i < targetBytes.Length; i++)
         {
             Assert.True(targetBytes[i] == payloadBytes[i],
                         $"Expected: '{targetBytes[i]}', Actual: '{payloadBytes[i]}' at offset {i}."
             );
-        }          
+        }
     }
 
     [Fact]
@@ -3395,7 +3395,7 @@ public class PayloadGeneratorTests
         var bankName = "ОАО | \"БАНК\"";
         var name = "|@;:^_~{}!#$%&()*+,/";
         var correspAcc = "30101810400000000225";
-        
+
         var exception = Record.Exception(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
         Assert.NotNull(exception);
         Assert.IsType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(exception);
@@ -3462,7 +3462,7 @@ public class PayloadGeneratorTests
             CBC = "CBC1",
             ChildFio = "J Doe",
             ClassNum = "1",
-            Contract = "99",                                
+            Contract = "99",
         };
 
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, optionalFields);
@@ -3482,7 +3482,7 @@ public class PayloadGeneratorTests
         var name = "ООО «Три кита»";
         var correspAcc = "30101810400000000225";
         var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
-        {               
+        {
             CounterId = "1234",
             CounterVal = "9999",
             DocDate = new DateTime(2021, 11, 8),
@@ -3514,7 +3514,7 @@ public class PayloadGeneratorTests
         var name = "ООО «Три кита»";
         var correspAcc = "30101810400000000225";
         var optionalFields = new PayloadGenerator.RussiaPaymentOrder.OptionalFields()
-        {                
+        {
             PayeeINN = "INN1",
             PayerAddress = "Street 1, 123 City",
             PayerIdNum = "555",
@@ -3523,7 +3523,7 @@ public class PayloadGeneratorTests
             PaymPeriod = "12",
             PaymTerm = "A",
             PaytReason = "01",
-            PensAcc = "SNILS_NO"                 
+            PensAcc = "SNILS_NO"
         };
 
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, optionalFields);

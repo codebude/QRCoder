@@ -44,7 +44,7 @@ public static partial class PayloadGenerator
             var moneroUri = $"monero://{address}{(!string.IsNullOrEmpty(txPaymentId) || !string.IsNullOrEmpty(recipientName) || !string.IsNullOrEmpty(txDescription) || txAmount != null ? "?" : string.Empty)}";
             moneroUri += (!string.IsNullOrEmpty(txPaymentId) ? $"tx_payment_id={Uri.EscapeDataString(txPaymentId)}&" : string.Empty);
             moneroUri += (!string.IsNullOrEmpty(recipientName) ? $"recipient_name={Uri.EscapeDataString(recipientName)}&" : string.Empty);
-            moneroUri += (txAmount != null ? $"tx_amount={txAmount.ToString()!.Replace(",",".")}&" : string.Empty);
+            moneroUri += (txAmount != null ? $"tx_amount={txAmount.ToString()!.Replace(",", ".")}&" : string.Empty);
             moneroUri += (!string.IsNullOrEmpty(txDescription) ? $"tx_description={Uri.EscapeDataString(txDescription)}" : string.Empty);
             return moneroUri.TrimEnd('&');
         }

@@ -18,7 +18,7 @@ public static partial class PayloadGenerator
         /// <param name="authenticationMode">Authentication mode (WEP, WPA, WPA2)</param>
         /// <param name="isHiddenSSID">Set flag if the WiFi network hides its SSID</param>
         /// <param name="escapeHexStrings">Set flag if ssid/password is delivered as HEX string. Note: May not be supported on iOS devices.</param>
-        public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false,  bool escapeHexStrings = true)
+        public WiFi(string ssid, string password, Authentication authenticationMode, bool isHiddenSSID = false, bool escapeHexStrings = true)
         {
             this.ssid = EscapeInput(ssid);
             this.ssid = escapeHexStrings && isHexStyle(this.ssid) ? "\"" + this.ssid + "\"" : this.ssid;

@@ -430,7 +430,7 @@ public partial class QRCodeGenerator : IDisposable
                 default: // M: 00
                     break;
             }
-            
+
             // Insert the 3-bit mask version directly after the error correction level bits.
             DecToBin(maskVersion, 3, fStrEcc, 2);
         }
@@ -622,13 +622,16 @@ public partial class QRCodeGenerator : IDisposable
     /// </summary>
     private static EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
     {
-        if (forceUtf8) return EncodingMode.Byte;
+        if (forceUtf8)
+            return EncodingMode.Byte;
         EncodingMode result = EncodingMode.Numeric; // assume numeric
         foreach (char c in plainText)
         {
-            if (IsInRange(c, '0', '9')) continue;   // numeric - char.IsDigit() for Latin1
+            if (IsInRange(c, '0', '9'))
+                continue;   // numeric - char.IsDigit() for Latin1
             result = EncodingMode.Alphanumeric;     // not numeric, assume alphanumeric
-            if (IsInRange(c, 'A', 'Z') || alphanumEncTable.Contains(c)) continue; // alphanumeric
+            if (IsInRange(c, 'A', 'Z') || alphanumEncTable.Contains(c))
+                continue; // alphanumeric
             return EncodingMode.Byte;               // not numeric or alphanumeric, assume byte
         }
         return result;                              // either numeric or alphanumeric

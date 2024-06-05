@@ -76,7 +76,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
 
         for (var y = 0; y < matrixSize; y++)
         {
-            var modules = moduleMatrix[y+quietZoneOffset];
+            var modules = moduleMatrix[y + quietZoneOffset];
             var scanlineOffset = y * pixelsPerModule * bytesPerScanline;
 
             // Draw a scanline with the modules from the QR code.
