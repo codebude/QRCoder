@@ -42,8 +42,6 @@ public partial class QRCodeGenerator
         /// fall back to reflection, which causes heap allocations internally during the calls to <see cref="FieldInfo.GetValue(object)"/>.
         /// </remarks>
         public bool Equals(Point other)
-        {
-            return X == other.X && Y == other.Y;
-        }
+            => X == other.X && Y == other.Y;
     }
 }

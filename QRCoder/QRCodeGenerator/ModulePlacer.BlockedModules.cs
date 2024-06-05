@@ -43,9 +43,7 @@ public partial class QRCodeGenerator
             /// <param name="x">The x-coordinate of the module.</param>
             /// <param name="y">The y-coordinate of the module.</param>
             public void Add(int x, int y)
-            {
-                _blockedModules[y][x] = true;
-            }
+                => _blockedModules[y][x] = true;
 
             /// <summary>
             /// Adds a blocked module defined by the specified rectangle.
@@ -69,9 +67,7 @@ public partial class QRCodeGenerator
             /// <param name="y">The y-coordinate to check.</param>
             /// <returns><c>true</c> if the coordinates are blocked; otherwise, <c>false</c>.</returns>
             public bool IsBlocked(int x, int y)
-            {
-                return _blockedModules[y][x];
-            }
+                => _blockedModules[y][x];
 
             /// <summary>
             /// Checks if the specified rectangle is blocked.
@@ -92,9 +88,7 @@ public partial class QRCodeGenerator
             }
 
             public void Dispose()
-            {
-                Interlocked.CompareExchange(ref _staticBlockedModules, _blockedModules, null);
-            }
+                => Interlocked.CompareExchange(ref _staticBlockedModules, _blockedModules, null);
         }
     }
 }

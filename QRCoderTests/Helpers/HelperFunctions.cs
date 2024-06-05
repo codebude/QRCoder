@@ -44,18 +44,15 @@ public static class HelperFunctions
 #endif
 
     public static string GetAssemblyPath()
-    {
-        return
 #if NET5_0_OR_GREATER
-            AppDomain.CurrentDomain.BaseDirectory;
+        => AppDomain.CurrentDomain.BaseDirectory;
 #elif NETFRAMEWORK
-            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
+        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
 #elif NETCOREAPP1_1
-            Path.GetDirectoryName(typeof(HelperFunctions).GetTypeInfo().Assembly.Location).Replace("file:\\", "");
+        => Path.GetDirectoryName(typeof(HelperFunctions).GetTypeInfo().Assembly.Location).Replace("file:\\", "");
 #else
-            Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
+        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
 #endif
-    }
 
 
 #if !NETCOREAPP1_1

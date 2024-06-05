@@ -207,9 +207,7 @@ public static partial class PayloadGenerator
         /// <param name="errorText">An optional error text. If null, a standard error text is generated</param>
         /// <returns>Input value (in case it is valid)</returns>
         private static string ValidateInput(string input, string fieldname, string pattern, string? errorText = null)
-        {
-            return ValidateInput(input, fieldname, new string[] { pattern }, errorText);
-        }
+            => ValidateInput(input, fieldname, new string[] { pattern }, errorText);
 
         /// <summary>
         /// Validates a string against one or more given Regex patterns. Returns input if it matches all regex expressions (=valid) or throws Exception in case there's a mismatch

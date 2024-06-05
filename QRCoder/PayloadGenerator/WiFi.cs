@@ -32,10 +32,7 @@ public static partial class PayloadGenerator
         /// Returns the WiFi payload as a string.
         /// </summary>
         public override string ToString()
-        {
-            return
-                $"WIFI:T:{_authenticationMode};S:{_ssid};P:{_password};{(_isHiddenSsid ? "H:true" : string.Empty)};";
-        }
+            => $"WIFI:T:{_authenticationMode};S:{_ssid};P:{_password};{(_isHiddenSsid ? "H:true" : string.Empty)};";
 
         /// <summary>
         /// Specifies the authentication mode for the WiFi network.

@@ -23,8 +23,6 @@ public static partial class PayloadGenerator
         /// </summary>
         /// <returns>The phone call payload as a string.</returns>
         public override string ToString()
-        {
-            return $"tel:{_number}";
-        }
+            => $"tel:{_number}";
     }
 }

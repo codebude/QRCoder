@@ -25,8 +25,6 @@ public static partial class PayloadGenerator
         /// </summary>
         /// <returns>A string representation of the bookmark payload in the MEBKM format.</returns>
         public override string ToString()
-        {
-            return $"MEBKM:TITLE:{_title};URL:{_url};;";
-        }
+            => $"MEBKM:TITLE:{_title};URL:{_url};;";
     }
 }

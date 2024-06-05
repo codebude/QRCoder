@@ -184,9 +184,7 @@ public class QRCodeData : IDisposable
     /// <param name="filePath">The path to the file where the raw data will be saved.</param>
     /// <param name="compressMode">The compression mode used for the raw data.</param>
     public void SaveRawData(string filePath, Compression compressMode)
-    {
-        File.WriteAllBytes(filePath, GetRawData(compressMode));
-    }
+        => File.WriteAllBytes(filePath, GetRawData(compressMode));
 
     /// <summary>
     /// Gets the version of the QR code.
@@ -199,9 +197,7 @@ public class QRCodeData : IDisposable
     /// <param name="version">The version of the QR code.</param>
     /// <returns>Returns the number of modules per side.</returns>
     private static int ModulesPerSideFromVersion(int version)
-    {
-        return 21 + (version - 1) * 4;
-    }
+        => 21 + (version - 1) * 4;
 
     /// <summary>
     /// Releases all resources used by the <see cref="QRCodeData"/>.

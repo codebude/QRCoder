@@ -20,9 +20,7 @@ public partial class Form1 : Form
     }
 
     private void buttonGenerate_Click(object sender, EventArgs e)
-    {
-        RenderQrCode();
-    }
+        => RenderQrCode();
 
     private void RenderQrCode()
     {

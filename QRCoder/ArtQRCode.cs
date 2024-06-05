@@ -35,9 +35,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <param name="pixelsPerModule">Amount of px each dark/light module of the QR code shall take place in the final QR code image</param>
     /// <returns>QRCode graphic as bitmap</returns>
     public Bitmap GetGraphic(int pixelsPerModule)
-    {
-        return GetGraphic(pixelsPerModule, Color.Black, Color.White, Color.Transparent);
-    }
+        => GetGraphic(pixelsPerModule, Color.Black, Color.White, Color.Transparent);
 
     /// <summary>
     /// Renders an art-style QR code with dots as modules and a background image (With default settings: DarkColor=Black, LightColor=White, Background=Transparent, QuietZone=true)
@@ -45,9 +43,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <param name="backgroundImage">A bitmap object that will be used as background picture</param>
     /// <returns>QRCode graphic as bitmap</returns>
     public Bitmap GetGraphic(Bitmap? backgroundImage = null)
-    {
-        return GetGraphic(10, Color.Black, Color.White, Color.Transparent, backgroundImage: backgroundImage);
-    }
+        => GetGraphic(10, Color.Black, Color.White, Color.Transparent, backgroundImage: backgroundImage);
 
     /// <summary>
     /// Renders an art-style QR code with dots as modules and various user settings

@@ -40,9 +40,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
     /// <returns>Returns the QR code graphic as a PDF byte array.</returns>
     public byte[] GetGraphic(int pixelsPerModule)
-    {
-        return GetGraphic(pixelsPerModule, "#000000", "#ffffff");
-    }
+        => GetGraphic(pixelsPerModule, "#000000", "#ffffff");
 
     /// <summary>
     /// Converts a hexadecimal color string to a byte array.

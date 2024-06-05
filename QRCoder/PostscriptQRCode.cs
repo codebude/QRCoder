@@ -73,9 +73,7 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
     /// <param name="epsFormat">Indicates if the output should be in EPS format.</param>
     /// <returns>Returns the QR code graphic as a PostScript string.</returns>
     public string GetGraphic(Size viewBox, bool drawQuietZones = true, bool epsFormat = false)
-    {
-        return GetGraphic(viewBox, Color.Black, Color.White, drawQuietZones, epsFormat);
-    }
+        => GetGraphic(viewBox, Color.Black, Color.White, drawQuietZones, epsFormat);
 
     /// <summary>
     /// Creates a colored PostScript code representation of the QR code.
@@ -87,9 +85,7 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
     /// <param name="epsFormat">Indicates if the output should be in EPS format.</param>
     /// <returns>Returns the QR code graphic as a PostScript string.</returns>
     public string GetGraphic(Size viewBox, string darkColorHex, string lightColorHex, bool drawQuietZones = true, bool epsFormat = false)
-    {
-        return GetGraphic(viewBox, ColorTranslator.FromHtml(darkColorHex), ColorTranslator.FromHtml(lightColorHex), drawQuietZones, epsFormat);
-    }
+        => GetGraphic(viewBox, ColorTranslator.FromHtml(darkColorHex), ColorTranslator.FromHtml(lightColorHex), drawQuietZones, epsFormat);
 
     /// <summary>
     /// Creates a colored PostScript code representation of the QR code.
@@ -134,10 +130,7 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
     /// </summary>
     /// <param name="input">The input double value.</param>
     /// <returns>Returns the cleaned string representation of the double value.</returns>
-    private string CleanSvgVal(double input)
-    {
-        return input.ToString(System.Globalization.CultureInfo.InvariantCulture);
-    }
+    private string CleanSvgVal(double input) => input.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     private const string PS_HEADER = @"%!PS-Adobe-3.0 {3}
 %%Creator: QRCoder.NET

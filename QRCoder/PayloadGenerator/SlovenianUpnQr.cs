@@ -49,9 +49,7 @@ public static partial class PayloadGenerator
         /// <param name="maxLength">The maximum length of the string.</param>
         /// <returns>The limited string.</returns>
         private string LimitLength(string value, int maxLength)
-        {
-            return (value.Length <= maxLength) ? value : value.Substring(0, maxLength);
-        }
+            => (value.Length <= maxLength) ? value : value.Substring(0, maxLength);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SlovenianUpnQr"/> class.

@@ -295,9 +295,7 @@ public static partial class PayloadGenerator
             /// </summary>
             /// <returns>A string representation of the IBAN.</returns>
             public override string ToString()
-            {
-                return _iban.Replace("-", "").Replace("\n", "").Replace(" ", "");
-            }
+                => _iban.Replace("-", "").Replace("\n", "").Replace(" ", "");
 
             /// <summary>
             /// Represents the type of IBAN.

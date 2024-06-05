@@ -32,9 +32,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
     /// <returns>Returns the QR code graphic as a bitmap.</returns>
     public Bitmap GetGraphic(int pixelsPerModule)
-    {
-        return GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
-    }
+        => GetGraphic(pixelsPerModule, Color.Black, Color.White, true);
 
     /// <summary>
     /// Creates a colored bitmap image of the QR code.
@@ -45,9 +43,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
     /// <returns>Returns the QR code graphic as a bitmap.</returns>
     public Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true)
-    {
-        return GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones);
-    }
+        => GetGraphic(pixelsPerModule, ColorTranslator.FromHtml(darkColorHtmlHex), ColorTranslator.FromHtml(lightColorHtmlHex), drawQuietZones);
 
     /// <summary>
     /// Creates a colored bitmap image of the QR code.

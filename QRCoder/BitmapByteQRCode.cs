@@ -30,9 +30,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
     /// <returns>Returns the QR code graphic as a bitmap byte array.</returns>
     public byte[] GetGraphic(int pixelsPerModule)
-    {
-        return GetGraphic(pixelsPerModule, new byte[] { 0x00, 0x00, 0x00 }, new byte[] { 0xFF, 0xFF, 0xFF });
-    }
+        => GetGraphic(pixelsPerModule, new byte[] { 0x00, 0x00, 0x00 }, new byte[] { 0xFF, 0xFF, 0xFF });
 
     /// <summary>
     /// Returns the QR code graphic as a bitmap byte array.
@@ -42,9 +40,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
     /// <param name="lightColorHtmlHex">The color of the light modules in HTML hex format.</param>
     /// <returns>Returns the QR code graphic as a bitmap byte array.</returns>
     public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex)
-    {
-        return GetGraphic(pixelsPerModule, HexColorToByteArray(darkColorHtmlHex), HexColorToByteArray(lightColorHtmlHex));
-    }
+        => GetGraphic(pixelsPerModule, HexColorToByteArray(darkColorHtmlHex), HexColorToByteArray(lightColorHtmlHex));
 
     /// <summary>
     /// Returns the QR code graphic as a bitmap byte array.

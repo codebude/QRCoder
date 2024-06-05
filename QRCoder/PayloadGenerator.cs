@@ -68,9 +68,7 @@ public static partial class PayloadGenerator
     /// <param name="bic">The BIC to validate.</param>
     /// <returns>True if the BIC is valid; otherwise, false.</returns>
     private static bool IsValidBic(string bic)
-    {
-        return Regex.IsMatch(bic.Replace(" ", ""), @"^([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)$");
-    }
+        => Regex.IsMatch(bic.Replace(" ", ""), @"^([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)$");
 
 
     /// <summary>
@@ -137,7 +135,5 @@ public static partial class PayloadGenerator
     /// <param name="inp">The input string.</param>
     /// <returns>True if the string is in hexadecimal format; otherwise, false.</returns>
     private static bool isHexStyle(string inp)
-    {
-        return (System.Text.RegularExpressions.Regex.IsMatch(inp, @"\A\b[0-9a-fA-F]+\b\Z") || System.Text.RegularExpressions.Regex.IsMatch(inp, @"\A\b(0[xX])?[0-9a-fA-F]+\b\Z"));
-    }
+        => System.Text.RegularExpressions.Regex.IsMatch(inp, @"\A\b[0-9a-fA-F]+\b\Z") || System.Text.RegularExpressions.Regex.IsMatch(inp, @"\A\b(0[xX])?[0-9a-fA-F]+\b\Z");
 }
