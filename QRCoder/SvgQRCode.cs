@@ -291,11 +291,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             _iconSizePercent = iconSizePercent;
             using (var ms = new System.IO.MemoryStream())
             {
-                using (var bitmap = new Bitmap(iconRasterized))
-                {
-                    bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                    _logoData = Convert.ToBase64String(ms.GetBuffer(), 0, (int)ms.Length, Base64FormattingOptions.None); 
-                }
+                using var bitmap = new Bitmap(iconRasterized);
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                _logoData = Convert.ToBase64String(ms.GetBuffer(), 0, (int)ms.Length, Base64FormattingOptions.None);
             }
             _mediaType = MediaType.PNG;
             _fillLogoBackground = fillLogoBackground;
@@ -441,10 +439,10 @@ public static class SvgQRCodeHelper
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public static string GetQRCode(string plainText, int pixelsPerModule, string darkColorHex, string lightColorHex, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo? logo = null)
     {
-        using (var qrGenerator = new QRCodeGenerator())
-        using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
-        using (var qrCode = new SvgQRCode(qrCodeData))
-            return qrCode.GetGraphic(pixelsPerModule, darkColorHex, lightColorHex, drawQuietZones, sizingMode, logo);
+        using var qrGenerator = new QRCodeGenerator();
+        using var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion);
+        using var qrCode = new SvgQRCode(qrCodeData);
+        return qrCode.GetGraphic(pixelsPerModule, darkColorHex, lightColorHex, drawQuietZones, sizingMode, logo);
     }
 }
 

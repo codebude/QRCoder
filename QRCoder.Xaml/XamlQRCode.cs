@@ -85,9 +85,9 @@ public static class XamlQRCodeHelper
 {
     public static DrawingImage GetQRCode(string plainText, int pixelsPerModule, string darkColorHex, string lightColorHex, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, bool drawQuietZones = true)
     {
-        using (var qrGenerator = new QRCodeGenerator())
-        using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
-        using (var qrCode = new XamlQRCode(qrCodeData))
-            return qrCode.GetGraphic(pixelsPerModule, darkColorHex, lightColorHex, drawQuietZones);
+        using var qrGenerator = new QRCodeGenerator();
+        using var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion);
+        using var qrCode = new XamlQRCode(qrCodeData);
+        return qrCode.GetGraphic(pixelsPerModule, darkColorHex, lightColorHex, drawQuietZones);
     }
 }

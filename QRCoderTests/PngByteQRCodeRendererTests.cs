@@ -34,12 +34,10 @@ public class PngByteQRCodeRendererTests
         var result = HelperFunctions.ByteArrayToHash(pngCodeGfx);
         result.ShouldBe("1fc35c3bea6fad47427143ce716c83b8");
 #else
-        using (var mStream = new MemoryStream(pngCodeGfx))
-        {
-            var bmp = (Bitmap)Image.FromStream(mStream);
-            var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("0cfc8a8d552ade875190d8e9f5c1e1bf");
-        }
+        using var mStream = new MemoryStream(pngCodeGfx);
+        var bmp = (Bitmap)Image.FromStream(mStream);
+        var result = HelperFunctions.BitmapToHash(bmp);
+        result.ShouldBe("0cfc8a8d552ade875190d8e9f5c1e1bf");
 #endif        
     }
 
@@ -56,12 +54,10 @@ public class PngByteQRCodeRendererTests
         var result = HelperFunctions.ByteArrayToHash(pngCodeGfx);
         result.ShouldBe("0144b1d40aa6eeb6cb07df42822ea0a7");
 #else
-        using (var mStream = new MemoryStream(pngCodeGfx))
-        {
-            var bmp = (Bitmap)Image.FromStream(mStream);
-            var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("88d394b2405499869feb69b81593e703");
-        }
+        using var mStream = new MemoryStream(pngCodeGfx);
+        var bmp = (Bitmap)Image.FromStream(mStream);
+        var result = HelperFunctions.BitmapToHash(bmp);
+        result.ShouldBe("88d394b2405499869feb69b81593e703");
 #endif   
     }
 
@@ -79,12 +75,10 @@ public class PngByteQRCodeRendererTests
         var result = HelperFunctions.ByteArrayToHash(pngCodeGfx);
         result.ShouldBe("627ce564fb5e17be42e4a85e907a17b5");
 #else
-        using (var mStream = new MemoryStream(pngCodeGfx))
-        {
-            var bmp = (Bitmap)Image.FromStream(mStream);
-            var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("1d81b3d52fc64543186558eee7d9494b");
-        }
+        using var mStream = new MemoryStream(pngCodeGfx);
+        var bmp = (Bitmap)Image.FromStream(mStream);
+        var result = HelperFunctions.BitmapToHash(bmp);
+        result.ShouldBe("1d81b3d52fc64543186558eee7d9494b");
 #endif   
     }
 
@@ -102,13 +96,11 @@ public class PngByteQRCodeRendererTests
         result.ShouldBe("07f760b3eb54901840b094d31e299713");
 #else
         File.WriteAllBytes(@"C:\Temp\pngbyte_35.png", pngCodeGfx);
-        using (var mStream = new MemoryStream(pngCodeGfx))
-        {
-            var bmp = (Bitmap)Image.FromStream(mStream);
-            bmp.MakeTransparent(Color.Transparent);
-            var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("825a6469f89bf9e3d7318a5390d5ba7f");
-        }
+        using var mStream = new MemoryStream(pngCodeGfx);
+        var bmp = (Bitmap)Image.FromStream(mStream);
+        bmp.MakeTransparent(Color.Transparent);
+        var result = HelperFunctions.BitmapToHash(bmp);
+        result.ShouldBe("825a6469f89bf9e3d7318a5390d5ba7f");
 #endif
     }
 
@@ -132,12 +124,10 @@ public class PngByteQRCodeRendererTests
         var result = HelperFunctions.ByteArrayToHash(pngCodeGfx);
         result.ShouldBe("c562388f4f3cf13a299b469a3e3b852f");
 #else
-        using (var mStream = new MemoryStream(pngCodeGfx))
-        {
-            var bmp = (Bitmap)Image.FromStream(mStream);
-            var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("a2ea116068eb516a7c210b2541e99348");
-        }
+        using var mStream = new MemoryStream(pngCodeGfx);
+        var bmp = (Bitmap)Image.FromStream(mStream);
+        var result = HelperFunctions.BitmapToHash(bmp);
+        result.ShouldBe("a2ea116068eb516a7c210b2541e99348");
 #endif  
     }
 
@@ -152,12 +142,10 @@ public class PngByteQRCodeRendererTests
         var result = HelperFunctions.ByteArrayToHash(pngCodeGfx);
         result.ShouldBe("627ce564fb5e17be42e4a85e907a17b5");
 #else
-        using (var mStream = new MemoryStream(pngCodeGfx))
-        {
-            var bmp = (Bitmap)Image.FromStream(mStream);
-            var result = HelperFunctions.BitmapToHash(bmp);
-            result.ShouldBe("1d81b3d52fc64543186558eee7d9494b");
-        }
+        using var mStream = new MemoryStream(pngCodeGfx);
+        var bmp = (Bitmap)Image.FromStream(mStream);
+        var result = HelperFunctions.BitmapToHash(bmp);
+        result.ShouldBe("1d81b3d52fc64543186558eee7d9494b");
 #endif  
     }
 

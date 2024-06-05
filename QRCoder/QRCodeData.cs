@@ -64,31 +64,23 @@ public class QRCodeData : IDisposable
         //Decompress
         if (compressMode == Compression.Deflate)
         {
-            using (var input = new MemoryStream(bytes.ToArray()))
+            using var input = new MemoryStream(bytes.ToArray());
+            using var output = new MemoryStream();
+            using (var dstream = new DeflateStream(input, CompressionMode.Decompress))
             {
-                using (var output = new MemoryStream())
-                {
-                    using (var dstream = new DeflateStream(input, CompressionMode.Decompress))
-                    {
-                        dstream.CopyTo(output);
-                    }
-                    bytes = new List<byte>(output.ToArray());
-                }
+                dstream.CopyTo(output);
             }
+            bytes = new List<byte>(output.ToArray());
         }
         else if (compressMode == Compression.GZip)
         {
-            using (var input = new MemoryStream(bytes.ToArray()))
+            using var input = new MemoryStream(bytes.ToArray());
+            using var output = new MemoryStream();
+            using (var dstream = new GZipStream(input, CompressionMode.Decompress))
             {
-                using (var output = new MemoryStream())
-                {
-                    using (var dstream = new GZipStream(input, CompressionMode.Decompress))
-                    {
-                        dstream.CopyTo(output);
-                    }
-                    bytes = new List<byte>(output.ToArray());
-                }
+                dstream.CopyTo(output);
             }
+            bytes = new List<byte>(output.ToArray());
         }
 
         if (bytes[0] != 0x51 || bytes[1] != 0x52 || bytes[2] != 0x52)
@@ -167,25 +159,21 @@ public class QRCodeData : IDisposable
         //Compress stream (optional)
         if (compressMode == Compression.Deflate)
         {
-            using (var output = new MemoryStream())
+            using var output = new MemoryStream();
+            using (var dstream = new DeflateStream(output, CompressionMode.Compress))
             {
-                using (var dstream = new DeflateStream(output, CompressionMode.Compress))
-                {
-                    dstream.Write(rawData, 0, rawData.Length);
-                }
-                rawData = output.ToArray();
+                dstream.Write(rawData, 0, rawData.Length);
             }
+            rawData = output.ToArray();
         }
         else if (compressMode == Compression.GZip)
         {
-            using (var output = new MemoryStream())
+            using var output = new MemoryStream();
+            using (GZipStream gzipStream = new GZipStream(output, CompressionMode.Compress, true))
             {
-                using (GZipStream gzipStream = new GZipStream(output, CompressionMode.Compress, true))
-                {
-                    gzipStream.Write(rawData, 0, rawData.Length);
-                }
-                rawData = output.ToArray();
+                gzipStream.Write(rawData, 0, rawData.Length);
             }
+            rawData = output.ToArray();
         }
         return rawData;
     }

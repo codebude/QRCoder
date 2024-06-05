@@ -33,17 +33,13 @@ public static class HelperFunctions
 
     public static Bitmap BitmapSourceToBitmap(DrawingImage xamlImg)
     {
-        using (MemoryStream ms = new MemoryStream())
-        {
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(ToBitmapSource(xamlImg)));
-            encoder.Save(ms);
+        using MemoryStream ms = new MemoryStream();
+        PngBitmapEncoder encoder = new PngBitmapEncoder();
+        encoder.Frames.Add(BitmapFrame.Create(ToBitmapSource(xamlImg)));
+        encoder.Save(ms);
 
-            using (Bitmap bmp = new Bitmap(ms))
-            {
-                return new Bitmap(bmp);
-            }
-        }
+        using Bitmap bmp = new Bitmap(ms);
+        return new Bitmap(bmp);
     }
 #endif
 

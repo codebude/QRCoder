@@ -139,10 +139,8 @@ public class QRCode : AbstractQRCode, IDisposable
                 //Only render icon/logo background, if iconBorderWith is set > 0
                 if (iconBorderWidth > 0)
                 {
-                    using (GraphicsPath iconPath = CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2))
-                    {
-                        gfx.FillPath(iconBgBrush, iconPath);
-                    }
+                    using GraphicsPath iconPath = CreateRoundedRectanglePath(centerDest, iconBorderWidth * 2);
+                    gfx.FillPath(iconBgBrush, iconPath);
                 }
                 gfx.DrawImage(icon!, iconDestRect, new RectangleF(0, 0, icon!.Width, icon.Height), GraphicsUnit.Pixel);
             }
@@ -202,10 +200,10 @@ public static class QRCodeHelper
     /// <returns>Returns the QR code graphic as a bitmap.</returns>
     public static Bitmap GetQRCode(string plainText, int pixelsPerModule, Color darkColor, Color lightColor, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1, Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true)
     {
-        using (var qrGenerator = new QRCodeGenerator())
-        using (var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion))
-        using (var qrCode = new QRCode(qrCodeData))
-            return qrCode.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones);
+        using var qrGenerator = new QRCodeGenerator();
+        using var qrCodeData = qrGenerator.CreateQrCode(plainText, eccLevel, forceUtf8, utf8BOM, eciMode, requestedVersion);
+        using var qrCode = new QRCode(qrCodeData);
+        return qrCode.GetGraphic(pixelsPerModule, darkColor, lightColor, icon, iconSizePercent, iconBorderWidth, drawQuietZones);
     }
 }
 

@@ -136,68 +136,55 @@ class MainClass
 
     private static void GenerateQRCode(string payloadString, QRCodeGenerator.ECCLevel eccLevel, string outputFileName, SupportedImageFormat imgFormat, int pixelsPerModule, string foreground, string background)
     {
-        using (var generator = new QRCodeGenerator())
+        using var generator = new QRCodeGenerator();
+        using var data = generator.CreateQrCode(payloadString, eccLevel);
+        switch (imgFormat)
         {
-            using (var data = generator.CreateQrCode(payloadString, eccLevel))
-            {
-                switch (imgFormat)
+            case SupportedImageFormat.Png:
+            case SupportedImageFormat.Jpg:
+            case SupportedImageFormat.Gif:
+            case SupportedImageFormat.Bmp:
+            case SupportedImageFormat.Tiff:
+                using (var code = new QRCode(data))
                 {
-                    case SupportedImageFormat.Png:
-                    case SupportedImageFormat.Jpg:
-                    case SupportedImageFormat.Gif:
-                    case SupportedImageFormat.Bmp:
-                    case SupportedImageFormat.Tiff:
-                        using (var code = new QRCode(data))
-                        {
-                            using (var bitmap = code.GetGraphic(pixelsPerModule, foreground, background, true))
-                            {
-                                var actualFormat = new OptionSetter().GetImageFormat(imgFormat.ToString());
-                                bitmap.Save(outputFileName, actualFormat);
-                            }
-                        }
-                        break;
-                    case SupportedImageFormat.Svg:
-                        using (var code = new SvgQRCode(data))
-                        {
-                            var test = code.GetGraphic(pixelsPerModule, foreground, background, true);
-                            using (var f = File.CreateText(outputFileName))
-                            {
-                                f.Write(test);
-                                f.Flush();
-                            }
-                        }
-                        break;
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
-                    case SupportedImageFormat.Xaml:
-                        using (var code = new QRCoder.Xaml.XamlQRCode(data))
-                        {
-                            var test = XamlWriter.Save(code.GetGraphic(pixelsPerModule, foreground, background, true));
-                            using (var f = File.CreateText(outputFileName))
-                            {
-                                f.Write(test);
-                                f.Flush();
-                            }
-                        }
-                        break;
-#endif
-                    case SupportedImageFormat.Ps:
-                    case SupportedImageFormat.Eps:
-                        using (var code = new PostscriptQRCode(data))
-                        {
-                            var test = code.GetGraphic(pixelsPerModule, foreground, background, true,
-                                imgFormat == SupportedImageFormat.Eps);
-                            using (var f = File.CreateText(outputFileName))
-                            {
-                                f.Write(test);
-                                f.Flush();
-                            }
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(imgFormat), imgFormat, null);
+                    using var bitmap = code.GetGraphic(pixelsPerModule, foreground, background, true);
+                    var actualFormat = new OptionSetter().GetImageFormat(imgFormat.ToString());
+                    bitmap.Save(outputFileName, actualFormat);
                 }
-
-            }
+                break;
+            case SupportedImageFormat.Svg:
+                using (var code = new SvgQRCode(data))
+                {
+                    var test = code.GetGraphic(pixelsPerModule, foreground, background, true);
+                    using var f = File.CreateText(outputFileName);
+                    f.Write(test);
+                    f.Flush();
+                }
+                break;
+#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+            case SupportedImageFormat.Xaml:
+                using (var code = new QRCoder.Xaml.XamlQRCode(data))
+                {
+                    var test = XamlWriter.Save(code.GetGraphic(pixelsPerModule, foreground, background, true));
+                    using var f = File.CreateText(outputFileName);
+                    f.Write(test);
+                    f.Flush();
+                }
+                break;
+#endif
+            case SupportedImageFormat.Ps:
+            case SupportedImageFormat.Eps:
+                using (var code = new PostscriptQRCode(data))
+                {
+                    var test = code.GetGraphic(pixelsPerModule, foreground, background, true,
+                        imgFormat == SupportedImageFormat.Eps);
+                    using var f = File.CreateText(outputFileName);
+                    f.Write(test);
+                    f.Flush();
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(imgFormat), imgFormat, null);
         }
     }
 
@@ -218,19 +205,17 @@ class MainClass
         var buffer = new byte[256];
         var bytesRead = 0;
 
-        using (var memoryStream = new MemoryStream())
+        using var memoryStream = new MemoryStream();
+        while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
         {
-            while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                memoryStream.Write(buffer, 0, bytesRead);
-            }
-
-            var text = Encoding.UTF8.GetString(memoryStream.ToArray());
-
-            Console.WriteLine($"text retrieved from input stream: {text}");
-
-            return text;
+            memoryStream.Write(buffer, 0, bytesRead);
         }
+
+        var text = Encoding.UTF8.GetString(memoryStream.ToArray());
+
+        Console.WriteLine($"text retrieved from input stream: {text}");
+
+        return text;
     }
 
     private static void ShowHelp(OptionSet optionSet)
