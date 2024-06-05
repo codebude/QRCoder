@@ -30,17 +30,17 @@ public static partial class PayloadGenerator
         /// <summary>
         /// Gets the version of the QR code, which is 15 for Slovenian UPN QR.
         /// </summary>
-        public override int Version { get { return 15; } }
+        public override int Version => 15;
 
         /// <summary>
         /// Gets the error correction level of the QR code, which is M for Slovenian UPN QR.
         /// </summary>
-        public override QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
+        public override QRCodeGenerator.ECCLevel EccLevel => QRCodeGenerator.ECCLevel.M;
 
         /// <summary>
         /// Gets the ECI mode of the QR code, which is Iso8859_2 for Slovenian UPN QR.
         /// </summary>
-        public override QRCodeGenerator.EciMode EciMode { get { return QRCodeGenerator.EciMode.Iso8859_2; } }
+        public override QRCodeGenerator.EciMode EciMode => QRCodeGenerator.EciMode.Iso8859_2;
 
         /// <summary>
         /// Limits the length of a string to a specified maximum length.

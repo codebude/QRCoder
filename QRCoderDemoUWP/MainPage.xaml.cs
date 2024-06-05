@@ -71,13 +71,7 @@ namespace QRCoderDemoUWP
             }
         }
 
-        public List<string> EccModes
-        {
-            get
-            {
-                return Enum.GetValues(typeof(QRCodeGenerator.ECCLevel)).Cast<Enum>().Select(x => x.ToString()).ToList();
-            }
-        }
+        public List<string> EccModes => Enum.GetValues(typeof(QRCodeGenerator.ECCLevel)).Cast<Enum>().Select(x => x.ToString()).ToList();
     }
 }
 

@@ -22,7 +22,7 @@ public static partial class PayloadGenerator
         /// <summary>
         /// Gets the ECC level required for Girocode, which is always set to M.
         /// </summary>
-        public override QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
+        public override QRCodeGenerator.ECCLevel EccLevel => QRCodeGenerator.ECCLevel.M;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Girocode"/> class, which contains a payload for a Girocode (QR-Code with credit transfer information).

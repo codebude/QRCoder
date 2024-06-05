@@ -30,9 +30,9 @@ public static partial class PayloadGenerator
         private readonly AdditionalInformation _additionalInformation;
 
         /// <inheritdoc/>
-        public override QRCodeGenerator.ECCLevel EccLevel { get { return QRCodeGenerator.ECCLevel.M; } }
+        public override QRCodeGenerator.ECCLevel EccLevel => QRCodeGenerator.ECCLevel.M;
         /// <inheritdoc/>
-        public override QRCodeGenerator.EciMode EciMode { get { return QRCodeGenerator.EciMode.Utf8; } }
+        public override QRCodeGenerator.EciMode EciMode => QRCodeGenerator.EciMode.Utf8;
 
         /// <summary>
         /// Generates the payload for a SwissQrCode v2.0. (Don't forget to use ECC-Level=M, EncodingMode=UTF-8 and to set the Swiss flag icon to the final QR code.)
@@ -103,26 +103,17 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Gets the unstructured message.
             /// </summary>
-            public string? UnstructureMessage
-            {
-                get { return !string.IsNullOrEmpty(_unstructuredMessage) ? _unstructuredMessage!.Replace("\n", "") : null; }
-            }
+            public string? UnstructureMessage => !string.IsNullOrEmpty(_unstructuredMessage) ? _unstructuredMessage!.Replace("\n", "") : null;
 
             /// <summary>
             /// Gets the bill information.
             /// </summary>
-            public string? BillInformation
-            {
-                get { return !string.IsNullOrEmpty(_billInformation) ? _billInformation!.Replace("\n", "") : null; }
-            }
+            public string? BillInformation => !string.IsNullOrEmpty(_billInformation) ? _billInformation!.Replace("\n", "") : null;
 
             /// <summary>
             /// Gets the trailer.
             /// </summary>
-            public string Trailer
-            {
-                get { return _trailer; }
-            }
+            public string Trailer => _trailer;
 
 
             /// <summary>
@@ -197,18 +188,12 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Gets the reference type.
             /// </summary>
-            public ReferenceType RefType
-            {
-                get { return _referenceType; }
-            }
+            public ReferenceType RefType => _referenceType;
 
             /// <summary>
             /// Gets the reference text.
             /// </summary>
-            public string? ReferenceText
-            {
-                get { return !string.IsNullOrEmpty(_reference) ? _reference!.Replace("\n", "") : null; }
-            }
+            public string? ReferenceText => !string.IsNullOrEmpty(_reference) ? _reference!.Replace("\n", "") : null;
 
             /// <summary>
             /// Reference type. When using a QR-IBAN you have to use either "QRR" or "SCOR".
@@ -305,10 +290,7 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Gets a value indicating whether this is a QR-IBAN.
             /// </summary>
-            public bool IsQrIban
-            {
-                get { return _ibanType == IbanType.QrIban; }
-            }
+            public bool IsQrIban => _ibanType == IbanType.QrIban;
 
             /// <summary>
             /// Converts the IBAN object to its string representation.
