@@ -45,7 +45,7 @@ namespace QRCoder
 
 #if !NETSTANDARD1_3
         /// <summary>
-        /// Creates a 2-color PNG of the QR code, using 1-bit indexed color. Accepts 3-byte RGB colors for normal images and 4-byte RGBA-colors for transparent images.
+        /// Creates a 2-color PNG of the QR code, using 1-bit indexed color. Colors may contain transparency.
         /// </summary>
         /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
         /// <param name="darkColor">The color of the dark modules.</param>
