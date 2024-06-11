@@ -788,6 +788,7 @@ namespace QRCoder
         public PngByteQRCode(QRCoder.QRCodeData data) { }
         public byte[] GetGraphic(int pixelsPerModule, bool drawQuietZones = true) { }
         public byte[] GetGraphic(int pixelsPerModule, byte[] darkColorRgba, byte[] lightColorRgba, bool drawQuietZones = true) { }
+        public byte[] GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true) { }
     }
     public static class PngByteQRCodeHelper
     {

@@ -43,6 +43,19 @@ namespace QRCoder
             }
         }
 
+#if !NETSTANDARD1_3
+        /// <summary>
+        /// Creates a 2-color PNG of the QR code, using 1-bit indexed color. Accepts 3-byte RGB colors for normal images and 4-byte RGBA-colors for transparent images.
+        /// </summary>
+        /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
+        /// <param name="darkColor">The color of the dark modules.</param>
+        /// <param name="lightColor">The color of the light modules.</param>
+        /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
+        /// <returns>Returns the QR code graphic as a PNG byte array.</returns>
+        public byte[] GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true)
+            => GetGraphic(pixelsPerModule, new byte[] { darkColor.R, darkColor.G, darkColor.B, darkColor.A }, new byte[] { lightColor.R, lightColor.G, lightColor.B, lightColor.A }, drawQuietZones);
+#endif
+
         /// <summary>
         /// Creates a 2-color PNG of the QR code, using 1-bit indexed color. Accepts 3-byte RGB colors for normal images and 4-byte RGBA-colors for transparent images.
         /// </summary>

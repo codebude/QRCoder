@@ -65,6 +65,30 @@ namespace QRCoderTests
 #endif   
         }
 
+#if !NETCOREAPP1_1
+        [Fact]
+        [Category("QRRenderer/PngByteQRCode")]
+        public void can_render_pngbyte_qrcode_drawing_color()
+        {
+            //Create QR code
+            var gen = new QRCodeGenerator();
+            var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
+            var pngCodeGfx = new PngByteQRCode(data).GetGraphic(5, Color.Red, Color.Blue);
+
+#if NETCOREAPP1_1
+            var result = HelperFunctions.ByteArrayToHash(pngCodeGfx);
+            result.ShouldBe("0144b1d40aa6eeb6cb07df42822ea0a7");
+#else
+            using (var mStream = new MemoryStream(pngCodeGfx))
+            {
+                var bmp = (Bitmap)Image.FromStream(mStream);
+                var result = HelperFunctions.BitmapToHash(bmp);
+                result.ShouldBe("88d394b2405499869feb69b81593e703");
+            }
+#endif   
+        }
+#endif
+
 
         [Fact]
         [Category("QRRenderer/PngByteQRCode")]
