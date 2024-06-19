@@ -63,7 +63,7 @@ namespace QRCoder
             List<byte> bmp = new List<byte>();
 
             //header
-            bmp.AddRange(new byte[] { 0x42, 0x4D, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1A, 0x00, 0x00, 0x00, 0x0C, 0x00, 0x00, 0x00 });
+            bmp.AddRange(new byte[] { 0x42, 0x4D, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00 });
 
             //width
             bmp.AddRange(IntTo4Byte(sideLength));
@@ -72,9 +72,10 @@ namespace QRCoder
 
             //header end
             bmp.AddRange(new byte[] { 0x01, 0x00, 0x18, 0x00 });
+            bmp.AddRange(new byte[24]);
 
             //draw qr code
-            for (var x = sideLength-1; x >= 0; x = x - pixelsPerModule)
+            for (var x = sideLength - 1; x >= 0; x = x - pixelsPerModule)
             {
                 for (int pm = 0; pm < pixelsPerModule; pm++)
                 {
@@ -97,9 +98,12 @@ namespace QRCoder
                 }
             }
 
-            //finalize with terminator
-            bmp.AddRange(new byte[] { 0x00, 0x00 });
-
+            // write filesize in header
+            var bmpFileSize = IntTo4Byte(bmp.Count);
+            for (int i = 0; i < bmpFileSize.Length; i++)
+            {
+                bmp[2 + i] = bmpFileSize[i];
+            }
             return bmp.ToArray();
         }
 
@@ -125,9 +129,11 @@ namespace QRCoder
         /// <returns>Returns the integer as a 4-byte array.</returns>
         private byte[] IntTo4Byte(int inp)
         {
-            byte[] bytes = new byte[2];
+            byte[] bytes = new byte[4];
             unchecked
             {
+                bytes[3] = (byte)(inp >> 24);
+                bytes[2] = (byte)(inp >> 16);
                 bytes[1] = (byte)(inp >> 8);
                 bytes[0] = (byte)(inp);
             }
