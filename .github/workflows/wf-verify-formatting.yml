@@ -1,0 +1,28 @@
+name: Format (Pull Request)
+on:
+  pull_request:
+    branches:
+      - master 
+  workflow_dispatch:
+
+jobs:
+  format:
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v4
+      name: Checkout Code
+
+    - name: Install additional .NET SDKs
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: | 
+          2.0.x
+          5.0.x
+          6.0.x
+          8.0.x
+
+    - name: Restore NuGet Packages
+      run: dotnet restore
+
+    - name: Format solution
+      run: dotnet format --verify-no-changes --severity error
