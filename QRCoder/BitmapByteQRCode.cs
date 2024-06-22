@@ -113,7 +113,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
                 bmp.AddRange(padding);
             }
         }
-        
+
         return bmp.ToArray();
     }
 

@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using BenchmarkDotNet.Attributes;
 using QRCoder;
 
