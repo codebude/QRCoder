@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net45;net5.0;net5.0-windows;net6.0-windows</TargetFrameworks>
     <!-- <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>-->
     <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
     <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
-	<DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
     <Externalconsole>true</Externalconsole>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -32,9 +32,9 @@
     <PackageReference Include="NDesk.Options.Core" Version="1.2.5" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0'">
-	 <ProjectReference Include="..\QRCoder.Xaml\QRCoder.Xaml.csproj" />
+    <ProjectReference Include="..\QRCoder.Xaml\QRCoder.Xaml.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />	
+    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
   </ItemGroup>
 </Project>
