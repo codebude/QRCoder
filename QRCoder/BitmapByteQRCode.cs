@@ -93,7 +93,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
                 }
             }
         }
-        
+
         // write filesize in header
         var bmpFileSize = IntTo4Byte(bmp.Count);
         for (int i = 0; i < bmpFileSize.Length; i++)
