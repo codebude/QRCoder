@@ -53,13 +53,35 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
     {
         var sideLength = QrCodeData.ModuleMatrix.Count * pixelsPerModule;
 
-        var moduleDark = darkColorRgb.Reverse();
-        var moduleLight = lightColorRgb.Reverse();
+        var moduleDarkSingle = darkColorRgb.Reverse().ToArray();
+        var moduleLightSingle = lightColorRgb.Reverse().ToArray();
 
-        var bmp = new List<byte>();
+        // Pre-calculate color/module bytes
+        var moduleDark = new byte[pixelsPerModule * 3];
+        var moduleLight = new byte[pixelsPerModule * 3];
+        for (int i = 0; i < pixelsPerModule; i++)
+        {
+            Array.Copy(moduleDarkSingle, 0, moduleDark, i * 3, 3);
+            Array.Copy(moduleLightSingle, 0, moduleLight, i * 3, 3);
+        }
 
-        //header
-        bmp.AddRange(new byte[] { 0x42, 0x4D, 0x4C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00 });
+        // Pre-calculate padding bytes
+        var padding = new byte[sideLength % 4];
+
+        // Calculate filesize (header + pixel data + padding)
+        var fileSize = 54 + (3 * (sideLength * sideLength)) + (sideLength * padding.Length);
+
+
+        var bmp = new List<byte>(fileSize);
+
+        //header part 1
+        bmp.AddRange(new byte[] { 0x42, 0x4D });
+
+        // filesize
+        bmp.AddRange(IntTo4Byte(fileSize));
+
+        // header part 2
+        bmp.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00 });
 
         //width
         bmp.AddRange(IntTo4Byte(sideLength));
@@ -70,36 +92,28 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
         bmp.AddRange(new byte[] { 0x01, 0x00, 0x18, 0x00 });
         bmp.AddRange(new byte[24]);
 
+        //Group of pixels placeholder
+        var group = new byte[(int)(sideLength / pixelsPerModule) * moduleDark.Length];
         //draw qr code
         for (var x = sideLength - 1; x >= 0; x -= pixelsPerModule)
         {
+            var i_x = (x + pixelsPerModule) / pixelsPerModule - 1;
+            // Pre-calculate array
+            for (var y = 0; y < sideLength; y += pixelsPerModule)
+            {
+                var module = QrCodeData.ModuleMatrix[i_x][(y + pixelsPerModule) / pixelsPerModule - 1];
+                Array.Copy(module ? moduleDark : moduleLight, 0, group, y / pixelsPerModule * moduleDark.Length, moduleDark.Length);
+            }
             for (int pm = 0; pm < pixelsPerModule; pm++)
             {
-                for (var y = 0; y < sideLength; y += pixelsPerModule)
-                {
-                    var module =
-                        QrCodeData.ModuleMatrix[(x + pixelsPerModule) / pixelsPerModule - 1][(y + pixelsPerModule) / pixelsPerModule - 1];
-                    for (int i = 0; i < pixelsPerModule; i++)
-                    {
-                        bmp.AddRange(module ? moduleDark : moduleLight);
-                    }
-                }
-                if (sideLength % 4 != 0)
-                {
-                    for (int i = 0; i < sideLength % 4; i++)
-                    {
-                        bmp.Add(0x00);
-                    }
-                }
+                // Draw pixels
+                bmp.AddRange(group);
+
+                // Add padding (to make line length a multiple of 4)
+                bmp.AddRange(padding);
             }
         }
-
-        // write filesize in header
-        var bmpFileSize = IntTo4Byte(bmp.Count);
-        for (int i = 0; i < bmpFileSize.Length; i++)
-        {
-            bmp[2 + i] = bmpFileSize[i];
-        }
+        
         return bmp.ToArray();
     }
 
