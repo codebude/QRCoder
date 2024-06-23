@@ -12,6 +12,10 @@ namespace QRCoder;
 // ReSharper disable once InconsistentNaming
 public class BitmapByteQRCode : AbstractQRCode, IDisposable
 {
+    private static readonly byte[] _bitmapHeaderPart1 = new byte[] { 0x42, 0x4D };
+    private static readonly byte[] _bitmapHeaderPart2 = new byte[] { 0x00, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00 };
+    private static readonly byte[] _bitmapHeaderPartEnd = new byte[] { 0x01, 0x00, 0x18, 0x00 };
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BitmapByteQRCode"/> class.
     /// Constructor without parameters to be used in COM objects connections.
@@ -53,44 +57,57 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
     {
         var sideLength = QrCodeData.ModuleMatrix.Count * pixelsPerModule;
 
-        var moduleDarkSingle = darkColorRgb.Reverse().ToArray();
-        var moduleLightSingle = lightColorRgb.Reverse().ToArray();
+        //var moduleDarkSingle = darkColorRgb.Reverse().ToArray();
+        //var moduleLightSingle = lightColorRgb.Reverse().ToArray();
 
         // Pre-calculate color/module bytes
-        var moduleDark = new byte[pixelsPerModule * 3];
-        var moduleLight = new byte[pixelsPerModule * 3];
-        for (int i = 0; i < pixelsPerModule; i++)
+        byte[] moduleDark = new byte[pixelsPerModule * 3];
+        byte[] moduleLight = new byte[pixelsPerModule * 3];
+        for (int i = 0; i < pixelsPerModule * 3; i += 3)
         {
-            Array.Copy(moduleDarkSingle, 0, moduleDark, i * 3, 3);
-            Array.Copy(moduleLightSingle, 0, moduleLight, i * 3, 3);
+            moduleDark[i] = darkColorRgb[2];
+            moduleDark[i + 1] = darkColorRgb[1];
+            moduleDark[i + 2] = darkColorRgb[0];
+            moduleLight[i] = lightColorRgb[2];
+            moduleLight[i + 1] = lightColorRgb[1];
+            moduleLight[i + 2] = lightColorRgb[0];
         }
 
         // Pre-calculate padding bytes
-        var padding = new byte[sideLength % 4];
+        var paddingLen = sideLength % 4;
 
         // Calculate filesize (header + pixel data + padding)
-        var fileSize = 54 + (3 * (sideLength * sideLength)) + (sideLength * padding.Length);
+        var fileSize = 54 + (3 * (sideLength * sideLength)) + (sideLength * paddingLen);
 
-
-        var bmp = new List<byte>(fileSize);
+        // Bitmap container
+        byte[] bmp = new byte[fileSize];
+        int ix = 0;
 
         //header part 1
-        bmp.AddRange(new byte[] { 0x42, 0x4D });
+        Array.Copy(_bitmapHeaderPart1, 0, bmp, ix, _bitmapHeaderPart1.Length);
+        ix += _bitmapHeaderPart1.Length;
 
         // filesize
-        bmp.AddRange(IntTo4Byte(fileSize));
+        CopyIntAs4ByteToArray(fileSize, ix, ref bmp);
+        ix += 4;
 
         // header part 2
-        bmp.AddRange(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0x28, 0x00, 0x00, 0x00 });
+        Array.Copy(_bitmapHeaderPart2, 0, bmp, ix, _bitmapHeaderPart2.Length);
+        ix += _bitmapHeaderPart2.Length;
 
         //width
-        bmp.AddRange(IntTo4Byte(sideLength));
+        CopyIntAs4ByteToArray(sideLength, ix, ref bmp);
+        ix += 4;
         //height
-        bmp.AddRange(IntTo4Byte(sideLength));
+        CopyIntAs4ByteToArray(sideLength, ix, ref bmp);
+        ix += 4;
 
         //header end
-        bmp.AddRange(new byte[] { 0x01, 0x00, 0x18, 0x00 });
-        bmp.AddRange(new byte[24]);
+        Array.Copy(_bitmapHeaderPartEnd, 0, bmp, ix, _bitmapHeaderPartEnd.Length);
+        ix += _bitmapHeaderPartEnd.Length;
+
+        // Add header null-bytes
+        ix += 24;
 
         //Group of pixels placeholder
         var group = new byte[(int)(sideLength / pixelsPerModule) * moduleDark.Length];
@@ -107,14 +124,15 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
             for (int pm = 0; pm < pixelsPerModule; pm++)
             {
                 // Draw pixels
-                bmp.AddRange(group);
+                Array.Copy(group, 0, bmp, ix, group.Length);
+                ix += group.Length;
 
                 // Add padding (to make line length a multiple of 4)
-                bmp.AddRange(padding);
+                ix += paddingLen;
             }
         }
 
-        return bmp.ToArray();
+        return bmp;
     }
 
 
@@ -133,22 +151,22 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
         return byteColor;
     }
 
+
     /// <summary>
-    /// Converts an integer to a 4-byte array.
+    /// Converts an integer to a 4 bytes and writes them to a byte array at given position
     /// </summary>
     /// <param name="inp">The integer to convert.</param>
-    /// <returns>Returns the integer as a 4-byte array.</returns>
-    private byte[] IntTo4Byte(int inp)
+    /// <param name="destinationIndex">Index of destinationArray where the converted bytes are written to</param>
+    /// <param name="destinationArray">Destination byte array that receives the bytes</param>
+    private void CopyIntAs4ByteToArray(int inp, int destinationIndex, ref byte[] destinationArray)
     {
-        byte[] bytes = new byte[4];
         unchecked
         {
-            bytes[3] = (byte)(inp >> 24);
-            bytes[2] = (byte)(inp >> 16);
-            bytes[1] = (byte)(inp >> 8);
-            bytes[0] = (byte)(inp);
+            destinationArray[destinationIndex + 3] = (byte)(inp >> 24);
+            destinationArray[destinationIndex + 2] = (byte)(inp >> 16);
+            destinationArray[destinationIndex + 1] = (byte)(inp >> 8);
+            destinationArray[destinationIndex + 0] = (byte)(inp);
         }
-        return bytes;
     }
 }
 
