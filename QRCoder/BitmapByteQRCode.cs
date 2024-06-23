@@ -83,7 +83,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
         ix += _bitmapHeaderPart1.Length;
 
         // Filesize
-        CopyIntAs4ByteToArray(fileSize, ix, ref bmp);
+        CopyIntAs4ByteToArray(fileSize, ix, bmp);
         ix += 4;
 
         // Header part 2
@@ -91,10 +91,10 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
         ix += _bitmapHeaderPart2.Length;
 
         // Width
-        CopyIntAs4ByteToArray(sideLength, ix, ref bmp);
+        CopyIntAs4ByteToArray(sideLength, ix, bmp);
         ix += 4;
         // Height
-        CopyIntAs4ByteToArray(sideLength, ix, ref bmp);
+        CopyIntAs4ByteToArray(sideLength, ix, bmp);
         ix += 4;
 
         // Header end
@@ -106,7 +106,6 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
 
 
         // Draw qr code
-        var group = new byte[(int)(sideLength / pixelsPerModule) * moduleDark.Length];
         for (var x = sideLength - 1; x >= 0; x -= pixelsPerModule)
         {
             var modMatrixX = (x + pixelsPerModule) / pixelsPerModule - 1;
@@ -116,7 +115,6 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
             for (var y = 0; y < sideLength; y += pixelsPerModule)
             {
                 var module = QrCodeData.ModuleMatrix[modMatrixX][(y + pixelsPerModule) / pixelsPerModule - 1];
-                Array.Copy(module ? moduleDark : moduleLight, 0, group, y / pixelsPerModule * moduleDark.Length, moduleDark.Length);
                 Array.Copy(module ? moduleDark : moduleLight, 0, bmp, ix, moduleDark.Length);
                 ix += moduleDark.Length;
             }
@@ -159,7 +157,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
     /// <param name="inp">The integer to convert.</param>
     /// <param name="destinationIndex">Index of destinationArray where the converted bytes are written to</param>
     /// <param name="destinationArray">Destination byte array that receives the bytes</param>
-    private void CopyIntAs4ByteToArray(int inp, int destinationIndex, ref byte[] destinationArray)
+    private void CopyIntAs4ByteToArray(int inp, int destinationIndex, byte[] destinationArray)
     {
         unchecked
         {
