@@ -2,18 +2,14 @@
 using QRCoder;
 using QRCoder.Xaml;
 using QRCoderTests.Helpers;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 
 namespace QRCoderTests;
 
-
 public class XamlQRCodeRendererTests
 {
-
     [Fact]
-    [Category("QRRenderer/XamlQRCode")]
     public void can_create_xaml_qrcode_standard_graphic()
     {
         var gen = new QRCodeGenerator();
@@ -27,7 +23,6 @@ public class XamlQRCodeRendererTests
 
 
     [Fact]
-    [Category("QRRenderer/XamlQRCode")]
     public void can_instantate_qrcode_parameterless()
     {
         var svgCode = new XamlQRCode();
@@ -37,7 +32,6 @@ public class XamlQRCodeRendererTests
 
     /*
     [Fact]
-    [Category("QRRenderer/XamlQRCode")]
     public void can_render_qrcode_from_helper()
     {
         //Create QR code                   

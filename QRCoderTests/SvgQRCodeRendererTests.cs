@@ -4,18 +4,14 @@ using System.Drawing;
 using System.IO;
 using QRCoder;
 using QRCoderTests.Helpers;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 
-
 namespace QRCoderTests;
-
 
 public class SvgQRCodeRendererTests
 {
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_simple()
     {
         //Create QR code
@@ -28,7 +24,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode()
     {
         //Create QR code
@@ -41,7 +36,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_viewbox_mode()
     {
         //Create QR code
@@ -54,7 +48,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_viewbox_mode_viewboxattr()
     {
         //Create QR code
@@ -67,7 +60,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_without_quietzones()
     {
         //Create QR code
@@ -80,7 +72,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_without_quietzones_hex()
     {
         //Create QR code
@@ -94,7 +85,6 @@ public class SvgQRCodeRendererTests
 
 #if SYSTEM_DRAWING && !NET5_0_OR_GREATER // .NET 5+ does not encode PNG images in a deterministic way, so the hash may be different across different runs
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_with_png_logo_bitmap()
     {
         //Create QR code
@@ -113,7 +103,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_with_png_logo_bitmap_without_background()
     {
         //Create QR code
@@ -132,7 +121,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_with_png_logo_bitmap_without_quietzones()
     {
         //Create QR code
@@ -152,7 +140,6 @@ public class SvgQRCodeRendererTests
 #endif
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_with_png_logo_bytearray()
     {
         //Create QR code
@@ -171,7 +158,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_with_svg_logo_embedded()
     {
         //Create QR code
@@ -190,7 +176,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_with_svg_logo_image_tag()
     {
         //Create QR code
@@ -208,7 +193,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_instantate_parameterless()
     {
         var svgCode = new SvgQRCode();
@@ -217,7 +201,6 @@ public class SvgQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/SvgQRCode")]
     public void can_render_svg_qrcode_from_helper()
     {
         //Create QR code                   
@@ -228,6 +211,3 @@ public class SvgQRCodeRendererTests
     }
 }
 #endif
-
-
-

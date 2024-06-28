@@ -3,7 +3,6 @@ using System;
 using System.Drawing;
 using System.IO;
 using QRCoder;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 
@@ -20,7 +19,6 @@ public class Base64QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/Base64QRCode")]
     public void can_render_base64_qrcode_blackwhite()
     {
         var pngCodeGfx = new PngByteQRCode(_data).GetGraphic(5);
@@ -29,7 +27,6 @@ public class Base64QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/Base64QRCode")]
     public void can_render_base64_qrcode_noquietzones()
     {
         var pngCodeGfx = new PngByteQRCode(_data).GetGraphic(5, false);
@@ -38,7 +35,6 @@ public class Base64QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/Base64QRCode")]
     public void can_render_base64_qrcode_color()
     {
         var pngCodeGfx = new PngByteQRCode(_data).GetGraphic(5, new byte[] { 255, 0, 0 }, new byte[] { 0, 0, 255 });
@@ -47,7 +43,6 @@ public class Base64QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/Base64QRCode")]
     public void can_render_base64_qrcode_transparent()
     {
         var pngCodeGfx = new PngByteQRCode(_data).GetGraphic(5, new byte[] { 0, 255, 0, 255 }, new byte[] { 255, 255, 255, 0 });
@@ -57,7 +52,6 @@ public class Base64QRCodeRendererTests
 
 #if SYSTEM_DRAWING
     [Fact]
-    [Category("QRRenderer/Base64QRCode")]
     public void can_render_base64_qrcode_jpeg()
     {
         var ms = new MemoryStream();

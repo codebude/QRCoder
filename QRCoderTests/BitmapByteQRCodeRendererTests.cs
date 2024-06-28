@@ -1,17 +1,13 @@
 using QRCoder;
 using QRCoderTests.Helpers;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 
-
 namespace QRCoderTests;
-
 
 public class BitmapByteQRCodeRendererTests
 {
     [Fact]
-    [Category("QRRenderer/BitmapByteQRCode")]
     public void can_render_bitmapbyte_qrcode()
     {
         var gen = new QRCodeGenerator();
@@ -24,7 +20,6 @@ public class BitmapByteQRCodeRendererTests
 
 
     [Fact]
-    [Category("QRRenderer/BitmapByteQRCode")]
     public void can_render_bitmapbyte_qrcode_color_bytearray()
     {
         var gen = new QRCodeGenerator();
@@ -36,7 +31,6 @@ public class BitmapByteQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/BitmapByteQRCode")]
     public void can_render_bitmapbyte_qrcode_drawing_color()
     {
         var gen = new QRCodeGenerator();
@@ -46,5 +40,4 @@ public class BitmapByteQRCodeRendererTests
         var result = HelperFunctions.ByteArrayToHash(bmp);
         result.ShouldBe("40cd208fc46aa726d6e98a2028ffd2b7");
     }
-
 }

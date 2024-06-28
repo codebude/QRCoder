@@ -2,7 +2,6 @@
 using System.Drawing;
 using QRCoder;
 using QRCoderTests.Helpers;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 
@@ -13,7 +12,6 @@ namespace QRCoderTests;
 public class QRCodeRendererTests
 {
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_standard_graphic()
     {
         var gen = new QRCodeGenerator();
@@ -25,7 +23,6 @@ public class QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_standard_graphic_hex()
     {
         var gen = new QRCodeGenerator();
@@ -38,7 +35,6 @@ public class QRCodeRendererTests
 
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_standard_graphic_without_quietzones()
     {
         var gen = new QRCodeGenerator();
@@ -51,7 +47,6 @@ public class QRCodeRendererTests
 
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_with_transparent_logo_graphic()
     {
         //Create QR code
@@ -65,7 +60,6 @@ public class QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_with_non_transparent_logo_graphic()
     {
         //Create QR code
@@ -79,7 +73,6 @@ public class QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_with_logo_and_with_transparent_border()
     {
         //Create QR code
@@ -94,7 +87,6 @@ public class QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_with_logo_and_with_standard_border()
     {
         //Create QR code
@@ -109,7 +101,6 @@ public class QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_create_qrcode_with_logo_and_with_custom_border()
     {
         //Create QR code
@@ -123,9 +114,7 @@ public class QRCodeRendererTests
         result.ShouldBe("e60bdaafe807889ca322d47146fe8300");
     }
 
-
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_instantate_qrcode_parameterless()
     {
         var svgCode = new QRCode();
@@ -134,7 +123,6 @@ public class QRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/QRCode")]
     public void can_render_qrcode_from_helper()
     {
         //Create QR code                   
@@ -143,6 +131,5 @@ public class QRCodeRendererTests
         var result = HelperFunctions.BitmapToHash(bmp);
         result.ShouldBe("f2ed5073bd42dc012e442c0f750e9dae");
     }
-
 }
 #endif

@@ -3,19 +3,14 @@
 using System.Drawing;
 using QRCoder;
 using QRCoderTests.Helpers;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 
 namespace QRCoderTests;
 
-
 public class ArtQRCodeRendererTests
 {
-
-
     [Fact]
-    [Category("QRRenderer/ArtQRCode")]
     public void can_create_standard_qrcode_graphic()
     {
         var gen = new QRCodeGenerator();
@@ -27,7 +22,6 @@ public class ArtQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/ArtQRCode")]
     public void can_create_standard_qrcode_graphic_with_custom_finder()
     {
         var gen = new QRCodeGenerator();
@@ -44,7 +38,6 @@ public class ArtQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/ArtQRCode")]
     public void can_create_standard_qrcode_graphic_without_quietzone()
     {
         var gen = new QRCodeGenerator();
@@ -56,7 +49,6 @@ public class ArtQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/ArtQRCode")]
     public void can_create_standard_qrcode_graphic_with_background()
     {
         var gen = new QRCodeGenerator();
@@ -70,7 +62,6 @@ public class ArtQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/ArtQRCode")]
     public void should_throw_pixelfactor_oor_exception()
     {
         var gen = new QRCodeGenerator();
@@ -84,7 +75,6 @@ public class ArtQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/ArtQRCode")]
     public void can_instantate_parameterless()
     {
         var artCode = new ArtQRCode();
@@ -93,7 +83,6 @@ public class ArtQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/ArtQRCode")]
     public void can_render_artqrcode_from_helper()
     {
         //Create QR code

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using QRCoder;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 using ECCLevel = QRCoder.QRCodeGenerator.ECCLevel;
@@ -17,7 +16,6 @@ namespace QRCoderTests;
 public class QRGeneratorTests
 {
     [Fact]
-    [Category("QRGenerator/Antilog")]
     public void validate_antilogtable()
     {
         var gen = new QRCodeGenerator();
@@ -366,7 +364,6 @@ public class QRGeneratorTests
 #endif
 
     [Fact]
-    [Category("QRGenerator/AlphanumDict")]
     public void validate_alphanumencdict()
     {
         var gen = new QRCodeGenerator();
@@ -381,7 +378,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_recognize_enconding_numeric()
     {
         var gen = new QRCodeGenerator();
@@ -393,7 +389,6 @@ public class QRGeneratorTests
 
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_recognize_enconding_alphanumeric()
     {
         var gen = new QRCodeGenerator();
@@ -405,7 +400,6 @@ public class QRGeneratorTests
 
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_recognize_enconding_forced_bytemode()
     {
         var gen = new QRCodeGenerator();
@@ -417,7 +411,6 @@ public class QRGeneratorTests
 
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_recognize_enconding_byte()
     {
         var gen = new QRCodeGenerator();
@@ -428,7 +421,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_numeric()
     {
         var gen = new QRCodeGenerator();
@@ -438,7 +430,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_numeric_2()
     {
         var gen = new QRCodeGenerator();
@@ -448,7 +439,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_numeric_3()
     {
         var gen = new QRCodeGenerator();
@@ -458,7 +448,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_alphanumeric()
     {
         var gen = new QRCodeGenerator();
@@ -468,7 +457,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_byte_long()
     {
         var gen = new QRCodeGenerator();
@@ -478,7 +466,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_byte()
     {
         var gen = new QRCodeGenerator();
@@ -488,7 +475,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_utf8()
     {
         var gen = new QRCodeGenerator();
@@ -498,7 +484,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_encode_utf8_bom()
     {
         var gen = new QRCodeGenerator();
@@ -508,7 +493,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void can_generate_from_bytes()
     {
         byte[] test_data = { 49, 50, 51, 65, 66, 67 }; //123ABC
@@ -519,7 +503,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void trim_leading_zeros_works()
     {
         var gen = new QRCodeGenerator();
@@ -529,7 +512,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/TextEncoding")]
     public void isValidIso_works()
     {
         // see private method: QRCodeGenerator.IsValidISO
@@ -555,7 +537,6 @@ public class QRGeneratorTests
     }
 
     [Fact]
-    [Category("QRGenerator/EccLevel")]
     public void ecc_level_from_payload_works()
     {
         var stringValue = "this is a test";
@@ -639,6 +620,3 @@ public static class ExtensionMethods
         return sb.ToString();
     }
 }
-
-
-
