@@ -5,7 +5,6 @@ using System.IO;
 using System.Text.RegularExpressions;
 using QRCoder;
 using QRCoderTests.Helpers;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 
@@ -14,7 +13,6 @@ namespace QRCoderTests;
 public class PostscriptQRCodeRendererTests
 {
     [Fact]
-    [Category("QRRenderer/PostscriptQRCode")]
     public void can_render_postscript_qrcode_simple()
     {
         //Create QR code
@@ -27,7 +25,6 @@ public class PostscriptQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PostscriptQRCode")]
     public void can_render_postscript_qrcode_eps()
     {
         //Create QR code
@@ -40,7 +37,6 @@ public class PostscriptQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PostscriptQRCode")]
     public void can_render_postscript_qrcode_size()
     {
         //Create QR code
@@ -53,7 +49,6 @@ public class PostscriptQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PostscriptQRCode")]
     public void can_render_postscript_qrcode_size_no_quiet_zones()
     {
         //Create QR code
@@ -66,7 +61,6 @@ public class PostscriptQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PostscriptQRCode")]
     public void can_render_postscript_qrcode_colors()
     {
         //Create QR code

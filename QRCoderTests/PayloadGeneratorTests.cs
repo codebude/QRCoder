@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using QRCoder;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using Shouldly;
 using Xunit;
 using static QRCoder.PayloadGenerator.BezahlCode;
@@ -15,9 +14,7 @@ namespace QRCoderTests;
 
 public class PayloadGeneratorTests
 {
-
     [Fact]
-    [Category("PayloadGenerator/BitcoinAddress")]
     public void bitcoin_address_generator_can_generate_address()
     {
         var address = "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W";
@@ -33,7 +30,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinAddress")]
     public void bitcoin_address_generator_should_skip_missing_label()
     {
         var address = "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W";
@@ -49,7 +45,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinAddress")]
     public void bitcoin_address_generator_should_skip_missing_message()
     {
         var address = "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W";
@@ -64,7 +59,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinAddress")]
     public void bitcoin_address_generator_should_round_to_satoshi()
     {
         var address = "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W";
@@ -79,7 +73,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinAddress")]
     public void bitcoin_address_generator_disregards_current_culture()
     {
 #if NETCOREAPP1_1
@@ -108,7 +101,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinCashAddress")]
     public void bitcoincash_address_generator_can_generate_address()
     {
         var address = "qqtlfk37qyey50f4wfuhc7jw85zsdp8s2swffjk890";
@@ -124,7 +116,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinCashAddress")]
     public void bitcoincash_address_generator_should_skip_missing_label()
     {
         var address = "qqtlfk37qyey50f4wfuhc7jw85zsdp8s2swffjk890";
@@ -140,7 +131,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinCashAddress")]
     public void bitcoincash_address_generator_should_skip_missing_message()
     {
         var address = "qqtlfk37qyey50f4wfuhc7jw85zsdp8s2swffjk890";
@@ -155,7 +145,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinCashAddress")]
     public void bitcoincash_address_generator_should_round_to_satoshi()
     {
         var address = "qqtlfk37qyey50f4wfuhc7jw85zsdp8s2swffjk890";
@@ -170,7 +159,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BitcoinCashAddress")]
     public void bitcoincash_address_generator_disregards_current_culture()
     {
 #if NETCOREAPP1_1
@@ -199,7 +187,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/LitecoinAddress")]
     public void litecoin_address_generator_can_generate_address()
     {
         var address = "LY1t7iLnwtPCb1DPZP38FA835XzFqXBq54";
@@ -215,7 +202,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/LitecoinAddress")]
     public void litecoin_address_generator_should_skip_missing_label()
     {
         var address = "LY1t7iLnwtPCb1DPZP38FA835XzFqXBq54";
@@ -231,7 +217,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/LitecoinAddress")]
     public void litecoin_address_generator_should_skip_missing_message()
     {
         var address = "LY1t7iLnwtPCb1DPZP38FA835XzFqXBq54";
@@ -246,7 +231,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/LitecoinAddress")]
     public void litecoin_address_generator_should_round_to_satoshi()
     {
         var address = "LY1t7iLnwtPCb1DPZP38FA835XzFqXBq54";
@@ -261,7 +245,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/LitecoinAddress")]
     public void litecoin_address_generator_disregards_current_culture()
     {
 #if NETCOREAPP1_1
@@ -290,7 +273,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_build_wep()
     {
         var ssid = "MyWiFiSSID";
@@ -304,7 +286,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_build_wpa()
     {
         var ssid = "MyWiFiSSID";
@@ -318,7 +299,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_build_wpa2()
     {
         var ssid = "MyWiFiSSID";
@@ -332,7 +312,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_ignore_hiddenSSID_param()
     {
         var ssid = "MyWiFiSSID";
@@ -346,7 +325,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_add_hiddenSSID_param()
     {
         var ssid = "M\\y;W,i:FiSSID";
@@ -361,7 +339,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_escape_input()
     {
         var ssid = "MyWiFiSSID";
@@ -376,7 +353,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_escape_hex_style1()
     {
         var ssid = "A9B7F18CCE";
@@ -391,7 +367,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_escape_hex_style2()
     {
         var ssid = "a9b7f18cce";
@@ -406,7 +381,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_escape_hex_style3()
     {
         var ssid = "0xA9B7F18CCE";
@@ -421,7 +395,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/WiFi")]
     public void wifi_should_escape_hex_style4()
     {
         var ssid = "0XA9B7F18CCE";
@@ -436,7 +409,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_build_type_mailto()
     {
         var receiver = "john@doe.com";
@@ -451,7 +423,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_build_type_mailto_receiver_only()
     {
         var receiver = "john@doe.com";
@@ -464,7 +435,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_build_type_mailto_subject_only()
     {
         var receiver = "john@doe.com";
@@ -477,7 +447,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_build_type_mailto_message_only()
     {
         var receiver = "john@doe.com";
@@ -490,7 +459,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_build_type_mailto_no_receiver()
     {
         var subject = "A test mail";
@@ -503,7 +471,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_build_type_MATMSG()
     {
         var receiver = "john@doe.com";
@@ -518,7 +485,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_build_type_SMTP()
     {
         var receiver = "john@doe.com";
@@ -533,7 +499,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_escape_input_MATMSG()
     {
         var receiver = "john@doe.com";
@@ -547,7 +512,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Mail")]
     public void mail_should_escape_input_SMTP()
     {
         var receiver = "john@doe.com";
@@ -561,7 +525,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SMS")]
     public void sms_should_build_type_SMS()
     {
         var number = "01601234567";
@@ -575,7 +538,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SMS")]
     public void sms_should_build_type_SMS_iOS()
     {
         var number = "01601234567";
@@ -589,7 +551,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SMS")]
     public void sms_should_build_type_SMSTO()
     {
         var number = "01601234567";
@@ -603,7 +564,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SMS")]
     public void sms_should_not_add_unused_params()
     {
         var number = "01601234567";
@@ -615,7 +575,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/MMS")]
     public void mms_should_build_type_MMS()
     {
         var number = "01601234567";
@@ -629,7 +588,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/MMS")]
     public void mms_should_build_type_MMSTO()
     {
         var number = "01601234567";
@@ -643,7 +601,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/MMS")]
     public void mms_should_not_add_unused_params()
     {
         var number = "01601234567";
@@ -655,7 +612,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Geolocation")]
     public void geolocation_should_build_type_GEO()
     {
         var latitude = "51.227741";
@@ -669,7 +625,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Geolocation")]
     public void geolocation_should_build_type_GoogleMaps()
     {
         var latitude = "51.227741";
@@ -683,7 +638,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Geolocation")]
     public void geolocation_should_escape_input()
     {
         var latitude = "51,227741";
@@ -697,7 +651,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Geolocation")]
     public void geolocation_should_add_unused_params()
     {
         var latitude = "51.227741";
@@ -710,7 +663,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/PhoneNumber")]
     public void phonenumber_should_build()
     {
         var number = "+495321123456";
@@ -722,7 +674,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Skype")]
     public void skype_should_build()
     {
         var username = "johndoe123";
@@ -734,7 +685,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Url")]
     public void url_should_build_http()
     {
         var url = "http://code-bude.net";
@@ -746,7 +696,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Url")]
     public void url_should_build_https()
     {
         var url = "https://code-bude.net";
@@ -758,7 +707,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Url")]
     public void url_should_build_https_all_caps()
     {
         var url = "HTTPS://CODE-BUDE.NET";
@@ -770,7 +718,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Url")]
     public void url_should_add_http()
     {
         var url = "code-bude.net";
@@ -782,7 +729,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Bookmark")]
     public void bookmark_should_build()
     {
         var url = "http://code-bude.net";
@@ -795,7 +741,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Bookmark")]
     public void bookmark_should_escape_input()
     {
         var url = "http://code-bude.net/fake,url.html";
@@ -808,7 +753,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/CalendarEvent")]
     public void calendarevent_should_build_universal()
     {
         var subject = "Release party";
@@ -826,7 +770,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/CalendarEvent")]
     public void calendarevent_should_build_ical()
     {
         var subject = "Release party";
@@ -844,7 +787,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/CalendarEvent")]
     public void calendarevent_should_build_with_utc_datetime()
     {
         var subject = "Release party";
@@ -862,7 +804,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/CalendarEvent")]
     public void calendarevent_should_build_with_utc_offset()
     {
         var subject = "Release party";
@@ -880,7 +821,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/CalendarEvent")]
     public void calendarevent_should_build_allday()
     {
         var subject = "Release party";
@@ -898,7 +838,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/CalendarEvent")]
     public void calendarevent_should_care_empty_fields()
     {
         var subject = "Release party";
@@ -916,7 +855,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/CalendarEvent")]
     public void calendarevent_should_add_unused_params()
     {
         var subject = "Release party";
@@ -933,7 +871,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/IbanValidator")]
     public void iban_validator_validate_german_iban()
     {
         var iban = "DE15268500010154131577";
@@ -946,7 +883,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/IbanValidator")]
     public void iban_validator_validate_swiss_iban()
     {
         var iban = "CH1900767000U00121977";
@@ -959,7 +895,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/IbanValidator")]
     public void iban_validator_invalidates_iban()
     {
         var iban = "DE29268500010154131577";
@@ -972,7 +907,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/QrIbanValidator")]
     public void qriban_validator_validates_iban()
     {
         var iban = "CH2430043000000789012";
@@ -984,7 +918,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/QrIbanValidator")]
     public void qriban_validator_invalidates_iban()
     {
         var iban = "CH3908704016075473007";
@@ -997,7 +930,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_can_generate_payload_minimal()
     {
         var iban = "DE33100205000001194700";
@@ -1013,7 +945,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_can_generate_payload_full()
     {
         var iban = "DE33100205000001194700";
@@ -1035,7 +966,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_handle_version()
     {
         var iban = "DE33100205000001194700";
@@ -1058,7 +988,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_handle_iban_whitespaces()
     {
         var iban = "DE33 1002 0500 0001 1947 00";
@@ -1078,7 +1007,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_handle_bic_whitespaces()
     {
         var iban = "DE33100205000001194700";
@@ -1099,7 +1027,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_fill_amount_decimals()
     {
         var iban = "DE33100205000001194700";
@@ -1120,7 +1047,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_iban_exception()
     {
         var iban = "33100205000001194700";
@@ -1142,7 +1068,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_bic_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1164,7 +1089,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_name_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1186,7 +1110,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_amount_decimals_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1207,7 +1130,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_amount_min_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1230,7 +1152,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_amount_max_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1252,7 +1173,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_purpose_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1273,7 +1193,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_remittance_unstructured_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1294,7 +1213,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_remittance_structured_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1315,7 +1233,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_should_throw_usermessage_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1336,7 +1253,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Girocode")]
     public void girocode_generator_sets_encoding_parameters()
     {
         var iban = "DE33100205000001194700";
@@ -1352,7 +1268,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_singlepayment_minimal()
     {
         var account = "001194700";
@@ -1369,7 +1284,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_singlepayment_full()
     {
         var account = "001194700";
@@ -1389,7 +1303,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_singledirectdebit()
     {
         var account = "001194700";
@@ -1409,7 +1322,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_periodicsinglepayment()
     {
         var account = "001194700";
@@ -1433,7 +1345,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_singlepaymentsepa_minimal()
     {
         var iban = "DE33100205000001194700";
@@ -1450,7 +1361,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_singlepaymentsepa_full()
     {
         var iban = "DE33100205000001194700";
@@ -1470,7 +1380,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_singledirectdebitsepa()
     {
         var iban = "DE33100205000001194700";
@@ -1492,7 +1401,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_periodicsinglepaymentsepa()
     {
         var iban = "DE33100205000001194700";
@@ -1516,7 +1424,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_contact()
     {
         var account = "001194700";
@@ -1532,7 +1439,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_contact_full()
     {
         var account = "001194700";
@@ -1549,7 +1455,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_contactv2_classic()
     {
         var account = "001194700";
@@ -1565,7 +1470,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_contactv2_sepa()
     {
         var iban = "DE33100205000001194700";
@@ -1582,7 +1486,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_can_generate_payload_contactv2_sepa_full()
     {
         var iban = "DE33100205000001194700";
@@ -1599,7 +1502,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_handle_account_whitespaces()
     {
         var account = "01 194700";
@@ -1616,7 +1518,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_handle_bnc_whitespaces()
     {
         var account = "001194700";
@@ -1633,7 +1534,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_handle_iban_whitespaces()
     {
         var iban = "DE33 100205000 0011947 00";
@@ -1650,7 +1550,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_handle_bic_whitespaces()
     {
         var iban = "DE33100205000001194700";
@@ -1667,7 +1566,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_add_decimals()
     {
         var account = "001194700";
@@ -1684,7 +1582,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_wrong_contact_constructor_exception()
     {
         var account = "0001194700";
@@ -1700,7 +1597,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_wrong_contact_v2_constructor_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1716,7 +1612,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_wrong_nonsepa_constructor_exception()
     {
         var account = "0001194700";
@@ -1732,7 +1627,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_wrong_nonsepa_constructor_periodic_exception()
     {
         var account = "0001194700";
@@ -1756,7 +1650,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_wrong_sepa_constructor_exception()
     {
         var iban = "DE33 100205000 0011947 00";
@@ -1773,7 +1666,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_wrong_sepa_constructor_periodic_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1798,7 +1690,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_name_too_long_exception()
     {
         var iban = "DE33 100205000 0011947 00";
@@ -1816,7 +1707,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_reason_too_long_exception()
     {
         var iban = "DE33 100205000 0011947 00";
@@ -1835,7 +1725,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_account_exception()
     {
         var account = "1194700AD";
@@ -1852,7 +1741,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_bnc_exception()
     {
         var account = "001194700";
@@ -1869,7 +1757,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_postingkey_exception()
     {
         var account = "001194700";
@@ -1887,7 +1774,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_iban_exception()
     {
         var iban = "DE33100205AZB000001194700";
@@ -1905,7 +1791,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_bic_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1923,7 +1808,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_separeference_too_long_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1946,7 +1830,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_creditorid_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1968,7 +1851,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_mandateid_exception()
     {
         var iban = "DE33100205000001194700";
@@ -1989,7 +1871,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_amount_too_much_digits_exception()
     {
         var iban = "DE33100205000001194700";
@@ -2007,7 +1888,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_amount_too_big_exception()
     {
         var iban = "DE33100205000001194700";
@@ -2025,7 +1905,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_executiondate_exception()
     {
         var account = "001194700";
@@ -2046,7 +1925,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_periodictimeunit_exception()
     {
         var iban = "DE33100205000001194700";
@@ -2070,7 +1948,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/BezahlCode")]
     public void bezahlcode_generator_should_throw_invalid_periodictimeunitrotation_exception()
     {
         var iban = "DE33100205000001194700";
@@ -2095,7 +1972,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Reference")]
     public void swissqrcode_generator_should_throw_reference_not_allowed()
     {
         var refType = ReferenceType.NON;
@@ -2110,7 +1986,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Reference")]
     public void swissqrcode_generator_should_throw_missing_reftexttype()
     {
         var refType = ReferenceType.SCOR;
@@ -2125,7 +2000,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Reference")]
     public void swissqrcode_generator_should_throw_qrr_ref_too_long()
     {
         var refType = ReferenceType.QRR;
@@ -2141,7 +2015,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Reference")]
     public void swissqrcode_generator_should_throw_qrr_ref_wrong_char()
     {
         var refType = ReferenceType.QRR;
@@ -2157,7 +2030,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Reference")]
     public void swissqrcode_generator_should_throw_qrr_ref_checksum_invalid()
     {
         var refType = ReferenceType.QRR;
@@ -2173,7 +2045,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Reference")]
     public void swissqrcode_generator_should_throw_iso11649_ref_too_long()
     {
         var refType = ReferenceType.QRR;
@@ -2188,7 +2059,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.AdditionalInformation")]
     public void swissqrcode_generator_should_throw_unstructured_msg_too_long()
     {
         var billInformation = "This is sample bill information with a length below 140.";
@@ -2204,7 +2074,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Iban")]
     public void swissqrcode_generator_should_generate_iban()
     {
         var iban = "CH2609000000857666015";
@@ -2218,7 +2087,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Iban")]
     public void swissqrcode_generator_should_generate_iban_2()
     {
         var iban = "CH47048350000GABRIELS";
@@ -2232,7 +2100,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Iban")]
     public void swissqrcode_generator_should_generate_iban_qr()
     {
         var iban = "CH2430043000000789012";
@@ -2246,7 +2113,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Iban")]
     public void swissqrcode_generator_should_remove_spaces_iban()
     {
         var iban = "CH26 0900 0000 8576 6601 5";
@@ -2260,7 +2126,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Iban")]
     public void swissqrcode_generator_should_throw_invalid_iban()
     {
         var iban = "CHC2609000000857666015";
@@ -2274,7 +2139,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Iban")]
     public void swissqrcode_generator_should_throw_invalid_qriban()
     {
         var iban = "CHC2609000000857666015";
@@ -2288,7 +2152,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Iban")]
     public void swissqrcode_generator_should_throw_ivalid_iban_country()
     {
         var iban = "DE2609000000857666015";
@@ -2304,7 +2167,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_generate_contact_simple()
     {
         var name = "John Doe";
@@ -2320,7 +2182,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_generate_contact_full()
     {
         var name = "John Doe";
@@ -2339,7 +2200,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_name_empty()
     {
         var name = "";
@@ -2358,7 +2218,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_name_too_long()
     {
         var name = "John Dorian Peter Charles Lord of the Rings and Master of Disaster Grayham";
@@ -2377,7 +2236,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_street_too_long()
     {
         var name = "John Doe";
@@ -2396,7 +2254,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_street_with_illegal_char()
     {
         var name = "John Doe";
@@ -2415,7 +2272,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_housenumber_too_long()
     {
         var name = "John Doe";
@@ -2434,7 +2290,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_zip_empty()
     {
         var name = "John Doe";
@@ -2452,7 +2307,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_zip_too_long()
     {
         var name = "John Doe";
@@ -2471,7 +2325,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_zip_has_illegal_char()
     {
         var name = "John Doe";
@@ -2490,7 +2343,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_city_empty()
     {
         var name = "John Doe";
@@ -2509,7 +2361,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_city_too_long()
     {
         var name = "John Doe";
@@ -2528,7 +2379,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode.Contact")]
     public void swissqrcode_generator_should_throw_wrong_countrycode()
     {
         var name = "John Doe";
@@ -2548,7 +2398,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_generate_swisscode_simple()
     {
         var creditor = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2564,7 +2413,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_generate_swisscode_full()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2583,7 +2431,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_sets_encoding_parameters()
     {
         var creditor = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2599,7 +2446,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_generate_clean_end_linebreaks()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2619,7 +2465,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_generate_swisscode_full_alt()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2638,7 +2483,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_not_generate_space_as_thousands_separator()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2657,7 +2501,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_throw_amount_too_big()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2676,7 +2519,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_throw_incompatible_reftype()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2695,7 +2537,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_throw_alt1_too_long()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2715,7 +2556,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_throw_alt2_too_long()
     {
         var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
@@ -2735,7 +2575,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/SwissQrCode")]
     public void swissqrcode_generator_should_validate_two_lettercodes()
     {
         string name = "John Doe";
@@ -2770,7 +2609,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/OneTimePassword")]
     public void one_time_password_generator_time_based_generates_with_standard_options()
     {
         var pg = new PayloadGenerator.OneTimePassword
@@ -2785,7 +2623,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/OneTimePassword")]
     public void one_time_password_generator_time_based_generates_with_standard_options_escapes_issuer_and_label()
     {
         var pg = new PayloadGenerator.OneTimePassword
@@ -2800,7 +2637,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/OneTimePassword")]
     public void one_time_password_generator_hmac_based_generates_with_standard_options()
     {
         var pg = new PayloadGenerator.OneTimePassword
@@ -2816,7 +2652,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/OneTimePassword")]
     public void one_time_password_generator_hmac_based_generates_with_standard_options_escapes_issuer_and_label()
     {
         var pg = new PayloadGenerator.OneTimePassword
@@ -2833,7 +2668,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/ShadowSocksConfig")]
     public void shadowsocks_generator_can_generate_payload()
     {
         var host = "192.168.2.5";
@@ -2848,7 +2682,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/ShadowSocksConfig")]
     public void shadowsocks_generator_can_generate_payload_with_tag()
     {
         var host = "192.168.2.5";
@@ -2865,7 +2698,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/ShadowSocksConfig")]
     public void shadowsocks_generator_should_throw_portrange_low_exception()
     {
         var host = "192.168.2.5";
@@ -2882,7 +2714,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/ShadowSocksConfig")]
     public void shadowsocks_generator_should_throw_portrange_high_exception()
     {
         var host = "192.168.2.5";
@@ -2899,7 +2730,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/ShadowSocksConfig")]
     public void shadowsocks_generator_can_generate_payload_with_plugin()
     {
         var host = "192.168.100.1";
@@ -2917,7 +2747,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/ContactData")]
     public void contactdata_generator_can_generate_payload_simple_mecard()
     {
         var firstname = "John";
@@ -2932,7 +2761,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/ContactData")]
     public void contactdata_generator_can_generate_payload_full_mecard()
     {
         var firstname = "John";
@@ -2962,7 +2790,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/ContactData")]
     public void contactdata_generator_can_generate_payload_full_mecard_reversed()
     {
         var firstname = "John";
@@ -2992,7 +2819,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/ContactData")]
     public void contactdata_generator_can_generate_payload_full_vcard21()
     {
         var firstname = "John";
@@ -3022,7 +2848,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/ContactData")]
     public void contactdata_generator_can_generate_payload_full_vcard3()
     {
         var firstname = "John";
@@ -3052,7 +2877,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/ContactData")]
     public void contactdata_generator_can_generate_payload_full_vcard4()
     {
         var firstname = "John";
@@ -3082,7 +2906,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/ContactData")]
     public void contactdata_generator_can_generate_payload_full_vcard4_reverse()
     {
         var firstname = "John";
@@ -3112,7 +2935,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WhatsAppMessage")]
     public void whatsapp_generator_can_generate_payload_simple()
     {
         var number = "491601234567";
@@ -3125,7 +2947,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WhatsAppMessage")]
     public void whatsapp_should_add_unused_params()
     {
         var msg = "This is a sample message with Umlauts: Ä,ö, ü and ß.";
@@ -3137,7 +2958,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WhatsAppMessage")]
     public void whatsapp_should_cleanup_phonenumber_1()
     {
         var number = "+49(160)1234567";
@@ -3150,7 +2970,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/WhatsAppMessage")]
     public void whatsapp_should_cleanup_phonenumber_2()
     {
         var number = "0049-160-1234 567";
@@ -3163,7 +2982,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Monero")]
     public void monero_generator_can_generate_payload_simple()
     {
         var address = "46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em";
@@ -3175,7 +2993,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/Monero")]
     public void monero_generator_can_generate_payload_first_param()
     {
         var address = "46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em";
@@ -3189,7 +3006,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Monero")]
     public void monero_generator_can_generate_payload_named_param()
     {
         var address = "46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em";
@@ -3203,7 +3019,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Monero")]
     public void monero_generator_can_generate_payload_full_param()
     {
         var address = "46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em";
@@ -3220,7 +3035,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Monero")]
     public void monero_generator_should_throw_wrong_amount_exception()
     {
         var address = "46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em";
@@ -3235,7 +3049,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/Monero")]
     public void monero_generator_should_throw_no_address_exception()
     {
         var address = "";
@@ -3249,7 +3062,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_mandatory_fields()
     {
         var account = "40702810138250123017";
@@ -3265,7 +3077,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_encoding_win1251()
     {
         var account = "40702810138250123017";
@@ -3288,7 +3099,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_encoding_koi8()
     {
         var account = "40702810138250123017";
@@ -3311,7 +3121,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_custom_separator()
     {
         var account = "40702810138250123017";
@@ -3327,7 +3136,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_should_throw_no_separator_exception()
     {
         var account = "40702810138250123017";
@@ -3344,7 +3152,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_should_throw_data_too_long_exception()
     {
         var account = "40702810138250123017";
@@ -3363,7 +3170,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_should_throw_no_data_too_long_exception()
     {
         var account = "40702810138250123017";
@@ -3387,7 +3193,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_should_throw_must_not_be_null_exception()
     {
         string account = null;
@@ -3403,7 +3208,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_should_throw_unmatched_pattern_exception()
     {
         string account = "40702810138250123017";
@@ -3419,7 +3223,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_some_additional_fields()
     {
         var account = "40702810138250123017";
@@ -3442,7 +3245,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_all_additional_fields_pt1()
     {
         var account = "40702810138250123017";
@@ -3473,7 +3275,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_all_additional_fields_pt2()
     {
         var account = "40702810138250123017";
@@ -3505,7 +3306,6 @@ public class PayloadGeneratorTests
 
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_all_additional_fields_pt3()
     {
         var account = "40702810138250123017";
@@ -3534,7 +3334,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_all_additional_fields_pt4()
     {
         var account = "40702810138250123017";
@@ -3563,7 +3362,6 @@ public class PayloadGeneratorTests
     }
 
     [Fact]
-    [Category("PayloadGenerator/RussiaPaymentOrder")]
     public void russiapayment_generator_can_generate_payload_all_additional_fields_pt5()
     {
         var account = "40702810138250123017";
@@ -3587,6 +3385,3 @@ public class PayloadGeneratorTests
             .ShouldBe($"ST00012|Name={name}|PersonalAcc={account}|BankName={bankName}|BIC={bic}|CorrespAcc={correspAcc}|TaxPeriod=31|TaxPaytKind=99|SpecFio=T. Eacher|UIN=1a2b|TechCode=ГИБДД_налоги_пошлины_бюджетные_платежи|");
     }
 }
-
-
-

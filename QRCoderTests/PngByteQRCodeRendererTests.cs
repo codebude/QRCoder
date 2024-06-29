@@ -1,7 +1,6 @@
 using Xunit;
 using QRCoder;
 using Shouldly;
-using QRCoderTests.Helpers.XUnitExtenstions;
 using QRCoderTests.Helpers;
 #if !NETCOREAPP1_1
 using System.Drawing;
@@ -22,7 +21,6 @@ public class PngByteQRCodeRendererTests
 
 
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_render_pngbyte_qrcode_blackwhite()
     {
         //Create QR code
@@ -42,7 +40,6 @@ public class PngByteQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_render_pngbyte_qrcode_color()
     {
         //Create QR code
@@ -63,7 +60,6 @@ public class PngByteQRCodeRendererTests
 
 #if !NETCOREAPP1_1
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_render_pngbyte_qrcode_drawing_color()
     {
         //Create QR code
@@ -87,7 +83,6 @@ public class PngByteQRCodeRendererTests
 
 
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_render_pngbyte_qrcode_color_with_alpha()
     {
         //Create QR code
@@ -107,7 +102,6 @@ public class PngByteQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_render_pngbyte_qrcode_color_without_quietzones()
     {
         //Create QR code
@@ -129,7 +123,6 @@ public class PngByteQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_instantate_pngbyte_qrcode_parameterless()
     {
         var pngCode = new PngByteQRCode();
@@ -138,7 +131,6 @@ public class PngByteQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_render_pngbyte_qrcode_from_helper()
     {
         //Create QR code                   
@@ -156,7 +148,6 @@ public class PngByteQRCodeRendererTests
     }
 
     [Fact]
-    [Category("QRRenderer/PngByteQRCode")]
     public void can_render_pngbyte_qrcode_from_helper_2()
     {
         //Create QR code                   
@@ -172,8 +163,4 @@ public class PngByteQRCodeRendererTests
         result.ShouldBe("1d81b3d52fc64543186558eee7d9494b");
 #endif  
     }
-
 }
-
-
-
