@@ -21,7 +21,6 @@ public class QRGeneratorTests
         var gen = new QRCodeGenerator();
 
         var checkString = string.Empty;
-        // Access the Tables class directly through reflection
         var tablesType = Type.GetType("QRCoder.QRCodeGenerator+Tables, QRCoder");
         var gField = tablesType.GetField("GaloisFieldByExponentAlpha", BindingFlags.Public | BindingFlags.Static).GetValue(null).ShouldBeOfType<int[]>();
         gField.Length.ShouldBe(256);
