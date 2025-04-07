@@ -17,11 +17,6 @@ namespace QRCoder;
 public partial class QRCodeGenerator : IDisposable
 {
     /// <summary>
-    /// A lookup table mapping QR code versions to their corresponding alignment patterns.
-    /// </summary>
-    private static readonly Dictionary<int, AlignmentPattern> _alignmentPatternTable = Tables.CreateAlignmentPatternTable();
-
-    /// <summary>
     /// A table containing the error correction capacities and data codeword information for different combinations of QR code versions and error correction levels.
     /// </summary>
     private static readonly List<ECCInfo> _capacityECCTable = Tables.CreateCapacityECCTable();
@@ -31,12 +26,6 @@ public partial class QRCodeGenerator : IDisposable
     /// The index in the capacity table corresponds to one less than the version number.
     /// </summary>
     private static readonly List<VersionInfo> _capacityTable = Tables.CreateCapacityTable();
-
-    /// <summary>
-    /// A dictionary mapping alphanumeric characters to their respective positions used in QR code encoding.
-    /// This includes digits 0-9, uppercase letters A-Z, and some special characters.
-    /// </summary>
-    private static readonly Dictionary<char, int> _alphanumEncDict = Tables.CreateAlphanumEncDict();
 
     /// <summary>
     /// Initializes the QR code generator
@@ -348,7 +337,7 @@ public partial class QRCodeGenerator : IDisposable
             {
                 ModulePlacer.PlaceFinderPatterns(qr, blockedModules);
                 ModulePlacer.ReserveSeperatorAreas(size, blockedModules);
-                ModulePlacer.PlaceAlignmentPatterns(qr, _alignmentPatternTable[version].PatternPositions, blockedModules);
+                ModulePlacer.PlaceAlignmentPatterns(qr, AlignmentPatterns.FromVersion(version).PatternPositions, blockedModules);
                 ModulePlacer.PlaceTimingPatterns(qr, blockedModules);
                 ModulePlacer.PlaceDarkModule(qr, version, blockedModules);
                 ModulePlacer.ReserveVersionAreas(size, version, blockedModules);
@@ -623,7 +612,7 @@ public partial class QRCodeGenerator : IDisposable
             if (IsInRange(c, '0', '9'))
                 continue;   // numeric - char.IsDigit() for Latin1
             result = EncodingMode.Alphanumeric;     // not numeric, assume alphanumeric
-            if (IsInRange(c, 'A', 'Z') || Tables.AlphanumEncTableContains(c))
+            if (AlphanumericEncoder.CanEncode(c))
                 continue; // alphanumeric
             return EncodingMode.Byte;               // not numeric or alphanumeric, assume byte
         }
@@ -804,7 +793,7 @@ public partial class QRCodeGenerator : IDisposable
     {
         return encMode switch
         {
-            EncodingMode.Alphanumeric => PlainTextToBinaryAlphanumeric(plainText),
+            EncodingMode.Alphanumeric => AlphanumericEncoder.GetBitArray(plainText),
             EncodingMode.Numeric => PlainTextToBinaryNumeric(plainText),
             EncodingMode.Byte => PlainTextToBinaryByte(plainText, eciMode, utf8BOM, forceUtf8),
             _ => _emptyBitArray,
@@ -860,40 +849,6 @@ public partial class QRCodeGenerator : IDisposable
         }
 
         return bitArray;
-    }
-
-    /// <summary>
-    /// Converts alphanumeric plain text into a binary format optimized for QR codes.
-    /// Alphanumeric encoding packs characters into 11-bit groups for each pair of characters,
-    /// and 6 bits for a single remaining character if the total count is odd.
-    /// </summary>
-    /// <param name="plainText">The alphanumeric text to be encoded, which should only contain characters valid in QR alphanumeric mode.</param>
-    /// <returns>A BitArray representing the binary data of the encoded alphanumeric text.</returns>
-    private static BitArray PlainTextToBinaryAlphanumeric(string plainText)
-    {
-        // Calculate the length of the BitArray needed based on the number of character pairs.
-        var codeText = new BitArray((plainText.Length / 2) * 11 + (plainText.Length & 1) * 6);
-        var codeIndex = 0;
-        var index = 0;
-        var count = plainText.Length;
-
-        // Process each pair of characters.
-        while (count >= 2)
-        {
-            // Convert each pair of characters to a number by looking them up in the alphanumeric dictionary and calculating.
-            var dec = _alphanumEncDict[plainText[index++]] * 45 + _alphanumEncDict[plainText[index++]];
-            // Convert the number to binary and store it in the BitArray.
-            codeIndex = DecToBin(dec, 11, codeText, codeIndex);
-            count -= 2;
-        }
-
-        // Handle the last character if the length is odd.
-        if (count > 0)
-        {
-            DecToBin(_alphanumEncDict[plainText[index]], 6, codeText, codeIndex);
-        }
-
-        return codeText;
     }
 
     private static readonly Encoding _iso8859_1 =

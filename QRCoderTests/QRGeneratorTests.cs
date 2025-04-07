@@ -370,7 +370,8 @@ public class QRGeneratorTests
         var gen = new QRCodeGenerator();
 
         var checkString = string.Empty;
-        var gField = gen.GetType().GetField("_alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Static);
+        var encoderType = Type.GetType("QRCoder.QRCodeGenerator+AlphanumericEncoder, QRCoder");
+        var gField = encoderType.GetField("_alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Static);
         foreach (var listitem in (Dictionary<char, int>)gField.GetValue(gen))
         {
             checkString += $"{listitem.Key},{listitem.Value}:";
