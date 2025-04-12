@@ -110,7 +110,7 @@ public partial class QRCodeGenerator : IDisposable
         var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
         var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
         int version = requestedVersion;
-        int minVersion = CapacityTables.GetVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
+        int minVersion = CapacityTables.CalculateMinimumVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
         if (version == -1)
         {
             version = minVersion;
@@ -120,7 +120,7 @@ public partial class QRCodeGenerator : IDisposable
             //Version was passed as fixed version via parameter. Thus let's check if chosen version is valid.
             if (minVersion > version)
             {
-                var maxSizeByte = CapacityTables.GetCapacityInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
+                var maxSizeByte = CapacityTables.GetVersionInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
                 throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
             }
         }
@@ -160,7 +160,7 @@ public partial class QRCodeGenerator : IDisposable
     public static QRCodeData GenerateQrCode(byte[] binaryData, ECCLevel eccLevel)
     {
         eccLevel = ValidateECCLevel(eccLevel);
-        int version = CapacityTables.GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
+        int version = CapacityTables.CalculateMinimumVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
         int countIndicatorLen = GetCountIndicatorLength(version, EncodingMode.Byte);
         // Convert byte array to bit array, with prefix padding for mode indicator and count indicator
@@ -200,7 +200,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <returns>A QRCodeData structure containing the full QR code matrix, which can be used for rendering or analysis.</returns>
     private static QRCodeData GenerateQrCode(BitArray bitArray, ECCLevel eccLevel, int version)
     {
-        var eccInfo = CapacityTables.GetCapacityEccInfo(version, eccLevel);
+        var eccInfo = CapacityTables.GetEccInfo(version, eccLevel);
 
         // Fill up data code word
         PadData();

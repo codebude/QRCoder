@@ -36,7 +36,7 @@ public partial class QRCodeGenerator
         /// An <see cref="ECCInfo"/> object containing the total number of data codewords, ECC per block, 
         /// block group details, and other parameters required for encoding error correction data.
         /// </returns>
-        public static ECCInfo GetCapacityEccInfo(int version, ECCLevel eccLevel)
+        public static ECCInfo GetEccInfo(int version, ECCLevel eccLevel)
             => _capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel == eccLevel);
 
         /// <summary>
@@ -50,7 +50,7 @@ public partial class QRCodeGenerator
         /// A <see cref="VersionInfo"/> object containing data capacity details for all error correction levels 
         /// and encoding modes for the specified version.
         /// </returns>
-        public static VersionInfo GetCapacityInfo(int version)
+        public static VersionInfo GetVersionInfo(int version)
             => _capacityTable[version - 1];
 
         /// <summary>
@@ -76,7 +76,7 @@ public partial class QRCodeGenerator
         /// <exception cref="QRCoder.Exceptions.DataTooLongException">
         /// Thrown when the data length exceeds the maximum capacity for the specified encoding mode and error correction level.
         /// </exception>
-        public static int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
+        public static int CalculateMinimumVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
             // capacity table is already sorted by version number ascending, so the smallest version that can hold the data is the first one found
             foreach (var x in _capacityTable)
