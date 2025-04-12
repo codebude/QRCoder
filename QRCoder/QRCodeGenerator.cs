@@ -17,17 +17,6 @@ namespace QRCoder;
 public partial class QRCodeGenerator : IDisposable
 {
     /// <summary>
-    /// A table containing the error correction capacities and data codeword information for different combinations of QR code versions and error correction levels.
-    /// </summary>
-    private static readonly List<ECCInfo> _capacityECCTable = Tables.CreateCapacityECCTable();
-
-    /// <summary>
-    /// A list containing detailed capacity information for each version of QR codes.
-    /// The index in the capacity table corresponds to one less than the version number.
-    /// </summary>
-    private static readonly List<VersionInfo> _capacityTable = Tables.CreateCapacityTable();
-
-    /// <summary>
     /// Initializes the QR code generator
     /// </summary>
     public QRCodeGenerator()
@@ -121,7 +110,7 @@ public partial class QRCodeGenerator : IDisposable
         var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
         var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
         int version = requestedVersion;
-        int minVersion = GetVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
+        int minVersion = CapacityTables.GetVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
         if (version == -1)
         {
             version = minVersion;
@@ -131,7 +120,7 @@ public partial class QRCodeGenerator : IDisposable
             //Version was passed as fixed version via parameter. Thus let's check if chosen version is valid.
             if (minVersion > version)
             {
-                var maxSizeByte = _capacityTable[version - 1].Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
+                var maxSizeByte = CapacityTables.GetCapacityInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
                 throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
             }
         }
@@ -171,7 +160,7 @@ public partial class QRCodeGenerator : IDisposable
     public static QRCodeData GenerateQrCode(byte[] binaryData, ECCLevel eccLevel)
     {
         eccLevel = ValidateECCLevel(eccLevel);
-        int version = GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
+        int version = CapacityTables.GetVersion(binaryData.Length, EncodingMode.Byte, eccLevel);
 
         int countIndicatorLen = GetCountIndicatorLength(version, EncodingMode.Byte);
         // Convert byte array to bit array, with prefix padding for mode indicator and count indicator
@@ -211,7 +200,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <returns>A QRCodeData structure containing the full QR code matrix, which can be used for rendering or analysis.</returns>
     private static QRCodeData GenerateQrCode(BitArray bitArray, ECCLevel eccLevel, int version)
     {
-        var eccInfo = _capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel == eccLevel);
+        var eccInfo = CapacityTables.GetCapacityEccInfo(version, eccLevel);
 
         // Fill up data code word
         PadData();
@@ -300,7 +289,7 @@ public partial class QRCodeGenerator : IDisposable
                     if (codeBlock.ECCWords.Length > i)
                         length += 8;
             }
-            length += Tables.RemainderBits[version - 1];
+            length += CapacityTables.GetRemainderBits(version);
             return length;
         }
 
@@ -526,7 +515,7 @@ public partial class QRCodeGenerator : IDisposable
                 // Convert the first coefficient to its corresponding alpha exponent unless it's zero.
                 // Coefficients that are zero remain zero because log(0) is undefined.
                 var index0Coefficient = leadTermSource[0].Coefficient;
-                index0Coefficient = index0Coefficient == 0 ? 0 : GetAlphaExpFromIntVal(index0Coefficient);
+                index0Coefficient = index0Coefficient == 0 ? 0 : GaloisField.GetAlphaExpFromIntVal(index0Coefficient);
                 var alphaNotation = new PolynomItem(index0Coefficient, leadTermSource[0].Exponent);
                 var resPoly = MultiplyGeneratorPolynomByLeadterm(generatorPolynom, alphaNotation, i);
                 ConvertToDecNotationInPlace(resPoly);
@@ -562,40 +551,8 @@ public partial class QRCodeGenerator : IDisposable
         for (var i = 0; i < poly.Count; i++)
         {
             // Convert the alpha exponent of the coefficient to its decimal value and create a new polynomial item with the updated coefficient.
-            poly[i] = new PolynomItem(GetIntValFromAlphaExp(poly[i].Coefficient), poly[i].Exponent);
+            poly[i] = new PolynomItem(GaloisField.GetIntValFromAlphaExp(poly[i].Coefficient), poly[i].Exponent);
         }
-    }
-
-    /// <summary>
-    /// Determines the minimum QR code version required to encode a given amount of data with a specific encoding mode and error correction level.
-    /// If no suitable version is found, it throws an exception indicating that the data length exceeds the maximum capacity for the given settings.
-    /// </summary>
-    /// <param name="length">The length of the data to be encoded.</param>
-    /// <param name="encMode">The encoding mode (e.g., Numeric, Alphanumeric, Byte).</param>
-    /// <param name="eccLevel">The error correction level (e.g., Low, Medium, Quartile, High).</param>
-    /// <returns>The minimum version of the QR code that can accommodate the given data and settings.</returns>
-    private static int GetVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
-    {
-        // capacity table is already sorted by version number ascending, so the smallest version that can hold the data is the first one found
-        foreach (var x in _capacityTable)
-        {
-            // find the requested ECC level and encoding mode in the capacity table
-            foreach (var y in x.Details)
-            {
-                if (y.ErrorCorrectionLevel == eccLevel && y.CapacityDict[encMode] >= length)
-                {
-                    // if the capacity of the current version is enough, return the version number
-                    return x.Version;
-                }
-            }
-        }
-
-        // if no version was found, throw an exception
-        var maxSizeByte = _capacityTable.Where(
-            x => x.Details.Any(
-                y => (y.ErrorCorrectionLevel == eccLevel))
-            ).Max(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]);
-        throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
     }
 
     /// <summary>
@@ -1052,7 +1009,7 @@ public partial class QRCodeGenerator : IDisposable
                 // Create a new polynomial term with the coefficients added (as exponents) and exponents summed.
                 var polItemRes = new PolynomItem
                 (
-                    ShrinkAlphaExp(polItemBase.Coefficient + polItemMulti.Coefficient),
+                    GaloisField.ShrinkAlphaExp(polItemBase.Coefficient + polItemMulti.Coefficient),
                     (polItemBase.Exponent + polItemMulti.Exponent)
                 );
                 resultPolynom.Add(polItemRes);
@@ -1069,11 +1026,11 @@ public partial class QRCodeGenerator : IDisposable
             foreach (var polynomOld in resultPolynom)
             {
                 if (polynomOld.Exponent == exponent)
-                    coefficient ^= GetIntValFromAlphaExp(polynomOld.Coefficient);
+                    coefficient ^= GaloisField.GetIntValFromAlphaExp(polynomOld.Coefficient);
             }
 
             // Fix the polynomial terms by recalculating the coefficients based on XORed results.
-            var polynomFixed = new PolynomItem(GetAlphaExpFromIntVal(coefficient), exponent);
+            var polynomFixed = new PolynomItem(GaloisField.GetAlphaExpFromIntVal(coefficient), exponent);
             gluedPolynoms[gluedPolynomsIndex++] = polynomFixed;
         }
 
@@ -1124,33 +1081,6 @@ public partial class QRCodeGenerator : IDisposable
             return result;
         }
     }
-
-    /// <summary>
-    /// Retrieves the integer value from the Galois field that corresponds to a given exponent.
-    /// This is used in Reed-Solomon and other error correction calculations involving Galois fields.
-    /// </summary>
-    private static int GetIntValFromAlphaExp(int exp)
-        => Tables.GaloisFieldByExponentAlpha[exp];
-
-    /// <summary>
-    /// Retrieves the exponent from the Galois field that corresponds to a given integer value.
-    /// Throws an exception if the integer value is zero, as zero does not have a logarithmic representation in the field.
-    /// </summary>
-    private static int GetAlphaExpFromIntVal(int intVal)
-    {
-        if (intVal == 0)
-            ThrowIntValOutOfRangeException(); // Zero is not valid as it does not have an exponent representation.
-        return Tables.GaloisFieldByIntegerValue[intVal];
-
-        void ThrowIntValOutOfRangeException() => throw new ArgumentOutOfRangeException(nameof(intVal), "The provided integer value is out of range, as zero is not representable.");
-    }
-
-    /// <summary>
-    /// Normalizes a Galois field exponent to ensure it remains within the bounds of the field's size.
-    /// This is particularly necessary when performing multiplications in the field which can result in exponents exceeding the field's maximum.
-    /// </summary>
-    private static int ShrinkAlphaExp(int alphaExp)
-        => (int)((alphaExp % 256) + Math.Floor((double)(alphaExp / 256)));
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
     public void Dispose()
