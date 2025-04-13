@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -15,6 +16,26 @@ namespace QRCoderTests;
 
 public class QRGeneratorTests
 {
+    [Fact]
+    public void micro()
+    {
+        var input = "1";
+        var expectedSize = 11;
+
+        var qrData = QRCodeGenerator.GenerateMicroQrCode(input);
+        (qrData.ModuleMatrix.Count - 8).ShouldBe(expectedSize); // exclude padding
+        var encoder = new AsciiQRCode(qrData);
+        var txt = encoder.GetGraphicSmall(false, true, Environment.NewLine);
+        Debug.WriteLine(txt);
+        txt = encoder.GetGraphic(1, drawQuietZones: false, endOfLine: Environment.NewLine);
+        Debug.WriteLine(txt);
+
+        //var result = string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
+        //var hash = System.Security.Cryptography.SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(result));
+        //var hashString = Convert.ToBase64String(hash);
+        //hashString.TrimEnd('=').ShouldBe(expectedHash);
+    }
+
     [Fact]
     public void validate_antilogtable()
     {
