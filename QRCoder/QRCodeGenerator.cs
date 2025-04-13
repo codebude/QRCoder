@@ -427,6 +427,8 @@ public partial class QRCodeGenerator : IDisposable
 
     private static readonly BitArray _getFormatGenerator = new BitArray(new bool[] { true, false, true, false, false, true, true, false, true, true, true });
     private static readonly BitArray _getFormatMask = new BitArray(new bool[] { true, false, true, false, true, false, false, false, false, false, true, false, false, true, false });
+    private static readonly BitArray _getFormatMicroMask = new BitArray(new bool[] { true, false, false, false, true, false, false, false, true, false, false, false, true, false, true });
+
     /// <summary>
     /// Generates a BitArray containing the format string for a QR code based on the error correction level and mask pattern version.
     /// The format string includes the error correction level, mask pattern version, and error correction coding.
@@ -462,10 +464,13 @@ public partial class QRCodeGenerator : IDisposable
         // Prefix the error correction bits with the ECC level and version number.
         fStrEcc.Length = 10 + 5;
         ShiftAwayFromBit0(fStrEcc, (10 - count) + 5);
-        WriteEccLevelAndVersion();
+        if (version < 0)
+            WriteMicroEccLevelAndVersion();
+        else
+            WriteEccLevelAndVersion();
 
         // XOR the format string with a predefined mask to add robustness against errors.
-        fStrEcc.Xor(_getFormatMask);
+        fStrEcc.Xor(version < 0 ? _getFormatMicroMask : _getFormatMask);
 
         void WriteEccLevelAndVersion()
         {

@@ -19,10 +19,10 @@ public class QRGeneratorTests
     [Fact]
     public void micro()
     {
-        var input = "1";
-        var expectedSize = 11;
+        var input = "000000";
+        var expectedSize = 13;
 
-        var qrData = QRCodeGenerator.GenerateMicroQrCode(input);
+        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.M, -2);
         (qrData.ModuleMatrix.Count - 8).ShouldBe(expectedSize); // exclude padding
         var encoder = new AsciiQRCode(qrData);
         var txt = encoder.GetGraphicSmall(false, true, Environment.NewLine);
