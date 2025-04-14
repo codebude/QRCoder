@@ -226,7 +226,7 @@ public partial class QRCodeGenerator
             // Loop from the rightmost column to the leftmost column, skipping one column each time.
             for (var x = size - 1; x >= 0; x -= 2)
             {
-                // Skip the timing pattern column at position 6.
+                // Skip the timing pattern column at position 6 (for normal QR codes only, not Micro QR codes).
                 if (qrCode.Version > 0 && x == 6)
                     x = 5;
 
