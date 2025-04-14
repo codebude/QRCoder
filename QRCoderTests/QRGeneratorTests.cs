@@ -19,7 +19,7 @@ public class QRGeneratorTests
     [Fact]
     public void micro()
     {
-        var input = "000000";
+        var input = "00000000";
         var expectedSize = 13;
 
         var qrData = QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.M, -2);

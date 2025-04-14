@@ -208,7 +208,7 @@ public partial class QRCodeGenerator
                     errorCorrectionLevel: ECCLevel.Default,
                     totalDataCodewords: 3,
                     totalDataBits: 20,
-                    eccPerBlock: 0),
+                    eccPerBlock: 2),
 
                 // Micro QR Code Version M2
                 new ECCInfo(-2, ECCLevel.L, 5, 40, 5),

@@ -66,21 +66,21 @@ public partial class QRCodeGenerator
             //
             //     i    { x1, y1 }
             //     ===============
-            //     0    { 1, 8 }
-            //     1    { 2, 8 }
-            //     2    { 3, 8 }
-            //     3    { 4, 8 }
-            //     4    { 5, 8 }
-            //     5    { 6, 8 }
-            //     6    { 7, 8 }
+            //     0    { 8, 1 }
+            //     1    { 8, 2 }
+            //     2    { 8, 3 }
+            //     3    { 8, 4 }
+            //     4    { 8, 5 }
+            //     5    { 8, 6 }
+            //     6    { 8, 7 }
             //     7    { 8, 8 }
-            //     8    { 8, 7 }
-            //     9    { 8, 6 }
-            //     10   { 8, 5 }
-            //     11   { 8, 4 }
-            //     12   { 8, 3 }
-            //     13   { 8, 2 }
-            //     14   { 8, 1 }
+            //     8    { 7, 8 }
+            //     9    { 6, 8 }
+            //     10   { 5, 8 }
+            //     11   { 4, 8 }
+            //     12   { 3, 8 }
+            //     13   { 2, 8 }
+            //     14   { 1, 8 }
 
             for (var i = 0; i < 15; i++)
             {
@@ -89,8 +89,8 @@ public partial class QRCodeGenerator
                 if (isMicro)
                 {
                     // Micro QR format positions
-                    x1 = i < 8 ? i + 1 : 8;
-                    y1 = i < 8 ? 8 : 15 - i;
+                    x1 = i < 8 ? 8 : 14 - i + 1;
+                    y1 = i < 8 ? i + 1 : 8;
 
                     // Micro QR only uses one set of format positions, no duplication.
                     qrCode.ModuleMatrix[y1 + offsetValue][x1 + offsetValue] = formatStr[14 - i];
@@ -227,34 +227,22 @@ public partial class QRCodeGenerator
             for (var x = size - 1; x >= 0; x -= 2)
             {
                 // Skip the timing pattern column at position 6.
-                if (x == 6)
+                if (qrCode.Version > 0 && x == 6)
                     x = 5;
 
                 // Loop through each row in the current column set.
                 for (var yMod = 1; yMod <= size; yMod++)
                 {
-                    int y; // Actual y position to place data in the matrix.
-
                     // Determine the actual y position based on the current fill direction.
-                    if (up)
-                    {
-                        y = size - yMod; // Calculate y for upward direction.
-                        // Place data if within data length, current position is not blocked, and leftward column is in bounds.
-                        if (index < count && !blockedModules.IsBlocked(x, y))
-                            qrCode.ModuleMatrix[y + 4][x + 4] = data[index++];
-                        if (index < count && x > 0 && !blockedModules.IsBlocked(x - 1, y))
-                            qrCode.ModuleMatrix[y + 4][x - 1 + 4] = data[index++];
-                    }
-                    else
-                    {
-                        y = yMod - 1; // Calculate y for downward direction.
-                        // Similar checks and data placement for the downward direction.
-                        if (index < count && !blockedModules.IsBlocked(x, y))
-                            qrCode.ModuleMatrix[y + 4][x + 4] = data[index++];
-                        if (index < count && x > 0 && !blockedModules.IsBlocked(x - 1, y))
-                            qrCode.ModuleMatrix[y + 4][x - 1 + 4] = data[index++];
-                    }
+                    int y = up ? size - yMod : yMod - 1;
+
+                    // Place data if within data length and current position is not blocked.
+                    if (index < count && !blockedModules.IsBlocked(x, y))
+                        qrCode.ModuleMatrix[y + 4][x + 4] = data[index++];
+                    if (index < count && !blockedModules.IsBlocked(x - 1, y))
+                        qrCode.ModuleMatrix[y + 4][x - 1 + 4] = data[index++];
                 }
+
                 // Switch the fill direction after completing each column set.
                 up = !up;
             }
@@ -292,7 +280,7 @@ public partial class QRCodeGenerator
         {
             if (version < 0) // Micro QR codes
             {
-                blockedModules.Add(new Rectangle(0, 8, 8, 1));
+                blockedModules.Add(new Rectangle(0, 8, 9, 1));
                 blockedModules.Add(new Rectangle(8, 0, 1, 8));
                 return;
             }
