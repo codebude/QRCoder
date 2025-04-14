@@ -82,6 +82,9 @@ public partial class QRCodeGenerator
             //     13   { 2, 8 }
             //     14   { 1, 8 }
 
+            // The bit pattern is considered an entire 'word' and LSB goes in position 0
+            // So, we need to reverse the order of the generated bit pattern, hence the (14 - i) below
+
             for (var i = 0; i < 15; i++)
             {
                 int x1, y1, x2, y2;
@@ -239,7 +242,7 @@ public partial class QRCodeGenerator
                     // Place data if within data length and current position is not blocked.
                     if (index < count && !blockedModules.IsBlocked(x, y))
                         qrCode.ModuleMatrix[y + 4][x + 4] = data[index++];
-                    if (index < count && !blockedModules.IsBlocked(x - 1, y))
+                    if (index < count && x > 0 && !blockedModules.IsBlocked(x - 1, y))
                         qrCode.ModuleMatrix[y + 4][x - 1 + 4] = data[index++];
                 }
 

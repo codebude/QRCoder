@@ -17,23 +17,35 @@ namespace QRCoderTests;
 public class QRGeneratorTests
 {
     [Fact]
-    public void micro()
+    public void micro_debug_m1()
     {
-        var input = "00000000";
-        var expectedSize = 13;
+        var input = "54321";
+        var expectedSize = 11;
 
-        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.M, -2);
+        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.Default, -1);
         (qrData.ModuleMatrix.Count - 8).ShouldBe(expectedSize); // exclude padding
         var encoder = new AsciiQRCode(qrData);
-        var txt = encoder.GetGraphicSmall(false, true, Environment.NewLine);
+        var txt = encoder.GetGraphicSmall(drawQuietZones: false, invert: true, endOfLine: Environment.NewLine);
         Debug.WriteLine(txt);
-        txt = encoder.GetGraphic(1, drawQuietZones: false, endOfLine: Environment.NewLine);
-        Debug.WriteLine(txt);
+        var txt2 = encoder.GetGraphic(1, drawQuietZones: false, endOfLine: Environment.NewLine);
+        Debug.WriteLine(txt2);
 
-        //var result = string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
-        //var hash = System.Security.Cryptography.SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(result));
-        //var hashString = Convert.ToBase64String(hash);
-        //hashString.TrimEnd('=').ShouldBe(expectedHash);
+        // expected
+        _ = @"
+██████████████  ██  ██
+██          ██    ██  
+██  ██████  ██  ██  ██
+██  ██████  ██      ██
+██  ██████  ██      ██
+██          ██  ██████
+██████████████  ██    
+                ██████
+████          ██      
+  ██  ██████      ████
+██    ██  ██████████  
+";
+
+        //txt2.ShouldBe(expected);
     }
 
     [Fact]
@@ -62,6 +74,20 @@ public class QRGeneratorTests
     }
 
 #if !NETFRAMEWORK // [Theory] is not supported in xunit < 2.0.0
+    [Theory]
+    [InlineData("00000000", ECCLevel.M, "lEBc3nKaK0UpMfenT5FTX02Zgfg", 13)] //verified
+    [InlineData("123456789", ECCLevel.L, "gCY4Cj1uLhI/0JjWG1F9kC4S1+I", 13)] //verified
+    [InlineData("abcd56789012345", ECCLevel.L, "kqcKfCCdu1VTjjtsmK4iBav9FTs", 17)] //verified
+    public void validate_micro_qr_code(string input, ECCLevel eccLevel, string expectedHash, int expectedSize)
+    {
+        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, eccLevel);
+        (qrData.ModuleMatrix.Count - 8).ShouldBe(expectedSize); // exclude padding
+        var result = string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
+        var hash = System.Security.Cryptography.SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(result));
+        var hashString = Convert.ToBase64String(hash);
+        hashString.TrimEnd('=').ShouldBe(expectedHash);
+    }
+
     [Theory]
     // version 1 numeric
     [InlineData("1", "KWw84nkWZLMh5LqAJ/4s/4mW/08", 21)]
