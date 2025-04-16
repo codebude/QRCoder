@@ -357,7 +357,13 @@ public partial class QRCodeGenerator : IDisposable
         int CalculateInterleavedLength()
         {
             var length = 0;
-            for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
+            var codewords = Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2);
+            if (version == -1 || version == -3)
+            {
+                codewords--;
+                length += 4;
+            }
+            for (var i = 0; i < codewords; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
                     if ((uint)codeBlock.CodeWordsLength / 8 > i)
@@ -378,6 +384,9 @@ public partial class QRCodeGenerator : IDisposable
         {
             var data = new BitArray(interleavedLength);
             int pos = 0;
+            int codewords = Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2);
+            if (version == -1 || version == -3)
+                codewords--;
             for (var i = 0; i < Math.Max(eccInfo.CodewordsInGroup1, eccInfo.CodewordsInGroup2); i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
@@ -385,6 +394,10 @@ public partial class QRCodeGenerator : IDisposable
                     if ((uint)codeBlock.CodeWordsLength / 8 > i)
                         pos = bitArray.CopyTo(data, (int)((uint)i * 8) + codeBlock.CodeWordsOffset, pos, 8);
                 }
+            }
+            if (version == -1 || version == -3)
+            {
+                pos = bitArray.CopyTo(data, (int)((uint)codewords * 8) + codeWordWithECC[0].CodeWordsOffset, pos, 4);
             }
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
@@ -712,43 +725,50 @@ public partial class QRCodeGenerator : IDisposable
         => (uint)(c - min) <= (uint)(max - min);
 
     /// <summary>
-    /// Calculates the message polynomial from a bit array which represents the encoded data.
+    /// Converts a segment of a BitArray representing QR code data into a polynomial,
+    /// padding the final byte if necessary (for Micro QR variants like M1 or M3).
     /// </summary>
-    /// <returns>A polynomial representation of the message.</returns>
-    //private static Polynom CalculateMessagePolynom(BitArray bitArray, int offset, int count)
-    //{
-    //    if (count % 8 != 0)
-    //        throw new InvalidOperationException("test");
-    //    count /= 8;
-    //    var messagePol = new Polynom(count);
-    //    for (var i = count - 1; i >= 0; i--)
-    //    {
-    //        messagePol.Add(new PolynomItem(BinToDec(bitArray, offset, 8), i));
-    //        offset += 8;
-    //    }
-    //    return messagePol;
-    //}
+    /// <param name="bitArray">The full bit array representing encoded QR code data.</param>
+    /// <param name="offset">Starting position in the bit array.</param>
+    /// <param name="bitCount">Total number of bits to convert into codewords.</param>
+    /// <returns>A polynomial representing the message codewords.</returns>
     private static Polynom CalculateMessagePolynom(BitArray bitArray, int offset, int bitCount)
     {
+        // Calculate how many full 8-bit codewords are present
         var fullBytes = bitCount / 8;
+
+        // Determine if there is a remaining partial byte (e.g., 4 bits for Micro QR M1 and M3 versions)
         var remainingBits = bitCount % 8;
 
+        if (remainingBits > 0)
+        {
+            // Pad the last byte with zero bits to make it a full 8-bit codeword
+            var addlBits = 8 - remainingBits;
+            var minBitArrayLength = offset + bitCount + addlBits;
+
+            // Extend BitArray length if needed to fit the padded bits
+            if (bitArray.Length < minBitArrayLength)
+                bitArray.Length = minBitArrayLength;
+
+            // Pad the remaining bits with false (0) values
+            for (int i = 0; i < addlBits; i++)
+                bitArray[offset + bitCount + i] = false;
+        }
+
+        // Total number of codewords (includes extra for partial byte if present)
         var polynomLength = fullBytes + (remainingBits > 0 ? 1 : 0);
+
+        // Initialize the polynomial
         var messagePol = new Polynom(polynomLength);
 
+        // Exponent for polynomial terms starts from highest degree
         int exponent = polynomLength - 1;
 
-        // Process full 8-bit codewords
-        for (int i = 0; i < fullBytes; i++)
+        // Convert each 8-bit segment into a decimal value and add it to the polynomial
+        for (int i = 0; i < polynomLength; i++)
         {
             messagePol.Add(new PolynomItem(BinToDec(bitArray, offset, 8), exponent--));
             offset += 8;
-        }
-
-        // Process the final codeword if it's shorter (e.g., 4 bits for M1 and M3)
-        if (remainingBits > 0)
-        {
-            messagePol.Add(new PolynomItem(BinToDec(bitArray, offset, remainingBits), exponent));
         }
 
         return messagePol;

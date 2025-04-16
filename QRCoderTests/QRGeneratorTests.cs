@@ -19,14 +19,12 @@ public class QRGeneratorTests
     [Fact]
     public void micro_debug_m1()
     {
-        var input = "54321";
-        var expectedSize = 11;
+        var input = "abc";
+        var expectedSize = 15;
 
-        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.Default, -1);
+        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.M, -3);
         (qrData.ModuleMatrix.Count - 8).ShouldBe(expectedSize); // exclude padding
         var encoder = new AsciiQRCode(qrData);
-        var txt = encoder.GetGraphicSmall(drawQuietZones: false, invert: true, endOfLine: Environment.NewLine);
-        Debug.WriteLine(txt);
         var txt2 = encoder.GetGraphic(1, drawQuietZones: false, endOfLine: Environment.NewLine);
         Debug.WriteLine(txt2);
 
@@ -75,6 +73,7 @@ public class QRGeneratorTests
 
 #if !NETFRAMEWORK // [Theory] is not supported in xunit < 2.0.0
     [Theory]
+    [InlineData("54321", ECCLevel.Default, "ZfnO93tpy9jjaACKXue2VsACXxY", 11)] //verified
     [InlineData("00000000", ECCLevel.M, "lEBc3nKaK0UpMfenT5FTX02Zgfg", 13)] //verified
     [InlineData("123456789", ECCLevel.L, "gCY4Cj1uLhI/0JjWG1F9kC4S1+I", 13)] //verified
     [InlineData("abcd56789012345", ECCLevel.L, "kqcKfCCdu1VTjjtsmK4iBav9FTs", 17)] //verified
