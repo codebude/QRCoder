@@ -43,6 +43,6 @@ public partial class QRCodeGenerator
         /// This is particularly necessary when performing multiplications in the field which can result in exponents exceeding the field's maximum.
         /// </summary>
         public static int ShrinkAlphaExp(int alphaExp)
-            => (int)((alphaExp % 256) + Math.Floor((double)(alphaExp / 256)));
+            => (alphaExp % 256) + (alphaExp / 256);
     }
 }
