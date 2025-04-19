@@ -17,40 +17,6 @@ namespace QRCoderTests;
 public class QRGeneratorTests
 {
     [Fact]
-    public void micro_debug()
-    {
-        var input = "abc";
-        var expectedSize = 15;
-
-        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.M, -3);
-        (qrData.ModuleMatrix.Count - 8).ShouldBe(expectedSize); // exclude padding
-        var encoder = new AsciiQRCode(qrData);
-        var txt2 = encoder.GetGraphic(1, drawQuietZones: false, endOfLine: Environment.NewLine);
-        Debug.WriteLine(txt2);
-
-        // expected
-        var expected = @"
-██████████████  ██  ██  ██  ██
-██          ██      ████  ████
-██  ██████  ██    ██    ██████
-██  ██████  ██    ██    ██████
-██  ██████  ██      ██████    
-██          ██  ██  ██████    
-██████████████  ██    ██████  
-                        ██  ██
-██      ████    ████    ██    
-    ██    ██████    ██  ██  ██
-██  ████████████████  ████    
-  ██  ██      ██    ████████  
-██████          ██████████    
-  ██    ██      ██      ██████
-██    ██  ██████  ████  ██████
-";
-
-        txt2.Trim('\r', '\n').ShouldBe(expected.Trim('\r', '\n'), StringCompareShould.IgnoreLineEndings);
-    }
-
-    [Fact]
     public void validate_antilogtable()
     {
         var gen = new QRCodeGenerator();
@@ -81,6 +47,7 @@ public class QRGeneratorTests
     [InlineData("00000000", ECCLevel.M, "lEBc3nKaK0UpMfenT5FTX02Zgfg", 13)] //verified
     [InlineData("123456789", ECCLevel.L, "gCY4Cj1uLhI/0JjWG1F9kC4S1+I", 13)] //verified
     [InlineData("abcd56789012345", ECCLevel.L, "kqcKfCCdu1VTjjtsmK4iBav9FTs", 17)] //verified
+    [InlineData("abc", ECCLevel.M, "334sxrtY5KkNZRGj1pBgb87/cFc", 15)] //reads fine, but unable to verify repeating pattern
     public void validate_micro_qr_code(string input, ECCLevel eccLevel, string expectedHash, int expectedSize)
     {
         var qrData = QRCodeGenerator.GenerateMicroQrCode(input, eccLevel);
