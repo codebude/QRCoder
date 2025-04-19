@@ -310,11 +310,19 @@ public partial class QRCodeGenerator : IDisposable
                 var index = bitArray.Length;
                 // extend bit array to required length
                 bitArray.Length = dataLength;
-                // pad with 4 zeros (or less if lengthDiff < 4)
-                index += Math.Min(lengthDiff, 4);
+                // compute padding length
+                var padLength = version > 0 ? 4 :
+                    version == -1 ? 3 :
+                    version == -2 ? 5 :
+                    version == -3 ? 7 : 9;
+                // pad with zeros (or less if not enough room)
+                index += padLength;
                 // pad to nearest 8 bit boundary
                 if ((uint)index % 8 != 0)
                     index += 8 - (int)((uint)index % 8);
+                // for m1 and m3 sizes don't fill last 4 bits with repeating pattern
+                if (version == -1 || version == -3)
+                    dataLength -= 4;
                 // pad with repeating pattern
                 var repeatingPatternIndex = 0;
                 while (index < dataLength)

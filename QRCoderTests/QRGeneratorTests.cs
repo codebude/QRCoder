@@ -17,7 +17,7 @@ namespace QRCoderTests;
 public class QRGeneratorTests
 {
     [Fact]
-    public void micro_debug_m1()
+    public void micro_debug()
     {
         var input = "abc";
         var expectedSize = 15;
@@ -29,21 +29,25 @@ public class QRGeneratorTests
         Debug.WriteLine(txt2);
 
         // expected
-        _ = @"
-██████████████  ██  ██
-██          ██    ██  
-██  ██████  ██  ██  ██
-██  ██████  ██      ██
-██  ██████  ██      ██
-██          ██  ██████
-██████████████  ██    
-                ██████
-████          ██      
-  ██  ██████      ████
-██    ██  ██████████  
+        var expected = @"
+██████████████  ██  ██  ██  ██
+██          ██      ████  ████
+██  ██████  ██    ██    ██████
+██  ██████  ██    ██    ██████
+██  ██████  ██      ██████    
+██          ██  ██  ██████    
+██████████████  ██    ██████  
+                        ██  ██
+██      ████    ████    ██    
+    ██    ██████    ██  ██  ██
+██  ████████████████  ████    
+  ██  ██      ██    ████████  
+██████          ██████████    
+  ██    ██      ██      ██████
+██    ██  ██████  ████  ██████
 ";
 
-        //txt2.ShouldBe(expected);
+        txt2.Trim('\r', '\n').ShouldBe(expected.Trim('\r', '\n'), StringCompareShould.IgnoreLineEndings);
     }
 
     [Fact]
