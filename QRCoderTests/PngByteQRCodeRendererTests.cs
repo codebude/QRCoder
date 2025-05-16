@@ -113,7 +113,6 @@ public class PngByteQRCodeRendererTests
         var result = HelperFunctions.ByteArrayToHash(pngCodeGfx);
         result.ShouldBe("07f760b3eb54901840b094d31e299713");
 #else
-        File.WriteAllBytes(@"C:\Temp\pngbyte_35.png", pngCodeGfx);
         using var mStream = new MemoryStream(pngCodeGfx);
         var bmp = (Bitmap)Image.FromStream(mStream);
         bmp.MakeTransparent(Color.Transparent);
