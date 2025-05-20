@@ -38,6 +38,19 @@ namespace QRCoder
         public static byte[] GetQRCode(string txt, QRCoder.QRCodeGenerator.ECCLevel eccLevel, int size) { }
         public static byte[] GetQRCode(string plainText, int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1) { }
     }
+    public static class PayloadExtensions
+    {
+        public static T RenderWith<T>(this QRCoder.Builders.Payloads.IPayload payload)
+            where T : QRCoder.Builders.Renderers.IRenderer, new () { }
+        public static T RenderWith<T>(this QRCoder.Builders.Payloads.IPayload payload, int pixelsPerModule)
+            where T : QRCoder.Builders.Renderers.IRenderer, QRCoder.Builders.Renderers.IConfigurablePixelsPerModule, new () { }
+        public static T WithEciMode<T>(this T payload, QRCoder.QRCodeGenerator.EciMode eciMode)
+            where T : QRCoder.Builders.Payloads.IConfigurableEciMode { }
+        public static T WithErrorCorrection<T>(this T payload, QRCoder.QRCodeGenerator.ECCLevel eccLevel)
+            where T : QRCoder.Builders.Payloads.IConfigurableEccLevel { }
+        public static T WithVersion<T>(this T payload, int version)
+            where T : QRCoder.Builders.Payloads.IConfigurableVersion { }
+    }
     public static class PayloadGenerator
     {
         public static bool ChecksumMod10(string digits) { }
@@ -774,6 +787,18 @@ namespace QRCoder
         public static byte[] GetQRCode(string txt, QRCoder.QRCodeGenerator.ECCLevel eccLevel, int size, bool drawQuietZones = true) { }
         public static byte[] GetQRCode(string plainText, int pixelsPerModule, byte[] darkColorRgba, byte[] lightColorRgba, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true) { }
     }
+    public static class QRCodeBuilder
+    {
+        public static QRCoder.Builders.Payloads.Implementations.StringPayload CreateBookmark(string url, string title) { }
+        public static QRCoder.Builders.Payloads.Implementations.EmailPayload CreateEmail(string address) { }
+        public static QRCoder.Builders.Payloads.Implementations.StringPayload CreateMMS(string number, QRCoder.PayloadGenerator.MMS.MMSEncoding encoding = 0) { }
+        public static QRCoder.Builders.Payloads.Implementations.StringPayload CreateMMS(string number, string subject, QRCoder.PayloadGenerator.MMS.MMSEncoding encoding = 0) { }
+        public static QRCoder.Builders.Payloads.Implementations.StringPayload CreatePhoneNumber(string number) { }
+        public static QRCoder.Builders.Payloads.Implementations.StringPayload CreateSms(string number, QRCoder.PayloadGenerator.SMS.SMSEncoding encoding = 0) { }
+        public static QRCoder.Builders.Payloads.Implementations.StringPayload CreateUrl(string url) { }
+        public static QRCoder.Builders.Payloads.Implementations.WiFiPayload CreateWiFi(string ssid) { }
+        public static QRCoder.Builders.Payloads.Implementations.WiFiPayload CreateWiFi(string ssid, string password, QRCoder.PayloadGenerator.WiFi.Authentication authentication) { }
+    }
     public class QRCodeData : System.IDisposable
     {
         public QRCodeData(int version) { }
@@ -819,6 +844,121 @@ namespace QRCoder
             Iso8859_2 = 4,
             Utf8 = 26,
         }
+    }
+    public static class RendererExtensions
+    {
+        public static byte[] ToArray(this QRCoder.Builders.Renderers.IStreamRenderer streamRenderer) { }
+        public static System.ArraySegment<byte> ToArraySegment(this QRCoder.Builders.Renderers.IStreamRenderer streamRenderer) { }
+        public static string ToBase64String(this QRCoder.Builders.Renderers.IStreamRenderer streamRenderer) { }
+        public static void ToFile(this QRCoder.Builders.Renderers.IStreamRenderer streamRenderer, string fileName) { }
+        public static void ToFile(this QRCoder.Builders.Renderers.ITextRenderer textRenderer, string fileName, System.Text.Encoding encoding = null) { }
+        public static void ToStream(this QRCoder.Builders.Renderers.IStreamRenderer streamRenderer, System.IO.Stream stream) { }
+        public static System.IO.MemoryStream ToStream(this QRCoder.Builders.Renderers.ITextRenderer textRenderer, System.Text.Encoding encoding = null) { }
+        public static void ToStream(this QRCoder.Builders.Renderers.ITextRenderer textRenderer, System.IO.Stream stream, System.Text.Encoding encoding = null) { }
+        public static T WithPixelsPerModule<T>(this T payload, int value)
+            where T : QRCoder.Builders.Renderers.IConfigurablePixelsPerModule { }
+        public static T WithQuietZone<T>(this T payload, bool value)
+            where T : QRCoder.Builders.Renderers.IConfigurableQuietZones { }
+    }
+}
+namespace QRCoder.Builders.Payloads
+{
+    public interface IConfigurableEccLevel
+    {
+        QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; set; }
+    }
+    public interface IConfigurableEciMode
+    {
+        QRCoder.QRCodeGenerator.EciMode EciMode { get; set; }
+    }
+    public interface IConfigurableVersion
+    {
+        int Version { get; set; }
+    }
+    public interface IPayload
+    {
+        QRCoder.QRCodeData ToMatrix();
+    }
+    public abstract class PayloadBase : QRCoder.Builders.Payloads.IConfigurableEccLevel, QRCoder.Builders.Payloads.IConfigurableEciMode, QRCoder.Builders.Payloads.IConfigurableVersion, QRCoder.Builders.Payloads.IPayload
+    {
+        protected PayloadBase() { }
+        protected abstract string Value { get; }
+        protected virtual QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; set; }
+        protected virtual QRCoder.QRCodeGenerator.EciMode EciMode { get; set; }
+        protected virtual int Version { get; set; }
+        public virtual QRCoder.QRCodeData ToMatrix() { }
+    }
+}
+namespace QRCoder.Builders.Payloads.Implementations
+{
+    public class EmailPayload : QRCoder.Builders.Payloads.PayloadBase
+    {
+        public EmailPayload(string address) { }
+        protected override string Value { get; }
+        public QRCoder.Builders.Payloads.Implementations.EmailPayload WithBody(string body) { }
+        public QRCoder.Builders.Payloads.Implementations.EmailPayload WithEncoding(QRCoder.PayloadGenerator.Mail.MailEncoding encoding) { }
+        public QRCoder.Builders.Payloads.Implementations.EmailPayload WithSubject(string subject) { }
+    }
+    public class StringPayload : QRCoder.Builders.Payloads.PayloadBase
+    {
+        public StringPayload(string data) { }
+        protected override string Value { get; }
+    }
+    public class WiFiPayload : QRCoder.Builders.Payloads.PayloadBase
+    {
+        public WiFiPayload(string ssid) { }
+        public WiFiPayload(string ssid, string password, QRCoder.PayloadGenerator.WiFi.Authentication authentication) { }
+        protected override string Value { get; }
+        public QRCoder.Builders.Payloads.Implementations.WiFiPayload WithHexStrings() { }
+        public QRCoder.Builders.Payloads.Implementations.WiFiPayload WithHiddenSSID() { }
+    }
+}
+namespace QRCoder.Builders.Renderers
+{
+    public interface IConfigurablePixelsPerModule
+    {
+        int PixelsPerModule { get; set; }
+    }
+    public interface IConfigurableQuietZones
+    {
+        bool QuietZone { get; set; }
+    }
+    public interface IRenderer
+    {
+        QRCoder.Builders.Payloads.IPayload Payload { set; }
+    }
+    public interface IStreamRenderer
+    {
+        System.IO.MemoryStream ToStream();
+    }
+    public interface ITextRenderer
+    {
+        string ToString();
+    }
+    public abstract class RendererBase : QRCoder.Builders.Renderers.IConfigurableQuietZones, QRCoder.Builders.Renderers.IRenderer
+    {
+        protected RendererBase() { }
+        protected QRCoder.QRCodeData QrCodeData { get; }
+        protected bool QuietZone { get; set; }
+    }
+}
+namespace QRCoder.Builders.Renderers.Implementations
+{
+    public class AsciiRenderer : QRCoder.Builders.Renderers.RendererBase, QRCoder.Builders.Renderers.ITextRenderer
+    {
+        public AsciiRenderer() { }
+        public override string ToString() { }
+        public QRCoder.Builders.Renderers.Implementations.AsciiRenderer WithEndOfLine(string endOfLine) { }
+        public QRCoder.Builders.Renderers.Implementations.AsciiRenderer WithInverseDarkLight() { }
+        public QRCoder.Builders.Renderers.Implementations.AsciiRenderer WithRepeatPerModule(int repeatPerModule) { }
+        public QRCoder.Builders.Renderers.Implementations.AsciiRenderer WithText(string darkString, string lightString) { }
+    }
+    public class PngRenderer : QRCoder.Builders.Renderers.RendererBase, QRCoder.Builders.Renderers.IConfigurablePixelsPerModule, QRCoder.Builders.Renderers.IStreamRenderer
+    {
+        public PngRenderer() { }
+        public byte[] ToArray() { }
+        public System.IO.MemoryStream ToStream() { }
+        public QRCoder.Builders.Renderers.Implementations.PngRenderer WithColors(byte[] darkColor, byte[] lightColor) { }
     }
 }
 namespace QRCoder.Exceptions
