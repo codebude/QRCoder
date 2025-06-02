@@ -160,7 +160,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <returns>Returns the raw QR code data which can be used for rendering.</returns>
     public static QRCodeData GenerateMicroQrCode(string plainText, ECCLevel eccLevel = ECCLevel.Default, int requestedVersion = 0)
     {
-        if (requestedVersion < -4 || requestedVersion > 0)
+        if (requestedVersion is < -4 or > 0)
             throw new ArgumentOutOfRangeException(nameof(requestedVersion), requestedVersion, "Requested version must be -1 to -4 representing M1 to M4, or 0 for default.");
         ValidateECCLevel(eccLevel);
         if (eccLevel == ECCLevel.H)
