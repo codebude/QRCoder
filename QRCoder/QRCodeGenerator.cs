@@ -311,10 +311,14 @@ public partial class QRCodeGenerator : IDisposable
                 // extend bit array to required length
                 bitArray.Length = dataLength;
                 // compute padding length
-                var padLength = version > 0 ? 4 :
-                    version == -1 ? 3 :
-                    version == -2 ? 5 :
-                    version == -3 ? 7 : 9;
+                int padLength = version switch
+                {
+                    > 0 => 4,
+                    -1 => 3,
+                    -2 => 5,
+                    -3 => 7,
+                    _ => 9
+                };
                 // pad with zeros (or less if not enough room)
                 index += padLength;
                 // pad to nearest 8 bit boundary
