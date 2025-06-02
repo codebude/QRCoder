@@ -549,10 +549,13 @@ public partial class QRCodeGenerator : IDisposable
             }
 
             // Insert the 2-bit mask version directly after the version / error correction level bits.
-            var microMaskVersion =
-                maskVersion == 1 ? 0 :
-                maskVersion == 4 ? 1 :
-                maskVersion == 6 ? 2 : 3;
+            int microMaskVersion = maskVersion switch
+            {
+                1 => 0,
+                4 => 1,
+                6 => 2,
+                _ => 3
+            };
             DecToBin(microMaskVersion, 2, fStrEcc, 3);
         }
     }
