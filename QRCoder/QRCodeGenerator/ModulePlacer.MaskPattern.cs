@@ -86,10 +86,10 @@ public partial class QRCodeGenerator
             /// <returns>The total penalty score of the QR code.</returns>
             public static int ScoreMicro(QRCodeData qrCode)
             {
-                var size = qrCode.ModuleMatrix.Count;
+                int size = qrCode.ModuleMatrix.Count;
                 int sum1 = 0;
                 int sum2 = 0;
-                for (var i = 1; i < size; i++)
+                for (int i = 1; i < size; i++)
                 {
                     if (qrCode.ModuleMatrix[size - 1][i])
                         sum1++;
