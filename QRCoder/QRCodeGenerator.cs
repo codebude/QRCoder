@@ -151,7 +151,7 @@ public partial class QRCodeGenerator : IDisposable
     }
 
     /// <summary>
-    /// Calculates the Micro QR code data which than can be used in one of the rendering classes to generate a graphical representation.
+    /// Calculates the Micro QR code data which then can be used in one of the rendering classes to generate a graphical representation.
     /// </summary>
     /// <param name="plainText">The payload which shall be encoded in the QR code</param>
     /// <param name="eccLevel">The level of error correction data</param>
