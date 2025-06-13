@@ -26,7 +26,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Compiled project
-        path: .
+        path: C:\a\qrcoder\qrcoder
 
   test:
     needs: build
@@ -48,7 +48,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: Compiled project
-        path: D:\a\qrcoder\qrcoder
+        path: C:\a\qrcoder\qrcoder
 
     - name: Install .NET SDK ${{ matrix.dotnet-framework.sdk }}
       uses: actions/setup-dotnet@v4
@@ -70,7 +70,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: Compiled project
-        path: D:\a\qrcoder\qrcoder
+        path: C:\a\qrcoder\qrcoder
 
     - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v4
