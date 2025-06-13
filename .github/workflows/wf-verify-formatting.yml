@@ -8,6 +8,8 @@ on:
 jobs:
   format:
     runs-on: ubuntu-latest
+    env:
+      EnableWindowsTargeting: true
     steps:
     - uses: actions/checkout@v4
       name: Checkout Code
