@@ -1018,7 +1018,13 @@ public partial class QRCodeGenerator : IDisposable
 
         // Identify and merge terms with the same exponent.
         var toGlue = GetNotUniqueExponents(resultPolynom);
+#if NETCOREAPP
+        var gluedPolynoms = toGlue.Length <= 128
+            ? stackalloc PolynomItem[128].Slice(0, toGlue.Length)
+            : new PolynomItem[toGlue.Length];
+#else
         var gluedPolynoms = new PolynomItem[toGlue.Length];
+#endif
         var gluedPolynomsIndex = 0;
         foreach (var exponent in toGlue)
         {
