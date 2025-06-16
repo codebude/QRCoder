@@ -1042,7 +1042,7 @@ public partial class QRCodeGenerator : IDisposable
 
         // Remove duplicated exponents and add the corrected ones back.
         for (int i = resultPolynom.Count - 1; i >= 0; i--)
-            if (toGlue.Contains(resultPolynom[i].Exponent))
+            if (Array.IndexOf(toGlue, resultPolynom[i].Exponent) >= 0)
                 resultPolynom.RemoveAt(i);
         foreach (var polynom in gluedPolynoms)
             resultPolynom.Add(polynom);
