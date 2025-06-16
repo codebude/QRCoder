@@ -4,6 +4,7 @@ using System.Buffers;
 #endif
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -1017,12 +1018,13 @@ public partial class QRCodeGenerator : IDisposable
         }
 
         // Identify and merge terms with the same exponent.
-        var toGlue = GetNotUniqueExponents(resultPolynom);
 #if NETCOREAPP
+        var toGlue = GetNotUniqueExponents(resultPolynom, resultPolynom.Count <= 128 ? stackalloc int[128].Slice(0, resultPolynom.Count) : new int[resultPolynom.Count]);
         var gluedPolynoms = toGlue.Length <= 128
             ? stackalloc PolynomItem[128].Slice(0, toGlue.Length)
             : new PolynomItem[toGlue.Length];
 #else
+        var toGlue = GetNotUniqueExponents(resultPolynom);
         var gluedPolynoms = new PolynomItem[toGlue.Length];
 #endif
         var gluedPolynomsIndex = 0;
@@ -1042,7 +1044,11 @@ public partial class QRCodeGenerator : IDisposable
 
         // Remove duplicated exponents and add the corrected ones back.
         for (int i = resultPolynom.Count - 1; i >= 0; i--)
+#if NETCOREAPP
+            if (toGlue.Contains(resultPolynom[i].Exponent))
+#else
             if (Array.IndexOf(toGlue, resultPolynom[i].Exponent) >= 0)
+#endif
                 resultPolynom.RemoveAt(i);
         foreach (var polynom in gluedPolynoms)
             resultPolynom.Add(polynom);
@@ -1052,20 +1058,55 @@ public partial class QRCodeGenerator : IDisposable
         return resultPolynom;
 
         // Auxiliary function to identify exponents that appear more than once in the polynomial.
-        int[] GetNotUniqueExponents(Polynom list)
+#if NETCOREAPP
+        static ReadOnlySpan<int> GetNotUniqueExponents(Polynom list, Span<int> buffer)
+        {
+            Debug.Assert(list.Count == buffer.Length);
+
+            int idx = 0;
+            foreach (var row in list)
+            {
+                buffer[idx++] = row.Exponent;
+            }
+
+            buffer.Sort();
+
+            idx = 0;
+            int expCount = 0;
+            int last = buffer[0];
+
+            for (int i = 1; i < buffer.Length; ++i)
+            {
+                if (buffer[i] == last)
+                {
+                    expCount++;
+                }
+                else
+                {
+                    if (expCount > 0)
+                    {
+                        Debug.Assert(idx <= i - 1);
+
+                        buffer[idx++] = last;
+                        expCount = 0;
+                    }
+                }
+
+                last = buffer[i];
+            }
+
+            return buffer.Slice(0, idx);
+        }
+#else
+        static int[] GetNotUniqueExponents(Polynom list)
         {
             var dic = new Dictionary<int, bool>(list.Count);
             foreach (var row in list)
             {
-#if NETCOREAPP
-                if (dic.TryAdd(row.Exponent, false))
-                    dic[row.Exponent] = true;
-#else
                 if (!dic.ContainsKey(row.Exponent))
                     dic.Add(row.Exponent, false);
                 else
                     dic[row.Exponent] = true;
-#endif
             }
 
             // Collect all exponents that appeared more than once.
@@ -1086,6 +1127,7 @@ public partial class QRCodeGenerator : IDisposable
 
             return result;
         }
+#endif
     }
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
