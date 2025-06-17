@@ -1061,6 +1061,17 @@ public partial class QRCodeGenerator : IDisposable
 #if NETCOREAPP
         static ReadOnlySpan<int> GetNotUniqueExponents(Polynom list, Span<int> buffer)
         {
+            // It works as follows:
+            // 1. a scratch buffer of the same size as the list is passed in
+            // 2. exponents are written / copied to that scratch buffer
+            // 3. scratch buffer is sorted, thus the exponents are in order
+            // 4. for each item in the scratch buffer (= ordered exponents) it's compared w/ the previous one
+            //   * if equal, then increment a counter
+            //   * else check if the counter is $>0$ and if so write the exponent to the result
+            // 
+            // For writing the result the same scratch buffer is used, as by definition the index to write the result 
+            // is `<=` the iteration index, so no overlap, etc. can occur.
+
             Debug.Assert(list.Count == buffer.Length);
 
             int idx = 0;
