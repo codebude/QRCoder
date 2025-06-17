@@ -218,6 +218,13 @@ public partial class QRCodeGenerator : IDisposable
         // Place interleaved data on module matrix
         var qrData = PlaceModules();
 
+#if NETCOREAPP
+        foreach (var codeWord in codeWordWithECC)
+        {
+            codeWord.Dispose();
+        }
+#endif
+
         return qrData;
 
 
@@ -287,7 +294,7 @@ public partial class QRCodeGenerator : IDisposable
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.ECCWords.Length > i)
+                    if (codeBlock.ECCWords.Count > i)
                         length += 8;
             }
             length += CapacityTables.GetRemainderBits(version);
@@ -310,8 +317,8 @@ public partial class QRCodeGenerator : IDisposable
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.ECCWords.Length > i)
-                        pos = DecToBin(codeBlock.ECCWords[i], 8, data, pos);
+                    if (codeBlock.ECCWords.Count > i)
+                        pos = DecToBin(codeBlock.ECCWords.Array![i], 8, data, pos);
             }
 
             return data;
@@ -485,7 +492,7 @@ public partial class QRCodeGenerator : IDisposable
     /// This method applies polynomial division, using the message polynomial and a generator polynomial,
     /// to compute the remainder which forms the ECC codewords.
     /// </summary>
-    private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo, Polynom generatorPolynomBase)
+    private static ArraySegment<byte> CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo, Polynom generatorPolynomBase)
     {
         var eccWords = eccInfo.ECCPerBlock;
         // Calculate the message polynomial from the bit array data.
@@ -533,9 +540,16 @@ public partial class QRCodeGenerator : IDisposable
         generatorPolynom.Dispose();
 
         // Convert the resulting polynomial into a byte array representing the ECC codewords.
-        var ret = new byte[leadTermSource.Count];
+#if NETCOREAPP
+        var array = ArrayPool<byte>.Shared.Rent(leadTermSource.Count);
+        var ret = new ArraySegment<byte>(array, 0, leadTermSource.Count);
+#else
+        var ret = new ArraySegment<byte>(new byte[leadTermSource.Count]);
+        var array = ret.Array!;
+#endif
+
         for (var i = 0; i < leadTermSource.Count; i++)
-            ret[i] = (byte)leadTermSource[i].Coefficient;
+            array[i] = (byte)leadTermSource[i].Coefficient;
 
         // Free memory used by the message polynomial.
         leadTermSource.Dispose();

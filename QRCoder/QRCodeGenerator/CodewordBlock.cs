@@ -1,3 +1,9 @@
+using System;
+
+#if NETCOREAPP
+using System.Buffers;
+#endif
+
 namespace QRCoder;
 
 public partial class QRCodeGenerator
@@ -6,7 +12,10 @@ public partial class QRCodeGenerator
     /// Represents a block of codewords in a QR code. QR codes are divided into several blocks for error correction purposes.
     /// Each block contains a series of data codewords followed by error correction codewords.
     /// </summary>
-    private struct CodewordBlock
+    private readonly struct CodewordBlock
+#if NETCOREAPP
+        : IDisposable
+#endif
     {
         /// <summary>
         /// Initializes a new instance of the CodewordBlock struct with specified arrays of code words and error correction (ECC) words.
@@ -14,7 +23,7 @@ public partial class QRCodeGenerator
         /// <param name="codeWordsOffset">The offset of the data codewords within the main BitArray. Data codewords carry the actual information.</param>
         /// <param name="codeWordsLength">The length in bits of the data codewords within the main BitArray.</param>
         /// <param name="eccWords">The array of error correction codewords for this block. These codewords help recover the data if the QR code is damaged.</param>
-        public CodewordBlock(int codeWordsOffset, int codeWordsLength, byte[] eccWords)
+        public CodewordBlock(int codeWordsOffset, int codeWordsLength, ArraySegment<byte> eccWords)
         {
             CodeWordsOffset = codeWordsOffset;
             CodeWordsLength = codeWordsLength;
@@ -34,6 +43,10 @@ public partial class QRCodeGenerator
         /// <summary>
         /// Gets the error correction codewords associated with this block.
         /// </summary>
-        public byte[] ECCWords { get; }
+        public ArraySegment<byte> ECCWords { get; }
+
+#if NETCOREAPP
+        public void Dispose() => ArrayPool<byte>.Shared.Return(ECCWords.Array!);
+#endif
     }
 }
