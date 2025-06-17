@@ -7,7 +7,7 @@ on:
           required: true     
 jobs:  
   build: 
-    runs-on: windows-2019 
+    runs-on: windows-latest 
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
@@ -38,7 +38,7 @@ jobs:
 
   test:
     needs: build 
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:   
     - name: Download artifacts
       uses: actions/download-artifact@v4
@@ -139,7 +139,7 @@ jobs:
 
   pack-push-release:
     needs: test
-    runs-on: windows-2019
+    runs-on: windows-latest
     env:
       GH_PKG_SEC: ${{ secrets.GITHUB_TOKEN }}
     steps:   
@@ -187,7 +187,7 @@ jobs:
   clean:
     needs: [build, test, pack-push-release]
     if: always()
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - name: Delete artifacts
       uses: GeekyEggo/delete-artifact@v5
