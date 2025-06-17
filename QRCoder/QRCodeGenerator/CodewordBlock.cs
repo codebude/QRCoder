@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading;
 
 #if NETCOREAPP
 using System.Buffers;
@@ -13,9 +15,6 @@ public partial class QRCodeGenerator
     /// Each block contains a series of data codewords followed by error correction codewords.
     /// </summary>
     private readonly struct CodewordBlock
-#if NETCOREAPP
-        : IDisposable
-#endif
     {
         /// <summary>
         /// Initializes a new instance of the CodewordBlock struct with specified arrays of code words and error correction (ECC) words.
@@ -45,8 +44,21 @@ public partial class QRCodeGenerator
         /// </summary>
         public ArraySegment<byte> ECCWords { get; }
 
+        private static List<CodewordBlock>? _codewordBlocks;
+
+        public static List<CodewordBlock> GetList(int capacity)
+            => Interlocked.Exchange(ref _codewordBlocks, null) ?? new List<CodewordBlock>(capacity);
+
+        public static void ReturnList(List<CodewordBlock> list)
+        {
 #if NETCOREAPP
-        public void Dispose() => ArrayPool<byte>.Shared.Return(ECCWords.Array!);
+            foreach (var item in list)
+            {
+                ArrayPool<byte>.Shared.Return(item.ECCWords.Array!);
+            }
 #endif
+            list.Clear();
+            Interlocked.CompareExchange(ref _codewordBlocks, list, null);
+        }
     }
 }

@@ -224,15 +224,9 @@ public partial class QRCodeGenerator : IDisposable
         // Place interleaved data on module matrix
         var qrData = PlaceModules();
 
-#if NETCOREAPP
-        foreach (var codeWord in codeWordWithECC)
-        {
-            codeWord.Dispose();
-        }
-#endif
+        CodewordBlock.ReturnList(codeWordWithECC);
 
         return qrData;
-
 
         // fills the bit array with a repeating pattern to reach the required length
         void PadData()
@@ -268,7 +262,7 @@ public partial class QRCodeGenerator : IDisposable
             using (var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock))
             {
                 //Calculate error correction words
-                codewordBlocks = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
+                codewordBlocks = CodewordBlock.GetList(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
                 AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, 0, bitArray.Length, generatorPolynom);
                 int offset = eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8;
                 AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, offset, bitArray.Length - offset, generatorPolynom);
