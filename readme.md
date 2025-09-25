@@ -8,7 +8,7 @@
 
 ## Info
 
-QRCoder is a simple library, written in C#.NET, which enables you to create QR codes. It hasn't any dependencies to external libraries<sup>1</sup>, is available as package on NuGet and supports .NET Framework, .NET Core, .NET Standard and .NET. A full list of supported target frameworks can be [found here](https://www.nuget.org/packages/QRCoder/#supportedframeworks-body-tab).
+QRCoder is a simple C# library that enables you to create QR codes. QRCoder has no dependencies to external libraries<sup>1</sup>. It's available as package on NuGet and supports most .NET versions (Framework, Core, Standard), a full list of supported target frameworks can be [found here](https://www.nuget.org/packages/QRCoder/#supportedframeworks-body-tab).
 
 Feel free to grab-up/fork the project and make it better!
 
