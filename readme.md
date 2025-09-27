@@ -1,3 +1,21 @@
+# ⚠️ Important Announcement: End of Life (EOL)
+<sup>2025-09-27</sup>
+
+After more than a decade of development and maintenance, I’ve decided to retire the QRCoder project.  
+I will no longer continue working on this repository.
+
+This repository will be **archived on November 1st, 2025**.  
+Until then, discussions and final feedback can still take place in the following issue: https://github.com/codebude/QRCoder/issues/605
+
+Thank you to everyone who has contributed, reported issues, or used QRCoder over the years.  
+Your support made this project grow far beyond what I initially imagined.
+
+Thank you for everything,
+@codebude
+
+---
+
+
 # QRCoder
 
 |Build|Code coverage|Build status|NuGet Package|
