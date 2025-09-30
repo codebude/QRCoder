@@ -143,7 +143,7 @@ public static partial class PayloadGenerator
             }
 
             _authority = authority;
-            
+
             var oldWayFilled = (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc));
             var newWayFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
 
@@ -163,7 +163,7 @@ public static partial class PayloadGenerator
             if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment || authority == AuthorityType.contact || (authority == AuthorityType.contact_v2 && oldWayFilled))
             {
 #pragma warning restore CS0612
-                
+
                 if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The account entered isn't valid.");
                 _account = account.Replace(" ", "").ToUpper();

@@ -193,10 +193,12 @@ public class QRCodeData : IDisposable
     /// <summary>
     /// Gets the number of modules per side from the specified version.
     /// </summary>
-    /// <param name="version">The version of the QR code.</param>
+    /// <param name="version">The version of the QR code (1 to 40, or -1 to -4 for Micro QR codes).</param>
     /// <returns>Returns the number of modules per side.</returns>
     private static int ModulesPerSideFromVersion(int version)
-        => 21 + (version - 1) * 4;
+        => version > 0
+            ? 21 + (version - 1) * 4
+            : 11 + (-version - 1) * 2;
 
     /// <summary>
     /// Releases all resources used by the <see cref="QRCodeData"/>.

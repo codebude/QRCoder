@@ -7,7 +7,9 @@ on:
 
 jobs:
   format:
-    runs-on: windows-2019
+    runs-on: ubuntu-latest
+    env:
+      EnableWindowsTargeting: true
     steps:
     - uses: actions/checkout@v4
       name: Checkout Code
@@ -15,11 +17,7 @@ jobs:
     - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: | 
-          2.0.x
-          5.0.x
-          6.0.x
-          8.0.x
+        dotnet-version: 8.0.x
 
     - name: Restore NuGet Packages
       run: dotnet restore

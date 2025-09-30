@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -41,6 +42,22 @@ public class QRGeneratorTests
     }
 
 #if !NETFRAMEWORK // [Theory] is not supported in xunit < 2.0.0
+    [Theory]
+    [InlineData("54321", ECCLevel.Default, "ZfnO93tpy9jjaACKXue2VsACXxY", 11)] //verified
+    [InlineData("00000000", ECCLevel.M, "lEBc3nKaK0UpMfenT5FTX02Zgfg", 13)] //verified
+    [InlineData("123456789", ECCLevel.L, "gCY4Cj1uLhI/0JjWG1F9kC4S1+I", 13)] //verified
+    [InlineData("abcd56789012345", ECCLevel.L, "kqcKfCCdu1VTjjtsmK4iBav9FTs", 17)] //verified
+    [InlineData("abc", ECCLevel.M, "334sxrtY5KkNZRGj1pBgb87/cFc", 15)] //reads fine, but unable to verify repeating pattern
+    public void validate_micro_qr_code(string input, ECCLevel eccLevel, string expectedHash, int expectedSize)
+    {
+        var qrData = QRCodeGenerator.GenerateMicroQrCode(input, eccLevel);
+        (qrData.ModuleMatrix.Count - 8).ShouldBe(expectedSize); // exclude padding
+        var result = string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
+        var hash = System.Security.Cryptography.SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(result));
+        var hashString = Convert.ToBase64String(hash);
+        hashString.TrimEnd('=').ShouldBe(expectedHash);
+    }
+
     [Theory]
     // version 1 numeric
     [InlineData("1", "KWw84nkWZLMh5LqAJ/4s/4mW/08", 21)]

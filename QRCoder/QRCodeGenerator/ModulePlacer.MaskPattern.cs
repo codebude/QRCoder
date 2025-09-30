@@ -79,6 +79,28 @@ public partial class QRCodeGenerator
                 => (((x + y) % 2) + ((x * y) % 3)) % 2 == 0;
 
             /// <summary>
+            /// Calculates a penalty score for a Micro QR code to evaluate the effectiveness of a mask pattern.
+            /// A lower score indicates a QR code that is easier for decoders to read accurately.
+            /// </summary>
+            /// <param name="qrCode">The QR code data structure to be evaluated.</param>
+            /// <returns>The total penalty score of the QR code.</returns>
+            public static int ScoreMicro(QRCodeData qrCode)
+            {
+                int size = qrCode.ModuleMatrix.Count;
+                int sum1 = 0;
+                int sum2 = 0;
+                for (int i = 1; i < size; i++)
+                {
+                    if (qrCode.ModuleMatrix[size - 1][i])
+                        sum1++;
+                    if (qrCode.ModuleMatrix[i][size - 1])
+                        sum2++;
+                }
+                int total = sum1 < sum2 ? sum1 * 16 + sum2 : sum2 * 16 + sum1;
+                return -total; // negate so that lower is better
+            }
+
+            /// <summary>
             /// Calculates a penalty score for a QR code to evaluate the effectiveness of a mask pattern.
             /// A lower score indicates a QR code that is easier for decoders to read accurately.
             /// The score is the sum of four penalty rules applied to the QR code.
