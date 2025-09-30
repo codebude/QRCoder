@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: windows-latest 
+    runs-on: windows-2022 
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
@@ -37,7 +37,7 @@ jobs:
 
   test:
     needs: build 
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:   
     - name: Download artifacts
       uses: actions/download-artifact@v4
@@ -98,7 +98,7 @@ jobs:
   clean:
     needs: [build, test]
     if: always()
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
     - name: Delete artifacts
       uses: GeekyEggo/delete-artifact@v5
