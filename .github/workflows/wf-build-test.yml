@@ -6,7 +6,9 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: windows-2019 
+    runs-on: windows-latest 
+    env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
     - uses: actions/checkout@v4
       name: Checkout Code
@@ -26,11 +28,11 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Compiled project
-        path: C:\a\qrcoder\qrcoder
+        path: ${{ github.workspace }}
 
   test:
     needs: build
-    runs-on: windows-2019
+    runs-on: windows-latest
     strategy:
       matrix:
         dotnet-framework:
@@ -48,7 +50,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: Compiled project
-        path: C:\a\qrcoder\qrcoder
+        path: ${{ github.workspace }}
 
     - name: Install .NET SDK ${{ matrix.dotnet-framework.sdk }}
       uses: actions/setup-dotnet@v4
@@ -70,7 +72,7 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: Compiled project
-        path: C:\a\qrcoder\qrcoder
+        path: ${{ github.workspace }}
 
     - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v4
@@ -88,7 +90,7 @@ jobs:
   clean:
     needs: [build, test, additional-tests]
     if: always()
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - name: Delete artifacts
       uses: GeekyEggo/delete-artifact@v5

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 
 namespace QRCoder;
 
@@ -43,6 +44,9 @@ public partial class QRCodeGenerator
         /// This is particularly necessary when performing multiplications in the field which can result in exponents exceeding the field's maximum.
         /// </summary>
         public static int ShrinkAlphaExp(int alphaExp)
-            => (alphaExp % 256) + (alphaExp / 256);
+        {
+            Debug.Assert(alphaExp >= 0);
+            return (int)((uint)alphaExp % 256 + (uint)alphaExp / 256);
+        }
     }
 }

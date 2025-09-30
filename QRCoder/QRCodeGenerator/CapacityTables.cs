@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,6 +21,7 @@ public partial class QRCodeGenerator
         /// The index in the capacity table corresponds to one less than the version number.
         /// </summary>
         private static readonly List<VersionInfo> _capacityTable = CreateCapacityTable(_capacityBaseValues);
+        private static readonly List<VersionInfo> _microCapacityTable = CreateMicroCapacityTable();
 
         /// <summary>
         /// A table containing the error correction capacities and data codeword information for different combinations of QR code versions and error correction levels.
@@ -29,14 +31,24 @@ public partial class QRCodeGenerator
         /// <summary>
         /// Retrieves the error correction information for a specific QR code version and error correction level.
         /// </summary>
-        /// <param name="version">The version of the QR code (1 to 40).</param>
+        /// <param name="version">The version of the QR code (1 to 40, or -1 to -4 for M1 to M4).</param>
         /// <param name="eccLevel">The desired error correction level (L, M, Q, or H). Do not supply <see cref="ECCLevel.Default"/>.</param>
         /// <returns>
         /// An <see cref="ECCInfo"/> object containing the total number of data codewords, ECC per block, 
         /// block group details, and other parameters required for encoding error correction data.
         /// </returns>
         public static ECCInfo GetEccInfo(int version, ECCLevel eccLevel)
-            => _capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel == eccLevel);
+        {
+            foreach (var item in _capacityECCTable)
+            {
+                if (item.Version == version && item.ErrorCorrectionLevel == eccLevel)
+                {
+                    return item;
+                }
+            }
+
+            throw new InvalidOperationException("No item found");   // same exception type as Linq would throw
+        }
 
         /// <summary>
         /// Retrieves the capacity information for a specific QR code version.
@@ -44,25 +56,25 @@ public partial class QRCodeGenerator
         /// and encoding mode (Numeric, Alphanumeric, Byte, Kanji), indicating the maximum number of characters
         /// that can be stored in a QR code of the specified version under each configuration.
         /// </summary>
-        /// <param name="version">The version of the QR code (1 to 40).</param>
+        /// <param name="version">The version of the QR code (1 to 40, or -1 to -4 for M1 to M4).</param>
         /// <returns>
         /// A <see cref="VersionInfo"/> object containing data capacity details for all error correction levels 
         /// and encoding modes for the specified version.
         /// </returns>
         public static VersionInfo GetVersionInfo(int version)
-            => _capacityTable[version - 1];
+            => version < 0 ? _microCapacityTable[-version - 1] : _capacityTable[version - 1];
 
         /// <summary>
         /// Retrieves the number of remainder bits required for a specific QR code version.
         /// Remainder bits are added to the final bit stream to ensure proper alignment with byte boundaries,
         /// as required by the QR code specification.
         /// </summary>
-        /// <param name="version">The version of the QR code (1 to 40).</param>
+        /// <param name="version">The version of the QR code (1 to 40, or -1 to -4 for M1 to M4).</param>
         /// <returns>
         /// The number of remainder bits (0 to 7) that must be appended to the encoded bit stream.
         /// </returns>
         public static int GetRemainderBits(int version)
-            => _remainderBits[version - 1];
+            => version < 0 ? 0 : _remainderBits[version - 1];
 
         /// <summary>
         /// Determines the minimum QR code version required to encode a given amount of data with a specific encoding mode and error correction level.
@@ -77,6 +89,7 @@ public partial class QRCodeGenerator
         /// </exception>
         public static int CalculateMinimumVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
         {
+            // only iterates through non-micro QR codes
             // capacity table is already sorted by version number ascending, so the smallest version that can hold the data is the first one found
             foreach (var x in _capacityTable)
             {
@@ -92,10 +105,62 @@ public partial class QRCodeGenerator
             }
 
             // if no version was found, throw an exception
-            var maxSizeByte = _capacityTable.Where(
-                x => x.Details.Any(
-                    y => (y.ErrorCorrectionLevel == eccLevel))
-                ).Max(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]);
+            // In order to get the maxSizeByte we use a throw-helper method to avoid the allocation of a closure
+            Throw(encMode, eccLevel);
+            throw null!;    // this is needed to make the compiler happy
+
+            static void Throw(EncodingMode encMode, ECCLevel eccLevel)
+            {
+                var maxSizeByte = _capacityTable.Where(
+                    x => x.Details.Any(
+                        y => (y.ErrorCorrectionLevel == eccLevel))
+                    ).Max(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]);
+
+                throw new Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
+            }
+        }
+
+
+        /// <summary>
+        /// Determines the minimum Micro QR code version required to encode a given amount of data with a specific encoding mode and error correction level.
+        /// If no suitable version is found, it throws an exception indicating that the data length exceeds the maximum capacity for the given settings.
+        /// </summary>
+        /// <param name="length">The length of the data to be encoded.</param>
+        /// <param name="encMode">The encoding mode (e.g., Numeric, Alphanumeric, Byte).</param>
+        /// <param name="eccLevel">The error correction level (e.g., Default, Low, Medium, Quartile, High).</param>
+        /// <returns>The minimum version of the QR code (-1 to -4) that can accommodate the given data and settings.</returns>
+        /// <exception cref="QRCoder.Exceptions.DataTooLongException">
+        /// Thrown when the data length exceeds the maximum capacity for the specified encoding mode and error correction level.
+        /// </exception>
+        public static int CalculateMinimumMicroVersion(int length, EncodingMode encMode, ECCLevel eccLevel)
+        {
+            // only iterates through non-micro QR codes
+            // capacity table is already sorted by version number ascending, so the smallest version that can hold the data is the first one found
+            foreach (var x in _microCapacityTable)
+            {
+                // find the requested ECC level and encoding mode in the capacity table
+                foreach (var y in x.Details)
+                {
+                    // Use ECC level L for Micro QR Code versions 2, 3 and 4 when Default is specified
+                    if (y.ErrorCorrectionLevel == eccLevel || (eccLevel == ECCLevel.Default && y.ErrorCorrectionLevel == ECCLevel.L))
+                    {
+                        // Not all versions support all encoding modes, so check if the encoding mode is supported
+                        if (y.CapacityDict.TryGetValue(encMode, out int maxLength) && maxLength >= length)
+                        {
+                            // if the capacity of the current version is enough, return the version number
+                            return x.Version;
+                        }
+                    }
+                }
+            }
+
+            // if no version was found, throw an exception
+            var maxSizeByte = _microCapacityTable
+                .SelectMany(x => x.Details)
+                .Where(y => (y.ErrorCorrectionLevel == eccLevel || (eccLevel == ECCLevel.Default && y.ErrorCorrectionLevel == ECCLevel.L))
+                    && y.CapacityDict.ContainsKey(encMode))
+                .Max(y => y.CapacityDict[encMode]);
+
             throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
         }
 
@@ -107,7 +172,7 @@ public partial class QRCodeGenerator
         /// <returns>A list of ECCInfo structures, each representing the ECC data and capacities for different combinations of QR code versions and ECC levels.</returns>
         private static List<ECCInfo> CreateCapacityECCTable(int[] capacityECCBaseValues)
         {
-            var localCapacityECCTable = new List<ECCInfo>(160);
+            var localCapacityECCTable = new List<ECCInfo>(160 + 8);
             for (var i = 0; i < (4 * 6 * 40); i += (4 * 6))
             {
                 localCapacityECCTable.AddRange(new[]
@@ -153,6 +218,31 @@ public partial class QRCodeGenerator
                     )
                 });
             }
+
+            localCapacityECCTable.AddRange(new ECCInfo[]
+            {
+                // Micro QR Code Version M1 - only supports ECCLevel.Default (none)
+                new ECCInfo(
+                    version: -1,
+                    errorCorrectionLevel: ECCLevel.Default,
+                    totalDataCodewords: 3,
+                    totalDataBits: 20,
+                    eccPerBlock: 2),
+
+                // Micro QR Code Version M2
+                new ECCInfo(-2, ECCLevel.L, 5, 40, 5),
+                new ECCInfo(-2, ECCLevel.M, 4, 32, 6),
+
+                // Micro QR Code Version M3
+                new ECCInfo(-3, ECCLevel.L, 11, 84, 6),
+                new ECCInfo(-3, ECCLevel.M, 9, 68, 8),
+
+                // Micro QR Code Version M4
+                new ECCInfo(-4, ECCLevel.L, 16, 128, 8),
+                new ECCInfo(-4, ECCLevel.M, 14, 112, 10),
+                new ECCInfo(-4, ECCLevel.Q, 10, 80, 14),
+            });
+
             return localCapacityECCTable;
         }
 
@@ -211,6 +301,99 @@ public partial class QRCodeGenerator
                 ));
             }
             return localCapacityTable;
+        }
+
+        /// <inheritdoc cref="CreateCapacityTable(int[])"/>
+        private static List<VersionInfo> CreateMicroCapacityTable()
+        {
+            var tbl = new List<VersionInfo>(4);
+
+            var m1details = new List<VersionInfoDetails>(1)
+            {
+                new VersionInfoDetails(
+                    ECCLevel.Default, // none
+                    new Dictionary<EncodingMode, int>(1) {
+                        { EncodingMode.Numeric, 5 },
+                    }
+                )
+            };
+            tbl.Add(new VersionInfo(-1, m1details));
+
+            var m2details = new List<VersionInfoDetails>(2)
+            {
+                new VersionInfoDetails(
+                    ECCLevel.L,
+                    new Dictionary<EncodingMode, int>(2) {
+                        { EncodingMode.Numeric, 10 },
+                        { EncodingMode.Alphanumeric, 6 },
+                    }
+                ),
+                new VersionInfoDetails(
+                    ECCLevel.M,
+                    new Dictionary<EncodingMode, int>(2) {
+                        { EncodingMode.Numeric, 8 },
+                        { EncodingMode.Alphanumeric, 5 },
+                    }
+                ),
+            };
+            tbl.Add(new VersionInfo(-2, m2details));
+
+            var m3details = new List<VersionInfoDetails>(2)
+            {
+                new VersionInfoDetails(
+                    ECCLevel.L,
+                    new Dictionary<EncodingMode, int>(4) {
+                        { EncodingMode.Numeric, 23 },
+                        { EncodingMode.Alphanumeric, 14 },
+                        { EncodingMode.Byte, 9 },
+                        { EncodingMode.Kanji, 6 },
+                    }
+                ),
+                new VersionInfoDetails(
+                    ECCLevel.M,
+                    new Dictionary<EncodingMode, int>(4) {
+                        { EncodingMode.Numeric, 18 },
+                        { EncodingMode.Alphanumeric, 11 },
+                        { EncodingMode.Byte, 7 },
+                        { EncodingMode.Kanji, 4 },
+                    }
+                ),
+            };
+            tbl.Add(new VersionInfo(-3, m3details));
+
+            var m4details = new List<VersionInfoDetails>(3)
+            {
+                new VersionInfoDetails(
+                    ECCLevel.L,
+                    new Dictionary<EncodingMode, int>(4) {
+                        { EncodingMode.Numeric, 35 },
+                        { EncodingMode.Alphanumeric, 21 },
+                        { EncodingMode.Byte, 15 },
+                        { EncodingMode.Kanji, 9 },
+                    }
+                ),
+                new VersionInfoDetails(
+                    ECCLevel.M,
+                    new Dictionary<EncodingMode, int>(4) {
+                        { EncodingMode.Numeric, 30 },
+                        { EncodingMode.Alphanumeric, 18 },
+                        { EncodingMode.Byte, 13 },
+                        { EncodingMode.Kanji, 8 },
+                    }
+                ),
+                new VersionInfoDetails(
+                    ECCLevel.Q,
+                    new Dictionary<EncodingMode, int>(4) {
+                        { EncodingMode.Numeric, 21 },
+                        { EncodingMode.Alphanumeric, 13 },
+                        { EncodingMode.Byte, 9 },
+                        { EncodingMode.Kanji, 5 },
+                    }
+                ),
+            };
+            tbl.Add(new VersionInfo(-4, m4details));
+
+            return tbl;
         }
     }
 }

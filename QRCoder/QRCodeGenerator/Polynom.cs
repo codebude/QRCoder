@@ -154,8 +154,9 @@ public partial class QRCodeGenerator
         {
             var sb = new StringBuilder();
 
-            foreach (var polyItem in _polyItems)
+            for (int i = 0; i < Count; i++)
             {
+                var polyItem = _polyItems[i];
                 sb.Append("a^" + polyItem.Coefficient + "*x^" + polyItem.Exponent + " + ");
             }
 
