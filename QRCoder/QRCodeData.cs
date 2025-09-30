@@ -95,7 +95,6 @@ public class QRCodeData : IDisposable
         var modules = new Queue<bool>(8 * bytes.Count);
         foreach (var b in bytes)
         {
-            var bArr = new BitArray(new byte[] { b });
             for (int i = 7; i >= 0; i--)
             {
                 modules.Enqueue((b & (1 << i)) != 0);
