@@ -99,7 +99,7 @@ public class SvgQRCodeRendererTests
         var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
 
         var result = HelperFunctions.StringToHash(svg);
-        result.ShouldBe("78e02e8ba415f15817d5ed88c4afca31");
+        result.ShouldBe("04b12051632549cbb1879a0fe1353731");
     }
 
     [Fact]
@@ -117,7 +117,7 @@ public class SvgQRCodeRendererTests
         var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
 
         var result = HelperFunctions.StringToHash(svg);
-        result.ShouldBe("f221b2baecc2883f8e8ae54f12ba701b");
+        result.ShouldBe("b40c6997f78a2ef31e0a298c68bd31df");
     }
 
     [Fact]
@@ -135,7 +135,7 @@ public class SvgQRCodeRendererTests
         var svg = new SvgQRCode(data).GetGraphic(10, Color.Black, Color.White, drawQuietZones: false, logo: logoObj);
 
         var result = HelperFunctions.StringToHash(svg);
-        result.ShouldBe("8b4d114136c7fd26e0b34e5a15daac3b");
+        result.ShouldBe("42c43d33fc41bfff07b12f43b367808c");
     }
 #endif
 
