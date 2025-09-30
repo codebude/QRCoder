@@ -453,14 +453,14 @@ public class BezahlCodeTests
         var iban = "DE33 100205000 0011947 00";
         var bic = "BFSWDE33BER";
         var name = "Wikimedia Fördergesellschaft";
-        var reason = "A long long long reason text which may resolve in an exception";
+        var reason = "A long long long reason text which may resolve in an exception" + new string('.', 200);
         var amount = 10.00m;
 
         var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount, reason: reason));
 
         Assert.NotNull(exception);
         Assert.IsType<BezahlCodeException>(exception);
-        exception.Message.ShouldBe("Reasons texts have to be shorter than 28 chars.");
+        exception.Message.ShouldBe("Reasons texts have to be shorter than 141 chars.");
 
     }
 
