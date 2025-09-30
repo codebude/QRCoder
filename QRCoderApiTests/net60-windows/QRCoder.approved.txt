@@ -902,6 +902,7 @@ namespace QRCoder
         public QRCoder.QRCodeData CreateQrCode(byte[] binaryData, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
         public QRCoder.QRCodeData CreateQrCode(string plainText, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1) { }
         public void Dispose() { }
+        public static QRCoder.QRCodeData GenerateMicroQrCode(string plainText, QRCoder.QRCodeGenerator.ECCLevel eccLevel = -1, int requestedVersion = 0) { }
         public static QRCoder.QRCodeData GenerateQrCode(QRCoder.PayloadGenerator.Payload payload) { }
         public static QRCoder.QRCodeData GenerateQrCode(QRCoder.PayloadGenerator.Payload payload, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
         public static QRCoder.QRCodeData GenerateQrCode(byte[] binaryData, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
