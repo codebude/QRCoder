@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -37,7 +38,17 @@ public partial class QRCodeGenerator
         /// block group details, and other parameters required for encoding error correction data.
         /// </returns>
         public static ECCInfo GetEccInfo(int version, ECCLevel eccLevel)
-            => _capacityECCTable.Single(x => x.Version == version && x.ErrorCorrectionLevel == eccLevel);
+        {
+            foreach (var item in _capacityECCTable)
+            {
+                if (item.Version == version && item.ErrorCorrectionLevel == eccLevel)
+                {
+                    return item;
+                }
+            }
+
+            throw new InvalidOperationException("No item found");   // same exception type as Linq would throw
+        }
 
         /// <summary>
         /// Retrieves the capacity information for a specific QR code version.
@@ -94,11 +105,19 @@ public partial class QRCodeGenerator
             }
 
             // if no version was found, throw an exception
-            var maxSizeByte = _capacityTable.Where(
-                x => x.Details.Any(
-                    y => (y.ErrorCorrectionLevel == eccLevel))
-                ).Max(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]);
-            throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
+            // In order to get the maxSizeByte we use a throw-helper method to avoid the allocation of a closure
+            Throw(encMode, eccLevel);
+            throw null!;    // this is needed to make the compiler happy
+
+            static void Throw(EncodingMode encMode, ECCLevel eccLevel)
+            {
+                var maxSizeByte = _capacityTable.Where(
+                    x => x.Details.Any(
+                        y => (y.ErrorCorrectionLevel == eccLevel))
+                    ).Max(x => x.Details.Single(y => y.ErrorCorrectionLevel == eccLevel).CapacityDict[encMode]);
+
+                throw new Exceptions.DataTooLongException(eccLevel.ToString(), encMode.ToString(), maxSizeByte);
+            }
         }
 
 

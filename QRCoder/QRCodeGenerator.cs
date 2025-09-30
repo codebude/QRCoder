@@ -4,6 +4,7 @@ using System.Buffers;
 #endif
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -120,8 +121,14 @@ public partial class QRCodeGenerator : IDisposable
             //Version was passed as fixed version via parameter. Thus let's check if chosen version is valid.
             if (minVersion > version)
             {
-                var maxSizeByte = CapacityTables.GetVersionInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
-                throw new QRCoder.Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
+                // Use a throw-helper to avoid allocating a closure
+                Throw(eccLevel, encoding, version);
+
+                static void Throw(ECCLevel eccLevel, EncodingMode encoding, int version)
+                {
+                    var maxSizeByte = CapacityTables.GetVersionInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
+                    throw new Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
+                }
             }
         }
 
@@ -296,8 +303,9 @@ public partial class QRCodeGenerator : IDisposable
         // Place interleaved data on module matrix
         var qrData = PlaceModules();
 
-        return qrData;
+        CodewordBlock.ReturnList(codeWordWithECC);
 
+        return qrData;
 
         // fills the bit array with a repeating pattern to reach the required length
         void PadData()
@@ -345,7 +353,7 @@ public partial class QRCodeGenerator : IDisposable
             using (var generatorPolynom = CalculateGeneratorPolynom(eccInfo.ECCPerBlock))
             {
                 //Calculate error correction words
-                codewordBlocks = new List<CodewordBlock>(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
+                codewordBlocks = CodewordBlock.GetList(eccInfo.BlocksInGroup1 + eccInfo.BlocksInGroup2);
                 AddCodeWordBlocks(1, eccInfo.BlocksInGroup1, eccInfo.CodewordsInGroup1, 0, bitArray.Length, generatorPolynom);
                 int offset = eccInfo.BlocksInGroup1 * eccInfo.CodewordsInGroup1 * 8;
                 AddCodeWordBlocks(2, eccInfo.BlocksInGroup2, eccInfo.CodewordsInGroup2, offset, bitArray.Length - offset, generatorPolynom);
@@ -384,7 +392,7 @@ public partial class QRCodeGenerator : IDisposable
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.ECCWords.Length > i)
+                    if (codeBlock.ECCWords.Count > i)
                         length += 8;
             }
             length += CapacityTables.GetRemainderBits(version);
@@ -414,8 +422,8 @@ public partial class QRCodeGenerator : IDisposable
             for (var i = 0; i < eccInfo.ECCPerBlock; i++)
             {
                 foreach (var codeBlock in codeWordWithECC)
-                    if (codeBlock.ECCWords.Length > i)
-                        pos = DecToBin(codeBlock.ECCWords[i], 8, data, pos);
+                    if (codeBlock.ECCWords.Count > i)
+                        pos = DecToBin(codeBlock.ECCWords.Array![i], 8, data, pos);
             }
 
             return data;
@@ -641,7 +649,7 @@ public partial class QRCodeGenerator : IDisposable
     /// This method applies polynomial division, using the message polynomial and a generator polynomial,
     /// to compute the remainder which forms the ECC codewords.
     /// </summary>
-    private static byte[] CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo, Polynom generatorPolynomBase)
+    private static ArraySegment<byte> CalculateECCWords(BitArray bitArray, int offset, int count, ECCInfo eccInfo, Polynom generatorPolynomBase)
     {
         var eccWords = eccInfo.ECCPerBlock;
         // Calculate the message polynomial from the bit array data.
@@ -689,9 +697,16 @@ public partial class QRCodeGenerator : IDisposable
         generatorPolynom.Dispose();
 
         // Convert the resulting polynomial into a byte array representing the ECC codewords.
-        var ret = new byte[leadTermSource.Count];
+#if NETCOREAPP
+        var array = ArrayPool<byte>.Shared.Rent(leadTermSource.Count);
+        var ret = new ArraySegment<byte>(array, 0, leadTermSource.Count);
+#else
+        var ret = new ArraySegment<byte>(new byte[leadTermSource.Count]);
+        var array = ret.Array!;
+#endif
+
         for (var i = 0; i < leadTermSource.Count; i++)
-            ret[i] = (byte)leadTermSource[i].Coefficient;
+            array[i] = (byte)leadTermSource[i].Coefficient;
 
         // Free memory used by the message polynomial.
         leadTermSource.Dispose();
@@ -1235,8 +1250,15 @@ public partial class QRCodeGenerator : IDisposable
         }
 
         // Identify and merge terms with the same exponent.
+#if NETCOREAPP
+        var toGlue = GetNotUniqueExponents(resultPolynom, resultPolynom.Count <= 128 ? stackalloc int[128].Slice(0, resultPolynom.Count) : new int[resultPolynom.Count]);
+        var gluedPolynoms = toGlue.Length <= 128
+            ? stackalloc PolynomItem[128].Slice(0, toGlue.Length)
+            : new PolynomItem[toGlue.Length];
+#else
         var toGlue = GetNotUniqueExponents(resultPolynom);
         var gluedPolynoms = new PolynomItem[toGlue.Length];
+#endif
         var gluedPolynomsIndex = 0;
         foreach (var exponent in toGlue)
         {
@@ -1254,7 +1276,11 @@ public partial class QRCodeGenerator : IDisposable
 
         // Remove duplicated exponents and add the corrected ones back.
         for (int i = resultPolynom.Count - 1; i >= 0; i--)
+#if NETCOREAPP
             if (toGlue.Contains(resultPolynom[i].Exponent))
+#else
+            if (Array.IndexOf(toGlue, resultPolynom[i].Exponent) >= 0)
+#endif
                 resultPolynom.RemoveAt(i);
         foreach (var polynom in gluedPolynoms)
             resultPolynom.Add(polynom);
@@ -1264,20 +1290,66 @@ public partial class QRCodeGenerator : IDisposable
         return resultPolynom;
 
         // Auxiliary function to identify exponents that appear more than once in the polynomial.
-        int[] GetNotUniqueExponents(Polynom list)
+#if NETCOREAPP
+        static ReadOnlySpan<int> GetNotUniqueExponents(Polynom list, Span<int> buffer)
+        {
+            // It works as follows:
+            // 1. a scratch buffer of the same size as the list is passed in
+            // 2. exponents are written / copied to that scratch buffer
+            // 3. scratch buffer is sorted, thus the exponents are in order
+            // 4. for each item in the scratch buffer (= ordered exponents) it's compared w/ the previous one
+            //   * if equal, then increment a counter
+            //   * else check if the counter is $>0$ and if so write the exponent to the result
+            // 
+            // For writing the result the same scratch buffer is used, as by definition the index to write the result 
+            // is `<=` the iteration index, so no overlap, etc. can occur.
+
+            Debug.Assert(list.Count == buffer.Length);
+
+            int idx = 0;
+            foreach (var row in list)
+            {
+                buffer[idx++] = row.Exponent;
+            }
+
+            buffer.Sort();
+
+            idx = 0;
+            int expCount = 0;
+            int last = buffer[0];
+
+            for (int i = 1; i < buffer.Length; ++i)
+            {
+                if (buffer[i] == last)
+                {
+                    expCount++;
+                }
+                else
+                {
+                    if (expCount > 0)
+                    {
+                        Debug.Assert(idx <= i - 1);
+
+                        buffer[idx++] = last;
+                        expCount = 0;
+                    }
+                }
+
+                last = buffer[i];
+            }
+
+            return buffer.Slice(0, idx);
+        }
+#else
+        static int[] GetNotUniqueExponents(Polynom list)
         {
             var dic = new Dictionary<int, bool>(list.Count);
             foreach (var row in list)
             {
-#if NETCOREAPP
-                if (dic.TryAdd(row.Exponent, false))
-                    dic[row.Exponent] = true;
-#else
                 if (!dic.ContainsKey(row.Exponent))
                     dic.Add(row.Exponent, false);
                 else
                     dic[row.Exponent] = true;
-#endif
             }
 
             // Collect all exponents that appeared more than once.
@@ -1298,6 +1370,7 @@ public partial class QRCodeGenerator : IDisposable
 
             return result;
         }
+#endif
     }
 
     /// <inheritdoc cref="IDisposable.Dispose"/>
