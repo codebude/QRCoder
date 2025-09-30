@@ -11,6 +11,7 @@ public static partial class PayloadGenerator
     public class BezahlCode : Payload
     {
         //BezahlCode specification: http://www.bezahlcode.de/wp-content/uploads/BezahlCode_TechDok.pdf
+        //SEPA Credit Transfer Guideline: https://www.europeanpaymentscouncil.eu/sites/default/files/kb/file/2024-03/EPC069-12%20v3.1%20Quick%20Response%20Code%20-%20Guidelines%20to%20Enable%20the%20Data%20Capture%20for%20the%20Initiation%20of%20an%20SCT.pdf
 
         private readonly string? _iban, _bic, _account, _bnc, _sepaReference, _creditorId, _mandateId, _periodicTimeunit;
         private readonly string _name, _reason;
@@ -142,23 +143,27 @@ public static partial class PayloadGenerator
             }
 
             _authority = authority;
+            
+            var oldWayFilled = (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc));
+            var newWayFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
 
             if (name.Length > 70)
                 throw new BezahlCodeException("(Payee-)Name must be shorter than 71 chars.");
             _name = name;
 
-            if (reason.Length > 27)
-                throw new BezahlCodeException("Reasons texts have to be shorter than 28 chars.");
+            //Limit reason length depending on payment type
+            //140 chars for SEPA payments and 27 chars for others 
+            var reasonLength = authority == AuthorityType.periodicsinglepaymentsepa || authority == AuthorityType.singledirectdebitsepa || authority == AuthorityType.singlepaymentsepa || (authority == AuthorityType.contact_v2 && newWayFilled) ? 140 : 27;
+            if (reason.Length > reasonLength)
+                throw new BezahlCodeException($"Reasons texts have to be shorter than {reasonLength + 1} chars.");
             _reason = reason;
-
-            var oldWayFilled = (!string.IsNullOrEmpty(account) && !string.IsNullOrEmpty(bnc));
-            var newWayFilled = (!string.IsNullOrEmpty(iban) && !string.IsNullOrEmpty(bic));
 
             //Non-SEPA payment types
 #pragma warning disable CS0612
             if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment || authority == AuthorityType.contact || (authority == AuthorityType.contact_v2 && oldWayFilled))
             {
 #pragma warning restore CS0612
+                
                 if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The account entered isn't valid.");
                 _account = account.Replace(" ", "").ToUpper();
