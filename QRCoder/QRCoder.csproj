@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
@@ -6,9 +6,10 @@
     <DefineConstants Condition="'$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'netstandard1.3'">$(DefineConstants);SYSTEM_DRAWING</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
     <DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
-    <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-	<IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
+    <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
+    <WarningsAsErrors>$(WarningsAsErrors);CS1591</WarningsAsErrors>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -18,7 +19,7 @@
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>QRCoder</PackageId>
-    <Version>1.5.2</Version>
+    <Version>1.6.1</Version>
     <Authors>Raffael Herrmann</Authors>
     <PackageOwners>Raffael Herrmann</PackageOwners>
     <AssemblyName>QRCoder</AssemblyName>
@@ -56,8 +57,6 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <FrameworkPathOverride Condition="'$(TargetFramework)' == 'net35'">$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v3.5\Profile\Client</FrameworkPathOverride>
-    <AutomaticallyUseReferenceAssemblyPackages Condition=" '$(TargetFramework)' == 'net35' ">false</AutomaticallyUseReferenceAssemblyPackages>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>

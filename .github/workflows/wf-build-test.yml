@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: windows-2019 
+    runs-on: windows-latest 
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
@@ -33,17 +33,17 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Compiled project
-        path: D:\a\qrcoder\qrcoder
+        path: ${{ github.workspace }}
 
   test:
     needs: build 
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:   
     - name: Download artifacts
       uses: actions/download-artifact@v4
       with:
         name: Compiled project
-        path: D:\a\qrcoder\qrcoder 
+        path: ${{ github.workspace }}
 
     - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v4
@@ -98,7 +98,7 @@ jobs:
   clean:
     needs: [build, test]
     if: always()
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
     - name: Delete artifacts
       uses: GeekyEggo/delete-artifact@v5

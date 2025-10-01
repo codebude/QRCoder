@@ -1,17 +1,16 @@
-﻿namespace QRCoderConsole.DataObjects
+namespace QRCoderConsole.DataObjects;
+
+public enum SupportedImageFormat
 {
-    public enum SupportedImageFormat
-    {
-        Png,
-        Jpg,
-        Gif,
-        Bmp,
-        Tiff,
-        Svg,
+    Png,
+    Jpg,
+    Gif,
+    Bmp,
+    Tiff,
+    Svg,
 #if !NET5_0 || NET5_0_WINDOWS
-        Xaml,
+    Xaml,
 #endif
-        Ps,
-        Eps,
-    }
+    Ps,
+    Eps,
 }
