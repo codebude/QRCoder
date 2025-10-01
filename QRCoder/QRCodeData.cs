@@ -142,7 +142,11 @@ public class QRCodeData : IDisposable
         try
         {
             //Add header - signature ("QRR")
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+            targetStream.Write([0x51, 0x52, 0x52, 0x00]);
+#else
             targetStream.Write(new byte[] { 0x51, 0x52, 0x52, 0x00 }, 0, 4);
+#endif
 
             //Add header - rowsize
             targetStream.WriteByte((byte)ModuleMatrix.Count);
