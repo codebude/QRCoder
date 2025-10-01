@@ -623,6 +623,7 @@ public class QRGeneratorTests
         public override string ToString() => _data;
     }
 
+#if !NETFRAMEWORK // [Theory] is not supported in xunit < 2.0.0
     [Theory]
     [InlineData(QRCodeData.Compression.Uncompressed)]
     [InlineData(QRCodeData.Compression.Deflate)]
@@ -644,6 +645,7 @@ public class QRGeneratorTests
         reloadedQrData.ModuleMatrix.Count.ShouldBe(originalQrData.ModuleMatrix.Count);
         reloadedMatrix.ShouldBe(originalMatrix);
     }
+#endif
 }
 
 public static class ExtensionMethods
