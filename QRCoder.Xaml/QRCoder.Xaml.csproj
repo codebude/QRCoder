@@ -18,15 +18,15 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>QRCoder.Xaml</PackageId>
     <Version>1.6.1</Version>
-    <Authors>Raffael Herrmann</Authors>
-    <PackageOwners>Raffael Herrmann</PackageOwners>
+    <Authors>Raffael Herrmann, Shane Krueger</Authors>
+    <PackageOwners>Shane Krueger</PackageOwners>
     <AssemblyName>QRCoder.Xaml</AssemblyName>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/codebude/QRCoder/</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/Shane32/QRCoder/</PackageProjectUrl>
     <PackageIcon>nuget-icon-xaml.png</PackageIcon>
     <PackageReadmeFile>nuget-readme-xaml.md</PackageReadmeFile>
     <PackageTags>c# csharp qr QRCoder.Xaml qrcode qr-generator qr-code-generator</PackageTags>
-    <RepositoryUrl>https://github.com/codebude/QRCoder.git</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Shane32/QRCoder.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <Description>QRCoder.Xaml is the XamlQRCode-extension for the popular QRCoder .NET library.</Description>
   </PropertyGroup>

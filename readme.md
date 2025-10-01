@@ -1,27 +1,9 @@
-# ⚠️ Important Announcement: End of Life (EOL)
-<sup>2025-09-27</sup>
-
-After more than a decade of development and maintenance, I’ve decided to retire the QRCoder project.  
-I will no longer continue working on this repository.
-
-This repository will be **archived on November 1st, 2025**.  
-Until then, discussions and final feedback can still take place in the following issue: https://github.com/codebude/QRCoder/issues/605
-
-Thank you to everyone who has contributed, reported issues, or used QRCoder over the years.  
-Your support made this project grow far beyond what I initially imagined.
-
-Thank you for everything,
-@codebude
-
----
-
-
 # QRCoder
 
 |Build|Code coverage|Build status|NuGet Package|
 |-----|-------------|------------|-------------|
-|Latest / Stable|[![codecov](https://codecov.io/gh/codebude/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/codebude/QRCoder)|[![Build, test, pack, push (Release)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml/badge.svg)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release.yml)|[![NuGet Badge](https://img.shields.io/nuget/v/QRCoder)](https://www.nuget.org/packages/QRCoder/)|
-|CI / Last commit|[![codecov](https://codecov.io/gh/codebude/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/codebude/QRCoder)|[![Build, test, pack, push (CI)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release-ci.yml/badge.svg)](https://github.com/codebude/QRCoder/actions/workflows/wf-build-release-ci.yml)|[![Github packages](https://img.shields.io/badge/Github-Packages-blue)](https://github.com/codebude/qrcoder/packages)|
+|Latest / Stable|[![codecov](https://codecov.io/gh/Shane32/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/Shane32/QRCoder)|[![Build, test, pack, push (Release)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release.yml/badge.svg)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release.yml)|[![NuGet Badge](https://img.shields.io/nuget/v/QRCoder)](https://www.nuget.org/packages/QRCoder/)|
+|CI / Last commit|[![codecov](https://codecov.io/gh/Shane32/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/Shane32/QRCoder)|[![Build, test, pack, push (CI)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release-ci.yml/badge.svg)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release-ci.yml)|[![Github packages](https://img.shields.io/badge/Github-Packages-blue)](https://github.com/Shane32/qrcoder/packages)|
 
 
 ## Info
@@ -31,14 +13,16 @@ QRCoder is a simple C# library that enables you to create QR codes. QRCoder has 
 Feel free to grab-up/fork the project and make it better!
 
 For more information see:
-[**QRCode Wiki**](https://github.com/codebude/QRCoder/wiki) | [Creator's blog (english)](http://en.code-bude.net/2013/10/17/qrcoder-an-open-source-qr-code-generator-implementation-in-csharp/) | [Creator's blog (german)](http://code-bude.net/2013/10/17/qrcoder-eine-open-source-qr-code-implementierung-in-csharp/)
+[**QRCode Wiki**](https://github.com/Shane32/QRCoder/wiki) | [Creator's blog (english)](http://en.code-bude.net/2013/10/17/qrcoder-an-open-source-qr-code-generator-implementation-in-csharp/) | [Creator's blog (german)](http://code-bude.net/2013/10/17/qrcoder-eine-open-source-qr-code-implementierung-in-csharp/)
 
 ### Release Notes
-The release notes for the current and all past releases can be read here: [📄 Release Notes](https://github.com/codebude/QRCoder/wiki/Release-notes)
+The release notes for the current and all past releases can be read here: [📄 Release Notes](https://github.com/Shane32/QRCoder/wiki/Release-notes)
 
 ## Legal information and credits
 
-QRCoder is a project by [Raffael Herrmann](https://raffaelherrmann.de) and was first released in 10/2013. It's licensed under the [MIT license](https://github.com/codebude/QRCoder/blob/master/LICENSE.txt).
+QRCoder is a project originally by [Raffael Herrmann](https://raffaelherrmann.de) and was first released in 10/2013. It's licensed under the [MIT license](https://github.com/Shane32/QRCoder/blob/master/LICENSE.txt).
+
+Since 2025, QRCoder has been maintained by [Shane Krueger](https://github.com/Shane32) with contributions from the community.
 
 
 * * *
@@ -52,7 +36,7 @@ PM> Install-Package QRCoder
 ```
 
 #### CI builds
-The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/codebude/qrcoder/packages).
+The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/Shane32/qrcoder/packages).
 _(More information on how to use Github Packages in Nuget Package Manager can be [found here](https://samlearnsazure.blog/2021/08/08/consuming-a-nuget-package-from-github-packages/).)_
 
 
@@ -69,29 +53,29 @@ using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
 }
 ```
 
-There are a plenty of other options. So feel free to read more on that in our wiki: [Wiki: How to use QRCoder](https://github.com/codebude/QRCoder/wiki/How-to-use-QRCoder)
+There are a plenty of other options. So feel free to read more on that in our wiki: [Wiki: How to use QRCoder](https://github.com/Shane32/QRCoder/wiki/How-to-use-QRCoder)
 
 ### Special rendering types
 
 Besides the normal PngByteQRCode-class (which is shown in the example above) for creating QR codes in Bitmap format, there are some more QR code rendering classes, each for another special purpose.
 
-* [QRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail)
-* [ArtQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail)
-* [AsciiQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail)
-* [Base64QRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail)
-* [BitmapByteQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail)
-* [PdfByteQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#210-pdfbyteqrcode-renderer-in-detail)
-* [PngByteQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail)
-* [PostscriptQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#29-postscriptqrcode-renderer-in-detail)
-* [SvgQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail)
-* [UnityQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) (_via [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity)_)
-* [XamlQRCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail) (_via [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml)_)
+* [QRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail)
+* [ArtQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail)
+* [AsciiQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail)
+* [Base64QRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail)
+* [BitmapByteQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail)
+* [PdfByteQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#210-pdfbyteqrcode-renderer-in-detail)
+* [PngByteQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail)
+* [PostscriptQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#29-postscriptqrcode-renderer-in-detail)
+* [SvgQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail)
+* [UnityQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) (_via [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity)_)
+* [XamlQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail) (_via [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml)_)
 
-*Note: Please be aware that not all renderers are available on all target frameworks. Please check the [compatibility table](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers#2-overview-of-the-different-renderers) in our wiki, to see if a specific renderer is available on your favourite target framework.*  
+*Note: Please be aware that not all renderers are available on all target frameworks. Please check the [compatibility table](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#2-overview-of-the-different-renderers) in our wiki, to see if a specific renderer is available on your favourite target framework.*  
 
 
 
-For more information about the different rendering types click on one of the types in the list above or have a look at: [Wiki: Advanced usage - QR-Code renderers](https://github.com/codebude/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
+For more information about the different rendering types click on one of the types in the list above or have a look at: [Wiki: Advanced usage - QR-Code renderers](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
 
 ## PayloadGenerator.cs - Generate QR code payloads
 
@@ -99,7 +83,7 @@ Technically QR code is just a visual representation of a text/string. Neverthele
 
 For example: WiFi-QRcodes which, when scanned by smartphone, let the smartphone join an access point automatically.
 
-This "special" QR codes are generated by using special structured payload string, when generating the QR code. The [PayloadGenerator.cs class](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators) helps you to generate this payload strings. To generate a WiFi payload for example, you need just this one line of code:
+This "special" QR codes are generated by using special structured payload string, when generating the QR code. The [PayloadGenerator.cs class](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators) helps you to generate this payload strings. To generate a WiFi payload for example, you need just this one line of code:
 
 ```csharp
 PayloadGenerator.WiFi wifiPayload = new PayloadGenerator.WiFi("MyWiFi-SSID", "MyWiFi-Pass", PayloadGenerator.WiFi.Authentication.WPA);
@@ -130,31 +114,31 @@ QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload, QRCodeGenerator.EC
 ```
 
 
-You can learn more about the payload generator [in our Wiki](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators).
+You can learn more about the payload generator [in our Wiki](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators).
 
 The PayloadGenerator supports the following types of payloads:
 
-* [BezahlCode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#31-bezahlcode)
-* [Bitcoin-Like cryptocurrency (Bitcoin, Bitcoin Cash, Litecoin) payment address](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-like-crypto-currency-payment-address)
-* [Bookmark](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#33-bookmark)
-* [Calendar events (iCal/vEvent)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#34-calendar-events-icalvevent)
-* [ContactData (MeCard/vCard)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#35-contactdata-mecardvcard)
-* [Geolocation](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#36-geolocation)
-* [Girocode](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#37-girocode)
-* [Mail](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#38-mail)
-* [MMS](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#39-mms)
-* [Monero address/payment](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#310-monero-addresspayment)
-* [One-Time-Password](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#311-one-time-password)
-* [Phonenumber](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#312-phonenumber)
-* [RussiaPaymentOrder (ГОСТ Р 56042-2014)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#313-russiapaymentorder)
-* [Shadowsocks configuration](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#314-shadowsocks-configuration)
-* [Skype call](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#315-skype-call)
-* [SlovenianUpnQr](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#316-slovenianupnqr)
-* [SMS](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#317-sms)
-* [SwissQrCode (ISO-20022)](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#318-swissqrcode-iso-20022)
-* [URL](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#319-url)
-* [WhatsAppMessage](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#320-whatsappmessage)
-* [WiFi](https://github.com/codebude/QRCoder/wiki/Advanced-usage---Payload-generators#321-wifi)
+* [BezahlCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#31-bezahlcode)
+* [Bitcoin-Like cryptocurrency (Bitcoin, Bitcoin Cash, Litecoin) payment address](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-like-crypto-currency-payment-address)
+* [Bookmark](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#33-bookmark)
+* [Calendar events (iCal/vEvent)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#34-calendar-events-icalvevent)
+* [ContactData (MeCard/vCard)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#35-contactdata-mecardvcard)
+* [Geolocation](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#36-geolocation)
+* [Girocode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#37-girocode)
+* [Mail](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#38-mail)
+* [MMS](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#39-mms)
+* [Monero address/payment](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#310-monero-addresspayment)
+* [One-Time-Password](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#311-one-time-password)
+* [Phonenumber](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#312-phonenumber)
+* [RussiaPaymentOrder (ГОСТ Р 56042-2014)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#313-russiapaymentorder)
+* [Shadowsocks configuration](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#314-shadowsocks-configuration)
+* [Skype call](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#315-skype-call)
+* [SlovenianUpnQr](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#316-slovenianupnqr)
+* [SMS](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#317-sms)
+* [SwissQrCode (ISO-20022)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#318-swissqrcode-iso-20022)
+* [URL](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#319-url)
+* [WhatsAppMessage](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#320-whatsappmessage)
+* [WiFi](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#321-wifi)
 
 ***
 <sup>(1)</sup> *Depending on the targeted framework the .NET libraries System.Drawing.Common and System.Text.Encoding.CodePages will used as package dependencies.*
