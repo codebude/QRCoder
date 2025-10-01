@@ -36,10 +36,9 @@ jobs:
     strategy:
       matrix:
         dotnet-framework:
-          - { name: ".NET 3.5", framework: "net35", coverage: false, no-build: true, sdk: "8.0.x" }
-          - { name: ".NET 4.52", framework: "net452", coverage: false, no-build: true, sdk: "8.0.x" }
-          - { name: ".NET Core 1.1", framework: "netcoreapp1.1", coverage: false, no-build: false, sdk: "1.0.x" }
-          - { name: ".NET Core 2.0", framework: "netcoreapp2.0", coverage: true, no-build: false, sdk: "2.0.x" }
+          - { name: ".NET Framework 4.6.2", framework: "net462", coverage: false, no-build: true, sdk: "8.0.x" }
+          - { name: ".NET Core 2.1", framework: "netcoreapp2.1", coverage: true, no-build: true, sdk: "2.1.x" }
+          - { name: ".NET Core 3.1", framework: "netcoreapp3.1", coverage: true, no-build: true, sdk: "3.1.x" }
           - { name: ".NET 5.0", framework: "net5.0", coverage: true, no-build: true, sdk: "5.0.x" }
           - { name: ".NET 5.0 Windows", framework: "net5.0-windows", coverage: true, no-build: true, sdk: "5.0.x" }
           - { name: ".NET 6.0", framework: "net6.0", coverage: true, no-build: true, sdk: "6.0.x" }
