@@ -1,3 +1,6 @@
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+using System.Buffers;
+#endif
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -36,7 +39,11 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         using var png = new PngBuilder();
         var size = (QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
         png.WriteHeader(size, size, 1, PngBuilder.ColorType.Greyscale);
-        png.WriteScanlines(DrawScanlines(pixelsPerModule, drawQuietZones));
+        var scanLines = DrawScanlines(pixelsPerModule, drawQuietZones);
+        png.WriteScanlines(scanLines);
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+        ArrayPool<byte>.Shared.Return(scanLines.Array!);
+#endif
         png.WriteEnd();
         return png.GetBytes();
     }
@@ -68,7 +75,11 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         var size = (QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8)) * pixelsPerModule;
         png.WriteHeader(size, size, 1, PngBuilder.ColorType.Indexed);
         png.WritePalette(darkColorRgba, lightColorRgba);
-        png.WriteScanlines(DrawScanlines(pixelsPerModule, drawQuietZones));
+        var scanLines = DrawScanlines(pixelsPerModule, drawQuietZones);
+        png.WriteScanlines(scanLines);
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+        ArrayPool<byte>.Shared.Return(scanLines.Array!);
+#endif
         png.WriteEnd();
         return png.GetBytes();
     }
@@ -79,13 +90,19 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
     /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
     /// <returns>Returns the bitmap as a byte array.</returns>
-    private byte[] DrawScanlines(int pixelsPerModule, bool drawQuietZones)
+    private ArraySegment<byte> DrawScanlines(int pixelsPerModule, bool drawQuietZones)
     {
         var moduleMatrix = QrCodeData.ModuleMatrix;
         var matrixSize = moduleMatrix.Count - (drawQuietZones ? 0 : 8);
         var quietZoneOffset = (drawQuietZones ? 0 : 4);
         var bytesPerScanline = (matrixSize * pixelsPerModule + 7) / 8 + 1; // A monochrome scanline is one byte for filter type then one bit per pixel.
-        var scanlines = new byte[bytesPerScanline * matrixSize * pixelsPerModule];
+        var scanLinesLength = bytesPerScanline * matrixSize * pixelsPerModule;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+        var scanlines = ArrayPool<byte>.Shared.Rent(scanLinesLength);
+        Array.Clear(scanlines, 0, scanLinesLength);
+#else
+        var scanlines = new byte[scanLinesLength];
+#endif
 
         for (var y = 0; y < matrixSize; y++)
         {
@@ -115,7 +132,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
             }
         }
 
-        return scanlines;
+        return new ArraySegment<byte>(scanlines, 0, scanLinesLength);
     }
 
     /// <summary>
@@ -249,7 +266,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         /// <summary>
         /// Writes the IDAT chunk with the actual picture.
         /// </summary>
-        public void WriteScanlines(byte[] scanlines)
+        public void WriteScanlines(ArraySegment<byte> scanlines)
         {
             using var idatStream = new MemoryStream();
             Deflate(idatStream, scanlines);
@@ -261,14 +278,9 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
             _stream.WriteByte(0x9C); // Check bits.
 
             // Compressed data.
-            idatStream.Position = 0;
-#if NET35
             idatStream.WriteTo(_stream);
-#else
-            idatStream.CopyTo(_stream);
-#endif
             // Deflate checksum.
-            var adler = Adler32(scanlines, 0, scanlines.Length);
+            var adler = Adler32(scanlines.Array!, 0, scanlines.Count);
             WriteIntBigEndian(adler);
 
             WriteChunkEnd();
@@ -304,10 +316,10 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
             _stream.WriteByte((byte)value);
         }
 
-        private static void Deflate(Stream output, byte[] bytes)
+        private static void Deflate(Stream output, ArraySegment<byte> bytes)
         {
             using var deflateStream = new DeflateStream(output, CompressionMode.Compress, leaveOpen: true);
-            deflateStream.Write(bytes, 0, bytes.Length);
+            deflateStream.Write(bytes.Array!, 0, bytes.Count);
         }
 
         // Reference implementation from RFC 1950. Not optimized.

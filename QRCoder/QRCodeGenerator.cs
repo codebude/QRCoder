@@ -1009,7 +1009,7 @@ public partial class QRCodeGenerator : IDisposable
         for (int i = 0; i < plainText.Length - 2; i += 3)
         {
             // Parse the next three characters as a decimal integer.
-#if NET5_0_OR_GREATER
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
             var dec = int.Parse(plainText.AsSpan(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
             var dec = int.Parse(plainText.Substring(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
@@ -1021,7 +1021,7 @@ public partial class QRCodeGenerator : IDisposable
         // Handle any remaining digits if the total number is not a multiple of three.
         if (plainText.Length % 3 == 2)  // Two remaining digits are encoded in 7 bits.
         {
-#if NET5_0_OR_GREATER
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
             var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
             var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
@@ -1030,7 +1030,7 @@ public partial class QRCodeGenerator : IDisposable
         }
         else if (plainText.Length % 3 == 1)  // One remaining digit is encoded in 4 bits.
         {
-#if NET5_0_OR_GREATER
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
             var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
             var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
