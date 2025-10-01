@@ -81,20 +81,30 @@ public class QRCodeData : IDisposable
             rawData = output.ToArray();
         }
 
-        var count = rawData.Length;
-
-        if (count < 5)
+        if (rawData.Length < 5)
             throw new Exception("Invalid raw data file. File too short.");
         if (rawData[0] != 0x51 || rawData[1] != 0x52 || rawData[2] != 0x52)
             throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\".");
 
-        //Set QR code version
+        // Set QR code version from side length (includes 8-module quiet zone)
         var sideLen = (int)rawData[4];
-        Version = (sideLen - 21 - 8) / 4 + 1;
+        if (sideLen < 29) // Micro QR: sideLen = 19 + 2*(m-1), m in [1..4] -> versions -1..-4
+        {
+            if (((sideLen - 19) & 1) != 0)
+                throw new Exception("Invalid raw data file. Side length not valid for Micro QR.");
+            var m = ((sideLen - 19) / 2) + 1;
+            Version = -m;
+        }
+        else // Standard QR: sideLen = 29 + 4*(v-1), v in [1..40]
+        {
+            if (((sideLen - 29) % 4) != 0)
+                throw new Exception("Invalid raw data file. Side length not valid for QR.");
+            Version = ((sideLen - 29) / 4) + 1;
+        }
 
         //Unpack
-        var modules = new Queue<bool>(8 * (count - 5));
-        for (int j = 5; j < count; j++)
+        var modules = new Queue<bool>(8 * (rawData.Length - 5));
+        for (int j = 5; j < rawData.Length; j++)
         {
             var b = rawData[j];
             for (int i = 7; i >= 0; i--)
@@ -160,7 +170,8 @@ public class QRCodeData : IDisposable
                     dataQueue.Enqueue((bool)module ? 1 : 0);
                 }
             }
-            for (int i = 0; i < 8 - (ModuleMatrix.Count * ModuleMatrix.Count) % 8; i++)
+            int mod = (int)(((uint)ModuleMatrix.Count * (uint)ModuleMatrix.Count) % 8);
+            for (int i = 0; i < 8 - mod; i++)
             {
                 dataQueue.Enqueue(0);
             }
