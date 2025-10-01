@@ -622,6 +622,28 @@ public class QRGeneratorTests
 
         public override string ToString() => _data;
     }
+
+    [Theory]
+    [InlineData(QRCodeData.Compression.Uncompressed)]
+    [InlineData(QRCodeData.Compression.Deflate)]
+    [InlineData(QRCodeData.Compression.GZip)]
+    public void can_save_and_load_qrcode_data(QRCodeData.Compression compressionMode)
+    {
+        // Arrange - Create a QR code
+        var gen = new QRCodeGenerator();
+        var originalQrData = gen.CreateQrCode("https://github.com/Shane32/QRCoder", ECCLevel.H);
+        var originalMatrix = string.Join("", originalQrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
+
+        // Act - Get raw data and reload it
+        var rawData = originalQrData.GetRawData(compressionMode);
+        var reloadedQrData = new QRCodeData(rawData, compressionMode);
+        var reloadedMatrix = string.Join("", reloadedQrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
+
+        // Assert - Verify the data matches
+        reloadedQrData.Version.ShouldBe(originalQrData.Version);
+        reloadedQrData.ModuleMatrix.Count.ShouldBe(originalQrData.ModuleMatrix.Count);
+        reloadedMatrix.ShouldBe(originalMatrix);
+    }
 }
 
 public static class ExtensionMethods

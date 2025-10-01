@@ -55,46 +55,48 @@ public class QRCodeData : IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="QRCodeData"/> class with raw data and compression mode.
     /// </summary>
-    /// <param name="rawData">The raw data of the QR code.</param>
+    /// <param name="bytes">The raw data of the QR code.</param>
     /// <param name="compressMode">The compression mode used for the raw data.</param>
-    public QRCodeData(byte[] rawData, Compression compressMode)
+    public QRCodeData(byte[] bytes, Compression compressMode)
     {
-        var bytes = new List<byte>(rawData);
-
         //Decompress
         if (compressMode == Compression.Deflate)
         {
-            using var input = new MemoryStream(bytes.ToArray());
+            using var input = new MemoryStream(bytes);
             using var output = new MemoryStream();
             using (var dstream = new DeflateStream(input, CompressionMode.Decompress))
             {
                 dstream.CopyTo(output);
             }
-            bytes = new List<byte>(output.ToArray());
+            bytes = output.ToArray();
         }
         else if (compressMode == Compression.GZip)
         {
-            using var input = new MemoryStream(bytes.ToArray());
+            using var input = new MemoryStream(bytes);
             using var output = new MemoryStream();
             using (var dstream = new GZipStream(input, CompressionMode.Decompress))
             {
                 dstream.CopyTo(output);
             }
-            bytes = new List<byte>(output.ToArray());
+            bytes = output.ToArray();
         }
 
+        var count = bytes.Length;
+
+        if (count < 5)
+            throw new Exception("Invalid raw data file. File too short.");
         if (bytes[0] != 0x51 || bytes[1] != 0x52 || bytes[2] != 0x52)
             throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\".");
 
         //Set QR code version
         var sideLen = (int)bytes[4];
-        bytes.RemoveRange(0, 5);
         Version = (sideLen - 21 - 8) / 4 + 1;
 
         //Unpack
-        var modules = new Queue<bool>(8 * bytes.Count);
-        foreach (var b in bytes)
+        var modules = new Queue<bool>(8 * (count - 5));
+        for (int j = 5; j < count; j++)
         {
+            var b = bytes[j];
             for (int i = 7; i >= 0; i--)
             {
                 modules.Enqueue((b & (1 << i)) != 0);
@@ -111,7 +113,6 @@ public class QRCodeData : IDisposable
                 ModuleMatrix[y][x] = modules.Dequeue();
             }
         }
-
     }
 
     /// <summary>
@@ -121,60 +122,64 @@ public class QRCodeData : IDisposable
     /// <returns>Returns the raw data of the QR code as a byte array.</returns>
     public byte[] GetRawData(Compression compressMode)
     {
-        var bytes = new List<byte>();
+        using var output = new MemoryStream();
+        Stream targetStream = output;
+        DeflateStream? deflateStream = null;
+        GZipStream? gzipStream = null;
 
-        //Add header - signature ("QRR")
-        bytes.AddRange(new byte[] { 0x51, 0x52, 0x52, 0x00 });
-
-        //Add header - rowsize
-        bytes.Add((byte)ModuleMatrix.Count);
-
-        //Build data queue
-        var dataQueue = new Queue<int>();
-        foreach (var row in ModuleMatrix)
-        {
-            foreach (var module in row)
-            {
-                dataQueue.Enqueue((bool)module ? 1 : 0);
-            }
-        }
-        for (int i = 0; i < 8 - (ModuleMatrix.Count * ModuleMatrix.Count) % 8; i++)
-        {
-            dataQueue.Enqueue(0);
-        }
-
-        //Process queue
-        while (dataQueue.Count > 0)
-        {
-            byte b = 0;
-            for (int i = 7; i >= 0; i--)
-            {
-                b += (byte)(dataQueue.Dequeue() << i);
-            }
-            bytes.Add(b);
-        }
-        var rawData = bytes.ToArray();
-
-        //Compress stream (optional)
+        //Set up compression stream if needed
         if (compressMode == Compression.Deflate)
         {
-            using var output = new MemoryStream();
-            using (var dstream = new DeflateStream(output, CompressionMode.Compress))
-            {
-                dstream.Write(rawData, 0, rawData.Length);
-            }
-            rawData = output.ToArray();
+            deflateStream = new DeflateStream(output, CompressionMode.Compress, true);
+            targetStream = deflateStream;
         }
         else if (compressMode == Compression.GZip)
         {
-            using var output = new MemoryStream();
-            using (var gzipStream = new GZipStream(output, CompressionMode.Compress, true))
-            {
-                gzipStream.Write(rawData, 0, rawData.Length);
-            }
-            rawData = output.ToArray();
+            gzipStream = new GZipStream(output, CompressionMode.Compress, true);
+            targetStream = gzipStream;
         }
-        return rawData;
+
+        try
+        {
+            //Add header - signature ("QRR")
+            targetStream.Write(new byte[] { 0x51, 0x52, 0x52, 0x00 }, 0, 4);
+
+            //Add header - rowsize
+            targetStream.WriteByte((byte)ModuleMatrix.Count);
+
+            //Build data queue
+            var dataQueue = new Queue<int>();
+            foreach (var row in ModuleMatrix)
+            {
+                foreach (var module in row)
+                {
+                    dataQueue.Enqueue((bool)module ? 1 : 0);
+                }
+            }
+            for (int i = 0; i < 8 - (ModuleMatrix.Count * ModuleMatrix.Count) % 8; i++)
+            {
+                dataQueue.Enqueue(0);
+            }
+
+            //Process queue
+            while (dataQueue.Count > 0)
+            {
+                byte b = 0;
+                for (int i = 7; i >= 0; i--)
+                {
+                    b += (byte)(dataQueue.Dequeue() << i);
+                }
+                targetStream.WriteByte(b);
+            }
+        }
+        finally
+        {
+            //Close compression streams to flush data
+            deflateStream?.Dispose();
+            gzipStream?.Dispose();
+        }
+
+        return output.ToArray();
     }
 
     /// <summary>
