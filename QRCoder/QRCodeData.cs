@@ -55,48 +55,48 @@ public class QRCodeData : IDisposable
     /// <summary>
     /// Initializes a new instance of the <see cref="QRCodeData"/> class with raw data and compression mode.
     /// </summary>
-    /// <param name="bytes">The raw data of the QR code.</param>
+    /// <param name="rawData">The raw data of the QR code.</param>
     /// <param name="compressMode">The compression mode used for the raw data.</param>
-    public QRCodeData(byte[] bytes, Compression compressMode)
+    public QRCodeData(byte[] rawData, Compression compressMode)
     {
         //Decompress
         if (compressMode == Compression.Deflate)
         {
-            using var input = new MemoryStream(bytes);
+            using var input = new MemoryStream(rawData);
             using var output = new MemoryStream();
             using (var dstream = new DeflateStream(input, CompressionMode.Decompress))
             {
                 dstream.CopyTo(output);
             }
-            bytes = output.ToArray();
+            rawData = output.ToArray();
         }
         else if (compressMode == Compression.GZip)
         {
-            using var input = new MemoryStream(bytes);
+            using var input = new MemoryStream(rawData);
             using var output = new MemoryStream();
             using (var dstream = new GZipStream(input, CompressionMode.Decompress))
             {
                 dstream.CopyTo(output);
             }
-            bytes = output.ToArray();
+            rawData = output.ToArray();
         }
 
-        var count = bytes.Length;
+        var count = rawData.Length;
 
         if (count < 5)
             throw new Exception("Invalid raw data file. File too short.");
-        if (bytes[0] != 0x51 || bytes[1] != 0x52 || bytes[2] != 0x52)
+        if (rawData[0] != 0x51 || rawData[1] != 0x52 || rawData[2] != 0x52)
             throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\".");
 
         //Set QR code version
-        var sideLen = (int)bytes[4];
+        var sideLen = (int)rawData[4];
         Version = (sideLen - 21 - 8) / 4 + 1;
 
         //Unpack
         var modules = new Queue<bool>(8 * (count - 5));
         for (int j = 5; j < count; j++)
         {
-            var b = bytes[j];
+            var b = rawData[j];
             for (int i = 7; i >= 0; i--)
             {
                 modules.Enqueue((b & (1 << i)) != 0);
