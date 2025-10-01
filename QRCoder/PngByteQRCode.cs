@@ -278,12 +278,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
             _stream.WriteByte(0x9C); // Check bits.
 
             // Compressed data.
-            idatStream.Position = 0;
-#if NET35
             idatStream.WriteTo(_stream);
-#else
-            idatStream.CopyTo(_stream);
-#endif
             // Deflate checksum.
             var adler = Adler32(scanlines.Array!, 0, scanlines.Count);
             WriteIntBigEndian(adler);
