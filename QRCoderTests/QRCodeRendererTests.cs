@@ -53,7 +53,7 @@ public class QRCodeRendererTests
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
-        var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: (Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
+        var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: HelperFunctions.GetIconBitmap());
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var result = HelperFunctions.BitmapToHash(bmp);
         result.ShouldBe("c99a82b43ce48ddae18a75862c476a9e");
@@ -65,7 +65,7 @@ public class QRCodeRendererTests
         //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
-        var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: (Bitmap)Bitmap.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png"));
+        var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: HelperFunctions.GetIconBitmap());
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
 
         var result = HelperFunctions.BitmapToHash(bmp);
@@ -79,7 +79,7 @@ public class QRCodeRendererTests
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
-        var logo = (Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png");
+        var logo = HelperFunctions.GetIconBitmap();
         var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: logo, iconBorderWidth: 6);
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var result = HelperFunctions.BitmapToHash(bmp);
@@ -93,7 +93,7 @@ public class QRCodeRendererTests
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
-        var logo = (Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png");
+        var logo = HelperFunctions.GetIconBitmap();
         var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.White, icon: logo, iconBorderWidth: 6);
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var result = HelperFunctions.BitmapToHash(bmp);
@@ -107,7 +107,7 @@ public class QRCodeRendererTests
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
 
-        var logo = (Bitmap)Image.FromFile(HelperFunctions.GetAssemblyPath() + "\\assets\\noun_software engineer_2909346.png");
+        var logo = HelperFunctions.GetIconBitmap();
         var bmp = new QRCode(data).GetGraphic(10, Color.Black, Color.Transparent, icon: logo, iconBorderWidth: 6, iconBackgroundColor: Color.DarkGreen);
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var result = HelperFunctions.BitmapToHash(bmp);

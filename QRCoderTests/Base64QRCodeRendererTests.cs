@@ -1,4 +1,3 @@
-#if !NETCOREAPP1_1
 using System;
 using System.Drawing;
 using System.IO;
@@ -66,5 +65,3 @@ public class Base64QRCodeRendererTests
     }
 #endif
 }
-
-#endif
