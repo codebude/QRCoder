@@ -1,7 +1,6 @@
-#if !NETCOREAPP1_1
 using System;
 using System.Drawing;
-using System.IO;
+using System.Text.RegularExpressions;
 using QRCoder;
 using QRCoderTests.Helpers;
 using Shouldly;
@@ -82,9 +81,21 @@ public class SvgQRCodeRendererTests
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var logoBitmap = HelperFunctions.GetIconBitmap();
         var logoObj = new SvgQRCode.SvgLogo(iconRasterized: logoBitmap, 15);
-        logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
+        logoObj.GetMediaType().ShouldBe(SvgQRCode.SvgLogo.MediaType.PNG);
 
         var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
+
+        // remove PNG encoded bitmap from SVG and verify it separately (to avoid diffs due to different encoding settings of System.Drawing)
+        var regex = new Regex(
+            @"<image\b[^>]*\bxlink:href\s*=\s*[""']data:[^;""']+;base64,([A-Za-z0-9+/=]+)[""']",
+            RegexOptions.IgnoreCase);
+        var match = regex.Match(svg);
+        if (!match.Success || match.Groups.Count < 2)
+            throw new Exception("Could not find embedded image data in SVG output.");
+        var base64Data = match.Groups[1].Value;
+        var imageData = Convert.FromBase64String(base64Data);
+        imageData.ShouldMatchApprovedImage(discriminator: "embeddedLogo");
+        svg = svg.Replace(base64Data, "=====BASE64DATA=====");
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
 
@@ -98,9 +109,21 @@ public class SvgQRCodeRendererTests
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var logoBitmap = HelperFunctions.GetIconBitmap();
         var logoObj = new SvgQRCode.SvgLogo(iconRasterized: logoBitmap, 15, false);
-        logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
+        logoObj.GetMediaType().ShouldBe(SvgQRCode.SvgLogo.MediaType.PNG);
 
         var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
+
+        // remove PNG encoded bitmap from SVG and verify it separately (to avoid diffs due to different encoding settings of System.Drawing)
+        var regex = new Regex(
+            @"<image\b[^>]*\bxlink:href\s*=\s*[""']data:[^;""']+;base64,([A-Za-z0-9+/=]+)[""']",
+            RegexOptions.IgnoreCase);
+        var match = regex.Match(svg);
+        if (!match.Success || match.Groups.Count < 2)
+            throw new Exception("Could not find embedded image data in SVG output.");
+        var base64Data = match.Groups[1].Value;
+        var imageData = Convert.FromBase64String(base64Data);
+        imageData.ShouldMatchApprovedImage(discriminator: "embeddedLogo");
+        svg = svg.Replace(base64Data, "=====BASE64DATA=====");
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
 
@@ -114,9 +137,21 @@ public class SvgQRCodeRendererTests
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var logoBitmap = HelperFunctions.GetIconBitmap();
         var logoObj = new SvgQRCode.SvgLogo(iconRasterized: logoBitmap, 15);
-        logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
+        logoObj.GetMediaType().ShouldBe(SvgQRCode.SvgLogo.MediaType.PNG);
 
         var svg = new SvgQRCode(data).GetGraphic(10, Color.Black, Color.White, drawQuietZones: false, logo: logoObj);
+
+        // remove PNG encoded bitmap from SVG and verify it separately (to avoid diffs due to different encoding settings of System.Drawing)
+        var regex = new Regex(
+            @"<image\b[^>]*\bxlink:href\s*=\s*[""']data:[^;""']+;base64,([A-Za-z0-9+/=]+)[""']",
+            RegexOptions.IgnoreCase);
+        var match = regex.Match(svg);
+        if (!match.Success || match.Groups.Count < 2)
+            throw new Exception("Could not find embedded image data in SVG output.");
+        var base64Data = match.Groups[1].Value;
+        var imageData = Convert.FromBase64String(base64Data);
+        imageData.ShouldMatchApprovedImage(discriminator: "embeddedLogo");
+        svg = svg.Replace(base64Data, "=====BASE64DATA=====");
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
 #endif
@@ -131,7 +166,7 @@ public class SvgQRCodeRendererTests
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
         var logoBitmap = HelperFunctions.GetIconBytes();
         var logoObj = new SvgQRCode.SvgLogo(iconRasterized: logoBitmap, 15);
-        logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.PNG);
+        logoObj.GetMediaType().ShouldBe(SvgQRCode.SvgLogo.MediaType.PNG);
 
         var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
@@ -147,7 +182,7 @@ public class SvgQRCodeRendererTests
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909361
         var logoSvg = HelperFunctions.GetIconSvg();
         var logoObj = new SvgQRCode.SvgLogo(logoSvg, 20);
-        logoObj.GetMediaType().ShouldBe<SvgQRCode.SvgLogo.MediaType>(SvgQRCode.SvgLogo.MediaType.SVG);
+        logoObj.GetMediaType().ShouldBe(SvgQRCode.SvgLogo.MediaType.SVG);
 
         var svg = new SvgQRCode(data).GetGraphic(10, Color.DarkGray, Color.White, logo: logoObj);
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
@@ -184,4 +219,3 @@ public class SvgQRCodeRendererTests
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
 }
-#endif
