@@ -54,7 +54,7 @@ public class Base64QRCodeRendererTests
     {
         var base64QRCode = new Base64QRCode(_data).GetGraphic(5, Color.Black, Color.White, true, Base64QRCode.ImageType.Jpeg);
         var data = Convert.FromBase64String(base64QRCode);
-        data.ShouldMatchApprovedImage();
+        data.ShouldMatchApprovedImage(asMonochrome: true); // remove JPEG compression artifacts by converting to monochrome
     }
 #endif
 }

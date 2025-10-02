@@ -17,16 +17,18 @@ namespace Shouldly;
 [EditorBrowsable(EditorBrowsableState.Never)]
 public static partial class ShouldMatchApprovedExtensions
 {
-    public static void ShouldMatchApprovedImage(this byte[] imageBytes, string? discriminator = null, string? customMessage = null)
+    public static void ShouldMatchApprovedImage(this byte[] imageBytes, string? discriminator = null, string? customMessage = null, bool asMonochrome = false)
     {
         using var ms = new MemoryStream(imageBytes);
         using var image = (Bitmap)Image.FromStream(ms);
-        image.ShouldMatchApproved(discriminator, customMessage);
+        image.ShouldMatchApproved(discriminator, customMessage, asMonochrome);
     }
-    public static void ShouldMatchApproved(this Bitmap image, string? discriminator = null, string? customMessage = null)
+    public static void ShouldMatchApproved(this Bitmap image, string? discriminator = null, string? customMessage = null, bool asMonochrome = false)
     {
         // encode to gif first for easier visual verification, and using a third party lib to avoid platform-specific compression differences
         var readableBitmapData = image.GetReadableBitmapData();
+        if (asMonochrome)
+            readableBitmapData = readableBitmapData.Clone(KnownPixelFormat.Format1bppIndexed);
         var ms = new MemoryStream();
         GifEncoder.EncodeImage(readableBitmapData, ms);
         ms.ToArray().ShouldMatchApproved("gif", discriminator, customMessage);
