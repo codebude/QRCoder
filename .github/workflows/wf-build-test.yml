@@ -73,7 +73,10 @@ jobs:
   additional-tests:
     runs-on: windows-latest
     steps:
-    - name: Install additional .NET SDKs
+    - uses: actions/checkout@v4
+      name: Checkout Code
+
+    - name: Install .NET SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
