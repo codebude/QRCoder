@@ -31,7 +31,7 @@ public class RussiaPaymentOrderTests
         var name = "ООО «Три кита»";
         var correspAcc = "30101810965770000413";
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, null, PayloadGenerator.RussiaPaymentOrder.CharacterSets.windows_1251);
-        generator.ToString().ShouldMatchApproved(x => x.NoDiff());
+        generator.ToBytes().ShouldMatchApproved("txt");
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class RussiaPaymentOrderTests
         var name = "ООО «Три кита»";
         var correspAcc = "30101810965770000413";
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, null, PayloadGenerator.RussiaPaymentOrder.CharacterSets.koi8_r);
-        generator.ToString().ShouldMatchApproved(x => x.NoDiff());
+        generator.ToBytes().ShouldMatchApproved("txt");
     }
 
     [Fact]
