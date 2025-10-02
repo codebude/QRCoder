@@ -36,7 +36,7 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
         disable_search: true
         fail_ci_if_error: true
-        files: ./QRCoderTests/coverage.*.opencover.xml
+        directory: ./QRCoderTests
 
   additional-tests:
     runs-on: windows-latest
