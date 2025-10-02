@@ -329,10 +329,8 @@ public class BezahlCodeTests
         var bnc = "10020 5000";
         var name = "Wikimedia Fördergesellschaft";
 #pragma warning disable CS0612
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, "", "", "New business contact."));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, "", "", "New business contact."));
 #pragma warning restore CS0612
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The constructor without an amount may only ne used with authority types 'contact' and 'contact_v2'.");
     }
 
@@ -344,10 +342,8 @@ public class BezahlCodeTests
         var bic = "BFSWDE33BER";
         var name = "Wikimedia Fördergesellschaft";
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban: iban, bic: bic));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban: iban, bic: bic));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The constructor without an amount may only ne used with authority types 'contact' and 'contact_v2'.");
     }
 
@@ -360,10 +356,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, account: account, bnc: bnc, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, account: account, bnc: bnc, amount: amount));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The constructor with 'account' and 'bnc' may only be used with 'non SEPA' authority types. Either choose another authority type or switch constructor.");
     }
 
@@ -382,10 +376,8 @@ public class BezahlCodeTests
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
         var currency = Currency.USD;
 #pragma warning disable CS0612
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepayment, name, account, bnc, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, reason, postingKey, currency, DateTime.Now));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepayment, name, account, bnc, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, reason, postingKey, currency, DateTime.Now));
 #pragma warning restore CS0612
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("When using 'periodicsinglepayment' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
     }
 
@@ -398,10 +390,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
 #pragma warning disable CS0612
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, iban: iban, bic: bic, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, iban: iban, bic: bic, amount: amount));
 #pragma warning restore CS0612
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The constructor with 'iban' and 'bic' may only be used with 'SEPA' authority types. Either choose another authority type or switch constructor.");
 
     }
@@ -421,10 +411,8 @@ public class BezahlCodeTests
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
         var currency = Currency.USD;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("When using 'periodicsinglepaymentsepa' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
 
     }
@@ -438,10 +426,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft has really really really long name, over 71 chars";
         var amount = 10.00m;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("(Payee-)Name must be shorter than 71 chars.");
 
     }
@@ -456,10 +442,8 @@ public class BezahlCodeTests
         var reason = "A long long long reason text which may resolve in an exception" + new string('.', 200);
         var amount = 10.00m;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount, reason: reason));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount, reason: reason));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("Reasons texts have to be shorter than 141 chars.");
 
     }
@@ -473,10 +457,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
 #pragma warning disable CS0612
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount));
 #pragma warning restore CS0612
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The account entered isn't valid.");
     }
 
@@ -489,10 +471,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
 #pragma warning disable CS0612
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount));
 #pragma warning restore CS0612
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The bnc entered isn't valid.");
     }
 
@@ -506,10 +486,8 @@ public class BezahlCodeTests
         var postingKey = 101;
         var amount = 10.00m;
 #pragma warning disable CS0612
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount, postingKey: postingKey));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount, postingKey: postingKey));
 #pragma warning restore CS0612
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("PostingKey must be within 0 and 99.");
     }
 
@@ -522,10 +500,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The IBAN entered isn't valid.");
 
     }
@@ -539,10 +515,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The BIC entered isn't valid.");
 
     }
@@ -561,10 +535,8 @@ public class BezahlCodeTests
         var amount = 10.00m;
         var currency = Currency.USD;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("SEPA reference texts have to be shorter than 36 chars.");
 
     }
@@ -583,10 +555,8 @@ public class BezahlCodeTests
         var amount = 10.00m;
         var currency = Currency.USD;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The creditorId entered isn't valid.");
     }
 
@@ -604,10 +574,8 @@ public class BezahlCodeTests
         var amount = 10.00m;
         var currency = Currency.USD;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebitsepa, name, iban, bic, amount, "", 0, null, null, creditorId, mandateId, new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The mandateId entered isn't valid.");
     }
 
@@ -619,10 +587,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.001m;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("Amount must have less than 3 digits after decimal point.");
 
     }
@@ -636,10 +602,8 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var amount = 1000000000m;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepaymentsepa, name, iban: iban, bic: bic, amount: amount));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("Amount has to at least 0.01 and must be smaller or equal to 999999999.99.");
 
     }
@@ -657,10 +621,8 @@ public class BezahlCodeTests
         var executionDate = new DateTime(2017, 1, 1);
         var currency = Currency.USD;
 #pragma warning disable CS0612
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, executionDate));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, executionDate));
 #pragma warning restore CS0612
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("Execution date must be today or in future.");
     }
 
@@ -680,10 +642,8 @@ public class BezahlCodeTests
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
         var currency = Currency.USD;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The periodicTimeunit must be either 'M' (monthly) or 'W' (weekly).");
     }
 
@@ -703,10 +663,8 @@ public class BezahlCodeTests
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
         var currency = Currency.USD;
 
-        var exception = Record.Exception(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
+        var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepaymentsepa, name, iban, bic, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, "", "", new DateTime(2017, 03, 01), reason, sepaReference, currency, DateTime.Now));
 
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<BezahlCodeException>();
         exception.Message.ShouldBe("The periodicTimeunitRotation must be 1 or greater. (It means repeat the payment every 'periodicTimeunitRotation' weeks/months.");
     }
 }

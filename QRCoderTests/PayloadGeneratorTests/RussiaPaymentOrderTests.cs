@@ -71,9 +71,7 @@ public class RussiaPaymentOrderTests
         var correspAcc = "30101810400000000225";
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc);
 
-        var exception = Record.Exception(() => generator.ToString());
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
+        var exception = Should.Throw<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(() => generator.ToString());
         exception.Message.ShouldBe("No valid separator found.");
     }
 
@@ -89,9 +87,7 @@ public class RussiaPaymentOrderTests
         var correspAcc = "30101810400000000225";
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc);
 
-        var exception = Record.Exception(() => generator.ToString());
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
+        var exception = Should.Throw<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(() => generator.ToString());
         exception.Message.ShouldStartWith("Data too long");
     }
 
@@ -114,8 +110,7 @@ public class RussiaPaymentOrderTests
 
         // Should throw no exception as the 300 byte limit applies only to the mandatory fields
         // See https://github.com/Shane32/QRCoder/issues/392
-        var exception = Record.Exception(() => generator.ToString());
-        exception.ShouldBeNull();
+        Should.NotThrow(() => generator.ToString());
     }
 
     [Fact]
@@ -127,9 +122,7 @@ public class RussiaPaymentOrderTests
         var name = "|@;:^_~{}!#$%&()*+,/";
         var correspAcc = "30101810400000000225";
 
-        var exception = Record.Exception(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
+        var exception = Should.Throw<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
         exception.Message.ShouldBe($"The input for 'PersonalAcc' must not be null.");
     }
 
@@ -142,9 +135,7 @@ public class RussiaPaymentOrderTests
         var name = "|@;:^_~{}!#$%&()*+,/";
         var correspAcc = "30101810400000000225";
 
-        var exception = Record.Exception(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
-        exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
+        var exception = Should.Throw<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
         exception.Message.ShouldBe("The input for 'BIC' (abcd) doesn't match the pattern ^\\d{9}$");
     }
 
