@@ -120,4 +120,4 @@ jobs:
       run: dotnet pack QRCoder.Xaml\QRCoder.Xaml.csproj -c Release --no-build /p:PackageVersion="$env:ASSEM_VER_SHT_XAML$env:CI_TAG_XAML" /p:PackageReleaseNotes="- This is an automatic CI build ($env:CI_TAG_XAML)`n- Please don't use it in productive environments!"
 
     - name: Publish QRCoder and QRCoder.Xaml to Github packages
-      run: dotnet nuget push "**/*.nupkg" --no-symbols --skip-duplicate --api-key $env:GH_PKG_SEC --source https://nuget.pkg.github.com/codebude/index.json
+      run: dotnet nuget push "**/*.nupkg" --no-symbols --skip-duplicate --api-key $env:GH_PKG_SEC --source https://nuget.pkg.github.com/Shane32/index.json
