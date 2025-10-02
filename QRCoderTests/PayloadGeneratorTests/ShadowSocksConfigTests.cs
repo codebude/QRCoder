@@ -46,8 +46,8 @@ public class ShadowSocksConfigTests
 
         var exception = Record.Exception(() => new PayloadGenerator.ShadowSocksConfig(host, port, password, method));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>();
         exception.Message.ShouldBe("Value of 'port' must be within 0 and 65535.");
     }
 
@@ -62,8 +62,8 @@ public class ShadowSocksConfigTests
 
         var exception = Record.Exception(() => new PayloadGenerator.ShadowSocksConfig(host, port, password, method));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>();
         exception.Message.ShouldBe("Value of 'port' must be within 0 and 65535.");
     }
 

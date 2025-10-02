@@ -35,10 +35,10 @@ public class RussiaPaymentOrderTests
         byte[] targetBytes = new byte[] { 83, 84, 48, 48, 48, 49, 49, 124, 78, 97, 109, 101, 61, 206, 206, 206, 32, 171, 210, 240, 232, 32, 234, 232, 242, 224, 187, 124, 80, 101, 114, 115, 111, 110, 97, 108, 65, 99, 99, 61, 52, 48, 55, 48, 50, 56, 49, 48, 49, 51, 56, 50, 53, 48, 49, 50, 51, 48, 49, 55, 124, 66, 97, 110, 107, 78, 97, 109, 101, 61, 206, 192, 206, 32, 34, 193, 192, 205, 202, 34, 124, 66, 73, 67, 61, 48, 52, 52, 53, 50, 53, 50, 50, 53, 124, 67, 111, 114, 114, 101, 115, 112, 65, 99, 99, 61, 51, 48, 49, 48, 49, 56, 49, 48, 57, 54, 53, 55, 55, 48, 48, 48, 48, 52, 49, 51, 124 };
         var payloadBytes = generator.ToBytes();
 
-        Assert.True(targetBytes.Length == payloadBytes.Length, $"Byte array lengths different. Expected: {targetBytes.Length}, Actual: {payloadBytes.Length}");
+        targetBytes.Length.ShouldBe(payloadBytes.Length, $"Byte array lengths different. Expected: {targetBytes.Length}, Actual: {payloadBytes.Length}");
         for (int i = 0; i < targetBytes.Length; i++)
         {
-            Assert.True(targetBytes[i] == payloadBytes[i],
+            targetBytes[i].ShouldBe(payloadBytes[i],
                         $"Expected: '{targetBytes[i]}', Actual: '{payloadBytes[i]}' at offset {i}."
             );
         }
@@ -57,10 +57,10 @@ public class RussiaPaymentOrderTests
         byte[] targetBytes = new byte[] { 83, 84, 48, 48, 48, 49, 51, 124, 78, 97, 109, 101, 61, 239, 239, 239, 32, 60, 244, 210, 201, 32, 203, 201, 212, 193, 62, 124, 80, 101, 114, 115, 111, 110, 97, 108, 65, 99, 99, 61, 52, 48, 55, 48, 50, 56, 49, 48, 49, 51, 56, 50, 53, 48, 49, 50, 51, 48, 49, 55, 124, 66, 97, 110, 107, 78, 97, 109, 101, 61, 239, 225, 239, 32, 34, 226, 225, 238, 235, 34, 124, 66, 73, 67, 61, 48, 52, 52, 53, 50, 53, 50, 50, 53, 124, 67, 111, 114, 114, 101, 115, 112, 65, 99, 99, 61, 51, 48, 49, 48, 49, 56, 49, 48, 57, 54, 53, 55, 55, 48, 48, 48, 48, 52, 49, 51, 124 };
         var payloadBytes = generator.ToBytes();
 
-        Assert.True(targetBytes.Length == payloadBytes.Length, $"Byte array lengths different. Expected: {targetBytes.Length}, Actual: {payloadBytes.Length}");
+        targetBytes.Length.ShouldBe(payloadBytes.Length, $"Byte array lengths different. Expected: {targetBytes.Length}, Actual: {payloadBytes.Length}");
         for (int i = 0; i < targetBytes.Length; i++)
         {
-            Assert.True(targetBytes[i] == payloadBytes[i],
+            targetBytes[i].ShouldBe(payloadBytes[i],
                         $"Expected: '{targetBytes[i]}', Actual: '{payloadBytes[i]}' at offset {i}."
             );
         }
@@ -92,8 +92,8 @@ public class RussiaPaymentOrderTests
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc);
 
         var exception = Record.Exception(() => generator.ToString());
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
         exception.Message.ShouldBe("No valid separator found.");
     }
 
@@ -110,8 +110,8 @@ public class RussiaPaymentOrderTests
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc);
 
         var exception = Record.Exception(() => generator.ToString());
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
         exception.Message.ShouldStartWith("Data too long");
     }
 
@@ -135,7 +135,7 @@ public class RussiaPaymentOrderTests
         // Should throw no exception as the 300 byte limit applies only to the mandatory fields
         // See https://github.com/Shane32/QRCoder/issues/392
         var exception = Record.Exception(() => generator.ToString());
-        Assert.Null(exception);
+        exception.ShouldBeNull();
     }
 
     [Fact]
@@ -148,8 +148,8 @@ public class RussiaPaymentOrderTests
         var correspAcc = "30101810400000000225";
 
         var exception = Record.Exception(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
         exception.Message.ShouldBe($"The input for 'PersonalAcc' must not be null.");
     }
 
@@ -163,8 +163,8 @@ public class RussiaPaymentOrderTests
         var correspAcc = "30101810400000000225";
 
         var exception = Record.Exception(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>();
         exception.Message.ShouldBe("The input for 'BIC' (abcd) doesn't match the pattern ^\\d{9}$");
     }
 

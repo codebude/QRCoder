@@ -69,8 +69,8 @@ public class ArtQRCodeRendererTests
         var aCode = new ArtQRCode(data);
 
         var exception = Record.Exception(() => aCode.GetGraphic(10, Color.Black, Color.White, Color.Transparent, pixelSizeFactor: 2));
-        Assert.NotNull(exception);
-        Assert.IsType<System.Exception>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<System.Exception>();
         exception.Message.ShouldBe("The parameter pixelSize must be between 0 and 1. (0-100%)");
     }
 

@@ -67,8 +67,8 @@ public class MoneroTransactionTests
 
         var exception = Record.Exception(() => new PayloadGenerator.MoneroTransaction(address, amount));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.MoneroTransaction.MoneroTransactionException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.MoneroTransaction.MoneroTransactionException>();
         exception.Message.ShouldBe("Value of 'txAmount' must be greater than 0.");
     }
 
@@ -80,8 +80,8 @@ public class MoneroTransactionTests
 
         var exception = Record.Exception(() => new PayloadGenerator.MoneroTransaction(address));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.MoneroTransaction.MoneroTransactionException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<PayloadGenerator.MoneroTransaction.MoneroTransactionException>();
         exception.Message.ShouldBe("The address is mandatory and has to be set.");
     }
 }
