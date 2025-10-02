@@ -344,4 +344,138 @@ public class GirocodeTests
         payload.EciMode.ShouldBe<EciMode>(EciMode.Default);
         payload.Version.ShouldBe(-1);
     }
+
+    [Fact]
+    public void girocode_generator_version2_with_null_bic_should_succeed()
+    {
+        var iban = "NL86INGB0002445588";
+        var name = "a name";
+        var remittanceInformation = "some info";
+        var amount = 1337.99m;
+
+        var payload = new PayloadGenerator.Girocode(
+            iban: iban,
+            bic: null,
+            name: name,
+            amount: amount,
+            remittanceInformation: remittanceInformation,
+            version: PayloadGenerator.Girocode.GirocodeVersion.Version2,
+            encoding: PayloadGenerator.Girocode.GirocodeEncoding.UTF_8);
+
+        payload
+            .ToString()
+            .ShouldBe("BCD\n002\n1\nSCT\n\na name\nNL86INGB0002445588\nEUR1337.99\n\n\nsome info\n");
+    }
+
+    [Fact]
+    public void girocode_generator_version2_with_empty_bic_should_succeed()
+    {
+        var iban = "NL86INGB0002445588";
+        var name = "a name";
+        var remittanceInformation = "some info";
+        var amount = 1337.99m;
+
+        var payload = new PayloadGenerator.Girocode(
+            iban: iban,
+            bic: string.Empty,
+            name: name,
+            amount: amount,
+            remittanceInformation: remittanceInformation,
+            version: PayloadGenerator.Girocode.GirocodeVersion.Version2,
+            encoding: PayloadGenerator.Girocode.GirocodeEncoding.UTF_8);
+
+        payload
+            .ToString()
+            .ShouldBe("BCD\n002\n1\nSCT\n\na name\nNL86INGB0002445588\nEUR1337.99\n\n\nsome info\n");
+    }
+
+    [Fact]
+    public void girocode_generator_version2_with_valid_bic_should_succeed()
+    {
+        var iban = "NL86INGB0002445588";
+        var bic = "INGBNL2A";
+        var name = "a name";
+        var remittanceInformation = "some info";
+        var amount = 1337.99m;
+
+        var payload = new PayloadGenerator.Girocode(
+            iban: iban,
+            bic: bic,
+            name: name,
+            amount: amount,
+            remittanceInformation: remittanceInformation,
+            version: PayloadGenerator.Girocode.GirocodeVersion.Version2,
+            encoding: PayloadGenerator.Girocode.GirocodeEncoding.UTF_8);
+
+        payload
+            .ToString()
+            .ShouldBe("BCD\n002\n1\nSCT\nINGBNL2A\na name\nNL86INGB0002445588\nEUR1337.99\n\n\nsome info\n");
+    }
+
+    [Fact]
+    public void girocode_generator_version2_with_invalid_bic_should_throw_exception()
+    {
+        var iban = "NL86INGB0002445588";
+        var bic = "INVALID";
+        var name = "a name";
+        var remittanceInformation = "some info";
+        var amount = 1337.99m;
+
+        var exception = Record.Exception(() => new PayloadGenerator.Girocode(
+            iban: iban,
+            bic: bic,
+            name: name,
+            amount: amount,
+            remittanceInformation: remittanceInformation,
+            version: PayloadGenerator.Girocode.GirocodeVersion.Version2,
+            encoding: PayloadGenerator.Girocode.GirocodeEncoding.UTF_8));
+
+        Assert.NotNull(exception);
+        Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
+        exception.Message.ShouldBe("The BIC entered isn't valid.");
+    }
+
+    [Fact]
+    public void girocode_generator_version1_with_null_bic_should_throw_exception()
+    {
+        var iban = "NL86INGB0002445588";
+        var name = "a name";
+        var remittanceInformation = "some info";
+        var amount = 1337.99m;
+
+        var exception = Record.Exception(() => new PayloadGenerator.Girocode(
+            iban: iban,
+            bic: null,
+            name: name,
+            amount: amount,
+            remittanceInformation: remittanceInformation,
+            version: PayloadGenerator.Girocode.GirocodeVersion.Version1,
+            encoding: PayloadGenerator.Girocode.GirocodeEncoding.UTF_8));
+
+        Assert.NotNull(exception);
+        Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
+        exception.Message.ShouldBe("The BIC entered isn't valid.");
+    }
+
+    [Fact]
+    public void girocode_generator_version1_with_empty_bic_should_throw_exception()
+    {
+        var iban = "NL86INGB0002445588";
+        var name = "a name";
+        var remittanceInformation = "some info";
+        var amount = 1337.99m;
+
+        var exception = Record.Exception(() => new PayloadGenerator.Girocode(
+            iban: iban,
+            bic: string.Empty,
+            name: name,
+            amount: amount,
+            remittanceInformation: remittanceInformation,
+            version: PayloadGenerator.Girocode.GirocodeVersion.Version1,
+            encoding: PayloadGenerator.Girocode.GirocodeEncoding.UTF_8));
+
+        Assert.NotNull(exception);
+        Assert.IsType<PayloadGenerator.Girocode.GirocodeException>(exception);
+        exception.Message.ShouldBe("The BIC entered isn't valid.");
+    }
 }

@@ -45,9 +45,9 @@ public static partial class PayloadGenerator
             if (!IsValidIban(iban))
                 throw new GirocodeException("The IBAN entered isn't valid.");
             _iban = iban.Replace(" ", "").ToUpper();
-            if (!IsValidBic(bic))
+            if (!IsValidBic(bic, _version == GirocodeVersion.Version1))
                 throw new GirocodeException("The BIC entered isn't valid.");
-            _bic = bic.Replace(" ", "").ToUpper();
+            _bic = bic?.Replace(" ", "").ToUpper() ?? string.Empty;
             if (name.Length > 70)
                 throw new GirocodeException("(Payee-)Name must be shorter than 71 chars.");
             _name = name;
