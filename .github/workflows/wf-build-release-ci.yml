@@ -3,7 +3,8 @@ name: Build, test, pack, push (CI)
 on:
   push:
     branches:
-      - master  
+      - master
+      - update-ci-workflow
   workflow_dispatch:
 
 jobs:
