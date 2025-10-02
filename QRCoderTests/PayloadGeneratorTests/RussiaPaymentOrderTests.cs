@@ -133,7 +133,7 @@ public class RussiaPaymentOrderTests
         var generator = new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc, optionalFields);
 
         // Should throw no exception as the 300 byte limit applies only to the mandatory fields
-        // See https://github.com/codebude/QRCoder/issues/392
+        // See https://github.com/Shane32/QRCoder/issues/392
         var exception = Record.Exception(() => generator.ToString());
         Assert.Null(exception);
     }
