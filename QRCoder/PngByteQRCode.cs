@@ -1,4 +1,4 @@
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
 using System.Buffers;
 #endif
 using System;
@@ -41,7 +41,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         png.WriteHeader(size, size, 1, PngBuilder.ColorType.Greyscale);
         var scanLines = DrawScanlines(pixelsPerModule, drawQuietZones);
         png.WriteScanlines(scanLines);
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
         ArrayPool<byte>.Shared.Return(scanLines.Array!);
 #endif
         png.WriteEnd();
@@ -77,7 +77,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         png.WritePalette(darkColorRgba, lightColorRgba);
         var scanLines = DrawScanlines(pixelsPerModule, drawQuietZones);
         png.WriteScanlines(scanLines);
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
         ArrayPool<byte>.Shared.Return(scanLines.Array!);
 #endif
         png.WriteEnd();
@@ -97,7 +97,7 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
         var quietZoneOffset = (drawQuietZones ? 0 : 4);
         var bytesPerScanline = (matrixSize * pixelsPerModule + 7) / 8 + 1; // A monochrome scanline is one byte for filter type then one bit per pixel.
         var scanLinesLength = bytesPerScanline * matrixSize * pixelsPerModule;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
         var scanlines = ArrayPool<byte>.Shared.Rent(scanLinesLength);
         Array.Clear(scanlines, 0, scanLinesLength);
 #else

@@ -196,6 +196,11 @@ public static partial class PayloadGenerator
                 sb.Append("&issuer=" + escapedIssuer);
             }
 
+            if (AuthAlgorithm != OneTimePasswordAuthAlgorithm.SHA1)
+            {
+                sb.Append("&algorithm=" + AuthAlgorithm.ToString());
+            }
+
             if (Digits != 6)
             {
                 sb.Append("&digits=" + Digits);
