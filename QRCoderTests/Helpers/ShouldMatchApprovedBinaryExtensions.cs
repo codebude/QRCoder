@@ -29,7 +29,7 @@ public static partial class ShouldMatchApprovedExtensions
         var readableBitmapData = image.GetReadableBitmapData();
         if (asMonochrome)
             readableBitmapData = readableBitmapData.Clone(KnownPixelFormat.Format1bppIndexed);
-        var ms = new MemoryStream();
+        using var ms = new MemoryStream();
         GifEncoder.EncodeImage(readableBitmapData, ms);
         ms.ToArray().ShouldMatchApproved("gif", discriminator, customMessage);
     }
