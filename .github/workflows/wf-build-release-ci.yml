@@ -28,7 +28,7 @@ jobs:
 
     - name: Run tests
       working-directory: QRCoderTests
-      run: dotnet test -c Release --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test -c Debug --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
     - name: Codecov update
       uses: codecov/codecov-action@v4
