@@ -57,7 +57,7 @@
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
