@@ -27,13 +27,14 @@ jobs:
       run: dotnet restore
  
     - name: Build library
-      run: dotnet build -c Release --no-restore
+      run: dotnet build -c Debug --no-restore
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Compiled project
         path: ${{ github.workspace }}
+        retention-days: 1
 
   test:
     needs: build
@@ -67,18 +68,11 @@ jobs:
       run: |
         $coverage = if ("${{ matrix.dotnet-framework.coverage }}" -eq "true") { "/p:CollectCoverage=true /p:CoverletOutputFormat=opencover" } else { "" }
         $noBuild = if ("${{ matrix.dotnet-framework.no-build }}" -eq "true") { "--no-build" } else { "" }
-        dotnet test -c Release -f ${{ matrix.dotnet-framework.framework }} --nologo $noBuild $coverage
+        dotnet test -c Debug -f ${{ matrix.dotnet-framework.framework }} --nologo $noBuild $coverage
 
   additional-tests:
-    needs: build
     runs-on: windows-latest
     steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: Compiled project
-        path: ${{ github.workspace }}
-
     - name: Install additional .NET SDKs
       uses: actions/setup-dotnet@v4
       with:
@@ -91,13 +85,3 @@ jobs:
     - name: Run API approval tests
       working-directory: QRCoderApiTests
       run: dotnet test -c Release --nologo --no-build
-
-  clean:
-    needs: [build, test, additional-tests]
-    if: always()
-    runs-on: windows-latest
-    steps:
-    - name: Delete artifacts
-      uses: GeekyEggo/delete-artifact@v5
-      with:
-        name: Compiled project
