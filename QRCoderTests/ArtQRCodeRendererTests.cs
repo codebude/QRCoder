@@ -16,9 +16,7 @@ public class ArtQRCodeRendererTests
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
         var bmp = new ArtQRCode(data).GetGraphic(10);
-
-        var result = HelperFunctions.BitmapToHash(bmp);
-        result.ShouldBe("df510ce9feddc0dd8c23c54e700abbf0");
+        bmp.ShouldMatchApproved();
     }
 
     [Fact]
@@ -32,9 +30,7 @@ public class ArtQRCodeRendererTests
             g.FillRectangle(Brushes.Red, 0, 0, 70, 70);
         }
         var bmp = new ArtQRCode(data).GetGraphic(10, Color.Black, Color.White, Color.Transparent, finderPatternImage: finder);
-
-        var result = HelperFunctions.BitmapToHash(bmp);
-        result.ShouldBe("e28a3779b9b975b85984e36f596c9a35");
+        bmp.ShouldMatchApproved();
     }
 
     [Fact]
@@ -43,9 +39,7 @@ public class ArtQRCodeRendererTests
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
         var bmp = new ArtQRCode(data).GetGraphic(10, Color.Black, Color.White, Color.Transparent, drawQuietZones: false);
-
-        var result = HelperFunctions.BitmapToHash(bmp);
-        result.ShouldBe("54408da26852d6c67ab7cad2656da7fa");
+        bmp.ShouldMatchApproved();
     }
 
     [Fact]
@@ -55,10 +49,7 @@ public class ArtQRCodeRendererTests
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
         var bmp = new ArtQRCode(data).GetGraphic(HelperFunctions.GetIconBitmap());
         //Used logo is licensed under public domain. Ref.: https://thenounproject.com/Iconathon1/collection/redefining-women/?i=2909346
-
-        var result = HelperFunctions.BitmapToHash(bmp);
-
-        result.ShouldBe("7f039ccde219ae78e4f768466376a17f");
+        bmp.ShouldMatchApproved();
     }
 
     [Fact]
@@ -68,9 +59,7 @@ public class ArtQRCodeRendererTests
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
         var aCode = new ArtQRCode(data);
 
-        var exception = Record.Exception(() => aCode.GetGraphic(10, Color.Black, Color.White, Color.Transparent, pixelSizeFactor: 2));
-        Assert.NotNull(exception);
-        Assert.IsType<System.Exception>(exception);
+        var exception = Should.Throw<System.Exception>(() => aCode.GetGraphic(10, Color.Black, Color.White, Color.Transparent, pixelSizeFactor: 2));
         exception.Message.ShouldBe("The parameter pixelSize must be between 0 and 1. (0-100%)");
     }
 
@@ -87,8 +76,7 @@ public class ArtQRCodeRendererTests
     {
         //Create QR code
         var bmp = ArtQRCodeHelper.GetQRCode("A", 10, Color.Black, Color.White, Color.Transparent, QRCodeGenerator.ECCLevel.L);
-        var result = HelperFunctions.BitmapToHash(bmp);
-        result.ShouldBe("a1975852df9b537344468bd44d54abe0");
+        bmp.ShouldMatchApproved();
     }
 }
 #endif

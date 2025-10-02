@@ -10,9 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 #endif
 
-
 namespace QRCoderTests.Helpers;
-
 public static class HelperFunctions
 {
 
@@ -96,12 +94,8 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            return new Bitmap(stream);
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        return new Bitmap(stream);
     }
 
     /// <summary>
@@ -111,16 +105,10 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
     }
 
     /// <summary>
@@ -130,14 +118,8 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_Scientist_2909361.svg";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            using (var reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
     }
 }
