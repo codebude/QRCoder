@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
@@ -18,6 +18,8 @@
     <RuntimeFrameworkVersion>2.1.30</RuntimeFrameworkVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="KGySoft.Drawing" Version="9.2.0" />
+    <PackageReference Include="KGySoft.Drawing.Core" Version="9.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.3" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
