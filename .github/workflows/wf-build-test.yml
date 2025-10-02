@@ -1,9 +1,14 @@
 name: Build, test (Pull Request)
+
 on:
   pull_request:
     branches:
       - master 
-  workflow_dispatch:
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: windows-latest 
@@ -34,6 +39,7 @@ jobs:
     needs: build
     runs-on: windows-latest
     strategy:
+      fail-fast: false
       matrix:
         dotnet-framework:
           - { name: ".NET Framework 4.6.2", framework: "net462", coverage: false, no-build: true, sdk: "8.0.x" }

@@ -7,6 +7,10 @@ on:
       - update-ci-workflow
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: windows-latest
@@ -30,13 +34,27 @@ jobs:
       working-directory: QRCoderTests
       run: dotnet test -c Debug --nologo /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
 
-    - name: Codecov update
+    - name: Upload coverage files
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-files
+        path: QRCoderTests/coverage.*.xml
+        retention-days: 1
+
+  upload-coverage:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Download coverage files
+      uses: actions/download-artifact@v4
+      with:
+        name: coverage-files
+
+    - name: Upload to Codecov
       uses: codecov/codecov-action@v4
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        disable_search: true
         fail_ci_if_error: true
-        directory: ./QRCoderTests
 
   additional-tests:
     runs-on: windows-latest
@@ -58,7 +76,7 @@ jobs:
       run: dotnet test -c Release --nologo
 
   pack-push-ci:
-    needs: [test, additional-tests]
+    needs: [test, additional-tests, upload-coverage]
     runs-on: windows-latest
     env:
       GH_PKG_SEC: ${{ secrets.GITHUB_TOKEN }}
