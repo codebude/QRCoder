@@ -87,4 +87,4 @@ jobs:
 
     - name: Run API approval tests
       working-directory: QRCoderApiTests
-      run: dotnet test -c Release --nologo --no-build
+      run: dotnet test -c Release --nologo
