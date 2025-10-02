@@ -1,4 +1,4 @@
-#if !NETCOREAPP
+#if !NETCOREAPP && !NETSTANDARD2_1
 namespace System.Diagnostics.CodeAnalysis;
 
 /// <summary>
