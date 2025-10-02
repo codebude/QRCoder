@@ -1,0 +1,2355 @@
+
+
+
+
+
+
+Network Working Group                                         F. Dawson
+Request for Comments: 2426                Lotus Development Corporation
+Category: Standards Track                                      T. Howes
+                                                Netscape Communications
+                                                         September 1998
+
+
+                      vCard MIME Directory Profile
+
+Status of this Memo
+
+   This document specifies an Internet standards track protocol for the
+   Internet community, and requests discussion and suggestions for
+   improvements.  Please refer to the current edition of the "Internet
+   Official Protocol Standards" (STD 1) for the standardization state
+   and status of this protocol.  Distribution of this memo is unlimited.
+
+Copyright Notice
+
+   Copyright (C) The Internet Society (1998).  All Rights Reserved.
+
+Abstract
+
+   This memo defines the profile of the MIME Content-Type [MIME-DIR] for
+   directory information for a white-pages person object, based on a
+   vCard electronic business card. The profile definition is independent
+   of any particular directory service or protocol. The profile is
+   defined for representing and exchanging a variety of information
+   about an individual (e.g., formatted and structured name and delivery
+   addresses, email address, multiple telephone numbers, photograph,
+   logo, audio clips, etc.). The directory information used by this
+   profile is based on the attributes for the person object defined in
+   the X.520 and X.521 directory services recommendations. The profile
+   also provides the method for including a [VCARD] representation of a
+   white-pages directory entry within the MIME Content-Type defined by
+   the [MIME-DIR] document.
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY" and "OPTIONAL" in this
+   document are to be interpreted as described in [RFC 2119].
+
+
+
+
+
+
+
+
+
+
+
+Dawson & Howes              Standards Track                     [Page 1]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+Table of Contents
+
+   Overview.........................................................3
+   1. THE VCARD MIME DIRECTORY PROFILE REGISTRATION.................4
+   2. MIME DIRECTORY FEATURES.......................................5
+    2.1 PREDEFINED TYPE USAGE ......................................5
+     2.1.1 BEGIN and END Type ......................................5
+     2.1.2 NAME Type ...............................................5
+     2.1.3 PROFILE Type ............................................5
+     2.1.4 SOURCE Type .............................................5
+    2.2 PREDEFINED TYPE PARAMETER USAGE ............................6
+    2.3 PREDEFINED VALUE TYPE USAGE ................................6
+    2.4 EXTENSIONS TO THE PREDEFINED VALUE TYPES ...................6
+     2.4.1 BINARY ..................................................6
+     2.4.2 VCARD ...................................................6
+     2.4.3 PHONE-NUMBER ............................................7
+     2.4.4 UTC-OFFSET ..............................................7
+    2.5 STRUCTURED TYPE VALUES .....................................7
+    2.6 LINE DELIMITING AND FOLDING ................................8
+   3. VCARD PROFILE FEATURES........................................8
+    3.1 IDENTIFICATION TYPES .......................................8
+     3.1.1 FN Type Definition ......................................8
+     3.1.2 N Type Definition .......................................9
+     3.1.3 NICKNAME Type Definition ................................9
+     3.1.4 PHOTO Type Definition ..................................10
+     3.1.5 BDAY Type Definition ...................................11
+    3.2 DELIVERY ADDRESSING TYPES .................................11
+     3.2.1 ADR Type Definition ....................................11
+     3.2.2 LABEL Type Definition ..................................13
+    3.3 TELECOMMUNICATIONS ADDRESSING TYPES .......................13
+     3.3.1 TEL Type Definition ....................................14
+     3.3.2 EMAIL Type Definition ..................................15
+     3.3.3 MAILER Type Definition .................................15
+    3.4 GEOGRAPHICAL TYPES ........................................16
+     3.4.1 TZ Type Definition .....................................16
+     3.4.2 GEO Type Definition ....................................16
+    3.5 ORGANIZATIONAL TYPES ......................................17
+     3.5.1 TITLE Type Definition ..................................17
+     3.5.2 ROLE Type Definition ...................................18
+     3.5.3 LOGO Type Definition ...................................18
+     3.5.4 AGENT Type Definition ..................................19
+     3.5.5 ORG Type Definition ....................................20
+    3.6 EXPLANATORY TYPES .........................................20
+     3.6.1 CATEGORIES Type Definition .............................20
+     3.6.2 NOTE Type Definition ...................................21
+     3.6.3 PRODID Type Definition .................................21
+     3.6.4 REV Type Definition ....................................22
+     3.6.5 SORT-STRING Type Definition ............................22
+
+
+
+Dawson & Howes              Standards Track                     [Page 2]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+     3.6.6 SOUND Type Definition ..................................23
+     3.6.7 UID Type Definition ....................................24
+     3.6.8 URL Type Definition ....................................25
+     3.6.9 VERSION Type Definition ................................25
+    3.7 SECURITY TYPES ............................................25
+     3.7.1 CLASS Type Definition ..................................26
+     3.7.2 KEY Type Definition ....................................26
+    3.8 EXTENDED TYPES ............................................27
+   4. FORMAL GRAMMAR...............................................27
+   5. DIFFERENCES FROM VCARD V2.1..................................37
+   6. ACKNOWLEDGEMENTS.............................................39
+   7. AUTHORS' ADDRESSES...........................................39
+   8. SECURITY CONSIDERATIONS......................................39
+   9. REFERENCES...................................................40
+   10. FULL COPYRIGHT STATEMENT....................................42
+
+Overview
+
+   The [MIME-DIR] document defines a MIME Content-Type for holding
+   different kinds of directory information. The directory information
+   can be based on any of a number of directory schemas. This document
+   defines a [MIME-DIR] usage profile for conveying directory
+   information based on one such schema; that of the white-pages type of
+   person object.
+
+   The schema is based on the attributes for the person object defined
+   in the X.520 and X.521 directory services recommendations. The schema
+   has augmented the basic attributes defined in the X.500 series
+   recommendation in order to provide for an electronic representation
+   of the information commonly found on a paper business card. This
+   schema was first defined in the [VCARD] document. Hence, this [MIME-
+   DIR] profile is referred to as the vCard MIME Directory Profile.
+
+   A directory entry based on this usage profile can include traditional
+   directory, white-pages information such as the distinguished name
+   used to uniquely identify the entry, a formatted representation of
+   the name used for user-interface or presentation purposes, both the
+   structured and presentation form of the delivery address, various
+   telephone numbers and organizational information associated with the
+   entry. In addition, traditional paper business card information such
+   as an image of an organizational logo or identify photograph can be
+   included in this person object.
+
+   The vCard MIME Directory Profile also provides support for
+   representing other important information about the person associated
+   with the directory entry. For instance, the date of birth of the
+   person; an audio clip describing the pronunciation of the name
+   associated with the directory entry, or some other application of the
+
+
+
+Dawson & Howes              Standards Track                     [Page 3]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   digital sound; longitude and latitude geo-positioning information
+   related to the person associated with the directory entry; date and
+   time that the directory information was last updated; annotations
+   often written on a business card; Uniform Resource Locators (URL) for
+   a website; public key information. The profile also provides support
+   for non-standard extensions to the schema. This provides the
+   flexibility for implementations to augment the current capabilities
+   of the profile in a standardized way. More information about this
+   electronic business card format can be found in [VCARD].
+
+1.  The vCard Mime Directory Profile Registration
+
+   This profile is identified by the following [MIME-DIR] registration
+   template information. Subsequent sections define the profile
+   definition.
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME profile VCARD
+
+   Profile name: VCARD
+
+   Profile purpose: To hold person object or white-pages type of
+   directory information. The person schema captured in the directory
+   entries is that commonly found in an electronic business card.
+
+   Predefined MIME Directory value specifications used: uri, date,
+   date-time, float
+
+   New value specifications: This profile places further constraints on
+   the [MIME-DIR] text value specification. In addition, it adds a
+   binary, phone-number, utc-offset and vcard value specifications.
+
+   Predefined MIME Directory types used: SOURCE, NAME, PROFILE, BEGIN,
+   END.
+
+   Predefined MIME Directory parameters used: ENCODING, VALUE, CHARSET,
+   LANGUAGE, CONTEXT.
+
+   New types: FN, N, NICKNAME, PHOTO, BDAY, ADR, LABEL, TEL, EMAIL,
+   MAILER, TZ, GEO, TITLE, ROLE, LOGO, AGENT, ORG, CATEGORIES, NOTE,
+   PRODID, REV, SORT-STRING, SOUND, URL, UID, VERSION, CLASS, KEY
+
+   New parameters: TYPE
+
+   Profile special notes: The vCard object MUST contain the FN, N and
+   VERSION types. The type-grouping feature of [MIME-DIR] is supported
+   by this profile to group related vCard properties about a directory
+
+
+
+Dawson & Howes              Standards Track                     [Page 4]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   entry. For example, vCard properties describing WORK or HOME related
+   characteristics can be grouped with a unique group label.
+
+   The profile permits the use of non-standard types (i.e., those
+   identified with the prefix string "X-") as a flexible method for
+   implementations to extend the functionality currently defined within
+   this profile.
+
+2.  MIME Directory Features
+
+   The vCard MIME Directory Profile makes use of many of the features
+   defined by [MIME-DIR]. The following sections either clarify or
+   extend the content-type definition of [MIME-DIR].
+
+2.1 Predefined Type Usage
+
+   The vCard MIME Directory Profile uses the following predefined types
+   from [MIME-DIR].
+
+2.1.1 BEGIN and END Type
+
+   The content entity MUST begin with the BEGIN type with a value of
+   "VCARD". The content entity MUST end with the END type with a value
+   of "VCARD".
+
+2.1.2 NAME Type
+
+   If the NAME type is present, then its value is the displayable,
+   presentation text associated with the source for the vCard, as
+   specified in the SOURCE type.
+
+2.1.3 PROFILE Type
+
+   If the PROFILE type is present, then its value MUST be "VCARD".
+
+2.1.4 SOURCE Type
+
+   If the SOURCE type is present, then its value provides information
+   how to find the source for the vCard.
+
+
+
+
+
+
+
+
+
+
+
+
+Dawson & Howes              Standards Track                     [Page 5]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+2.2 Predefined Type Parameter Usage
+
+   The vCard MIME Directory Profile uses the following predefined type
+   parameters as defined by [MIME-DIR].
+
+        - LANGUAGE
+
+        - ENCODING
+
+        - VALUE
+
+2.3 Predefined VALUE Type Usage
+
+   The predefined data type values specified in [MIME-DIR] MUST NOT be
+   repeated in COMMA separated value lists except within the N,
+   NICKNAME, ADR and CATEGORIES value types.
+
+   The text value type defined in [MIME-DIR] is further restricted such
+   that any SEMI-COLON character (ASCII decimal 59) in the value MUST be
+   escaped with the BACKSLASH character (ASCII decimal 92).
+
+2.4 Extensions To The Predefined VALUE Types
+
+   The predefined data type values specified in [MIME-DIR] have been
+   extended by the vCard profile to include a number of value types that
+   are specific to this profile.
+
+2.4.1 BINARY
+
+   The "binary" value type specifies that the type value is inline,
+   encoded binary data. This value type can be specified in the PHOTO,
+   LOGO, SOUND, and KEY types.
+
+   If inline encoded binary data is specified, the ENCODING type
+   parameter MUST be used to specify the encoding format. The binary
+   data MUST be encoded using the "B" encoding format. Long lines of
+   encoded binary data SHOULD BE folded to 75 characters using the
+   folding method defined in [MIME-DIR].
+
+   The value type is defined by the following notation:
+
+   binary = <A "B" binary encoded string as defined by [RFC 2047].>
+
+2.4.2 VCARD
+
+   The "vcard" value type specifies that the type value is another
+   vCard. This value type can be specified in the AGENT type. The value
+   type is defined by this specification. Since each of the type
+
+
+
+Dawson & Howes              Standards Track                     [Page 6]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   declarations with in the vcard value type are being specified within
+   a text value themselves, they MUST be terminated with the backslash
+   escape sequence "\n" or "\N", instead of the normal newline character
+   sequence CRLF. In addition, any COMMA character (ASCII decimal 44),
+   SEMI-COLON character (ASCII decimal 59) and COLON character (ASCII
+   decimal 58) MUST be escaped with the BACKSLASH character (ASCII
+   decimal 92). For example, with the AGENT type a value would be
+   specified as:
+
+        AGENT:BEGIN:VCARD\nFN:Joe Friday\nTEL:+1-919-555-7878\n
+         TITLE:Area Administrator\, Assistant\n EMAIL\;TYPE=INTERN\n
+         ET:jfriday@host.com\nEND:VCARD\n
+
+2.4.3 PHONE-NUMBER
+
+   The "phone-number" value type specifies that the type value is a
+   telephone number. This value type can be specified in the TEL type.
+   The value type is a text value that has the special semantics of a
+   telephone number as defined in [CCITT E.163] and [CCITT X.121].
+
+2.4.4 UTC-OFFSET
+
+   The "utc-offset" value type specifies that the type value is a signed
+   offset from UTC. This value type can be specified in the TZ type.
+
+   The value type is an offset from Coordinated Universal Time (UTC). It
+   is specified as a positive or negative difference in units of hours
+   and minutes (e.g., +hh:mm). The time is specified as a 24-hour clock.
+   Hour values are from 00 to 23, and minute values are from 00 to 59.
+   Hour and minutes are 2-digits with high order zeroes required to
+   maintain digit count. The extended format for ISO 8601 UTC offsets
+   MUST be used. The extended format makes use of a colon character as a
+   separator of the hour and minute text fields.
+
+   The value is defined by the following notation:
+
+        time-hour       = 2DIGIT        ;00-23
+        time-minute     = 2DIGIT        ;00-59
+        utc-offset      = ("+" / "-") time-hour ":" time-minute
+
+2.5 Structured Type Values
+
+   Compound type values are delimited by a field delimiter, specified by
+   the SEMI-COLON character (ASCII decimal 59). A SEMI-COLON in a
+   component of a compound property value MUST be escaped with a
+   BACKSLASH character (ASCII decimal 92).
+
+
+
+
+
+Dawson & Howes              Standards Track                     [Page 7]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Lists of values are delimited by a list delimiter, specified by the
+   COMMA character (ASCII decimal 44). A COMMA character in a value MUST
+   be escaped with a BACKSLASH character (ASCII decimal 92).
+
+   This profile supports the type grouping mechanism defined in [MIME-
+   DIR]. Grouping of related types is a useful technique to communicate
+   common semantics concerning the properties of a vCard.
+
+2.6 Line Delimiting and Folding
+
+   This profile supports the same line delimiting and folding methods
+   defined in [MIME-DIR]. Specifically, when parsing a content line,
+   folded lines must first be unfolded according to the unfolding
+   procedure described in [MIME-DIR]. After generating a content line,
+   lines longer than 75 characters SHOULD be folded according to the
+   folding procedure described in [MIME DIR].
+
+   Folding is done after any content encoding of a type value. Unfolding
+   is done before any decoding of a type value in a content line.
+
+3.  vCard Profile Features
+
+   The vCard MIME Directory Profile Type contains directory information,
+   typically pertaining to a single directory entry. The information is
+   described using an attribute schema that is tailored for capturing
+   personal contact information. The vCard can include attributes that
+   describe identification, delivery addressing, telecommunications
+   addressing, geographical, organizational, general explanatory and
+   security and access information about the particular object
+   associated with the vCard.
+
+3.1 Identification Types
+
+   These types are used in the vCard profile to capture information
+   associated with the identification and naming of the person or
+   resource associated with the vCard.
+
+3.1.1 FN Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type FN
+
+   Type name:FN
+
+   Type purpose: To specify the formatted text corresponding to the name
+   of the object the vCard represents.
+
+
+
+
+Dawson & Howes              Standards Track                     [Page 8]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: This type is based on the semantics of the X.520
+   Common Name attribute. The property MUST be present in the vCard
+   object.
+
+   Type example:
+
+        FN:Mr. John Q. Public\, Esq.
+
+3.1.2 N Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type N
+
+   Type name: N
+
+   Type purpose: To specify the components of the name of the object the
+   vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: A single structured text value. Each component can have
+   multiple values.
+
+   Type special note: The structured type value corresponds, in
+   sequence, to the Family Name, Given Name, Additional Names, Honorific
+   Prefixes, and Honorific Suffixes. The text components are separated
+   by the SEMI-COLON character (ASCII decimal 59). Individual text
+   components can include multiple text values (e.g., multiple
+   Additional Names) separated by the COMMA character (ASCII decimal
+   44). This type is based on the semantics of the X.520 individual name
+   attributes. The property MUST be present in the vCard object.
+
+   Type example:
+
+        N:Public;John;Quinlan;Mr.;Esq.
+
+        N:Stevenson;John;Philip,Paul;Dr.;Jr.,M.D.,A.C.P.
+
+3.1.3 NICKNAME Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type NICKNAME
+
+
+
+Dawson & Howes              Standards Track                     [Page 9]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type name: NICKNAME
+
+   Type purpose: To specify the text corresponding to the nickname of
+   the object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: One or more text values separated by a COMMA character
+   (ASCII decimal 44).
+
+   Type special note: The nickname is the descriptive name given instead
+   of or in addition to the one belonging to a person, place, or thing.
+   It can also be used to specify a familiar form of a proper name
+   specified by the FN or N types.
+
+   Type example:
+
+        NICKNAME:Robbie
+
+        NICKNAME:Jim,Jimmie
+
+3.1.4 PHOTO Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type PHOTO
+
+   Type name: PHOTO
+
+   Type purpose: To specify an image or photograph information that
+   annotates some aspect of the object the vCard represents.
+
+   Type encoding: The encoding MUST be reset to "b" using the ENCODING
+   parameter in order to specify inline, encoded binary data. If the
+   value is referenced by a URI value, then the default encoding of 8bit
+   is used and no explicit ENCODING parameter is needed.
+
+   Type value: A single value. The default is binary value. It can also
+   be reset to uri value. The uri value can be used to specify a value
+   outside of this MIME entity.
+
+   Type special notes: The type can include the type parameter "TYPE" to
+   specify the graphic image format type. The TYPE parameter values MUST
+   be one of the IANA registered image formats or a non-standard image
+   format.
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 10]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type example:
+
+        PHOTO;VALUE=uri:http://www.abc.com/pub/photos
+         /jqpublic.gif
+
+
+        PHOTO;ENCODING=b;TYPE=JPEG:MIICajCCAdOgAwIBAgICBEUwDQYJKoZIhvcN
+         AQEEBQAwdzELMAkGA1UEBhMCVVMxLDAqBgNVBAoTI05ldHNjYXBlIENvbW11bm
+         ljYXRpb25zIENvcnBvcmF0aW9uMRwwGgYDVQQLExNJbmZvcm1hdGlvbiBTeXN0
+         <...remainder of "B" encoded binary data...>
+
+3.1.5 BDAY Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type BDAY
+
+   Type name: BDAY
+
+   Type purpose: To specify the birth date of the object the vCard
+   represents.
+
+   Type encoding: 8bit
+
+   Type value: The default is a single date value. It can also be reset
+   to a single date-time value.
+
+   Type examples:
+
+        BDAY:1996-04-15
+
+        BDAY:1953-10-15T23:10:00Z
+
+        BDAY:1987-09-27T08:30:00-06:00
+
+3.2 Delivery Addressing Types
+
+   These types are concerned with information related to the delivery
+   addressing or label for the vCard object.
+
+3.2.1 ADR Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type ADR
+
+   Type name: ADR
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 11]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type purpose: To specify the components of the delivery address for
+   the vCard object.
+
+   Type encoding: 8bit
+
+   Type value: A single structured text value, separated by the
+   SEMI-COLON character (ASCII decimal 59).
+
+   Type special notes: The structured type value consists of a sequence
+   of address components. The component values MUST be specified in
+   their corresponding position. The structured type value corresponds,
+   in sequence, to the post office box; the extended address; the street
+   address; the locality (e.g., city); the region (e.g., state or
+   province); the postal code; the country name. When a component value
+   is missing, the associated component separator MUST still be
+   specified.
+
+   The text components are separated by the SEMI-COLON character (ASCII
+   decimal 59). Where it makes semantic sense, individual text
+   components can include multiple text values (e.g., a "street"
+   component with multiple lines) separated by the COMMA character
+   (ASCII decimal 44).
+
+   The type can include the type parameter "TYPE" to specify the
+   delivery address type. The TYPE parameter values can include "dom" to
+   indicate a domestic delivery address; "intl" to indicate an
+   international delivery address; "postal" to indicate a postal
+   delivery address; "parcel" to indicate a parcel delivery address;
+   "home" to indicate a delivery address for a residence; "work" to
+   indicate delivery address for a place of work; and "pref" to indicate
+   the preferred delivery address when more than one address is
+   specified. These type parameter values can be specified as a
+   parameter list (i.e., "TYPE=dom;TYPE=postal") or as a value list
+   (i.e., "TYPE=dom,postal"). This type is based on semantics of the
+   X.520 geographical and postal addressing attributes. The default is
+   "TYPE=intl,postal,parcel,work". The default can be overridden to some
+   other set of values by specifying one or more alternate values. For
+   example, the default can be reset to "TYPE=dom,postal,work,home" to
+   specify a domestic delivery address for postal delivery to a
+   residence that is also used for work.
+
+   Type example: In this example the post office box and the extended
+   address are absent.
+
+        ADR;TYPE=dom,home,postal,parcel:;;123 Main
+          Street;Any Town;CA;91921-1234
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 12]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+3.2.2 LABEL Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type LABEL
+
+   Type name: LABEL
+
+   Type purpose: To specify the formatted text corresponding to delivery
+   address of the object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: The type value is formatted text that can be used
+   to present a delivery address label for the vCard object. The type
+   can include the type parameter "TYPE" to specify delivery label type.
+   The TYPE parameter values can include "dom" to indicate a domestic
+   delivery label; "intl" to indicate an international delivery label;
+   "postal" to indicate a postal delivery label; "parcel" to indicate a
+   parcel delivery label; "home" to indicate a delivery label for a
+   residence; "work" to indicate delivery label for a place of work; and
+   "pref" to indicate the preferred delivery label when more than one
+   label is specified. These type parameter values can be specified as a
+   parameter list (i.e., "TYPE=dom;TYPE=postal") or as a value list
+   (i.e., "TYPE=dom,postal"). This type is based on semantics of the
+   X.520 geographical and postal addressing attributes. The default is
+   "TYPE=intl,postal,parcel,work". The default can be overridden to some
+   other set of values by specifying one or more alternate values. For
+   example, the default can be reset to "TYPE=intl,post,parcel,home" to
+   specify an international delivery label for both postal and parcel
+   delivery to a residential location.
+
+   Type example: A multi-line address label.
+
+        LABEL;TYPE=dom,home,postal,parcel:Mr.John Q. Public\, Esq.\n
+         Mail Drop: TNE QB\n123 Main Street\nAny Town\, CA  91921-1234
+         \nU.S.A.
+
+3.3 Telecommunications Addressing Types
+
+   These types are concerned with information associated with the
+   telecommunications addressing of the object the vCard represents.
+
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 13]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+3.3.1 TEL Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type TEL
+
+   Type name: TEL
+
+   Type purpose: To specify the telephone number for telephony
+   communication with the object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: A single phone-number value.
+
+   Type special notes: The value of this type is specified in a
+   canonical form in order to specify an unambiguous representation of
+   the globally unique telephone endpoint. This type is based on the
+   X.500 Telephone Number attribute.
+
+   The type can include the type parameter "TYPE" to specify intended
+   use for the telephone number. The TYPE parameter values can include:
+   "home" to indicate a telephone number associated with a residence,
+   "msg" to indicate the telephone number has voice messaging support,
+   "work" to indicate a telephone number associated with a place of
+   work, "pref" to indicate a preferred-use telephone number, "voice" to
+   indicate a voice telephone number, "fax" to indicate a facsimile
+   telephone number, "cell" to indicate a cellular telephone number,
+   "video" to indicate a video conferencing telephone number, "pager" to
+   indicate a paging device telephone number, "bbs" to indicate a
+   bulletin board system telephone number, "modem" to indicate a MODEM
+   connected telephone number, "car" to indicate a car-phone telephone
+   number, "isdn" to indicate an ISDN service telephone number, "pcs" to
+   indicate a personal communication services telephone number. The
+   default type is "voice". These type parameter values can be specified
+   as a parameter list (i.e., "TYPE=work;TYPE=voice") or as a value list
+   (i.e., "TYPE=work,voice"). The default can be overridden to another
+   set of values by specifying one or more alternate values. For
+   example, the default TYPE of "voice" can be reset to a WORK and HOME,
+   VOICE and FAX telephone number by the value list
+   "TYPE=work,home,voice,fax".
+
+   Type example:
+
+        TEL;TYPE=work,voice,pref,msg:+1-213-555-1234
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 14]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+3.3.2 EMAIL Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type EMAIL
+
+   Type name: EMAIL
+
+   Type purpose: To specify the electronic mail address for
+   communication with the object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: The type can include the type parameter "TYPE" to
+   specify the format or preference of the electronic mail address. The
+   TYPE parameter values can include: "internet" to indicate an Internet
+   addressing type, "x400" to indicate a X.400 addressing type or "pref"
+   to indicate a preferred-use email address when more than one is
+   specified. Another IANA registered address type can also be
+   specified. The default email type is "internet". A non-standard value
+   can also be specified.
+
+   Type example:
+
+        EMAIL;TYPE=internet:jqpublic@xyz.dom1.com
+
+        EMAIL;TYPE=internet:jdoe@isp.net
+
+        EMAIL;TYPE=internet,pref:jane_doe@abc.com
+
+3.3.3 MAILER Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type MAILER
+
+   Type name: MAILER
+
+   Type purpose: To specify the type of electronic mail software that is
+   used by the individual associated with the vCard.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 15]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type special notes: This information can provide assistance to a
+   correspondent regarding the type of data representation which can be
+   used, and how they can be packaged. This property is based on the
+   private MIME type X-Mailer that is generally implemented by MIME user
+   agent products.
+
+   Type example:
+
+        MAILER:PigeonMail 2.1
+
+3.4 Geographical Types
+
+   These types are concerned with information associated with
+   geographical positions or regions associated with the object the
+   vCard represents.
+
+3.4.1 TZ Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type TZ
+
+   Type name: TZ
+
+   Type purpose: To specify information related to the time zone of the
+   object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: The default is a single utc-offset value. It can also be
+   reset to a single text value.
+
+   Type special notes: The type value consists of a single value.
+
+   Type examples:
+
+        TZ:-05:00
+
+        TZ;VALUE=text:-05:00; EST; Raleigh/North America
+        ;This example has a single value, not a structure text value.
+
+3.4.2 GEO Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type GEO
+
+   Type name: GEO
+
+
+
+Dawson & Howes              Standards Track                    [Page 16]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type purpose: To specify information related to the global
+   positioning of the object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: A single structured value consisting of two float values
+   separated by the SEMI-COLON character (ASCII decimal 59).
+
+   Type special notes: This type specifies information related to the
+   global position of the object associated with the vCard. The value
+   specifies latitude and longitude, in that order (i.e., "LAT LON"
+   ordering). The longitude represents the location east and west of the
+   prime meridian as a positive or negative real number, respectively.
+   The latitude represents the location north and south of the equator
+   as a positive or negative real number, respectively. The longitude
+   and latitude values MUST be specified as decimal degrees and should
+   be specified to six decimal places. This will allow for granularity
+   within a meter of the geographical position. The text components are
+   separated by the SEMI-COLON character (ASCII decimal 59). The simple
+   formula for converting degrees-minutes-seconds into decimal degrees
+   is:
+
+        decimal = degrees + minutes/60 + seconds/3600.
+
+   Type example:
+
+        GEO:37.386013;-122.082932
+
+3.5 Organizational Types
+
+   These types are concerned with information associated with
+   characteristics of the organization or organizational units of the
+   object the vCard represents.
+
+3.5.1 TITLE Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type TITLE
+
+   Type name: TITLE
+
+   Type purpose: To specify the job title, functional position or
+   function of the object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+
+
+Dawson & Howes              Standards Track                    [Page 17]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type special notes: This type is based on the X.520 Title attribute.
+
+   Type example:
+
+        TITLE:Director\, Research and Development
+
+3.5.2 ROLE Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type ROLE
+
+   Type name: ROLE
+
+   Type purpose: To specify information concerning the role, occupation,
+   or business category of the object the vCard represents.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: This type is based on the X.520 Business Category
+   explanatory attribute. This property is included as an organizational
+   type to avoid confusion with the semantics of the TITLE type and
+   incorrect usage of that type when the semantics of this type is
+   intended.
+
+   Type example:
+
+        ROLE:Programmer
+
+3.5.3 LOGO Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type LOGO
+
+   Type name: LOGO
+
+   Type purpose: To specify a graphic image of a logo associated with
+   the object the vCard represents.
+
+   Type encoding: The encoding MUST be reset to "b" using the ENCODING
+   parameter in order to specify inline, encoded binary data. If the
+   value is referenced by a URI value, then the default encoding of 8bit
+   is used and no explicit ENCODING parameter is needed.
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 18]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type value: A single value. The default is binary value. It can also
+   be reset to uri value. The uri value can be used to specify a value
+   outside of this MIME entity.
+
+   Type special notes: The type can include the type parameter "TYPE" to
+   specify the graphic image format type. The TYPE parameter values MUST
+   be one of the IANA registered image formats or a non-standard image
+   format.
+
+   Type example:
+
+        LOGO;VALUE=uri:http://www.abc.com/pub/logos/abccorp.jpg
+
+        LOGO;ENCODING=b;TYPE=JPEG:MIICajCCAdOgAwIBAgICBEUwDQYJKoZIhvcN
+         AQEEBQAwdzELMAkGA1UEBhMCVVMxLDAqBgNVBAoTI05ldHNjYXBlIENvbW11bm
+         ljYXRpb25zIENvcnBvcmF0aW9uMRwwGgYDVQQLExNJbmZvcm1hdGlvbiBTeXN0
+         <...the remainder of "B" encoded binary data...>
+
+3.5.4 AGENT Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type AGENT
+
+   Type name: AGENT
+
+   Type purpose: To specify information about another person who will
+   act on behalf of the individual or resource associated with the
+   vCard.
+
+   Type encoding: 8-bit
+
+   Type value: The default is a single vcard value. It can also be reset
+   to either a single text or uri value. The text value can be used to
+   specify textual information. The uri value can be used to specify
+   information outside of this MIME entity.
+
+   Type special notes: This type typically is used to specify an area
+   administrator, assistant, or secretary for the individual associated
+   with the vCard. A key characteristic of the Agent type is that it
+   represents somebody or something that is separately addressable.
+
+   Type example:
+
+        AGENT;VALUE=uri:
+         CID:JQPUBLIC.part3.960129T083020.xyzMail@host3.com
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 19]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+        AGENT:BEGIN:VCARD\nFN:Susan Thomas\nTEL:+1-919-555-
+         1234\nEMAIL\;INTERNET:sthomas@host.com\nEND:VCARD\n
+
+3.5.5 ORG Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type ORG
+
+   Type name: ORG
+
+   Type purpose: To specify the organizational name and units associated
+   with the vCard.
+
+   Type encoding: 8bit
+
+   Type value: A single structured text value consisting of components
+   separated the SEMI-COLON character (ASCII decimal 59).
+
+   Type special notes: The type is based on the X.520 Organization Name
+   and Organization Unit attributes. The type value is a structured type
+   consisting of the organization name, followed by one or more levels
+   of organizational unit names.
+
+   Type example: A type value consisting of an organizational name,
+   organizational unit #1 name and organizational unit #2 name.
+
+        ORG:ABC\, Inc.;North American Division;Marketing
+
+3.6 Explanatory Types
+
+   These types are concerned with additional explanations, such as that
+   related to informational notes or revisions specific to the vCard.
+
+3.6.1 CATEGORIES Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type CATEGORIES
+
+   Type name: CATEGORIES
+
+   Type purpose: To specify application category information about the
+   vCard.
+
+   Type encoding: 8bit
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 20]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type value: One or more text values separated by a COMMA character
+   (ASCII decimal 44).
+
+   Type example:
+
+        CATEGORIES:TRAVEL AGENT
+
+        CATEGORIES:INTERNET,IETF,INDUSTRY,INFORMATION TECHNOLOGY
+
+3.6.2 NOTE Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type NOTE
+
+   Type name: NOTE
+
+   Type purpose: To specify supplemental information or a comment that
+   is associated with the vCard.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: The type is based on the X.520 Description
+   attribute.
+
+   Type example:
+
+        NOTE:This fax number is operational 0800 to 1715
+          EST\, Mon-Fri.
+
+3.6.3 PRODID Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type PRODID
+
+   Type name: PRODID
+
+   Type purpose: To specify the identifier for the product that created
+   the vCard object.
+
+   Type encoding: 8-bit
+
+   Type value: A single text value.
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 21]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type special notes: Implementations SHOULD use a method such as that
+   specified for Formal Public Identifiers in ISO 9070 to assure that
+   the text value is unique.
+
+   Type example:
+
+        PRODID:-//ONLINE DIRECTORY//NONSGML Version 1//EN
+
+3.6.4 REV Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type REV
+
+   Type name: REV
+
+   Type purpose: To specify revision information about the current
+   vCard.
+
+   Type encoding: 8-bit
+
+   Type value: The default is a single date-time value. Can also be
+   reset to a single date value.
+
+   Type special notes: The value distinguishes the current revision of
+   the information in this vCard for other renditions of the
+   information.
+
+   Type example:
+
+        REV:1995-10-31T22:27:10Z
+
+        REV:1997-11-15
+
+3.6.5 SORT-STRING Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type SORT-STRING
+
+   Type Name: SORT-STRING
+
+   Type purpose: To specify the family name or given name text to be
+   used for national-language-specific sorting of the FN and N types.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+
+
+Dawson & Howes              Standards Track                    [Page 22]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type special notes: The sort string is used to provide family name or
+   given name text that is to be used in locale- or national-language-
+   specific sorting of the formatted name and structured name types.
+   Without this information, sorting algorithms could incorrectly sort
+   this vCard within a sequence of sorted vCards.  When this type is
+   present in a vCard, then this family name or given name value is used
+   for sorting the vCard.
+
+   Type examples: For the case of family name sorting, the following
+   examples define common sort string usage with the FN and N types.
+
+        FN:Rene van der Harten
+        N:van der Harten;Rene;J.;Sir;R.D.O.N.
+        SORT-STRING:Harten
+
+        FN:Robert Pau Shou Chang
+        N:Pau;Shou Chang;Robert
+        SORT-STRING:Pau
+
+        FN:Osamu Koura
+        N:Koura;Osamu
+        SORT-STRING:Koura
+
+        FN:Oscar del Pozo
+        N:del Pozo Triscon;Oscar
+        SORT-STRING:Pozo
+
+        FN:Chistine d'Aboville
+        N:d'Aboville;Christine
+        SORT-STRING:Aboville
+
+3.6.6 SOUND Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type SOUND
+
+   Type name: SOUND
+
+   Type purpose: To specify a digital sound content information that
+   annotates some aspect of the vCard. By default this type is used to
+   specify the proper pronunciation of the name type value of the vCard.
+
+   Type encoding: The encoding MUST be reset to "b" using the ENCODING
+   parameter in order to specify inline, encoded binary data. If the
+   value is referenced by a URI value, then the default encoding of 8bit
+   is used and no explicit ENCODING parameter is needed.
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 23]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type value: A single value. The default is binary value. It can also
+   be reset to uri value. The uri value can be used to specify a value
+   outside of this MIME entity.
+
+   Type special notes: The type can include the type parameter "TYPE" to
+   specify the audio format type. The TYPE parameter values MUST be one
+   of the IANA registered audio formats or a non-standard audio format.
+
+   Type example:
+
+        SOUND;TYPE=BASIC;VALUE=uri:CID:JOHNQPUBLIC.part8.
+         19960229T080000.xyzMail@host1.com
+
+        SOUND;TYPE=BASIC;ENCODING=b:MIICajCCAdOgAwIBAgICBEUwDQYJKoZIhvcN
+         AQEEBQAwdzELMAkGA1UEBhMCVVMxLDAqBgNVBAoTI05ldHNjYXBlIENvbW11bm
+         ljYXRpb25zIENvcnBvcmF0aW9uMRwwGgYDVQQLExNJbmZvcm1hdGlvbiBTeXN0
+         <...the remainder of "B" encoded binary data...>
+
+3.6.7 UID Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type UID
+
+   Type name: UID
+
+   Type purpose: To specify a value that represents a globally unique
+   identifier corresponding to the individual or resource associated
+   with the vCard.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: The type is used to uniquely identify the object
+   that the vCard represents.
+
+   The type can include the type parameter "TYPE" to specify the format
+   of the identifier. The TYPE parameter value should be an IANA
+   registered identifier format. The value can also be a non-standard
+   format.
+
+   Type example:
+
+        UID:19950401-080045-40000F192713-0052
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 24]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+3.6.8 URL Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type URL
+
+   Type name: URL
+
+   Type purpose: To specify a uniform resource locator associated with
+   the object that the vCard refers to.
+
+   Type encoding: 8bit
+
+   Type value: A single uri value.
+
+   Type example:
+
+        URL:http://www.swbyps.restaurant.french/~chezchic.html
+
+3.6.9 VERSION Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type VERSION
+
+   Type name: VERSION
+
+   Type purpose: To specify the version of the vCard specification used
+   to format this vCard.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: The property MUST be present in the vCard object.
+   The value MUST be "3.0" if the vCard corresponds to this
+   specification.
+
+   Type example:
+
+        VERSION:3.0
+
+3.7 Security Types
+
+   These types are concerned with the security of communication pathways
+   or access to the vCard.
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 25]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+3.7.1 CLASS Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type CLASS
+
+   Type name: CLASS
+
+   Type purpose: To specify the access classification for a vCard
+   object.
+
+   Type encoding: 8bit
+
+   Type value: A single text value.
+
+   Type special notes: An access classification is only one component of
+   the general security model for a directory service. The
+   classification attribute provides a method of capturing the intent of
+   the owner for general access to information described by the vCard
+   object.
+
+   Type examples:
+
+        CLASS:PUBLIC
+
+        CLASS:PRIVATE
+
+        CLASS:CONFIDENTIAL
+
+3.7.2 KEY Type Definition
+
+   To: ietf-mime-directory@imc.org
+
+   Subject: Registration of text/directory MIME type KEY
+
+   Type name: KEY
+
+   Type purpose: To specify a public key or authentication certificate
+   associated with the object that the vCard represents.
+
+   Type encoding: The encoding MUST be reset to "b" using the ENCODING
+   parameter in order to specify inline, encoded binary data. If the
+   value is a text value, then the default encoding of 8bit is used and
+   no explicit ENCODING parameter is needed.
+
+   Type value: A single value. The default is binary. It can also be
+   reset to text value. The text value can be used to specify a text
+   key.
+
+
+
+Dawson & Howes              Standards Track                    [Page 26]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   Type special notes: The type can also include the type parameter TYPE
+   to specify the public key or authentication certificate format. The
+   parameter type should specify an IANA registered public key or
+   authentication certificate format. The parameter type can also
+   specify a non-standard format.
+
+   Type example:
+
+        KEY;ENCODING=b:MIICajCCAdOgAwIBAgICBEUwDQYJKoZIhvcNAQEEBQA
+         wdzELMAkGA1UEBhMCVVMxLDAqBgNVBAoTI05ldHNjYXBlIENbW11bmljYX
+         Rpb25zIENvcnBvcmF0aW9uMRwwGgYDVQQLExNJbmZvcm1hdGlvbiBTeXN0
+         ZW1zMRwwGgYDVQQDExNyb290Y2EubmV0c2NhcGUuY29tMB4XDTk3MDYwNj
+         E5NDc1OVoXDTk3MTIwMzE5NDc1OVowgYkxCzAJBgNVBAYTAlVTMSYwJAYD
+         VQQKEx1OZXRzY2FwZSBDb21tdW5pY2F0aW9ucyBDb3JwLjEYMBYGA1UEAx
+         MPVGltb3RoeSBBIEhvd2VzMSEwHwYJKoZIhvcNAQkBFhJob3dlc0BuZXRz
+         Y2FwZS5jb20xFTATBgoJkiaJk/IsZAEBEwVob3dlczBcMA0GCSqGSIb3DQ
+         EBAQUAA0sAMEgCQQC0JZf6wkg8pLMXHHCUvMfL5H6zjSk4vTTXZpYyrdN2
+         dXcoX49LKiOmgeJSzoiFKHtLOIboyludF90CgqcxtwKnAgMBAAGjNjA0MB
+         EGCWCGSAGG+EIBAQQEAwIAoDAfBgNVHSMEGDAWgBT84FToB/GV3jr3mcau
+         +hUMbsQukjANBgkqhkiG9w0BAQQFAAOBgQBexv7o7mi3PLXadkmNP9LcIP
+         mx93HGp0Kgyx1jIVMyNgsemeAwBM+MSlhMfcpbTrONwNjZYW8vJDSoi//y
+         rZlVt9bJbs7MNYZVsyF1unsqaln4/vy6Uawfg8VUMk1U7jt8LYpo4YULU7
+         UZHPYVUaSgVttImOHZIKi4hlPXBOhcUQ==
+
+3.8 Extended Types
+
+   The types defined by this document can be extended with private types
+   using the non-standard, private values mechanism defined in [RFC
+   2045]. Non-standard, private types with a name starting with "X-" may
+   be defined bilaterally between two cooperating agents without outside
+   registration or standardization.
+
+4.  Formal Grammar
+
+   The following formal grammar is provided to assist developers in
+   building parsers for the vCard.
+
+   This syntax is written according to the form described in RFC 2234,
+   but it references just this small subset of RFC 2234 literals:
+
+   ;*******************************************
+   ; Commonly Used Literal Definition
+   ;*******************************************
+
+   ALPHA        = %x41-5A / %x61-7A
+        ; Latin Capital Letter A-Latin Capital Letter Z /
+        ; Latin Small Letter a-Latin Small Letter z
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 27]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   CHAR         = %x01-7F
+        ; Any C0 Controls and Basic Latin, excluding NULL from
+        ; Code Charts, pages 7-6 through 7-9 in [UNICODE]
+
+   CR           = %x0D
+        ; Carriage Return
+
+   LF           = %0A
+        ; Line Feed
+
+   CRLF         = CR LF
+        ; Internet standard newline
+
+   ;CTL         = %x00-1F / %x7F
+        ; Controls. Not used, but referenced in comments.
+
+   DIGIT        = %x30-39
+        ; Digit Zero-Digit Nine
+
+   DQUOTE       = %x22
+        ; Quotation Mark
+
+   HTAB         = %x09
+        ; Horizontal Tabulation
+
+   SP           = %x20
+        ; space
+
+   VCHAR        = %x21-7E
+        ; Visible (printing) characters
+
+   WSP          = SP / HTAB
+        ; White Space
+
+   ;*******************************************
+   ; Basic vCard Definition
+   ;*******************************************
+
+   vcard_entity = 1*(vcard)
+
+   vcard        = [group "."] "BEGIN" ":" "VCARD" 1*CRLF
+                  1*(contentline)
+        ;A vCard object MUST include the VERSION, FN and N types.
+                  [group "."] "END" ":" "VCARD" 1*CRLF
+
+   contentline  = [group "."] name *(";" param ) ":" value CRLF
+        ; When parsing a content line, folded lines must first
+        ; be unfolded according to the unfolding procedure
+
+
+
+Dawson & Howes              Standards Track                    [Page 28]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+        ; described above. When generating a content line, lines
+        ; longer than 75 characters SHOULD be folded according to
+        ; the folding procedure described in [MIME DIR].
+
+   group        = 1*(ALPHA / DIGIT / "-")
+
+   name         = iana-token / x-name
+        ; Parsing of the param and value is
+        ; based on the "name" or type identifier
+        ; as defined in ABNF sections below
+
+   iana-token   = 1*(ALPHA / DIGIT / "-")
+        ; vCard type or parameter identifier registered with IANA
+
+   x-name       = "X-" 1*(ALPHA / DIGIT / "-")
+        ; Reserved for non-standard use
+
+   param        = param-name "=" param-value *("," param-value)
+
+   param-name   = iana-token / x-name
+
+   param-value  = ptext / quoted-string
+
+   ptext        = *SAFE-CHAR
+
+   value        = *VALUE-CHAR
+
+   quoted-string = DQUOTE QSAFE-CHAR DQUOTE
+
+   NON-ASCII    = %x80-FF
+        ; Use is restricted by CHARSET parameter
+        ; on outer MIME object (UTF-8 preferred)
+
+   QSAFE-CHAR   = WSP / %x21 / %x23-7E / NON-ASCII
+        ; Any character except CTLs, DQUOTE
+
+   SAFE-CHAR    = WSP / %x21 / %x23-2B / %x2D-39 / %x3C-7E / NON-ASCII
+        ; Any character except CTLs, DQUOTE, ";", ":", ","
+
+   VALUE-CHAR   = WSP / VCHAR / NON-ASCII
+        ; Any textual character
+
+   ;*******************************************
+   ; vCard Type Definition
+   ;
+   ; Provides type-specific definitions for how the
+   ; "value" and "param" are defined.
+   ;*******************************************
+
+
+
+Dawson & Howes              Standards Track                    [Page 29]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   ;For name="NAME"
+   param        = ""
+        ; No parameters allowed
+
+   value        = text-value
+
+   ;For name="PROFILE"
+   param        = ""
+        ; No parameters allowed
+
+   value        = text-value
+        ; Value MUST be the case insensitive value "VCARD
+
+   ;For name="SOURCE"
+   param        = source-param
+        ; No parameters allowed
+
+   value        = uri
+
+   source-param = ("VALUE" "=" "uri")
+                / ("CONTEXT" "=" "word")
+        ; Parameter value specifies the protocol context
+        ; for the uri value.
+                / (x-name "=" *SAFE-CHAR)
+
+   ;For name="FN"
+   ;This type MUST be included in a vCard object.
+   param        = text-param
+        ; Text parameters allowed
+
+   value        = text-value
+
+   ;For name="N"
+   ;This type MUST be included in a vCard object.
+
+   param        = text-param
+        ; Text parameters allowed
+
+   value        = n-value
+
+   n-value      = 0*4(text-value *("," text-value) ";")
+                  text-value *("," text-value)
+        ; Family; Given; Middle; Prefix; Suffix.
+        ; Example: Public;John;Quincy,Adams;Reverend Dr. III
+
+   ;For name="NICKNAME"
+   param        = text-param
+        ; Text parameters allowed
+
+
+
+Dawson & Howes              Standards Track                    [Page 30]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   value        = text-list
+
+   ;For name="PHOTO"
+   param        = img-inline-param
+        ; Only image parameters allowed
+
+   param        =/ img-refer-param
+        ; Only image parameters allowed
+
+   value        = img-inline-value
+        ; Value and parameter MUST match
+
+   value        =/ img-refer-value
+        ; Value and parameter MUST match
+
+   ;For name="BDAY"
+   param        = ("VALUE" "=" "date")
+        ; Only value parameter allowed
+
+   param        =/ ("VALUE" "=" "date-time")
+        ; Only value parameter allowed
+
+   value        = date-value
+        ; Value MUST match value type
+
+   value        =/ date-time-value
+        ; Value MUST match value type
+
+   ;For name="ADR"
+   param        = adr-param / text-param
+        ; Only adr and text parameters allowed
+
+   value        = adr-value
+
+   ;For name="LABEL"
+   param        = adr-param / text-param
+        ; Only adr and text parameters allowed
+
+   value        = text-value
+
+   ;For name="TEL"
+   param        = tel-param
+        ; Only tel parameters allowed
+
+   value        = phone-number-value
+
+   tel-param    = "TYPE" "=" tel-type *("," tel-type)
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 31]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   tel-type     = "HOME" / "WORK" / "PREF" / "VOICE" / "FAX" / "MSG"
+                / "CELL" / "PAGER" / "BBS" / "MODEM" / "CAR" / "ISDN"
+                / "VIDEO" / "PCS" / iana-token / x-name
+        ; Values are case insensitive
+
+   ;For name="EMAIL"
+   param        = email-param
+        ; Only email parameters allowed
+
+   value        = text-value
+
+   email-param  = "TYPE" "=" email-type ["," "PREF"]
+        ; Value is case insensitive
+
+   email-type   = "INTERNET" / "X400" / iana-token / "X-" word
+        ; Values are case insensitive
+
+   ;For name="MAILER"
+   param        = text-param
+        ; Only text parameters allowed
+
+   value        = text-value
+
+   ;For name="TZ"
+   param        = ""
+        ; No parameters allowed
+
+   value        = utc-offset-value
+
+   ;For name="GEO"
+   param        = ""
+        ; No parameters allowed
+
+   value        = float-value ";" float-value
+
+   ;For name="TITLE"
+   param        = text-param
+        ; Only text parameters allowed
+
+   value        = text-value
+
+   ;For name="ROLE"
+   param        = text-param
+        ; Only text parameters allowed
+
+   value        = text-value
+
+   ;For name="LOGO"
+
+
+
+Dawson & Howes              Standards Track                    [Page 32]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   param        = img-inline-param / img-refer-param
+        ; Only image parameters allowed
+
+   value        = img-inline-value / img-refer-value
+        ; Value and parameter MUST match
+
+   ;For name="AGENT"
+   param        = agent-inline-param
+
+   param        =/ agent-refer-param
+
+   value        = agent-inline-value
+        ; Value and parameter MUST match
+
+   value        =/ agent-refer-value
+        ; Value and parameter MUST match
+
+   agent-inline-param = ""
+        ; No parameters allowed
+
+   agent-refer-param = "VALUE" "=" "uri"
+        ; Only value parameter allowed
+
+   agent-inline-value = text-value
+        ; Value MUST be a valid vCard object
+
+   agent-refer-value = uri
+        ; URI MUST refer to image content of given type
+
+   ;For name="ORG"
+
+   param        = text-param
+        ; Only text parameters allowed
+
+   value        = org-value
+
+   org-value    = *(text-value ";") text-value
+        ; First is Organization Name, remainder are Organization Units.
+
+   ;For name="CATEGORIES"
+   param        = text-param
+        ; Only text parameters allowed
+
+   value        = text-list
+
+   ;For name="NOTE"
+   param        = text-param
+        ; Only text parameters allowed
+
+
+
+Dawson & Howes              Standards Track                    [Page 33]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   value        = text-value
+
+   ;For name="PRODID"
+   param        = ""
+        ; No parameters allowed
+
+   value        = text-value
+
+   ;For name="REV"
+   param        = ["VALUE" =" "date-time"]
+        ; Only value parameters allowed. Values are case insensitive.
+
+   param        =/ "VALUE" =" "date"
+        ; Only value parameters allowed. Values are case insensitive.
+
+   value        = date-time-value
+
+   value        =/ date-value
+
+   ;For name="SORT-STRING"
+   param        = text-param
+        ; Only text parameters allowed
+
+   value        = text-value
+
+   ;For name="SOUND"
+   param        = snd-inline-param
+        ; Only sound parameters allowed
+
+   param        =/ snd-refer-param
+        ; Only sound parameters allowed
+
+   value        = snd-line-value
+        ; Value MUST match value type
+
+   value        =/ snd-refer-value
+        ; Value MUST match value type
+
+   snd-inline-value     = binary-value CRLF
+        ; Value MUST be "b" encoded audio content
+
+   snd-inline-param     = ("VALUE" "=" "binary"])
+                        / ("ENCODING" "=" "b")
+                        / ("TYPE" "=" *SAFE-CHAR)
+        ; Value MUST be an IANA registered audio type
+
+   snd-refer-value      = uri
+        ; URI MUST refer to audio content of given type
+
+
+
+Dawson & Howes              Standards Track                    [Page 34]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   snd-refer-param      = ("VALUE" "=" "uri")
+                        / ("TYPE" "=" word)
+        ; Value MUST be an IANA registered audio type
+
+   ;For name="UID"
+   param        = ""
+        ; No parameters allowed
+
+   value        = text-value
+
+   ;For name="URL"
+   param        = ""
+        ; No parameters allowed
+
+   value        = uri
+
+   ;For name="VERSION"
+   ;This type MUST be included in a vCard object.
+   param        = ""
+        ; No parameters allowed
+
+   value        = text-value
+        ; Value MUST be "3.0"
+
+   ;For name="CLASS"
+   param        = ""
+        ; No parameters allowed
+
+   value        = "PUBLIC" / "PRIVATE" / "CONFIDENTIAL"
+                / iana-token / x-name
+        ; Value are case insensitive
+
+   ;For name="KEY"
+   param        = key-txt-param
+        ; Only value and type parameters allowed
+
+   param        =/ key-bin-param
+        ; Only value and type parameters allowed
+
+   value        = text-value
+
+   value        =/ binary-value
+
+   key-txt-param = "TYPE" "=" keytype
+
+   key-bin-param = ("TYPE" "=" keytype)
+                 / ("ENCODING" "=" "b")
+        ; Value MUST be a "b" encoded key or certificate
+
+
+
+Dawson & Howes              Standards Track                    [Page 35]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   keytype      = "X509" / "PGP" / iana-token / x-name
+        ; Values are case insensitive
+
+   ;For name="X-" non-standard type
+   param        = text-param / (x-name "=" param-value)
+        ; Only text or non-standard parameters allowed
+
+   value        = text-value
+
+   ;*******************************************
+   ; vCard Commonly Used Parameter Definition
+   ;*******************************************
+
+   text-param   = ("VALUE" "=" "ptext")
+                / ("LANGUAGE" "=" langval)
+                / (x-name "=" param-value)
+
+   langval      = <a language string as defined in RFC 1766>
+
+   img-inline-value     = binary-value
+        ;Value MUST be "b" encoded image content
+
+   img-inline-param
+
+   img-inline-param     = ("VALUE" "=" "binary")
+                        / ("ENCODING" "=" "b")
+                        / ("TYPE" "=" param-value
+        ;TYPE value MUST be an IANA registered image type
+
+   img-refer-value = uri
+        ;URI MUST refer to image content of given type
+
+   img-refer-param      = ("VALUE" "=" "uri")
+                        / ("TYPE" "=" param-value)
+        ;TYPE value MUST be an IANA registered image type
+
+   adr-param    = ("TYPE" "=" adr-type *("," adr-type))
+                / (text-param)
+
+   adr-type     = "dom" / "intl" / "postal" / "parcel" / "home"
+                / "work" / "pref" / iana-type / x-name
+
+   adr-value    = 0*6(text-value ";") text-value
+        ; PO Box, Extended Address, Street, Locality, Region, Postal
+        ; Code, Country Name
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 36]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   ;*******************************************
+   ; vCard Type Value Definition
+   ;*******************************************
+
+   text-value-list      = 1*text-value *("," 1*text-value)
+
+   text-value   = *(SAFE-CHAR / ":" / DQUOTE / ESCAPED-CHAR)
+
+   ESCAPED-CHAR = "\\" / "\;" / "\," / "\n" / "\N")
+        ; \\ encodes \, \n or \N encodes newline
+        ; \; encodes ;, \, encodes ,
+
+   binary-value = <A "b" encoded text value as defined in [RFC 2047]>
+
+   date-value   = <A single date value as defined in [MIME-DIR]>
+
+   time-value   = <A single time value as defined in [MIME-DIR]>
+
+   date-time-value = <A single date-time value as defined in [MIME-DIR]
+
+   float-value  = <A single float value as defined in [MIME-DIR]>
+
+   phone-number-value = <A single text  value as defined in [CCITT
+                         E.163] and [CCITT X.121]>
+
+   uri-value    = <A uri value as defined in [MIME-DIR]>
+
+   utc-offset-value = ("+" / "-") time-hour ":" time-minute
+   time-hour    = 2DIGIT                ;00-23
+   time-minute  = 2DIGIT                ;00-59
+
+5.  Differences From vCard v2.1
+
+   This specification has been reviewed by the IETF community. The
+   review process introduced a number of differences from the [VCARD]
+   version 2.1. These differences require that vCard objects conforming
+   to this specification have a different version number than a vCard
+   conforming to [VCARD]. The differences include the following:
+
+        . The QUOTED-PRINTABLE inline encoding has been eliminated.
+          Only the "B" encoding of [RFC 2047] is an allowed value for
+          the ENCODING parameter.
+
+        . The method for specifying CRLF character sequences in text
+          type values has been changed. The CRLF character sequence in
+          a text type value is specified with the backslash character
+          sequence "\n" or "\N".
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 37]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+        . Any COMMA or SEMICOLON in a text type value must be backslash
+          escaped.
+
+        . VERSION value corresponding to this specification MUST be
+          "3.0".
+
+        . The [MIME-DIR] predefined types of SOURCE, NAME and PROFILE
+          are allowed.
+
+        . The [MIME-DIR] VALUE type parameter for value data typing is
+          allowed. In addition, there are extensions made to these type
+          values for additional value types used in this specification.
+
+        . The [VCARD] CHARSET type parameter has been eliminated.
+          Character set can only be specified on the CHARSET parameter
+          on the Content-Type MIME header field.
+
+        . The [VCARD] support for non-significant WSP character has
+          been eliminated.
+
+        . The "TYPE=" prefix to parameter values is required. In
+          [VCARD] this was optional.
+
+        . LOGO, PHOTO and SOUND multimedia formats MUST be either IANA
+          registered types or non-standard types.
+
+        . Inline binary content must be "B" encoded and folded. A blank
+          line after the encoded binary content is no longer required.
+
+        . TEL values can be identified as personal communication
+          services telephone numbers with the PCS type parameter value.
+
+        . The CATEGORIES, CLASS, NICKNAME, PRODID and SORT-STRING types
+          have been added.
+
+        . The VERSION, N and FN types MUST be specified in a vCard.
+          This identifies the version of the specification that the
+          object was formatted to. It also assures that every vCard
+          will include both a structured and formatted name that can be
+          used to identify the object.
+
+
+
+
+
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 38]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+6.  Acknowledgements
+
+   The many valuable comments contributed by members of the IETF ASID
+   working group are gratefully acknowledged, as are the contributions
+   by Roland Alden, Stephen Bartlett, Alec Dun, Patrik Faltstrom, Daniel
+   Gurney, Bruce Johnston, Daniel Klaussen, Pete Miller, Keith Moore,
+   Vinod Seraphin, Michelle Watkins. Chris Newman was especially helpful
+   in navigating the intricacies of ABNF lore.
+
+7.  Authors' Addresses
+
+   BEGIN:vCard
+   VERSION:3.0
+   FN:Frank Dawson
+   ORG:Lotus Development Corporation
+   ADR;TYPE=WORK,POSTAL,PARCEL:;;6544 Battleford Drive
+    ;Raleigh;NC;27613-3502;U.S.A.
+   TEL;TYPE=VOICE,MSG,WORK:+1-919-676-9515
+   TEL;TYPE=FAX,WORK:+1-919-676-9564
+   EMAIL;TYPE=INTERNET,PREF:Frank_Dawson@Lotus.com
+   EMAIL;TYPE=INTERNET:fdawson@earthlink.net
+   URL:http://home.earthlink.net/~fdawson
+   END:vCard
+
+
+   BEGIN:vCard
+   VERSION:3.0
+   FN:Tim Howes
+   ORG:Netscape Communications Corp.
+   ADR;TYPE=WORK:;;501 E. Middlefield Rd.;Mountain View;
+    CA; 94043;U.S.A.
+   TEL;TYPE=VOICE,MSG,WORK:+1-415-937-3419
+   TEL;TYPE=FAX,WORK:+1-415-528-4164
+   EMAIL;TYPE=INTERNET:howes@netscape.com
+   END:vCard
+
+8.  Security Considerations
+
+   vCards can carry cryptographic keys or certificates, as described in
+   Section 3.7.2.
+
+   Section 3.7.1 specifies a desired security classification policy for
+   a particular vCard. That policy is not enforced in any way.
+
+   The vCard objects have no inherent authentication or privacy, but can
+   easily be carried by any security mechanism that transfers MIME
+   objects with authentication or privacy. In cases where threats of
+   "spoofed" vCard information is a concern, the vCard SHOULD BE
+
+
+
+Dawson & Howes              Standards Track                    [Page 39]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   transported using one of these secure mechanisms.
+
+   The information in a vCard may become out of date. In cases where the
+   vitality of data is important to an originator of a vCard, the "URL"
+   type described in section 3.6.8 SHOULD BE specified. In addition, the
+   "REV" type described in section 3.6.4 can be specified to indicate
+   the last time that the vCard data was updated.
+
+9.  References
+
+   [ISO 8601]    ISO 8601:1988 - Data elements and interchange formats -
+                 Information interchange - Representation of dates and
+                 times - The International Organization for
+                 Standardization, June, 1988.
+
+   [ISO 8601 TC] ISO 8601, Technical Corrigendum 1 - Data elements and
+                 interchange formats - Information interchange -
+                 Representation of dates and times - The International
+                 Organization for Standardization, May, 1991.
+
+   [ISO 9070]    ISO 9070, Information Processing - SGML support
+                 facilities - Registration Procedures for Public Text
+                 Owner Identifiers, April, 1991.
+
+   [CCITT E.163] Recommendation E.163 - Numbering Plan for The
+                 International Telephone Service, CCITT Blue Book,
+                 Fascicle II.2, pp.  128-134, November, 1988.
+
+   [CCITT X.121] Recommendation X.121 - International Numbering Plan for
+                 Public Data Networks, CCITT Blue Book, Fascicle VIII.3,
+                 pp. 317-332, November, 1988.
+
+   [CCITT X.520] Recommendation X.520 - The Directory - Selected
+                 Attribute Types, November 1988.
+
+   [CCITT X.521] Recommendation X.521 - The Directory - Selected Object
+                 Classes, November 1988.
+
+   [MIME-DIR]    Howes, T., Smith, M., and F. Dawson, "A MIME Content-
+                 Type for Directory Information", RFC 2425, September
+                 1998.
+
+   [RFC 1738]    Berners-Lee, T., Masinter, L., and M. McCahill,
+                 "Uniform Resource Locators (URL)", RFC 1738, December
+                 1994.
+
+   [RFC 1766]    Alvestrand, H., "Tags for the Identification of
+                 Languages", RFC 1766, March 1995.
+
+
+
+Dawson & Howes              Standards Track                    [Page 40]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+   [RFC 1872]    Levinson, E., "The MIME Multipart/Related Content-
+                 type", RFC 1872, December 1995.
+
+   [RFC 2045]    Freed, N., and N. Borenstein, "Multipurpose Internet
+                 Mail Extensions (MIME) - Part One: Format of Internet
+                 Message Bodies", RFC 2045, November 1996.
+
+   [RFC 2046]    Freed, N., and N. Borenstein, "Multipurpose Internet
+                 Mail Extensions (MIME) - Part Two: Media Types", RFC
+                 2046, November 1996.
+
+   [RFC 2047]    Moore, K., "Multipurpose Internet Mail Extensions
+                 (MIME) - Part Three: Message Header Extensions for
+                 Non-ASCII Text", RFC 2047, November 1996.
+
+   [RFC 2048]    Freed, N., Klensin, J., and J. Postel, "Multipurpose
+                 Internet Mail Extensions (MIME) - Part Four:
+                 Registration Procedures", RFC 2048, January 1997.
+
+   [RFC 2119]    Bradner, S., "Key words for use in RFCs to Indicate
+                 Requirement Levels", BCP 14, RFC 2119, March 1997.
+
+   [RFC 2234]    Crocker, D., and P. Overell, "Augmented BNF for Syntax
+                 Specifications: ABNF", RFC 2234, November 1997.
+
+   [UNICODE]     "The Unicode Standard - Version 2.0", The Unicode
+                 Consortium, July 1996.
+
+   [VCARD]       Internet Mail Consortium, "vCard - The Electronic
+                 Business Card Version 2.1",
+                 http://www.imc.org/pdi/vcard-21.txt, September 18,
+                 1996.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 41]
+
+RFC 2426              vCard MIME Directory Profile        September 1998
+
+
+10.  Full Copyright Statement
+
+   Copyright (C) The Internet Society (1998).  All Rights Reserved.
+
+   This document and translations of it may be copied and furnished to
+   others, and derivative works that comment on or otherwise explain it
+   or assist in its implementation may be prepared, copied, published
+   and distributed, in whole or in part, without restriction of any
+   kind, provided that the above copyright notice and this paragraph are
+   included on all such copies and derivative works.  However, this
+   document itself may not be modified in any way, such as by removing
+   the copyright notice or references to the Internet Society or other
+   Internet organizations, except as needed for the purpose of
+   developing Internet standards in which case the procedures for
+   copyrights defined in the Internet Standards process must be
+   followed, or as required to translate it into languages other than
+   English.
+
+   The limited permissions granted above are perpetual and will not be
+   revoked by the Internet Society or its successors or assigns.
+
+   This document and the information contained herein is provided on an
+   "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+   TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+   BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+   HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Dawson & Howes              Standards Track                    [Page 42]
+

@@ -29,6 +29,7 @@ public static partial class PayloadGenerator
         private readonly string? _note;
         private readonly ContactOutputType _outputType;
         private readonly AddressOrder _addressOrder;
+        private readonly AddressType _addressType;
 
 
         /// <summary>
@@ -51,10 +52,39 @@ public static partial class PayloadGenerator
         /// <param name="zipCode">Zip code.</param>
         /// <param name="country">Country.</param>
         /// <param name="addressOrder">The address order format to use.</param>
-        /// <param name="note">Memo text / notes.</param>            
-        /// <param name="org">Organization/Company.</param>            
-        /// <param name="orgTitle">Organization/Company Title.</param> 
+        /// <param name="note">Memo text / notes.</param>
+        /// <param name="org">Organization/Company.</param>
+        /// <param name="orgTitle">Organization/Company Title.</param>
         public ContactData(ContactOutputType outputType, string firstname, string lastname, string? nickname = null, string? phone = null, string? mobilePhone = null, string? workPhone = null, string? email = null, DateTime? birthday = null, string? website = null, string? street = null, string? houseNumber = null, string? city = null, string? zipCode = null, string? country = null, string? note = null, string? stateRegion = null, AddressOrder addressOrder = AddressOrder.Default, string? org = null, string? orgTitle = null)
+            : this(outputType, firstname, lastname, nickname, phone, mobilePhone, workPhone, email, birthday, website, street, houseNumber, city, zipCode, country, note, stateRegion, addressOrder, org, orgTitle, AddressType.HomePreferred)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ContactData"/> class with address type support.
+        /// </summary>
+        /// <param name="outputType">Payload output type.</param>
+        /// <param name="firstname">The first name.</param>
+        /// <param name="lastname">The last name.</param>
+        /// <param name="nickname">The display name.</param>
+        /// <param name="phone">Normal phone number.</param>
+        /// <param name="mobilePhone">Mobile phone.</param>
+        /// <param name="workPhone">Office phone number.</param>
+        /// <param name="email">E-Mail address.</param>
+        /// <param name="birthday">Birthday.</param>
+        /// <param name="website">Website / Homepage.</param>
+        /// <param name="street">Street.</param>
+        /// <param name="houseNumber">House number.</param>
+        /// <param name="city">City.</param>
+        /// <param name="stateRegion">State or Region.</param>
+        /// <param name="zipCode">Zip code.</param>
+        /// <param name="country">Country.</param>
+        /// <param name="addressOrder">The address order format to use.</param>
+        /// <param name="note">Memo text / notes.</param>
+        /// <param name="org">Organization/Company.</param>
+        /// <param name="orgTitle">Organization/Company Title.</param>
+        /// <param name="addressType">The address type (Home, Work, HomePreferred, or WorkPreferred).</param>
+        public ContactData(ContactOutputType outputType, string firstname, string lastname, string? nickname, string? phone, string? mobilePhone, string? workPhone, string? email, DateTime? birthday, string? website, string? street, string? houseNumber, string? city, string? zipCode, string? country, string? note, string? stateRegion, AddressOrder addressOrder, string? org, string? orgTitle, AddressType addressType)
         {
             _firstname = firstname;
             _lastname = lastname;
@@ -76,6 +106,7 @@ public static partial class PayloadGenerator
             _addressOrder = addressOrder;
             _note = note;
             _outputType = outputType;
+            _addressType = addressType;
         }
 
         /// <summary>
@@ -108,10 +139,11 @@ public static partial class PayloadGenerator
                     payload += $"NOTE:{_note}\r\n";
                 if (_birthday != null)
                     payload += $"BDAY:{((DateTime)_birthday).ToString("yyyyMMdd")}\r\n";
+                // RFC 2426 Section 3.2.1: ADR format is PO Box; Extended Address; Street; Locality (City); Region; Postal Code; Country
                 string addressString = string.Empty;
                 if (_addressOrder == AddressOrder.Default)
                 {
-                    addressString = $"ADR:,,{(!string.IsNullOrEmpty(_street) ? _street + " " : "")}{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber : "")},{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")},{(!string.IsNullOrEmpty(_city) ? _city : "")},{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")},{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
+                    addressString = $"ADR:,,{(!string.IsNullOrEmpty(_street) ? _street + " " : "")}{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber : "")},{(!string.IsNullOrEmpty(_city) ? _city : "")},{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")},{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")},{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
                 }
                 else
                 {
@@ -182,17 +214,18 @@ public static partial class PayloadGenerator
                 }
 
 
+                // RFC 2426 Section 3.2.1: ADR format is PO Box; Extended Address; Street; Locality (City); Region; Postal Code; Country
                 payload += "ADR;";
                 if (_outputType == ContactOutputType.VCard21)
-                    payload += "HOME;PREF:";
+                    payload += GetAddressTypeString21() + ":";
                 else if (_outputType == ContactOutputType.VCard3)
-                    payload += "TYPE=HOME,PREF:";
+                    payload += "TYPE=" + GetAddressTypeString3() + ":";
                 else
-                    payload += "TYPE=home,pref:";
+                    payload += "TYPE=" + GetAddressTypeString4() + ":";
                 string addressString = string.Empty;
                 if (_addressOrder == AddressOrder.Default)
                 {
-                    addressString = $";;{(!string.IsNullOrEmpty(_street) ? _street + " " : "")}{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber : "")};{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")};{(!string.IsNullOrEmpty(_city) ? _city : "")};{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")};{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
+                    addressString = $";;{(!string.IsNullOrEmpty(_street) ? _street + " " : "")}{(!string.IsNullOrEmpty(_houseNumber) ? _houseNumber : "")};{(!string.IsNullOrEmpty(_city) ? _city : "")};{(!string.IsNullOrEmpty(_stateRegion) ? _stateRegion : "")};{(!string.IsNullOrEmpty(_zipCode) ? _zipCode : "")};{(!string.IsNullOrEmpty(_country) ? _country : "")}\r\n";
                 }
                 else
                 {
@@ -215,6 +248,77 @@ public static partial class PayloadGenerator
             }
 
             return payload;
+        }
+
+        /// <summary>
+        /// Gets the address type string for vCard 2.1 format.
+        /// </summary>
+        private string GetAddressTypeString21()
+        {
+            return _addressType switch
+            {
+                AddressType.Home => "HOME",
+                AddressType.Work => "WORK",
+                AddressType.HomePreferred => "HOME;PREF",
+                AddressType.WorkPreferred => "WORK;PREF",
+                _ => "HOME;PREF"
+            };
+        }
+
+        /// <summary>
+        /// Gets the address type string for vCard 3.0 format.
+        /// </summary>
+        private string GetAddressTypeString3()
+        {
+            return _addressType switch
+            {
+                AddressType.Home => "HOME",
+                AddressType.Work => "WORK",
+                AddressType.HomePreferred => "HOME,PREF",
+                AddressType.WorkPreferred => "WORK,PREF",
+                _ => "HOME,PREF"
+            };
+        }
+
+        /// <summary>
+        /// Gets the address type string for vCard 4.0 format.
+        /// </summary>
+        private string GetAddressTypeString4()
+        {
+            return _addressType switch
+            {
+                AddressType.Home => "home",
+                AddressType.Work => "work",
+                AddressType.HomePreferred => "home,pref",
+                AddressType.WorkPreferred => "work,pref",
+                _ => "home,pref"
+            };
+        }
+
+        /// <summary>
+        /// Defines the type of address (home or work).
+        /// </summary>
+        public enum AddressType
+        {
+            /// <summary>
+            /// Home address.
+            /// </summary>
+            Home,
+
+            /// <summary>
+            /// Work address.
+            /// </summary>
+            Work,
+
+            /// <summary>
+            /// Home address marked as preferred (default for backwards compatibility).
+            /// </summary>
+            HomePreferred,
+
+            /// <summary>
+            /// Work address marked as preferred.
+            /// </summary>
+            WorkPreferred
         }
 
         /// <summary>
