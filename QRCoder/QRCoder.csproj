@@ -27,7 +27,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/Shane32/QRCoder/</PackageProjectUrl>
     <PackageIcon>nuget-icon.png</PackageIcon>
-    <PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</PackageTags>
     <RepositoryUrl>https://github.com/Shane32/QRCoder.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <None Include="Assets\nuget-icon.png" Pack="true" PackagePath="\" />
-    <None Include="Assets\nuget-readme.md" Pack="true" PackagePath="\" />
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">

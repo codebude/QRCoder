@@ -631,7 +631,7 @@ public class SwissQrCodeTests
         Assert.Null(exception);
 
         // Should work, as XK is is defined as special case (not officially ISO-3166-1,but used in the wild)
-        // See https://en.wikipedia.org/wiki/XK_(user_assigned_code) and https://github.com/codebude/QRCoder/issues/420
+        // See https://en.wikipedia.org/wiki/XK_(user_assigned_code) and https://github.com/Shane32/QRCoder/issues/420
         country = "XK";
         exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
         Assert.Null(exception);

@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using static QRCoder.QRCodeGenerator;
 
-/* This renderer is inspired by RemusVasii: https://github.com/codebude/QRCoder/issues/223 */
+/* This renderer is inspired by RemusVasii: https://github.com/Shane32/QRCoder/issues/223 */
 namespace QRCoder;
 
 
