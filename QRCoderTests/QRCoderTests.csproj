@@ -54,4 +54,9 @@
     <EmbeddedResource Include="assets\noun_Scientist_2909361.svg" />
     <EmbeddedResource Include="assets\noun_software engineer_2909346.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="**\*.approved.*;**\*.received.*">
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).cs</DependentUpon>
+    </None>
+  </ItemGroup>
 </Project>
