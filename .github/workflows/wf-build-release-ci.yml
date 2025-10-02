@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - update-ci-workflow
   workflow_dispatch:
 
 concurrency:
