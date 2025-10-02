@@ -46,7 +46,7 @@
     <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
   </ItemGroup>
 
-  <PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>QRCoder.XamlStrongName.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
