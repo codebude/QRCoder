@@ -1,9 +1,3 @@
-using System;
-using System.Drawing;
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests;
 
 public class Base64QRCodeRendererTests

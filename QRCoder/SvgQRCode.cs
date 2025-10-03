@@ -1,7 +1,5 @@
 #if !NETSTANDARD1_3
-using System;
 using System.Drawing;
-using System.Text;
 using QRCoder.Extensions;
 using static QRCoder.QRCodeGenerator;
 using static QRCoder.SvgQRCode;

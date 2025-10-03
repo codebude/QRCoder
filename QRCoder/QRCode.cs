@@ -1,5 +1,4 @@
 #if SYSTEM_DRAWING
-using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using static QRCoder.QRCodeGenerator;
