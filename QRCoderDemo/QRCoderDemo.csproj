@@ -1,16 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net462;net5.0-windows</TargetFrameworks>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
     <OutputType>Exe</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
@@ -20,10 +14,12 @@
   <ItemGroup>
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\QRCoder\QRCoder.csproj">
       <Project>{aa6be23a-7813-4d2a-835e-b673631ae9f1}</Project>
       <Name>QRCoder</Name>
     </ProjectReference>
   </ItemGroup>
+  
 </Project>

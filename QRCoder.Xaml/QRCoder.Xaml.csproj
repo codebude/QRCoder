@@ -1,42 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net35;net40;net5.0-windows;net6.0-windows</TargetFrameworks>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <!-- <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms> -->
-    <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn />
+    <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' OR '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PackageId>QRCoder.Xaml</PackageId>
-    <Version>1.6.1</Version>
-    <Authors>Raffael Herrmann, Shane Krueger</Authors>
-    <PackageOwners>Shane Krueger</PackageOwners>
-    <AssemblyName>QRCoder.Xaml</AssemblyName>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/Shane32/QRCoder/</PackageProjectUrl>
-    <PackageIcon>nuget-icon-xaml.png</PackageIcon>
-    <PackageReadmeFile>nuget-readme-xaml.md</PackageReadmeFile>
-    <PackageTags>c# csharp qr QRCoder.Xaml qrcode qr-generator qr-code-generator</PackageTags>
-    <RepositoryUrl>https://github.com/Shane32/QRCoder.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <Description>QRCoder.Xaml is the XamlQRCode-extension for the popular QRCoder .NET library.</Description>
+    <PackageTags>c# csharp qr QRCoder.Xaml qrcode qr-generator qr-code-generator</PackageTags>
+    <PackageReadmeFile>nuget-readme-xaml.md</PackageReadmeFile>
+    <AssemblyOriginatorKeyFile>QRCoder.XamlStrongName.snk</AssemblyOriginatorKeyFile>
+    <ComVisible>true</ComVisible>
+    <Guid>e668b98b-83bb-4e60-b33c-4fd5ed9c0156</Guid>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="Assets\nuget-icon-xaml.png" Pack="true" PackagePath="\" />
-    <None Include="Assets\nuget-readme-xaml.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
@@ -46,10 +25,8 @@
     <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>QRCoder.XamlStrongName.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Update="nuget-readme-xaml.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 </Project>
