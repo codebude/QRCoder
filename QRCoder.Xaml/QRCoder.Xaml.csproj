@@ -13,7 +13,7 @@
     <!-- Set strong name and COM properties -->
     <AssemblyOriginatorKeyFile>QRCoder.XamlStrongName.snk</AssemblyOriginatorKeyFile>
     <ComVisible>true</ComVisible>
-    <Guid>e668b98b-83bb-4e60-b33c-4fd5ed9c0156</Guid>
+    <Guid>f9ec6466-b807-40ae-bc05-db9f88967c0c</Guid>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' ">
