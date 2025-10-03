@@ -1,8 +1,3 @@
-using System;
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests.PayloadGeneratorTests;
 
 public class CalendarEventTests

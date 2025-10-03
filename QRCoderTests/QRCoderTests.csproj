@@ -56,5 +56,13 @@
       <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).cs</DependentUpon>
     </None>
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <Using Include="QRCoder"/>
+    <Using Include="QRCoderTests.Helpers"/>
+    <Using Include="Shouldly"/>
+    <Using Include="System.Drawing"/>
+    <Using Include="Xunit"/>
+  </ItemGroup>
+
 </Project>

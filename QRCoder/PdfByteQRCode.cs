@@ -1,10 +1,5 @@
 #if SYSTEM_DRAWING
-using System;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using static QRCoder.QRCodeGenerator;
 
 /* This renderer is inspired by RemusVasii: https://github.com/Shane32/QRCoder/issues/223 */
@@ -88,7 +83,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
             var jpgImageCodecInfo = ImageCodecInfo.GetImageEncoders().First(x => x.MimeType == "image/jpeg");
             var jpgEncoderParameters = new EncoderParameters(1)
             {
-                Param = new EncoderParameter[] { new EncoderParameter(Encoder.Quality, jpgQuality) }
+                Param = new EncoderParameter[] { new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, jpgQuality) }
             };
             img.Save(msJpeg, jpgImageCodecInfo, jpgEncoderParameters);
             jpgArray = msJpeg.ToArray();

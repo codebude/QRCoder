@@ -1,9 +1,6 @@
-using System;
-using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 using System.Reflection;
-using System.Drawing;
 #if TEST_XAML
 using SW = System.Windows;
 using System.Windows.Media;

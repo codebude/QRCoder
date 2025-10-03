@@ -1,7 +1,3 @@
-using System;
-using QRCoder;
-using Shouldly;
-using Xunit;
 using static QRCoder.PayloadGenerator.SwissQrCode.AdditionalInformation;
 using static QRCoder.PayloadGenerator.SwissQrCode.Reference;
 using static QRCoder.QRCodeGenerator;

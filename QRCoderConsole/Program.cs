@@ -1,7 +1,5 @@
-using System;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using System.Windows.Markup;
 using NDesk.Options;
 using QRCoder;

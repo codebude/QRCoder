@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Threading;
-
 namespace QRCoder;
 
 public partial class QRCodeGenerator

@@ -1,8 +1,3 @@
-using System.Drawing;
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests;
 
 /****************************************************************************************************

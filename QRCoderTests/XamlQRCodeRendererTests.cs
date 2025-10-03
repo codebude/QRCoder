@@ -1,9 +1,5 @@
 #if TEST_XAML
-using QRCoder;
 using QRCoder.Xaml;
-using QRCoderTests.Helpers;
-using Shouldly;
-using Xunit;
 
 namespace QRCoderTests;
 

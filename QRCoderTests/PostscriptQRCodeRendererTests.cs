@@ -1,9 +1,3 @@
-using System.Drawing;
-using System.Text.RegularExpressions;
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests;
 
 public class PostscriptQRCodeRendererTests

@@ -14,6 +14,7 @@
     <Version>1.6.1</Version>
     <LangVersion>12</LangVersion>
     <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- Set common NuGet package properties -->
     <Authors>Raffael Herrmann, Shane Krueger</Authors>
@@ -47,6 +48,14 @@
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
     <None Include="$(MSBuildThisFileDirectory)nuget-icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Configure implicit usings -->
+  <ItemGroup>
+    <Using Include="System.Collections.BitArray" Alias="BitArray" />
+    <Using Include="System.Globalization"/>
+    <Using Include="System.Text" />
+    <Using Include="System.Text.RegularExpressions"/>
   </ItemGroup>
 
 </Project>

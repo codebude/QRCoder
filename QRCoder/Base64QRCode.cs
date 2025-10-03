@@ -1,8 +1,6 @@
 #if !NETSTANDARD1_3
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
 using static QRCoder.Base64QRCode;
 using static QRCoder.QRCodeGenerator;

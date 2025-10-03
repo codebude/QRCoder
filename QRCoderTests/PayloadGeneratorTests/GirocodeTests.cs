@@ -1,6 +1,3 @@
-using QRCoder;
-using Shouldly;
-using Xunit;
 using static QRCoder.QRCodeGenerator;
 
 namespace QRCoderTests.PayloadGeneratorTests;

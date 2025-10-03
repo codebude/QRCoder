@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder;

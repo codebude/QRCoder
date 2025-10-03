@@ -1,4 +1,3 @@
-using System;
 using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder;

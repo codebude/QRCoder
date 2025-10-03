@@ -1,8 +1,6 @@
 #if HAS_SPAN
 using System.Buffers;
 #endif
-using System;
-using System.IO;
 using System.IO.Compression;
 using static QRCoder.QRCodeGenerator;
 

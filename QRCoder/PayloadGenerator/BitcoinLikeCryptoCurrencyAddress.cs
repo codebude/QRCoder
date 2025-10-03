@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator

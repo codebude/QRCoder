@@ -1,9 +1,4 @@
 #if SYSTEM_DRAWING
-using System.Drawing;
-using QRCoder;
-using QRCoderTests.Helpers;
-using Shouldly;
-using Xunit;
 
 namespace QRCoderTests;
 
