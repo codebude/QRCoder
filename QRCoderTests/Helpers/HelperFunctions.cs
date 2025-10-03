@@ -43,7 +43,7 @@ public static class HelperFunctions
 #if NET5_0_OR_GREATER
         => AppDomain.CurrentDomain.BaseDirectory;
 #else
-        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
+        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)?.Replace("file:\\", "") ?? "";
 #endif
 
     /// <summary>
