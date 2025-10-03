@@ -38,7 +38,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591;CS1572;CS1573;CS1587;IDE0005</NoWarn>
+    <NoWarn>$(NoWarn);IDE0005</NoWarn>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisMode>None</AnalysisMode>
   </PropertyGroup>
