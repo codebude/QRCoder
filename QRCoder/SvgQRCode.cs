@@ -249,7 +249,14 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum SizingMode
     {
+        /// <summary>
+        /// Use width and height attributes for SVG sizing
+        /// </summary>
         WidthHeightAttribute,
+
+        /// <summary>
+        /// Use viewBox attribute for SVG sizing
+        /// </summary>
         ViewBoxAttribute
     }
 
@@ -362,10 +369,17 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         /// </summary>
         public enum MediaType : int
         {
+            /// <summary>
+            /// Portable Network Graphics (PNG) image format
+            /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
             [StringValue("image/png")]
 #pragma warning restore CS0618 // Type or member is obsolete
             PNG = 0,
+
+            /// <summary>
+            /// Scalable Vector Graphics (SVG) image format
+            /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
             [StringValue("image/svg+xml")]
 #pragma warning restore CS0618 // Type or member is obsolete

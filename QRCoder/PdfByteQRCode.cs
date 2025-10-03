@@ -216,12 +216,12 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     }
 }
 
-#if NET6_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
 /// <summary>
 /// Provides static methods for creating PDF byte array QR codes.
 /// </summary>
+#if NET6_0_OR_GREATER
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
 public static class PdfByteQRCodeHelper
 {
     /// <summary>
