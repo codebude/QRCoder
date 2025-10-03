@@ -32,6 +32,7 @@
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <SignAssembly>false</SignAssembly>
 
     <!-- Enable analyzers; treat all warnings as errors; disable 'using directive is unnecessary' and XML comment warnings -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>

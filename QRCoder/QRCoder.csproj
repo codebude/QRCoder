@@ -1,16 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <!-- Set essential properties -->
     <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;netstandard2.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
     <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
-  </PropertyGroup>
 
-  <PropertyGroup>
+    <!-- Set NuGet package properties -->
     <PackageTags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</PackageTags>
     <Description>QRCoder is a simple library, written in C#.NET, which enables you to create QR codes.</Description>
+
+    <!-- Set strong name and COM properties -->
     <AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
     <ComVisible>true</ComVisible>
     <Guid>e668b98b-83bb-4e60-b33c-4fd5ed9c0156</Guid>
