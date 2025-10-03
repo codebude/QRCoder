@@ -8,7 +8,7 @@ public enum SupportedImageFormat
     Bmp,
     Tiff,
     Svg,
-#if !NET5_0 || NET5_0_WINDOWS
+#if !NET5_0 || WINDOWS
     Xaml,
 #endif
     Ps,

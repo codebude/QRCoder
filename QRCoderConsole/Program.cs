@@ -9,7 +9,7 @@ using QRCoderConsole.DataObjects;
 
 namespace QRCoderConsole;
 
-#if NET6_0_WINDOWS
+#if NET6_0 && WINDOWS
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
 internal class MainClass
@@ -161,7 +161,7 @@ internal class MainClass
                     f.Flush();
                 }
                 break;
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+#if NETFRAMEWORK || WINDOWS
             case SupportedImageFormat.Xaml:
                 using (var code = new QRCoder.Xaml.XamlQRCode(data))
                 {
@@ -235,7 +235,7 @@ public class OptionSetter
         return level;
     }
 
-#if NET6_0_WINDOWS
+#if NET6_0 && WINDOWS
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
     public ImageFormat GetImageFormat(string value) => value.ToLower() switch
