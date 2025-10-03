@@ -1,0 +1,15 @@
+<Project>
+  
+  <!-- Define SYSTEM_DRAWING and HAS_SPAN -->
+  <PropertyGroup>
+    <DefineConstants Condition="'$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'netstandard1.3'">$(DefineConstants);SYSTEM_DRAWING</DefineConstants>
+    <DefineConstants Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp2.1')) OR '$(TargetFramework)' == 'netstandard2.1'">$(DefineConstants);HAS_SPAN</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Strong name signing for Release builds of packable projects -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(IsPackable)' == 'true'">
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  
+</Project>
