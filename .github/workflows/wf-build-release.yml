@@ -47,8 +47,8 @@ jobs:
     - name: Publish packages to Github packages
       run: dotnet nuget push "out/*" -k ${{secrets.NUGET_AUTH_TOKEN}}
 
-    - name: Upload nuget packages as release artifacts
-      uses: actions/github-script@v4
+    - name: Upload Nuget packages as release artifacts
+      uses: actions/github-script@v8
       with:
         github-token: ${{secrets.GITHUB_TOKEN}}
         script: |
@@ -59,7 +59,7 @@ jobs:
           for (let file of await fs.readdir('out')) {
             console.log('uploading', file);
 
-            await github.repos.uploadReleaseAsset({
+            await github.rest.repos.uploadReleaseAsset({
               owner,
               repo,
               release_id: ${{ github.event.release.id }},
