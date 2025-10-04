@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,11 +15,11 @@ jobs:
     env:
         ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       name: Checkout Code
 
     - name: Install additional .NET SDKs
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: |
           2.1.x
@@ -77,46 +76,26 @@ jobs:
   pack-push-ci:
     needs: [test, additional-tests, upload-coverage]
     runs-on: windows-latest
-    env:
-      GH_PKG_SEC: ${{ secrets.GITHUB_TOKEN }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       name: Checkout Code
 
     - name: Install .NET SDK
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 8.0.x
+        source-url: https://nuget.pkg.github.com/Shane32/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-    - name: Restore dependencies
-      run: dotnet restore
+    - name: Build NuGet packages
+      run: dotnet pack -c Release -p:VersionSuffix=$GITHUB_RUN_NUMBER -o out
 
-    - name: Build library
-      run: dotnet build -c Release --no-restore
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Nuget packages
+        path: out/*
 
-    - name: Get assembly version QRCoder
-      run: echo "ASSEM_VER=$([Reflection.Assembly]::Loadfile( $(-join($pwd,"\QRCoder\bin\Release\net40\QRCoder.dll"))).GetName().version.ToString())"  | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-
-    - name: Clean assembly version QRCoder
-      run: echo "ASSEM_VER_SHT=$($env:ASSEM_VER.substring(0, $env:ASSEM_VER.lastIndexOf(".")))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-
-    - name: Calculate ci suffix QRCoder
-      run:  echo "CI_TAG=-ci-$([datetime]::now.tostring("yyyyMMddHHmmss"))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append    
-
-    - name: Get assembly version QRCoder.Xaml
-      run: echo "ASSEM_VER_XAML=$([Reflection.Assembly]::Loadfile( $(-join($pwd,"\QRCoder.Xaml\bin\Release\net40\QRCoder.Xaml.dll"))).GetName().version.ToString())"  | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-
-    - name: Clean assembly version QRCoder.Xaml
-      run: echo "ASSEM_VER_SHT_XAML=$($env:ASSEM_VER_XAML.substring(0, $env:ASSEM_VER_XAML.lastIndexOf(".")))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-
-    - name: Calculate ci suffix QRCoder.Xaml
-      run:  echo "CI_TAG_XAML=-ci-$([datetime]::now.tostring("yyyyMMddHHmmss"))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
-
-    - name: Build QRCoder NuGet package
-      run: dotnet pack QRCoder\QRCoder.csproj -c Release --no-build /p:PackageVersion="$env:ASSEM_VER_SHT$env:CI_TAG" /p:PackageReleaseNotes="- This is an automatic CI build ($env:CI_TAG)`n- Please don't use it in productive environments!"
-
-    - name: Build QRCoder.Xaml NuGet package
-      run: dotnet pack QRCoder.Xaml\QRCoder.Xaml.csproj -c Release --no-build /p:PackageVersion="$env:ASSEM_VER_SHT_XAML$env:CI_TAG_XAML" /p:PackageReleaseNotes="- This is an automatic CI build ($env:CI_TAG_XAML)`n- Please don't use it in productive environments!"
-
-    - name: Publish QRCoder and QRCoder.Xaml to Github packages
-      run: dotnet nuget push "**/*.nupkg" --no-symbols --skip-duplicate --api-key $env:GH_PKG_SEC --source https://nuget.pkg.github.com/Shane32/index.json
+    - name: Publish packages to Github packages
+      run: dotnet nuget push "out/*" -k ${{secrets.GITHUB_TOKEN}}
