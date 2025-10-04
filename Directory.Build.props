@@ -11,7 +11,7 @@
   
   <PropertyGroup>
     <!-- Set version information, C# language version, and default to non-packable project -->
-    <Version>1.6.1</Version>
+    <VersionPrefix>1.6.1-preview</VersionPrefix>
     <LangVersion>12</LangVersion>
     <IsPackable>false</IsPackable>
 
