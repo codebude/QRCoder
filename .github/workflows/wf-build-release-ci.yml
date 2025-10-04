@@ -40,15 +40,6 @@ jobs:
         path: QRCoderTests/coverage.*.xml
         retention-days: 1
 
-  upload-coverage:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - name: Download coverage files
-      uses: actions/download-artifact@v4
-      with:
-        name: coverage-files
-
     - name: Upload to Codecov
       uses: codecov/codecov-action@v4
       with:
