@@ -4,7 +4,6 @@
     <!-- Set essential properties -->
     <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;netstandard2.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
     <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
-    <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
 
     <!-- Set NuGet package properties -->

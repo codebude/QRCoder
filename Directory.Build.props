@@ -10,9 +10,10 @@
   <!-- 6: ItemGroups - Directory.Build.targets -->
   
   <PropertyGroup>
-    <!-- Set version information, C# language version, and default to non-packable project -->
+    <!-- Set version information, C# language version, enable NRT annotations, and default to non-packable project -->
     <Version>1.6.1</Version>
     <LangVersion>12</LangVersion>
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
 
     <!-- Set common NuGet package properties -->

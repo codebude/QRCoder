@@ -116,13 +116,13 @@ public class RussiaPaymentOrderTests
     [Fact]
     public void russiapayment_generator_should_throw_must_not_be_null_exception()
     {
-        string account = null;
+        string? account = null;
         var bic = "044525225";
         var bankName = "ОАО | \"БАНК\"";
         var name = "|@;:^_~{}!#$%&()*+,/";
         var correspAcc = "30101810400000000225";
 
-        var exception = Should.Throw<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(() => new PayloadGenerator.RussiaPaymentOrder(name, account, bankName, bic, correspAcc));
+        var exception = Should.Throw<PayloadGenerator.RussiaPaymentOrder.RussiaPaymentOrderException>(() => new PayloadGenerator.RussiaPaymentOrder(name, account!, bankName, bic, correspAcc));
         exception.Message.ShouldBe($"The input for 'PersonalAcc' must not be null.");
     }
 
