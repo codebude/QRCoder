@@ -70,6 +70,18 @@ public static partial class PayloadGenerator
     private static bool IsValidBic(string bic)
         => Regex.IsMatch(bic.Replace(" ", ""), @"^([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)$");
 
+    /// <summary>
+    /// Validates the structure of a BIC with optional requirement check.
+    /// </summary>
+    /// <param name="bic">The BIC to validate.</param>
+    /// <param name="required">Whether the BIC is required. If false, null/empty values are considered valid.</param>
+    /// <returns>True if the BIC is valid; otherwise, false.</returns>
+    private static bool IsValidBic(string bic, bool required)
+    {
+        if (string.IsNullOrEmpty(bic))
+            return !required;
+        return IsValidBic(bic);
+    }
 
     /// <summary>
     /// Converts a string to a specified encoding.
