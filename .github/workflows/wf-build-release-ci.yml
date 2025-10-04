@@ -39,6 +39,7 @@ jobs:
         name: coverage-files
         path: QRCoderTests/coverage.*.xml
         retention-days: 1
+        overwrite: true
 
     - name: Upload to Codecov
       uses: codecov/codecov-action@v4
