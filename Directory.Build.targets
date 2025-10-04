@@ -11,5 +11,10 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
-  
+
+  <!-- Normalize file paths for releases -->
+  <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release' AND '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
 </Project>
