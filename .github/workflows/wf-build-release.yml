@@ -38,6 +38,7 @@ jobs:
         NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN}}
 
     - name: Build NuGet packages
+      shell: bash
       run: dotnet pack -c Release -p:Version=$version -o out
 
     - name: Upload artifacts
