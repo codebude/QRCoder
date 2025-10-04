@@ -8,8 +8,14 @@
 
   <!-- Strong name signing for Release builds of packable projects -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(IsPackable)' == 'true'">
+    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
-  
+
+  <!-- Normalize file paths for releases -->
+  <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release' AND '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
 </Project>
