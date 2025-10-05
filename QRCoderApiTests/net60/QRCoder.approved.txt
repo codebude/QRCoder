@@ -419,7 +419,7 @@ namespace QRCoder
         }
         public class Girocode : QRCoder.PayloadGenerator.Payload
         {
-            public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", QRCoder.PayloadGenerator.Girocode.TypeOfRemittance typeOfRemittance = 1, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", QRCoder.PayloadGenerator.Girocode.GirocodeVersion version = 0, QRCoder.PayloadGenerator.Girocode.GirocodeEncoding encoding = 1) { }
+            public Girocode(string iban, string? bic, string name, decimal amount, string remittanceInformation = "", QRCoder.PayloadGenerator.Girocode.TypeOfRemittance typeOfRemittance = 1, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", QRCoder.PayloadGenerator.Girocode.GirocodeVersion version = 0, QRCoder.PayloadGenerator.Girocode.GirocodeEncoding encoding = 1) { }
             public override QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; }
             public override string ToString() { }
             public enum GirocodeEncoding
