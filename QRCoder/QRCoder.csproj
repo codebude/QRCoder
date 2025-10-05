@@ -1,12 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;net5.0;net6.0</TargetFrameworks>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <DefineConstants Condition="'$(TargetFramework)' != 'netstandard1.3'">$(DefineConstants);SYSTEM_DRAWING</DefineConstants>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     <!-- Set essential properties -->
-    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;netstandard2.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
     <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
     <IsPackable>true</IsPackable>
 
@@ -30,12 +26,11 @@
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net5.0' ">
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'net5.0' OR '$(TargetFramework)' == 'net5.0-windows' ">
     <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net6.0-windows' ">
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
 
