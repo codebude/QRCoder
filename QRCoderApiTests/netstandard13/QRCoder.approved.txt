@@ -791,6 +791,18 @@ namespace QRCoder
             }
         }
     }
+    public class PdfByteQRCode : QRCoder.AbstractQRCode, System.IDisposable
+    {
+        public PdfByteQRCode() { }
+        public PdfByteQRCode(QRCoder.QRCodeData data) { }
+        public byte[] GetGraphic(int pixelsPerModule) { }
+        public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85) { }
+    }
+    public static class PdfByteQRCodeHelper
+    {
+        public static byte[] GetQRCode(string txt, QRCoder.QRCodeGenerator.ECCLevel eccLevel, int size) { }
+        public static byte[] GetQRCode(string plainText, int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1) { }
+    }
     public sealed class PngByteQRCode : QRCoder.AbstractQRCode, System.IDisposable
     {
         public PngByteQRCode() { }
