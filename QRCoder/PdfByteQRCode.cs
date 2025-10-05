@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using static QRCoder.QRCodeGenerator;
 
 /* This renderer is inspired by RemusVasii: https://github.com/Shane32/QRCoder/issues/223 */
@@ -198,7 +194,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     /// <returns>PDF path commands as a string.</returns>
     private string CreatePathFromModules()
     {
-        var pathCommands = new System.Text.StringBuilder();
+        var pathCommands = new StringBuilder();
         var matrix = QrCodeData.ModuleMatrix;
         var size = matrix.Count;
 

@@ -10,10 +10,12 @@
   <!-- 6: ItemGroups - Directory.Build.targets -->
   
   <PropertyGroup>
-    <!-- Set version information, C# language version, and default to non-packable project -->
+    <!-- Set version information, C# language version, enable NRT annotations, and default to non-packable project -->
     <Version>1.6.1</Version>
     <LangVersion>12</LangVersion>
+    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
 
     <!-- Set common NuGet package properties -->
     <Authors>Raffael Herrmann, Shane Krueger</Authors>
@@ -36,7 +38,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591;CS1572;CS1573;CS1587;IDE0005</NoWarn>
+    <NoWarn>$(NoWarn);IDE0005</NoWarn>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisMode>None</AnalysisMode>
   </PropertyGroup>
@@ -45,6 +47,14 @@
   <ItemGroup Condition="'$(IsPackable)' == 'true'">
     <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
     <None Include="$(MSBuildThisFileDirectory)nuget-icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Configure implicit usings -->
+  <ItemGroup>
+    <Using Include="System.Collections.BitArray" Alias="BitArray" />
+    <Using Include="System.Globalization"/>
+    <Using Include="System.Text" />
+    <Using Include="System.Text.RegularExpressions"/>
   </ItemGroup>
 
 </Project>

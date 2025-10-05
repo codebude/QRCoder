@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
@@ -67,7 +64,14 @@ public static partial class PayloadGenerator
         /// </summary>
         public enum OneTimePasswordAuthType
         {
+            /// <summary>
+            /// Time-based One-Time Password (TOTP)
+            /// </summary>
             TOTP,
+
+            /// <summary>
+            /// HMAC-based One-Time Password (HOTP)
+            /// </summary>
             HOTP,
         }
 
@@ -76,8 +80,19 @@ public static partial class PayloadGenerator
         /// </summary>
         public enum OneTimePasswordAuthAlgorithm
         {
+            /// <summary>
+            /// SHA-1 hashing algorithm
+            /// </summary>
             SHA1,
+
+            /// <summary>
+            /// SHA-256 hashing algorithm
+            /// </summary>
             SHA256,
+
+            /// <summary>
+            /// SHA-512 hashing algorithm
+            /// </summary>
             SHA512,
         }
 
@@ -87,8 +102,19 @@ public static partial class PayloadGenerator
         [Obsolete("This enum is obsolete, use " + nameof(OneTimePasswordAuthAlgorithm) + " instead", false)]
         public enum OoneTimePasswordAuthAlgorithm
         {
+            /// <summary>
+            /// SHA-1 hashing algorithm (Obsolete)
+            /// </summary>
             SHA1,
+
+            /// <summary>
+            /// SHA-256 hashing algorithm (Obsolete)
+            /// </summary>
             SHA256,
+
+            /// <summary>
+            /// SHA-512 hashing algorithm (Obsolete)
+            /// </summary>
             SHA512,
         }
 
