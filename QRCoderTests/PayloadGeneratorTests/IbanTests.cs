@@ -1,14 +1,4 @@
-using System;
-using System.Globalization;
 using System.Reflection;
-using System.Threading;
-using QRCoder;
-using Shouldly;
-using Xunit;
-using static QRCoder.PayloadGenerator.BezahlCode;
-using static QRCoder.PayloadGenerator.SwissQrCode.AdditionalInformation;
-using static QRCoder.PayloadGenerator.SwissQrCode.Reference;
-using static QRCoder.QRCodeGenerator;
 
 namespace QRCoderTests.PayloadGeneratorTests;
 

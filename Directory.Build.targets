@@ -17,4 +17,9 @@
     <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release' AND '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
   </PropertyGroup>
 
+  <!-- Remove System.Threading.Tasks as implicit using since it does not exist in .NET Framework 3.5 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
+    <Using Remove="System.Threading.Tasks" />
+  </ItemGroup>
+
 </Project>

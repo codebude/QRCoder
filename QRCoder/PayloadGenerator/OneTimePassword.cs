@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
