@@ -70,7 +70,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     {
         byte[] jpgArray, pngArray;
         var imgSize = QrCodeData.ModuleMatrix.Count * pixelsPerModule;
-        var pdfMediaSize = (imgSize * 72 / dpi).ToString(CultureInfo.InvariantCulture);
+        var pdfMediaSize = ToStr(imgSize * 72 / dpi);
 
         //Get QR code image
         using (var qrCode = new PngByteQRCode(QrCodeData))
@@ -78,7 +78,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
             pngArray = qrCode.GetGraphic(pixelsPerModule, HexColorToByteArray(darkColorHtmlHex), HexColorToByteArray(lightColorHtmlHex));
         }
 
-        //Create image and transofrm to JPG
+        //Create image and transform to JPG
         using (var msPng = new MemoryStream())
         {
             msPng.Write(pngArray, 0, pngArray.Length);
@@ -96,124 +96,159 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
         //Create PDF document
         using var stream = new MemoryStream();
-        var writer = new StreamWriter(stream, System.Text.Encoding.GetEncoding("ASCII"));
+#if NETFRAMEWORK
+        var writer = new StreamWriter(stream, System.Text.Encoding.ASCII);
+#elif NETSTANDARD2_0_OR_GREATER
+        var writer = new StreamWriter(stream, System.Text.Encoding.ASCII, 1024, true);
+#else
+        var writer = new StreamWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true);
+#endif
+        try
+        {
+            var xrefs = new List<long>();
 
-        var xrefs = new List<long>();
+            // PDF header - declares PDF version 1.5
+            writer.Write("%PDF-1.5\r\n");
+            writer.Flush();
 
-        writer.Write("%PDF-1.5\r\n");
-        writer.Flush();
+            // Binary comment - ensures PDF is treated as binary file (prevents text mode corruption)
+            stream.Write(_pdfBinaryComment, 0, _pdfBinaryComment.Length);
+            writer.WriteLine();
 
-        stream.Write(_pdfBinaryComment, 0, _pdfBinaryComment.Length);
-        writer.WriteLine();
+            writer.Flush();
+            xrefs.Add(stream.Position);
 
-        writer.Flush();
-        xrefs.Add(stream.Position);
+            // Object 1: Catalog - root of PDF document structure
+            writer.Write(
+                ToStr(xrefs.Count) + " 0 obj\r\n" +       // Object number and generation number (0)
+                "<<\r\n" +                                // Begin dictionary
+                "/Type /Catalog\r\n" +                    // Declares this as the document catalog
+                "/Pages 2 0 R\r\n" +                      // References the Pages object (object 2)
+                ">>\r\n" +                                // End dictionary
+                "endobj\r\n"                              // End object
+            );
 
-        writer.Write(
-            xrefs.Count.ToString() + " 0 obj\r\n" +
-            "<<\r\n" +
-            "/Type /Catalog\r\n" +
-            "/Pages 2 0 R\r\n" +
-            ">>\r\n" +
-            "endobj\r\n"
-        );
+            writer.Flush();
+            xrefs.Add(stream.Position);
 
-        writer.Flush();
-        xrefs.Add(stream.Position);
+            // Object 2: Pages - defines page tree structure
+            writer.Write(
+                ToStr(xrefs.Count) + " 0 obj\r\n" +                                     // Object number and generation number (0)
+                "<<\r\n" +                                                              // Begin dictionary
+                "/Count 1\r\n" +                                                        // Number of pages in document
+                "/Kids [ <<\r\n" +                                                      // Array of page objects - begin inline page dictionary
+                    "/Type /Page\r\n" +                                                 // Declares this as a page
+                    "/Parent 2 0 R\r\n" +                                               // References parent Pages object
+                    "/MediaBox [0 0 " + pdfMediaSize + " " + pdfMediaSize + "]\r\n" +   // Page dimensions [x1 y1 x2 y2]
+                    "/Resources << /ProcSet [ /PDF /ImageC ]\r\n" +                     // Required resources: PDF and color imaging
+                        "/XObject << /Im1 4 0 R >> >>\r\n" +                            // External objects: references image object (object 4)
+                    "/Contents 3 0 R\r\n" +                                             // References content stream (object 3)
+                    ">> ]\r\n" +                                                        // End inline page dictionary and Kids array
+                ">>\r\n" +                                                              // End dictionary
+                "endobj\r\n"                                                            // End object
+            );
 
-        writer.Write(
-            xrefs.Count.ToString() + " 0 obj\r\n" +
-            "<<\r\n" +
-            "/Count 1\r\n" +
-            "/Kids [ <<\r\n" +
-            "/Type /Page\r\n" +
-            "/Parent 2 0 R\r\n" +
-            "/MediaBox [0 0 " + pdfMediaSize + " " + pdfMediaSize + "]\r\n" +
-            "/Resources << /ProcSet [ /PDF /ImageC ]\r\n" +
-            "/XObject << /Im1 4 0 R >> >>\r\n" +
-            "/Contents 3 0 R\r\n" +
-            ">> ]\r\n" +
-            ">>\r\n" +
-            "endobj\r\n"
-        );
+            // Content stream - PDF drawing instructions
+            var X = "q\r\n" +                                                     // 'q' = Save graphics state
+                pdfMediaSize + " 0 0 " + pdfMediaSize + " 0 0 cm\r\n" +           // 'cm' = Transformation matrix: scale and position [a b c d e f]
+                "/Im1 Do\r\n" +                                                   // 'Do' = Draw the XObject named 'Im1' (our QR code image)
+                "Q";                                                              // 'Q' = Restore graphics state
 
-        var X = "q\r\n" +
-            pdfMediaSize + " 0 0 " + pdfMediaSize + " 0 0 cm\r\n" +
-            "/Im1 Do\r\n" +
-            "Q";
+            writer.Flush();
+            xrefs.Add(stream.Position);
 
-        writer.Flush();
-        xrefs.Add(stream.Position);
+            // Object 3: Content stream - contains the drawing instructions
+            writer.Write(
+                ToStr(xrefs.Count) + " 0 obj\r\n" +               // Object number and generation number (0)
+                "<< /Length " + ToStr(X.Length) + " >>\r\n" +     // Dictionary with stream length in bytes
+                "stream\r\n" +                                    // Begin stream data
+                X + "endstream\r\n" +                             // Stream content followed by end stream marker
+                "endobj\r\n"                                      // End object
+            );
 
-        writer.Write(
-            xrefs.Count.ToString() + " 0 obj\r\n" +
-            "<< /Length " + X.Length.ToString() + " >>\r\n" +
-            "stream\r\n" +
-            X + "endstream\r\n" +
-            "endobj\r\n"
-        );
+            writer.Flush();
+            xrefs.Add(stream.Position);
 
-        writer.Flush();
-        xrefs.Add(stream.Position);
+            // Object 4: Image XObject - the QR code image data
+            writer.Write(
+                ToStr(xrefs.Count) + " 0 obj\r\n" +       // Object number and generation number (0)
+                "<<\r\n" +                                // Begin dictionary
+                "/Name /Im1\r\n" +                        // Name of the image object
+                "/Type /XObject\r\n" +                    // Type: external object
+                "/Subtype /Image\r\n" +                   // Subtype: image
+                "/Width " + ToStr(imgSize) + "\r\n" +     // Image width in pixels
+                "/Height " + ToStr(imgSize) + "\r\n" +    // Image height in pixels
+                "/Length 5 0 R\r\n" +                     // Reference to length object (object 5)
+                "/Filter /DCTDecode\r\n" +                // Compression filter: DCT (JPEG compression)
+                "/ColorSpace /DeviceRGB\r\n" +            // Color space: RGB
+                "/BitsPerComponent 8\r\n" +               // Bits per color component (8 bits = 256 levels per channel)
+                ">>\r\n" +                                // End dictionary
+                "stream\r\n"                              // Begin stream data
+            );
+            writer.Flush();
+            stream.Write(jpgArray, 0, jpgArray.Length);   // Write the actual JPEG image data
+            writer.Write(
+                "\r\n" +                                  // Newline after binary data
+                "endstream\r\n" +                         // End stream marker
+                "endobj\r\n"                              // End object
+            );
 
-        writer.Write(
-            xrefs.Count.ToString() + " 0 obj\r\n" +
-            "<<\r\n" +
-            "/Name /Im1\r\n" +
-            "/Type /XObject\r\n" +
-            "/Subtype /Image\r\n" +
-            "/Width " + imgSize.ToString() + "/Height " + imgSize.ToString() + "/Length 5 0 R\r\n" +
-            "/Filter /DCTDecode\r\n" +
-            "/ColorSpace /DeviceRGB\r\n" +
-            "/BitsPerComponent 8\r\n" +
-            ">>\r\n" +
-            "stream\r\n"
-        );
-        writer.Flush();
-        stream.Write(jpgArray, 0, jpgArray.Length);
-        writer.Write(
-            "\r\n" +
-            "endstream\r\n" +
-            "endobj\r\n"
-        );
+            writer.Flush();
+            xrefs.Add(stream.Position);
 
-        writer.Flush();
-        xrefs.Add(stream.Position);
+            // Object 5: Length object - stores the length of the image stream
+            writer.Write(
+                ToStr(xrefs.Count) + " 0 obj\r\n" +        // Object number and generation number (0)
+                ToStr(jpgArray.Length) + " endobj\r\n"     // Integer value followed by end object
+            );
 
-        writer.Write(
-            xrefs.Count.ToString() + " 0 obj\r\n" +
-            jpgArray.Length.ToString() + " endobj\r\n"
-        );
+            writer.Flush();
+            var startxref = checked((int)stream.Position);
 
-        writer.Flush();
-        var startxref = stream.Position;
+            // Cross-reference table - maps object numbers to byte offsets
+            writer.Write(
+                "xref\r\n" +                                   // Cross-reference table keyword
+                "0 " + ToStr(xrefs.Count + 1) + "\r\n" +       // First object number (0) and count of entries
+                "0000000000 65535 f\r\n"                       // Entry 0: always free, generation 65535, 'f' = free
+            );
 
-        writer.Write(
-            "xref\r\n" +
-            "0 " + (xrefs.Count + 1).ToString() + "\r\n" +
-            "0000000000 65535 f\r\n"
-        );
+            // Write byte offset for each object
+            foreach (var refValue in xrefs)
+            {
+                // Write each entry as a 10-digit zero-padded byte offset, 5-digit zero-padded generation number (0), and 'n' = in use
+                writer.Write(checked((int)refValue).ToString("0000000000", CultureInfo.InvariantCulture) + " 00000 n\r\n");
+            }
 
-        foreach (var refValue in xrefs)
-            writer.Write(refValue.ToString("0000000000") + " 00000 n\r\n");
+            // Trailer - provides location of catalog and xref table
+            writer.Write(
+                "trailer\r\n" +                                    // Trailer keyword
+                "<<\r\n" +                                         // Begin trailer dictionary
+                "/Size " + ToStr(xrefs.Count + 1) + "\r\n" +       // Total number of entries in xref table
+                "/Root 1 0 R\r\n" +                                // Reference to catalog object
+                ">>\r\n" +                                         // End trailer dictionary
+                "startxref\r\n" +                                  // Start of xref keyword
+                ToStr(startxref) + "\r\n" +                        // Byte offset of xref table
+                "%%EOF"                                            // End of file marker
+            );
 
-        writer.Write(
-            "trailer\r\n" +
-            "<<\r\n" +
-            "/Size " + (xrefs.Count + 1).ToString() + "\r\n" +
-            "/Root 1 0 R\r\n" +
-            ">>\r\n" +
-            "startxref\r\n" +
-            startxref.ToString() + "\r\n" +
-            "%%EOF"
-        );
-
-        writer.Flush();
-
-        stream.Position = 0;
+            writer.Flush();
+        }
+        finally
+        {
+#if !NETFRAMEWORK
+            writer.Dispose();
+#endif
+        }
 
         return stream.ToArray();
     }
+
+    /// <summary>
+    /// Converts an integer to a string using invariant culture for consistent PDF formatting.
+    /// </summary>
+    /// <param name="value">The integer value to convert.</param>
+    /// <returns>String representation of the integer.</returns>
+    private static string ToStr(int value) => value.ToString(CultureInfo.InvariantCulture);
 }
 
 #if NET6_0_OR_GREATER
