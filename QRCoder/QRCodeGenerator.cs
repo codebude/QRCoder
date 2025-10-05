@@ -1,14 +1,8 @@
-using System;
 #if HAS_SPAN
 using System.Buffers;
 #endif
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace QRCoder;
 

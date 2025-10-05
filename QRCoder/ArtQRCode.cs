@@ -1,6 +1,5 @@
 #if SYSTEM_DRAWING
 
-using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using static QRCoder.ArtQRCode;
@@ -236,7 +235,14 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum QuietZoneStyle
     {
+        /// <summary>
+        /// Quiet zones are rendered with dotted modules.
+        /// </summary>
         Dotted,
+
+        /// <summary>
+        /// Quiet zones are rendered with flat, solid modules.
+        /// </summary>
         Flat
     }
 
@@ -245,7 +251,14 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum BackgroundImageStyle
     {
+        /// <summary>
+        /// Background image spans the complete graphic.
+        /// </summary>
         Fill,
+
+        /// <summary>
+        /// Background image is only painted in the data area, excluding the quiet zone.
+        /// </summary>
         DataAreaOnly
     }
 }
