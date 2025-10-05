@@ -10,8 +10,8 @@
   <!-- 6: ItemGroups - Directory.Build.targets -->
   
   <PropertyGroup>
-    <!-- Set version information, C# language version, enable NRT annotations, and default to non-packable project -->
-    <Version>1.6.1</Version>
+    <!-- Set version and default properties -->
+    <VersionPrefix>1.6.1-preview</VersionPrefix>
     <LangVersion>12</LangVersion>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
