@@ -71,11 +71,11 @@ public static partial class PayloadGenerator
     /// <param name="bic">The BIC to validate.</param>
     /// <param name="required">Whether the BIC is required. If false, null/empty values are considered valid.</param>
     /// <returns>True if the BIC is valid; otherwise, false.</returns>
-    private static bool IsValidBic(string bic, bool required)
+    private static bool IsValidBic(string? bic, bool required)
     {
         if (string.IsNullOrEmpty(bic))
             return !required;
-        return IsValidBic(bic);
+        return IsValidBic(bic!);
     }
 
     /// <summary>
