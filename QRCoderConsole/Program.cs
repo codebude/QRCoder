@@ -18,7 +18,7 @@ internal class MainClass
         var newLine = Environment.NewLine;
         var setter = new OptionSetter();
 
-        string fileName = null, outputFileName = null, payload = null;
+        string? fileName = null, outputFileName = null, payload = null;
 
         var eccLevel = QRCodeGenerator.ECCLevel.L;
         var imageFormat = SupportedImageFormat.Png;
@@ -95,7 +95,7 @@ internal class MainClass
                 ShowHelp(optionSet);
             }
 
-            string text = null;
+            string? text = null;
             if (fileName != null)
             {
                 var fileInfo = new FileInfo(fileName);
@@ -119,7 +119,7 @@ internal class MainClass
                 text = GetTextFromStream(stdin);
             }
 
-            if (text != null)
+            if (text != null && outputFileName != null)
             {
                 GenerateQRCode(text, eccLevel, outputFileName, imageFormat, pixelsPerModule, foregroundColor, backgroundColor);
             }

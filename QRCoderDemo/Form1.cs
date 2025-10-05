@@ -23,7 +23,7 @@ public partial class Form1 : Form
 
     private void RenderQrCode()
     {
-        string level = comboBoxECC.SelectedItem.ToString();
+        string level = comboBoxECC.SelectedItem?.ToString() ?? "L";
         var eccLevel = (QRCodeGenerator.ECCLevel)(level == "L" ? 0 : level == "M" ? 1 : level == "Q" ? 2 : 3);
         using var qrGenerator = new QRCodeGenerator();
         using var qrCodeData = qrGenerator.CreateQrCode(textBoxQRCode.Text, eccLevel);
@@ -38,7 +38,7 @@ public partial class Form1 : Form
         pictureBoxQRCode.SizeMode = PictureBoxSizeMode.StretchImage;
     }
 
-    private Bitmap GetIconBitmap()
+    private Bitmap? GetIconBitmap()
     {
         if (iconPath.Text.Length == 0)
         {
@@ -97,8 +97,7 @@ public partial class Form1 : Form
             // File type selected in the dialog box.
             // NOTE that the FilterIndex property is one-based.
 
-            ImageFormat imageFormat = null;
-            imageFormat = saveFileDialog1.FilterIndex switch
+            ImageFormat? imageFormat = saveFileDialog1.FilterIndex switch
             {
                 1 => ImageFormat.Bmp,
                 2 => ImageFormat.Png,
