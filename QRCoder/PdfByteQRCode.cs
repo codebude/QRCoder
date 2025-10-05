@@ -137,8 +137,9 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     /// <param name="darkColorHtmlHex">The color of the dark modules in HTML hex format.</param>
     /// <param name="lightColorHtmlHex">The color of the light modules in HTML hex format.</param>
     /// <param name="dpi">The DPI (dots per inch) of the PDF document.</param>
+    /// <param name="jpgQuality">The JPEG quality parameter (obsolete, no longer used).</param>
     /// <returns>Returns the QR code graphic as a PDF byte array.</returns>
-    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150)
+    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, int jpgQuality = 85)
     {
         // Get QR code dimensions
         var moduleCount = QrCodeData.ModuleMatrix.Count;
@@ -272,19 +273,6 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
         return stream.ToArray();
     }
-
-    /// <summary>
-    /// Creates a PDF document with specified colors, DPI, and quality.
-    /// </summary>
-    /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
-    /// <param name="darkColorHtmlHex">The color of the dark modules in HTML hex format.</param>
-    /// <param name="lightColorHtmlHex">The color of the light modules in HTML hex format.</param>
-    /// <param name="dpi">The DPI (dots per inch) of the PDF document.</param>
-    /// <param name="jpgQuality">The JPEG quality parameter (obsolete, no longer used).</param>
-    /// <returns>Returns the QR code graphic as a PDF byte array.</returns>
-    [Obsolete("The jpgQuality parameter is no longer used. Use GetGraphic(int, string, string, int) instead.")]
-    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi, long jpgQuality)
-        => GetGraphic(pixelsPerModule, darkColorHtmlHex, lightColorHtmlHex, dpi);
 
     /// <summary>
     /// Converts an integer to a string using invariant culture for consistent PDF formatting.
