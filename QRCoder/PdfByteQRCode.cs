@@ -139,7 +139,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     /// <param name="dpi">The DPI (dots per inch) of the PDF document.</param>
     /// <param name="jpgQuality">The JPEG quality parameter (obsolete, no longer used).</param>
     /// <returns>Returns the QR code graphic as a PDF byte array.</returns>
-    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, int jpgQuality = 85)
+    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85)
     {
         // Get QR code dimensions
         var moduleCount = QrCodeData.ModuleMatrix.Count;
