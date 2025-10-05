@@ -28,8 +28,6 @@
     <PackageIcon>nuget-icon.png</PackageIcon>
 
     <!-- Set misc build properties -->
-    <Deterministic>true</Deterministic>
-    <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
     <DebugType>embedded</DebugType>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
