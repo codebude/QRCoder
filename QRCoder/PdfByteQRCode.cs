@@ -129,7 +129,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
             var scale = ToStr(imgSize * 72 / (float)dpi / moduleCount);                 // Scale factor to convert module units to PDF points
             var pathCommands = CreatePathFromModules();                                 // Create path from dark modules
             var content = "q\r\n" +                                                     // 'q' = Save graphics state
-                scale + " 0 0 -" + scale + " 0 " + pdfMediaSize + " cm\r\n" +           // 'cm' = Transformation matrix: scale X, flip Y, translate to top
+                scale + " 0 0 -" + scale + " 0 " + pdfMediaSize + " cm\r\n" +           // 'cm' = Transformation matrix: scale X, scale & flip Y, translate to top
                 lightColorPdf + " rg\r\n" +                                             // 'rg' = Set RGB fill color for background
                 "0 0 " + ToStr(moduleCount) + " " + ToStr(moduleCount) + " re\r\n" +    // 're' = Rectangle covering entire QR code
                 "f\r\n" +                                                               // 'f' = Fill background
