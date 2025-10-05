@@ -48,8 +48,7 @@ jobs:
         path: out/*
 
     - name: Publish packages to Github packages
-      shell: bash
-      run: dotnet nuget push "out/*" -k ${{secrets.NUGET_AUTH_TOKEN}}
+      run: dotnet nuget push "out\*" -k ${{secrets.NUGET_AUTH_TOKEN}}
 
     - name: Upload Nuget packages as release artifacts
       uses: actions/github-script@v8
