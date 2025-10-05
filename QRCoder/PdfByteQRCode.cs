@@ -1,10 +1,7 @@
-#if SYSTEM_DRAWING
 using System;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using static QRCoder.QRCodeGenerator;
 
 /* This renderer is inspired by RemusVasii: https://github.com/Shane32/QRCoder/issues/223 */
@@ -20,6 +17,21 @@ namespace QRCoder;
 // ReSharper disable once InconsistentNaming
 public class PdfByteQRCode : AbstractQRCode, IDisposable
 {
+    /// <summary>
+    /// Represents a module position in the QR code matrix.
+    /// </summary>
+    private struct ModulePosition
+    {
+        public int X;
+        public int Y;
+
+        public ModulePosition(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+
     private readonly byte[] _pdfBinaryComment = new byte[] { 0x25, 0xe2, 0xe3, 0xcf, 0xd3 };
 
     /// <summary>
@@ -58,50 +70,99 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     }
 
     /// <summary>
-    /// Creates a PDF document with specified colors, DPI, and quality.
+    /// Collects the positions of all dark modules in the QR code.
+    /// </summary>
+    /// <returns>A list of (x, y) coordinates for each dark module.</returns>
+    private List<ModulePosition> GetDarkModulePositions()
+    {
+        var darkModules = new List<ModulePosition>();
+        var matrix = QrCodeData.ModuleMatrix;
+        var size = matrix.Count;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                if (matrix[y][x])
+                {
+                    darkModules.Add(new ModulePosition(x, y));
+                }
+            }
+        }
+
+        return darkModules;
+    }
+
+    /// <summary>
+    /// Converts a list of module positions into a PDF path with multiple closed rectangles.
+    /// Each module becomes a 1x1 rectangle in the path.
+    /// </summary>
+    /// <param name="positions">List of (x, y) coordinates for dark modules.</param>
+    /// <returns>PDF path commands as a string.</returns>
+    private string CreatePathFromModules(List<ModulePosition> positions)
+    {
+        var pathCommands = new System.Text.StringBuilder();
+
+        foreach (var pos in positions)
+        {
+            // Create a 1x1 rectangle for each module using the 're' (rectangle) operator
+            // Format: x y width height re
+            pathCommands.Append(ToStr(pos.X) + " " + ToStr(pos.Y) + " 1 1 re\r\n");
+        }
+
+        return pathCommands.ToString();
+    }
+
+    /// <summary>
+    /// Converts RGB byte array to PDF color space values (0.0 to 1.0).
+    /// </summary>
+    /// <param name="color">RGB color as byte array.</param>
+    /// <returns>PDF color string (three decimal values).</returns>
+    private string ColorToPdfRgb(byte[] color)
+    {
+        if (color.Length != 3)
+            throw new ArgumentException("Color must be a 3-byte RGB array", nameof(color));
+
+        var r = (color[0] / 255.0).ToString("0.######", CultureInfo.InvariantCulture);
+        var g = (color[1] / 255.0).ToString("0.######", CultureInfo.InvariantCulture);
+        var b = (color[2] / 255.0).ToString("0.######", CultureInfo.InvariantCulture);
+
+        return r + " " + g + " " + b;
+    }
+
+    /// <summary>
+    /// Creates a PDF document with specified colors and DPI.
     /// </summary>
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
     /// <param name="darkColorHtmlHex">The color of the dark modules in HTML hex format.</param>
     /// <param name="lightColorHtmlHex">The color of the light modules in HTML hex format.</param>
     /// <param name="dpi">The DPI (dots per inch) of the PDF document.</param>
-    /// <param name="jpgQuality">The JPEG quality of the PDF document.</param>
     /// <returns>Returns the QR code graphic as a PDF byte array.</returns>
-    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85)
+    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150)
     {
-        byte[] jpgArray, pngArray;
-        var imgSize = QrCodeData.ModuleMatrix.Count * pixelsPerModule;
-        var pdfMediaSize = ToStr(imgSize * 72 / dpi);
+        // Get QR code dimensions
+        var moduleCount = QrCodeData.ModuleMatrix.Count;
+        var imgSize = moduleCount * pixelsPerModule;
+        var pdfMediaSize = ToStr(imgSize * 72 / (float)dpi);
 
-        //Get QR code image
-        using (var qrCode = new PngByteQRCode(QrCodeData))
-        {
-            pngArray = qrCode.GetGraphic(pixelsPerModule, HexColorToByteArray(darkColorHtmlHex), HexColorToByteArray(lightColorHtmlHex));
-        }
+        // Parse colors
+        var darkColor = HexColorToByteArray(darkColorHtmlHex);
+        var lightColor = HexColorToByteArray(lightColorHtmlHex);
+        var darkColorPdf = ColorToPdfRgb(darkColor);
+        var lightColorPdf = ColorToPdfRgb(lightColor);
 
-        //Create image and transform to JPG
-        using (var msPng = new MemoryStream())
-        {
-            msPng.Write(pngArray, 0, pngArray.Length);
-            var img = System.Drawing.Image.FromStream(msPng);
-            using var msJpeg = new MemoryStream();
-            // Create JPEG with specified quality
-            var jpgImageCodecInfo = ImageCodecInfo.GetImageEncoders().First(x => x.MimeType == "image/jpeg");
-            var jpgEncoderParameters = new EncoderParameters(1)
-            {
-                Param = new EncoderParameter[] { new EncoderParameter(Encoder.Quality, jpgQuality) }
-            };
-            img.Save(msJpeg, jpgImageCodecInfo, jpgEncoderParameters);
-            jpgArray = msJpeg.ToArray();
-        }
+        // Get dark module positions and create path
+        var darkModules = GetDarkModulePositions();
+        var pathCommands = CreatePathFromModules(darkModules);
 
         //Create PDF document
         using var stream = new MemoryStream();
 #if NETFRAMEWORK
         var writer = new StreamWriter(stream, System.Text.Encoding.ASCII);
-#elif NETSTANDARD2_0_OR_GREATER
-        var writer = new StreamWriter(stream, System.Text.Encoding.ASCII, 1024, true);
-#else
+#elif NET6_0_OR_GREATER
         var writer = new StreamWriter(stream, System.Text.Encoding.ASCII, leaveOpen: true);
+#else
+        var writer = new StreamWriter(stream, System.Text.Encoding.ASCII, 1024, true);
 #endif
         try
         {
@@ -140,8 +201,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
                     "/Type /Page\r\n" +                                                 // Declares this as a page
                     "/Parent 2 0 R\r\n" +                                               // References parent Pages object
                     "/MediaBox [0 0 " + pdfMediaSize + " " + pdfMediaSize + "]\r\n" +   // Page dimensions [x1 y1 x2 y2]
-                    "/Resources << /ProcSet [ /PDF /ImageC ]\r\n" +                     // Required resources: PDF and color imaging
-                        "/XObject << /Im1 4 0 R >> >>\r\n" +                            // External objects: references image object (object 4)
+                    "/Resources << /ProcSet [ /PDF ] >>\r\n" +                          // Required resources: PDF operations only (no images)
                     "/Contents 3 0 R\r\n" +                                             // References content stream (object 3)
                     ">> ]\r\n" +                                                        // End inline page dictionary and Kids array
                 ">>\r\n" +                                                              // End dictionary
@@ -149,10 +209,16 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
             );
 
             // Content stream - PDF drawing instructions
-            var X = "q\r\n" +                                                     // 'q' = Save graphics state
-                pdfMediaSize + " 0 0 " + pdfMediaSize + " 0 0 cm\r\n" +           // 'cm' = Transformation matrix: scale and position [a b c d e f]
-                "/Im1 Do\r\n" +                                                   // 'Do' = Draw the XObject named 'Im1' (our QR code image)
-                "Q";                                                              // 'Q' = Restore graphics state
+            var scale = ToStr(imgSize * 72 / (float)dpi / moduleCount);                 // Scale factor to convert module units to PDF points
+            var X = "q\r\n" +                                                           // 'q' = Save graphics state
+                scale + " 0 0 -" + scale + " 0 " + pdfMediaSize + " cm\r\n" +           // 'cm' = Transformation matrix: scale X, flip Y, translate to top
+                lightColorPdf + " rg\r\n" +                                             // 'rg' = Set RGB fill color for background
+                "0 0 " + ToStr(moduleCount) + " " + ToStr(moduleCount) + " re\r\n" +    // 're' = Rectangle covering entire QR code
+                "f\r\n" +                                                               // 'f' = Fill background
+                darkColorPdf + " rg\r\n" +                                              // 'rg' = Set RGB fill color for dark modules
+                pathCommands +                                                          // Add all dark module rectangles to path
+                "f*\r\n" +                                                              // 'f*' = Fill with even-odd rule
+                "Q";                                                                    // 'Q' = Restore graphics state
 
             writer.Flush();
             xrefs.Add(stream.Position);
@@ -164,42 +230,6 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
                 "stream\r\n" +                                    // Begin stream data
                 X + "endstream\r\n" +                             // Stream content followed by end stream marker
                 "endobj\r\n"                                      // End object
-            );
-
-            writer.Flush();
-            xrefs.Add(stream.Position);
-
-            // Object 4: Image XObject - the QR code image data
-            writer.Write(
-                ToStr(xrefs.Count) + " 0 obj\r\n" +       // Object number and generation number (0)
-                "<<\r\n" +                                // Begin dictionary
-                "/Name /Im1\r\n" +                        // Name of the image object
-                "/Type /XObject\r\n" +                    // Type: external object
-                "/Subtype /Image\r\n" +                   // Subtype: image
-                "/Width " + ToStr(imgSize) + "\r\n" +     // Image width in pixels
-                "/Height " + ToStr(imgSize) + "\r\n" +    // Image height in pixels
-                "/Length 5 0 R\r\n" +                     // Reference to length object (object 5)
-                "/Filter /DCTDecode\r\n" +                // Compression filter: DCT (JPEG compression)
-                "/ColorSpace /DeviceRGB\r\n" +            // Color space: RGB
-                "/BitsPerComponent 8\r\n" +               // Bits per color component (8 bits = 256 levels per channel)
-                ">>\r\n" +                                // End dictionary
-                "stream\r\n"                              // Begin stream data
-            );
-            writer.Flush();
-            stream.Write(jpgArray, 0, jpgArray.Length);   // Write the actual JPEG image data
-            writer.Write(
-                "\r\n" +                                  // Newline after binary data
-                "endstream\r\n" +                         // End stream marker
-                "endobj\r\n"                              // End object
-            );
-
-            writer.Flush();
-            xrefs.Add(stream.Position);
-
-            // Object 5: Length object - stores the length of the image stream
-            writer.Write(
-                ToStr(xrefs.Count) + " 0 obj\r\n" +        // Object number and generation number (0)
-                ToStr(jpgArray.Length) + " endobj\r\n"     // Integer value followed by end object
             );
 
             writer.Flush();
@@ -244,11 +274,31 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     }
 
     /// <summary>
+    /// Creates a PDF document with specified colors, DPI, and quality.
+    /// </summary>
+    /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
+    /// <param name="darkColorHtmlHex">The color of the dark modules in HTML hex format.</param>
+    /// <param name="lightColorHtmlHex">The color of the light modules in HTML hex format.</param>
+    /// <param name="dpi">The DPI (dots per inch) of the PDF document.</param>
+    /// <param name="jpgQuality">The JPEG quality parameter (obsolete, no longer used).</param>
+    /// <returns>Returns the QR code graphic as a PDF byte array.</returns>
+    [Obsolete("The jpgQuality parameter is no longer used. Use GetGraphic(int, string, string, int) instead.")]
+    public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi, long jpgQuality)
+        => GetGraphic(pixelsPerModule, darkColorHtmlHex, lightColorHtmlHex, dpi);
+
+    /// <summary>
     /// Converts an integer to a string using invariant culture for consistent PDF formatting.
     /// </summary>
     /// <param name="value">The integer value to convert.</param>
     /// <returns>String representation of the integer.</returns>
     private static string ToStr(int value) => value.ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Converts an integer to a string using invariant culture for consistent PDF formatting.
+    /// </summary>
+    /// <param name="value">The integer value to convert.</param>
+    /// <returns>String representation of the integer.</returns>
+    private static string ToStr(float value) => value.ToString(CultureInfo.InvariantCulture);
 }
 
 #if NET6_0_OR_GREATER
@@ -299,4 +349,3 @@ public static class PdfByteQRCodeHelper
 
     }
 }
-#endif

@@ -859,7 +859,10 @@ namespace QRCoder
         public PdfByteQRCode() { }
         public PdfByteQRCode(QRCoder.QRCodeData data) { }
         public byte[] GetGraphic(int pixelsPerModule) { }
-        public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85) { }
+        public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150) { }
+        [System.Obsolete("The jpgQuality parameter is no longer used. Use GetGraphic(int, string, string, i" +
+            "nt) instead.")]
+        public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi, long jpgQuality) { }
     }
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public static class PdfByteQRCodeHelper
