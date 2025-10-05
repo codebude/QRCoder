@@ -72,9 +72,6 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         var darkColorPdf = ColorToPdfRgb(darkColor);
         var lightColorPdf = ColorToPdfRgb(lightColor);
 
-        // Create path from dark modules
-        var pathCommands = CreatePathFromModules();
-
         //Create PDF document
         using var stream = new MemoryStream();
 #if NETFRAMEWORK
@@ -130,7 +127,8 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
             // Content stream - PDF drawing instructions
             var scale = ToStr(imgSize * 72 / (float)dpi / moduleCount);                 // Scale factor to convert module units to PDF points
-            var X = "q\r\n" +                                                           // 'q' = Save graphics state
+            var pathCommands = CreatePathFromModules();                                 // Create path from dark modules
+            var content = "q\r\n" +                                                     // 'q' = Save graphics state
                 scale + " 0 0 -" + scale + " 0 " + pdfMediaSize + " cm\r\n" +           // 'cm' = Transformation matrix: scale X, flip Y, translate to top
                 lightColorPdf + " rg\r\n" +                                             // 'rg' = Set RGB fill color for background
                 "0 0 " + ToStr(moduleCount) + " " + ToStr(moduleCount) + " re\r\n" +    // 're' = Rectangle covering entire QR code
@@ -145,11 +143,11 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
             // Object 3: Content stream - contains the drawing instructions
             writer.Write(
-                ToStr(xrefs.Count) + " 0 obj\r\n" +               // Object number and generation number (0)
-                "<< /Length " + ToStr(X.Length) + " >>\r\n" +     // Dictionary with stream length in bytes
-                "stream\r\n" +                                    // Begin stream data
-                X + "endstream\r\n" +                             // Stream content followed by end stream marker
-                "endobj\r\n"                                      // End object
+                ToStr(xrefs.Count) + " 0 obj\r\n" +                  // Object number and generation number (0)
+                "<< /Length " + ToStr(content.Length) + " >>\r\n" +  // Dictionary with stream length in bytes
+                "stream\r\n" +                                       // Begin stream data
+                content + "endstream\r\n" +                          // Stream content followed by end stream marker
+                "endobj\r\n"                                         // End object
             );
 
             writer.Flush();
