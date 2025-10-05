@@ -1,0 +1,30 @@
+<Project>
+  
+  <!-- Define SYSTEM_DRAWING and HAS_SPAN -->
+  <PropertyGroup>
+    <DefineConstants Condition="'$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'netstandard1.3'">$(DefineConstants);SYSTEM_DRAWING</DefineConstants>
+    <DefineConstants Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp2.1')) OR '$(TargetFramework)' == 'netstandard2.1'">$(DefineConstants);HAS_SPAN</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Strong name signing for Release builds of packable projects -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' AND '$(IsPackable)' == 'true'">
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
+
+  <!-- Suppress XML comment warnings for non-packable projects -->
+  <PropertyGroup Condition="'$(IsPackable)' != 'true'">
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- Normalize file paths for releases -->
+  <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release' AND '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!-- Remove System.Threading.Tasks as implicit using since it does not exist in .NET Framework 3.5 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net35'">
+    <Using Remove="System.Threading.Tasks" />
+  </ItemGroup>
+
+</Project>

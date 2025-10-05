@@ -1,5 +1,3 @@
-using System;
-
 namespace QRCoder.Exceptions;
 
 /// <summary>

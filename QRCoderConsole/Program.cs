@@ -1,7 +1,5 @@
-using System;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using System.Windows.Markup;
 using NDesk.Options;
 using QRCoder;
@@ -9,7 +7,7 @@ using QRCoderConsole.DataObjects;
 
 namespace QRCoderConsole;
 
-#if NET6_0_WINDOWS
+#if NET6_0 && WINDOWS
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
 internal class MainClass
@@ -20,7 +18,7 @@ internal class MainClass
         var newLine = Environment.NewLine;
         var setter = new OptionSetter();
 
-        string fileName = null, outputFileName = null, payload = null;
+        string? fileName = null, outputFileName = null, payload = null;
 
         var eccLevel = QRCodeGenerator.ECCLevel.L;
         var imageFormat = SupportedImageFormat.Png;
@@ -97,7 +95,7 @@ internal class MainClass
                 ShowHelp(optionSet);
             }
 
-            string text = null;
+            string? text = null;
             if (fileName != null)
             {
                 var fileInfo = new FileInfo(fileName);
@@ -121,7 +119,7 @@ internal class MainClass
                 text = GetTextFromStream(stdin);
             }
 
-            if (text != null)
+            if (text != null && outputFileName != null)
             {
                 GenerateQRCode(text, eccLevel, outputFileName, imageFormat, pixelsPerModule, foregroundColor, backgroundColor);
             }
@@ -161,7 +159,7 @@ internal class MainClass
                     f.Flush();
                 }
                 break;
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+#if NETFRAMEWORK || WINDOWS
             case SupportedImageFormat.Xaml:
                 using (var code = new QRCoder.Xaml.XamlQRCode(data))
                 {
@@ -235,7 +233,7 @@ public class OptionSetter
         return level;
     }
 
-#if NET6_0_WINDOWS
+#if NET6_0 && WINDOWS
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
     public ImageFormat GetImageFormat(string value) => value.ToLower() switch

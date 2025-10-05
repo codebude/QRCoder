@@ -1,9 +1,3 @@
-using System.Globalization;
-using System.Threading;
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests.PayloadGeneratorTests;
 
 public class BitcoinAddressTests
@@ -69,13 +63,8 @@ public class BitcoinAddressTests
     [Fact]
     public void bitcoin_address_generator_disregards_current_culture()
     {
-#if NETCOREAPP1_1
-        var currentCulture = CultureInfo.DefaultThreadCurrentCulture;
-        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");
-#else
         var currentCulture = Thread.CurrentThread.CurrentCulture;
         Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-#endif
 
         var address = "175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W";
         var amount = .123;
@@ -87,10 +76,6 @@ public class BitcoinAddressTests
             .ToString()
             .ShouldBe("bitcoin:175tWpb8K1S7NmH4Zx6rewF9WQrcZv245W?amount=.123");
 
-#if NETCOREAPP1_1
-        CultureInfo.DefaultThreadCurrentCulture = currentCulture;
-#else
         Thread.CurrentThread.CurrentCulture = currentCulture;
-#endif
     }
 }

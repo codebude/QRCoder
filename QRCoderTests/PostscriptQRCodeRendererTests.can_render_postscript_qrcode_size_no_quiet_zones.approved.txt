@@ -1,0 +1,105 @@
+%!PS-Adobe-3.0 
+%%Creator: QRCoder.NET
+%%Title: QRCode
+%%DocumentData: Clean7Bit
+%%Origin: 0
+%%DocumentMedia: Default 50 50 0 () ()
+%%BoundingBox: 0 0 50 50
+%%LanguageLevel: 2 
+%%Pages: 1
+%%Page: 1 1
+%%EndComments
+%%BeginConstants
+/sz 50 def
+/sc 2 def
+%%EndConstants
+%%BeginFeature: *PageSize Default
+<< /PageSize [ sz sz ] /ImagingBBox null >> setpagedevice
+%%EndFeature
+%%BeginFunctions 
+/csquare {
+    newpath
+    0 0 moveto
+    0 1 rlineto
+    1 0 rlineto
+    0 -1 rlineto
+    closepath
+    setrgbcolor
+    fill
+} def
+/f { 
+    0 0 0 csquare
+    1 0 translate
+} def
+/b { 
+    1 0 translate
+} def 
+/background { 
+    1 1 1 csquare 
+} def
+/nl {
+    -25 -1 translate
+} def
+%%EndFunctions
+%%BeginBody
+0 0 moveto
+gsave
+sz sz scale
+background
+grestore
+gsave
+sc sc scale
+0 25 1 sub translate
+f f f f f f f b f b f b f b b b f b f f f f f f f 
+nl
+f b b b b b f b b f f f f b b b b b f b b b b b f 
+nl
+f b f f f b f b f f f b b f f b b b f b f f f b f 
+nl
+f b f f f b f b f f f b f f f f f b f b f f f b f 
+nl
+f b f f f b f b f b b f f b b f f b f b f f f b f 
+nl
+f b b b b b f b b b f f b b b b f b f b b b b b f 
+nl
+f f f f f f f b f b f b f b f b f b f f f f f f f 
+nl
+b b b b b b b b b b f b f b b b b b b b b b b b b 
+nl
+f f f f b b f b f b f f b b f b f f b b f f f b f 
+nl
+f f b f f f b f f b f b f b f b b b b b b f f b b 
+nl
+b f f f f f f b b f f f f b b b f f b f f f b b b 
+nl
+b b b f b f b b f f f f f f b f f b b f b f f b b 
+nl
+f b f f b f f f b f f f b f b b b f f b f b f b b 
+nl
+b f f f b f b b b b b b b b f f f b f f f b b f f 
+nl
+b f b b b f f f f f b b f f b b b b b f b f b f b 
+nl
+f b f f b f b f f f f f f b f b b f f b b f b b f 
+nl
+b b f b f f f f f f f f b f f b f f f f f b f b b 
+nl
+b b b b b b b b f f b f b f b b f b b b f b f f b 
+nl
+f f f f f f f b b b b b b b b b f b f b f f b f f 
+nl
+f b b b b b f b b f f b b b f f f b b b f f b b f 
+nl
+f b f f f b f b b b f b f b b b f f f f f b b b f 
+nl
+f b f f f b f b f b f f f b f b b f f b f f f f f 
+nl
+f b f f f b f b f b b f b b f b f b f b f f b f b 
+nl
+f b b b b b f b f f f f b f f b b f b b f f f b b 
+nl
+f f f f f f f b f b b b b f b b b f f b b b f f f 
+%%EndBody
+grestore
+showpage   
+%%EOF

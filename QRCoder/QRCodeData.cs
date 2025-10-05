@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
 
 namespace QRCoder;
@@ -59,42 +55,54 @@ public class QRCodeData : IDisposable
     /// <param name="compressMode">The compression mode used for the raw data.</param>
     public QRCodeData(byte[] rawData, Compression compressMode)
     {
-        var bytes = new List<byte>(rawData);
-
         //Decompress
         if (compressMode == Compression.Deflate)
         {
-            using var input = new MemoryStream(bytes.ToArray());
+            using var input = new MemoryStream(rawData);
             using var output = new MemoryStream();
             using (var dstream = new DeflateStream(input, CompressionMode.Decompress))
             {
                 dstream.CopyTo(output);
             }
-            bytes = new List<byte>(output.ToArray());
+            rawData = output.ToArray();
         }
         else if (compressMode == Compression.GZip)
         {
-            using var input = new MemoryStream(bytes.ToArray());
+            using var input = new MemoryStream(rawData);
             using var output = new MemoryStream();
             using (var dstream = new GZipStream(input, CompressionMode.Decompress))
             {
                 dstream.CopyTo(output);
             }
-            bytes = new List<byte>(output.ToArray());
+            rawData = output.ToArray();
         }
 
-        if (bytes[0] != 0x51 || bytes[1] != 0x52 || bytes[2] != 0x52)
+        if (rawData.Length < 5)
+            throw new Exception("Invalid raw data file. File too short.");
+        if (rawData[0] != 0x51 || rawData[1] != 0x52 || rawData[2] != 0x52)
             throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\".");
 
-        //Set QR code version
-        var sideLen = (int)bytes[4];
-        bytes.RemoveRange(0, 5);
-        Version = (sideLen - 21 - 8) / 4 + 1;
+        // Set QR code version from side length (includes 8-module quiet zone)
+        var sideLen = (int)rawData[4];
+        if (sideLen < 29) // Micro QR: sideLen = 19 + 2*(m-1), m in [1..4] -> versions -1..-4
+        {
+            if (((sideLen - 19) & 1) != 0)
+                throw new Exception("Invalid raw data file. Side length not valid for Micro QR.");
+            var m = ((sideLen - 19) / 2) + 1;
+            Version = -m;
+        }
+        else // Standard QR: sideLen = 29 + 4*(v-1), v in [1..40]
+        {
+            if (((sideLen - 29) % 4) != 0)
+                throw new Exception("Invalid raw data file. Side length not valid for QR.");
+            Version = ((sideLen - 29) / 4) + 1;
+        }
 
         //Unpack
-        var modules = new Queue<bool>(8 * bytes.Count);
-        foreach (var b in bytes)
+        var modules = new Queue<bool>(8 * (rawData.Length - 5));
+        for (int j = 5; j < rawData.Length; j++)
         {
+            var b = rawData[j];
             for (int i = 7; i >= 0; i--)
             {
                 modules.Enqueue((b & (1 << i)) != 0);
@@ -111,7 +119,6 @@ public class QRCodeData : IDisposable
                 ModuleMatrix[y][x] = modules.Dequeue();
             }
         }
-
     }
 
     /// <summary>
@@ -121,60 +128,69 @@ public class QRCodeData : IDisposable
     /// <returns>Returns the raw data of the QR code as a byte array.</returns>
     public byte[] GetRawData(Compression compressMode)
     {
-        var bytes = new List<byte>();
+        using var output = new MemoryStream();
+        Stream targetStream = output;
+        DeflateStream? deflateStream = null;
+        GZipStream? gzipStream = null;
 
-        //Add header - signature ("QRR")
-        bytes.AddRange(new byte[] { 0x51, 0x52, 0x52, 0x00 });
-
-        //Add header - rowsize
-        bytes.Add((byte)ModuleMatrix.Count);
-
-        //Build data queue
-        var dataQueue = new Queue<int>();
-        foreach (var row in ModuleMatrix)
-        {
-            foreach (var module in row)
-            {
-                dataQueue.Enqueue((bool)module ? 1 : 0);
-            }
-        }
-        for (int i = 0; i < 8 - (ModuleMatrix.Count * ModuleMatrix.Count) % 8; i++)
-        {
-            dataQueue.Enqueue(0);
-        }
-
-        //Process queue
-        while (dataQueue.Count > 0)
-        {
-            byte b = 0;
-            for (int i = 7; i >= 0; i--)
-            {
-                b += (byte)(dataQueue.Dequeue() << i);
-            }
-            bytes.Add(b);
-        }
-        var rawData = bytes.ToArray();
-
-        //Compress stream (optional)
+        //Set up compression stream if needed
         if (compressMode == Compression.Deflate)
         {
-            using var output = new MemoryStream();
-            using (var dstream = new DeflateStream(output, CompressionMode.Compress))
-            {
-                dstream.Write(rawData, 0, rawData.Length);
-            }
-            rawData = output.ToArray();
+            deflateStream = new DeflateStream(output, CompressionMode.Compress, true);
+            targetStream = deflateStream;
         }
         else if (compressMode == Compression.GZip)
         {
-            using var output = new MemoryStream();
-            using (var gzipStream = new GZipStream(output, CompressionMode.Compress, true))
-            {
-                gzipStream.Write(rawData, 0, rawData.Length);
-            }
-            rawData = output.ToArray();
+            gzipStream = new GZipStream(output, CompressionMode.Compress, true);
+            targetStream = gzipStream;
         }
-        return rawData;
+
+        try
+        {
+            //Add header - signature ("QRR")
+#if HAS_SPAN
+            targetStream.Write([0x51, 0x52, 0x52, 0x00]);
+#else
+            targetStream.Write(new byte[] { 0x51, 0x52, 0x52, 0x00 }, 0, 4);
+#endif
+
+            //Add header - rowsize
+            targetStream.WriteByte((byte)ModuleMatrix.Count);
+
+            //Build data queue
+            var dataQueue = new Queue<int>();
+            foreach (var row in ModuleMatrix)
+            {
+                foreach (var module in row)
+                {
+                    dataQueue.Enqueue((bool)module ? 1 : 0);
+                }
+            }
+            int mod = (int)(((uint)ModuleMatrix.Count * (uint)ModuleMatrix.Count) % 8);
+            for (int i = 0; i < 8 - mod; i++)
+            {
+                dataQueue.Enqueue(0);
+            }
+
+            //Process queue
+            while (dataQueue.Count > 0)
+            {
+                byte b = 0;
+                for (int i = 7; i >= 0; i--)
+                {
+                    b += (byte)(dataQueue.Dequeue() << i);
+                }
+                targetStream.WriteByte(b);
+            }
+        }
+        finally
+        {
+            //Close compression streams to flush data
+            deflateStream?.Dispose();
+            gzipStream?.Dispose();
+        }
+
+        return output.ToArray();
     }
 
     /// <summary>

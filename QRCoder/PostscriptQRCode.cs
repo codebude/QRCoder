@@ -1,6 +1,4 @@
-
 #if !NETSTANDARD1_3
-using System;
 using System.Drawing;
 using static QRCoder.QRCodeGenerator;
 

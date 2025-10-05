@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-
-#if NETCOREAPP
+#if HAS_SPAN
 using System.Buffers;
 #endif
 
@@ -51,7 +47,7 @@ public partial class QRCodeGenerator
 
         public static void ReturnList(List<CodewordBlock> list)
         {
-#if NETCOREAPP
+#if HAS_SPAN
             foreach (var item in list)
             {
                 ArrayPool<byte>.Shared.Return(item.ECCWords.Array!);

@@ -1,5 +1,3 @@
-using System.Collections;
-
 namespace QRCoder;
 
 /// <summary>

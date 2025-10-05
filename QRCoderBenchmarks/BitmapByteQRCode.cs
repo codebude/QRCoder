@@ -14,7 +14,7 @@ public class BitmapByteQRCodeBenchmark
         _samples = new Dictionary<string, QRCodeData>()
         {
             { "small", QRCoder.QRCodeGenerator.GenerateQrCode("ABCD", eccLvl) },
-            { "medium", QRCoder.QRCodeGenerator.GenerateQrCode("https://github.com/codebude/QRCoder/blob/f89aa90081f369983a9ba114e49cc6ebf0b2a7b1/QRCoder/Framework4.0Methods/Stream4Methods.cs", eccLvl) },
+            { "medium", QRCoder.QRCodeGenerator.GenerateQrCode("https://github.com/Shane32/QRCoder/blob/f89aa90081f369983a9ba114e49cc6ebf0b2a7b1/QRCoder/Framework4.0Methods/Stream4Methods.cs", eccLvl) },
             { "big", QRCoder.QRCodeGenerator.GenerateQrCode( new string('a', 2600), eccLvl) }
         };
     }

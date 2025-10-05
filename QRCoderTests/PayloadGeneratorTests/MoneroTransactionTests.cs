@@ -1,7 +1,3 @@
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests.PayloadGeneratorTests;
 
 public class MoneroTransactionTests
@@ -65,10 +61,8 @@ public class MoneroTransactionTests
         var address = "46BeWrHpwXmHDpDEUmZBWZfoQpdc6HaERCNmx1pEYL2rAcuwufPN9rXHHtyUA4QVy66qeFQkn6sfK8aHYjA3jk3o1Bv16em";
         var amount = -1f;
 
-        var exception = Record.Exception(() => new PayloadGenerator.MoneroTransaction(address, amount));
+        var exception = Should.Throw<PayloadGenerator.MoneroTransaction.MoneroTransactionException>(() => new PayloadGenerator.MoneroTransaction(address, amount));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.MoneroTransaction.MoneroTransactionException>(exception);
         exception.Message.ShouldBe("Value of 'txAmount' must be greater than 0.");
     }
 
@@ -78,10 +72,8 @@ public class MoneroTransactionTests
     {
         var address = "";
 
-        var exception = Record.Exception(() => new PayloadGenerator.MoneroTransaction(address));
+        var exception = Should.Throw<PayloadGenerator.MoneroTransaction.MoneroTransactionException>(() => new PayloadGenerator.MoneroTransaction(address));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.MoneroTransaction.MoneroTransactionException>(exception);
         exception.Message.ShouldBe("The address is mandatory and has to be set.");
     }
 }
