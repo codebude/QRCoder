@@ -13,21 +13,6 @@ namespace QRCoder;
 /// </summary>
 public class PdfByteQRCode : AbstractQRCode, IDisposable
 {
-    /// <summary>
-    /// Represents a module position in the QR code matrix.
-    /// </summary>
-    private struct ModulePosition
-    {
-        public int X;
-        public int Y;
-
-        public ModulePosition(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-
     private readonly byte[] _pdfBinaryComment = new byte[] { 0x25, 0xe2, 0xe3, 0xcf, 0xd3 };
 
     /// <summary>
@@ -66,12 +51,13 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     }
 
     /// <summary>
-    /// Collects the positions of all dark modules in the QR code.
+    /// Creates a PDF path with rectangles for all dark modules in the QR code.
+    /// Each dark module becomes a 1x1 rectangle in the path.
     /// </summary>
-    /// <returns>A list of (x, y) coordinates for each dark module.</returns>
-    private List<ModulePosition> GetDarkModulePositions()
+    /// <returns>PDF path commands as a string.</returns>
+    private string CreatePathFromModules()
     {
-        var darkModules = new List<ModulePosition>();
+        var pathCommands = new System.Text.StringBuilder();
         var matrix = QrCodeData.ModuleMatrix;
         var size = matrix.Count;
 
@@ -81,29 +67,11 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
             {
                 if (matrix[y][x])
                 {
-                    darkModules.Add(new ModulePosition(x, y));
+                    // Create a 1x1 rectangle for each dark module using the 're' (rectangle) operator
+                    // Format: x y width height re
+                    pathCommands.Append(ToStr(x) + " " + ToStr(y) + " 1 1 re\r\n");
                 }
             }
-        }
-
-        return darkModules;
-    }
-
-    /// <summary>
-    /// Converts a list of module positions into a PDF path with multiple closed rectangles.
-    /// Each module becomes a 1x1 rectangle in the path.
-    /// </summary>
-    /// <param name="positions">List of (x, y) coordinates for dark modules.</param>
-    /// <returns>PDF path commands as a string.</returns>
-    private string CreatePathFromModules(List<ModulePosition> positions)
-    {
-        var pathCommands = new System.Text.StringBuilder();
-
-        foreach (var pos in positions)
-        {
-            // Create a 1x1 rectangle for each module using the 're' (rectangle) operator
-            // Format: x y width height re
-            pathCommands.Append(ToStr(pos.X) + " " + ToStr(pos.Y) + " 1 1 re\r\n");
         }
 
         return pathCommands.ToString();
@@ -148,9 +116,8 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         var darkColorPdf = ColorToPdfRgb(darkColor);
         var lightColorPdf = ColorToPdfRgb(lightColor);
 
-        // Get dark module positions and create path
-        var darkModules = GetDarkModulePositions();
-        var pathCommands = CreatePathFromModules(darkModules);
+        // Create path from dark modules
+        var pathCommands = CreatePathFromModules();
 
         //Create PDF document
         using var stream = new MemoryStream();
@@ -327,6 +294,5 @@ public static class PdfByteQRCodeHelper
         using var qrCode = qrGen.CreateQrCode(txt, eccLevel);
         using var qrBmp = new PdfByteQRCode(qrCode);
         return qrBmp.GetGraphic(size);
-
     }
 }
