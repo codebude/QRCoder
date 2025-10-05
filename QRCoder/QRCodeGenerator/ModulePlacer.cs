@@ -10,6 +10,7 @@ public partial class QRCodeGenerator
         /// </summary>
         /// <param name="qrCode">The QR code data structure to modify.</param>
         /// <param name="versionStr">The bit array containing the version information.</param>
+        /// <param name="offset">Indicates whether an offset should be applied to the version information placement.</param>
         public static void PlaceVersion(QRCodeData qrCode, BitArray versionStr, bool offset)
         {
             var offsetValue = offset ? 4 : 0;
@@ -251,6 +252,7 @@ public partial class QRCodeGenerator
         /// <summary>
         /// Reserves separator areas around the positioning patterns of a QR code to ensure that these crucial areas remain unmodified during data placement.
         /// </summary>
+        /// <param name="version">The version of the QR code, which determines the number of finder patterns.</param>
         /// <param name="size">The size of the QR code matrix.</param>
         /// <param name="blockedModules">A list of rectangles representing areas that must not be overwritten.</param>
         public static void ReserveSeperatorAreas(int version, int size, BlockedModules blockedModules)

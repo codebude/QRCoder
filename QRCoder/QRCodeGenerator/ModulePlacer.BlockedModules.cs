@@ -14,9 +14,9 @@ public partial class QRCodeGenerator
             private static BitArray[]? _staticBlockedModules;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="BlockedModules"/> struct with a specified capacity.
+            /// Initializes a new instance of the <see cref="BlockedModules"/> struct with a specified size.
             /// </summary>
-            /// <param name="capacity">The initial capacity of the blocked modules list.</param>
+            /// <param name="size">The size of the blocked modules matrix.</param>
             public BlockedModules(int size)
             {
                 _blockedModules = Interlocked.Exchange(ref _staticBlockedModules, null)!;

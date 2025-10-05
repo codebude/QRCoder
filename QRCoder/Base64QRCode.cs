@@ -161,22 +161,22 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum ImageType
     {
+        /// <summary>
+        /// Graphics Interchange Format (GIF) image format, a bitmap image format with limited color support
+        /// </summary>
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-        /// <summary>
-        /// GIF image format.
-        /// </summary>
         Gif,
+        /// <summary>
+        /// Joint Photographic Experts Group (JPEG) image format, a lossy compressed image format
+        /// </summary>
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-        /// <summary>
-        /// JPEG image format.
-        /// </summary>
         Jpeg,
         /// <summary>
-        /// PNG image format.
+        /// Portable Network Graphics (PNG) image format, a lossless raster graphics format
         /// </summary>
         Png
     }

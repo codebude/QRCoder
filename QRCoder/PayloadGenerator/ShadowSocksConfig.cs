@@ -189,48 +189,195 @@ public static partial class PayloadGenerator
         public enum Method
         {
             // AEAD
+            /// <summary>
+            /// ChaCha20-IETF with Poly1305 AEAD encryption method
+            /// </summary>
             Chacha20IetfPoly1305,
+
+            /// <summary>
+            /// AES-128 Galois/Counter Mode (GCM) encryption method
+            /// </summary>
             Aes128Gcm,
+
+            /// <summary>
+            /// AES-192 Galois/Counter Mode (GCM) encryption method
+            /// </summary>
             Aes192Gcm,
+
+            /// <summary>
+            /// AES-256 Galois/Counter Mode (GCM) encryption method
+            /// </summary>
             Aes256Gcm,
+
             // AEAD, not standard
+            /// <summary>
+            /// Extended ChaCha20-IETF with Poly1305 AEAD encryption method (non-standard)
+            /// </summary>
             XChacha20IetfPoly1305,
+
             // Stream cipher
+            /// <summary>
+            /// AES-128 Cipher Feedback (CFB) stream cipher
+            /// </summary>
             Aes128Cfb,
+
+            /// <summary>
+            /// AES-192 Cipher Feedback (CFB) stream cipher
+            /// </summary>
             Aes192Cfb,
+
+            /// <summary>
+            /// AES-256 Cipher Feedback (CFB) stream cipher
+            /// </summary>
             Aes256Cfb,
+
+            /// <summary>
+            /// AES-128 Counter (CTR) stream cipher
+            /// </summary>
             Aes128Ctr,
+
+            /// <summary>
+            /// AES-192 Counter (CTR) stream cipher
+            /// </summary>
             Aes192Ctr,
+
+            /// <summary>
+            /// AES-256 Counter (CTR) stream cipher
+            /// </summary>
             Aes256Ctr,
+
+            /// <summary>
+            /// Camellia-128 Cipher Feedback (CFB) stream cipher
+            /// </summary>
             Camellia128Cfb,
+
+            /// <summary>
+            /// Camellia-192 Cipher Feedback (CFB) stream cipher
+            /// </summary>
             Camellia192Cfb,
+
+            /// <summary>
+            /// Camellia-256 Cipher Feedback (CFB) stream cipher
+            /// </summary>
             Camellia256Cfb,
+
+            /// <summary>
+            /// ChaCha20-IETF stream cipher
+            /// </summary>
             Chacha20Ietf,
+
             // alias of Aes256Cfb
+            /// <summary>
+            /// Alias for AES-256 Cipher Feedback (CFB) stream cipher
+            /// </summary>
             Aes256Cb,
+
             // Stream cipher, not standard
+            /// <summary>
+            /// AES-128 Output Feedback (OFB) stream cipher (non-standard)
+            /// </summary>
             Aes128Ofb,
+
+            /// <summary>
+            /// AES-192 Output Feedback (OFB) stream cipher (non-standard)
+            /// </summary>
             Aes192Ofb,
+
+            /// <summary>
+            /// AES-256 Output Feedback (OFB) stream cipher (non-standard)
+            /// </summary>
             Aes256Ofb,
+
+            /// <summary>
+            /// AES-128 Cipher Feedback 1-bit (CFB1) stream cipher
+            /// </summary>
             Aes128Cfb1,
+
+            /// <summary>
+            /// AES-192 Cipher Feedback 1-bit (CFB1) stream cipher
+            /// </summary>
             Aes192Cfb1,
+
+            /// <summary>
+            /// AES-256 Cipher Feedback 1-bit (CFB1) stream cipher
+            /// </summary>
             Aes256Cfb1,
+
+            /// <summary>
+            /// AES-128 Cipher Feedback 8-bit (CFB8) stream cipher
+            /// </summary>
             Aes128Cfb8,
+
+            /// <summary>
+            /// AES-192 Cipher Feedback 8-bit (CFB8) stream cipher
+            /// </summary>
             Aes192Cfb8,
+
+            /// <summary>
+            /// AES-256 Cipher Feedback 8-bit (CFB8) stream cipher
+            /// </summary>
             Aes256Cfb8,
+
             // Stream cipher, deprecated
+            /// <summary>
+            /// ChaCha20 stream cipher (deprecated)
+            /// </summary>
             Chacha20,
+
+            /// <summary>
+            /// Blowfish Cipher Feedback (CFB) stream cipher (deprecated)
+            /// </summary>
             BfCfb,
+
+            /// <summary>
+            /// RC4-MD5 stream cipher (deprecated)
+            /// </summary>
             Rc4Md5,
+
+            /// <summary>
+            /// Salsa20 stream cipher (deprecated)
+            /// </summary>
             Salsa20,
+
             // Not standard and not in active use
+            /// <summary>
+            /// DES Cipher Feedback (CFB) stream cipher (not standard, not in active use)
+            /// </summary>
             DesCfb,
+
+            /// <summary>
+            /// IDEA Cipher Feedback (CFB) stream cipher (not standard, not in active use)
+            /// </summary>
             IdeaCfb,
+
+            /// <summary>
+            /// RC2 Cipher Feedback (CFB) stream cipher (not standard, not in active use)
+            /// </summary>
             Rc2Cfb,
+
+            /// <summary>
+            /// CAST5 Cipher Feedback (CFB) stream cipher (not standard, not in active use)
+            /// </summary>
             Cast5Cfb,
+
+            /// <summary>
+            /// Salsa20 Counter (CTR) stream cipher (not standard, not in active use)
+            /// </summary>
             Salsa20Ctr,
+
+            /// <summary>
+            /// RC4 stream cipher (not standard, not in active use)
+            /// </summary>
             Rc4,
+
+            /// <summary>
+            /// SEED Cipher Feedback (CFB) stream cipher (not standard, not in active use)
+            /// </summary>
             SeedCfb,
+
+            /// <summary>
+            /// Table-based encryption method (not standard, not in active use)
+            /// </summary>
             Table
         }
 
