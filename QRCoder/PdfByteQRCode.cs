@@ -123,9 +123,9 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         if (color.Length != 3)
             throw new ArgumentException("Color must be a 3-byte RGB array", nameof(color));
 
-        var r = (color[0] / 255.0).ToString("0.######", CultureInfo.InvariantCulture);
-        var g = (color[1] / 255.0).ToString("0.######", CultureInfo.InvariantCulture);
-        var b = (color[2] / 255.0).ToString("0.######", CultureInfo.InvariantCulture);
+        var r = ToStr(color[0] / (float)255);
+        var g = ToStr(color[1] / (float)255);
+        var b = ToStr(color[2] / (float)255);
 
         return r + " " + g + " " + b;
     }
@@ -298,7 +298,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     /// </summary>
     /// <param name="value">The integer value to convert.</param>
     /// <returns>String representation of the integer.</returns>
-    private static string ToStr(float value) => value.ToString(CultureInfo.InvariantCulture);
+    private static string ToStr(float value) => value.ToString("0.######", CultureInfo.InvariantCulture);
 }
 
 #if NET6_0_OR_GREATER
