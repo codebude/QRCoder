@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace QRCoder;
 
@@ -197,7 +194,7 @@ public partial class QRCodeGenerator
             void ThrowNotSupportedException() => throw new NotSupportedException("The polynomial capacity is fixed and cannot be increased.");
         }
 
-#if NETCOREAPP
+#if HAS_SPAN
         /// <summary>
         /// Rents memory for the polynomial terms from the shared memory pool.
         /// </summary>

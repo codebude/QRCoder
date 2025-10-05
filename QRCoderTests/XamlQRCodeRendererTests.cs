@@ -1,9 +1,5 @@
 #if TEST_XAML
-using QRCoder;
 using QRCoder.Xaml;
-using QRCoderTests.Helpers;
-using Shouldly;
-using Xunit;
 
 namespace QRCoderTests;
 
@@ -17,8 +13,7 @@ public class XamlQRCodeRendererTests
         var xCode = new XamlQRCode(data).GetGraphic(10);
 
         var bmp = HelperFunctions.BitmapSourceToBitmap(xCode);
-        var result = HelperFunctions.BitmapToHash(bmp);
-        result.ShouldBe("f2ed5073bd42dc012e442c0f750e9dae");
+        bmp.ShouldMatchApproved();
     }
 
 

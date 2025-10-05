@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
@@ -41,6 +36,7 @@ public static partial class PayloadGenerator
         /// <param name="currency">Currency (either EUR or CHF)</param>
         /// <param name="creditor">Creditor (payee) information</param>
         /// <param name="reference">Reference information</param>
+        /// <param name="additionalInformation">Additional information for the QR code</param>
         /// <param name="debitor">Debitor (payer) information</param>
         /// <param name="amount">Amount</param>
         /// <param name="requestedDateOfPayment">Requested date of debitor's payment</param>
@@ -398,7 +394,7 @@ public static partial class PayloadGenerator
 
             private Contact(string name, string? zipCode, string? city, string country, string? streetOrAddressline1, string? houseNumberOrAddressline2, AddressType addressType)
             {
-                //Pattern extracted from https://qr-validation.iso-payments.ch as explained in https://github.com/codebude/QRCoder/issues/97
+                //Pattern extracted from https://qr-validation.iso-payments.ch as explained in https://github.com/Shane32/QRCoder/issues/97
                 var charsetPattern = @"^([a-zA-Z0-9\.,;:'\ \+\-/\(\)?\*\[\]\{\}\\`´~ ^|]|[!""#%&<>÷=@_$£¡¢¤¥¦§¨©ª«¬®¯°±²³µ¶·¸¹º»¼½¾¿×Ø€]|[àáâäãåāăąçćĉċčďđèéêëēĕėęěĝğġģĥħìíîïĩīĭįıĳķĸĺļľŀłñńņňŉŋòóôöōŏőõŕŗřśŝşšșţťŧțùúûüũūŭůűųŵýÿŷźżžßÀÁÂÄÃÅĀĂĄÇĆĈĊČĎĐÈÉÊËĒĔĖĘĚĜĞĠĢĤĦÌÍÎÏĨĪĬĮİĲĴĵĶĹĻĽĿŁÑŃŅŇŊÒÓÔÖÕŌŎŐŔŖŘŚŜŞŠȘŢŤŦȚÙÚÛÜŨŪŬŮŰŲŴÝŶŸŹŻŽÆÐÞæðøþŒœſ])*$";
 
                 _adrType = addressType;

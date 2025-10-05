@@ -1,18 +1,13 @@
-using System;
-using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 using System.Reflection;
-using System.Drawing;
 #if TEST_XAML
 using SW = System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 #endif
 
-
 namespace QRCoderTests.Helpers;
-
 public static class HelperFunctions
 {
 
@@ -45,7 +40,7 @@ public static class HelperFunctions
 #if NET5_0_OR_GREATER
         => AppDomain.CurrentDomain.BaseDirectory;
 #else
-        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
+        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)?.Replace("file:\\", "") ?? "";
 #endif
 
     /// <summary>
@@ -96,12 +91,8 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            return new Bitmap(stream);
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        return new Bitmap(stream);
     }
 
     /// <summary>
@@ -111,16 +102,10 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
     }
 
     /// <summary>
@@ -130,14 +115,8 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_Scientist_2909361.svg";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            using (var reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
     }
 }

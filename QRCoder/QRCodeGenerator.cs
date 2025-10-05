@@ -1,14 +1,8 @@
-using System;
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
 using System.Buffers;
 #endif
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace QRCoder;
 
@@ -586,7 +580,7 @@ public partial class QRCodeGenerator : IDisposable
 
     private static void ShiftTowardsBit0(BitArray fStrEcc, int num)
     {
-#if NETCOREAPP
+#if HAS_SPAN
         fStrEcc.RightShift(num); // Shift towards bit 0
 #else
         for (var i = 0; i < fStrEcc.Length - num; i++)
@@ -598,7 +592,7 @@ public partial class QRCodeGenerator : IDisposable
 
     private static void ShiftAwayFromBit0(BitArray fStrEcc, int num)
     {
-#if NETCOREAPP
+#if HAS_SPAN
         fStrEcc.LeftShift(num); // Shift away from bit 0
 #else
         for (var i = fStrEcc.Length - 1; i >= num; i--)
@@ -697,7 +691,7 @@ public partial class QRCodeGenerator : IDisposable
         generatorPolynom.Dispose();
 
         // Convert the resulting polynomial into a byte array representing the ECC codewords.
-#if NETCOREAPP
+#if HAS_SPAN
         var array = ArrayPool<byte>.Shared.Rent(leadTermSource.Count);
         var ret = new ArraySegment<byte>(array, 0, leadTermSource.Count);
 #else
@@ -1009,7 +1003,7 @@ public partial class QRCodeGenerator : IDisposable
         for (int i = 0; i < plainText.Length - 2; i += 3)
         {
             // Parse the next three characters as a decimal integer.
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
             var dec = int.Parse(plainText.AsSpan(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
             var dec = int.Parse(plainText.Substring(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
@@ -1021,7 +1015,7 @@ public partial class QRCodeGenerator : IDisposable
         // Handle any remaining digits if the total number is not a multiple of three.
         if (plainText.Length % 3 == 2)  // Two remaining digits are encoded in 7 bits.
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
             var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
             var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
@@ -1030,7 +1024,7 @@ public partial class QRCodeGenerator : IDisposable
         }
         else if (plainText.Length % 3 == 1)  // One remaining digit is encoded in 4 bits.
         {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
             var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
             var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
@@ -1101,7 +1095,7 @@ public partial class QRCodeGenerator : IDisposable
             }
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
         // We can use stackalloc for small arrays to prevent heap allocations
         const int MAX_STACK_SIZE_IN_BYTES = 512;
 
@@ -1132,7 +1126,7 @@ public partial class QRCodeGenerator : IDisposable
             bitArray = ToBitArray(codeBytes);
         }
 
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
         if (bufferFromPool != null)
             ArrayPool<byte>.Shared.Return(bufferFromPool);
 #endif
@@ -1148,7 +1142,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <param name="prefixZeros">The number of leading zeros to prepend to the resulting BitArray.</param>
     /// <returns>A BitArray representing the bits of the input byteArray, with optional leading zeros.</returns>
     private static BitArray ToBitArray(
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
         ReadOnlySpan<byte> byteArray, // byte[] has an implicit cast to ReadOnlySpan<byte>
 #else
         byte[] byteArray,
@@ -1250,7 +1244,7 @@ public partial class QRCodeGenerator : IDisposable
         }
 
         // Identify and merge terms with the same exponent.
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
         var toGlue = GetNotUniqueExponents(resultPolynom, resultPolynom.Count <= 128 ? stackalloc int[128].Slice(0, resultPolynom.Count) : new int[resultPolynom.Count]);
         var gluedPolynoms = toGlue.Length <= 128
             ? stackalloc PolynomItem[128].Slice(0, toGlue.Length)
@@ -1276,7 +1270,7 @@ public partial class QRCodeGenerator : IDisposable
 
         // Remove duplicated exponents and add the corrected ones back.
         for (int i = resultPolynom.Count - 1; i >= 0; i--)
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
             if (toGlue.Contains(resultPolynom[i].Exponent))
 #else
             if (Array.IndexOf(toGlue, resultPolynom[i].Exponent) >= 0)
@@ -1290,7 +1284,7 @@ public partial class QRCodeGenerator : IDisposable
         return resultPolynom;
 
         // Auxiliary function to identify exponents that appear more than once in the polynomial.
-#if NETCOREAPP
+#if NET5_0_OR_GREATER
         static ReadOnlySpan<int> GetNotUniqueExponents(Polynom list, Span<int> buffer)
         {
             // It works as follows:

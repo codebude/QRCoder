@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
 
 namespace QRCoder;
@@ -152,7 +148,7 @@ public class QRCodeData : IDisposable
         try
         {
             //Add header - signature ("QRR")
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1
+#if HAS_SPAN
             targetStream.Write([0x51, 0x52, 0x52, 0x00]);
 #else
             targetStream.Write(new byte[] { 0x51, 0x52, 0x52, 0x00 }, 0, 4);

@@ -406,11 +406,40 @@ namespace QRCoder
                         QRCoder.PayloadGenerator.ContactData.AddressOrder addressOrder = 0,
                         string? org = null,
                         string? orgTitle = null) { }
+            public ContactData(
+                        QRCoder.PayloadGenerator.ContactData.ContactOutputType outputType,
+                        string firstname,
+                        string lastname,
+                        string? nickname,
+                        string? phone,
+                        string? mobilePhone,
+                        string? workPhone,
+                        string? email,
+                        System.DateTime? birthday,
+                        string? website,
+                        string? street,
+                        string? houseNumber,
+                        string? city,
+                        string? zipCode,
+                        string? country,
+                        string? note,
+                        string? stateRegion,
+                        QRCoder.PayloadGenerator.ContactData.AddressOrder addressOrder,
+                        string? org,
+                        string? orgTitle,
+                        QRCoder.PayloadGenerator.ContactData.AddressType addressType) { }
             public override string ToString() { }
             public enum AddressOrder
             {
                 Default = 0,
                 Reversed = 1,
+            }
+            public enum AddressType
+            {
+                Home = 0,
+                Work = 1,
+                HomePreferred = 2,
+                WorkPreferred = 3,
             }
             public enum ContactOutputType
             {
@@ -824,7 +853,6 @@ namespace QRCoder
             }
         }
     }
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public class PdfByteQRCode : QRCoder.AbstractQRCode, System.IDisposable
     {
         public PdfByteQRCode() { }
@@ -832,7 +860,6 @@ namespace QRCoder
         public byte[] GetGraphic(int pixelsPerModule) { }
         public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85) { }
     }
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public static class PdfByteQRCodeHelper
     {
         public static byte[] GetQRCode(string txt, QRCoder.QRCodeGenerator.ECCLevel eccLevel, int size) { }

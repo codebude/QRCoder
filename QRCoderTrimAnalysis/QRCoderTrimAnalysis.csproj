@@ -9,9 +9,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PublishTrimmed>true</PublishTrimmed>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <!-- Ensure that trim warnings cause the publish to fail -->
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
