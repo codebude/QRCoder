@@ -11,10 +11,6 @@ namespace QRCoder;
 /// <summary>
 /// Represents a QR code generator that outputs QR codes as PDF byte arrays.
 /// </summary>
-#if NET6_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-// ReSharper disable once InconsistentNaming
 public class PdfByteQRCode : AbstractQRCode, IDisposable
 {
     /// <summary>
@@ -289,9 +285,6 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     private static string ToStr(float value) => value.ToString("0.######", CultureInfo.InvariantCulture);
 }
 
-#if NET6_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
 /// <summary>
 /// Provides static methods for creating PDF byte array QR codes.
 /// </summary>

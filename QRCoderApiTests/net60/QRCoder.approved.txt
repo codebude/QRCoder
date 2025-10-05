@@ -811,7 +811,6 @@ namespace QRCoder
             }
         }
     }
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public class PdfByteQRCode : QRCoder.AbstractQRCode, System.IDisposable
     {
         public PdfByteQRCode() { }
@@ -819,7 +818,6 @@ namespace QRCoder
         public byte[] GetGraphic(int pixelsPerModule) { }
         public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85) { }
     }
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
     public static class PdfByteQRCodeHelper
     {
         public static byte[] GetQRCode(string txt, QRCoder.QRCodeGenerator.ECCLevel eccLevel, int size) { }
