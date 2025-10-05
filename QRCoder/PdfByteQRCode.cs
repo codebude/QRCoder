@@ -51,50 +51,6 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     }
 
     /// <summary>
-    /// Creates a PDF path with rectangles for all dark modules in the QR code.
-    /// Each dark module becomes a 1x1 rectangle in the path.
-    /// </summary>
-    /// <returns>PDF path commands as a string.</returns>
-    private string CreatePathFromModules()
-    {
-        var pathCommands = new System.Text.StringBuilder();
-        var matrix = QrCodeData.ModuleMatrix;
-        var size = matrix.Count;
-
-        for (int y = 0; y < size; y++)
-        {
-            for (int x = 0; x < size; x++)
-            {
-                if (matrix[y][x])
-                {
-                    // Create a 1x1 rectangle for each dark module using the 're' (rectangle) operator
-                    // Format: x y width height re
-                    pathCommands.Append(ToStr(x) + " " + ToStr(y) + " 1 1 re\r\n");
-                }
-            }
-        }
-
-        return pathCommands.ToString();
-    }
-
-    /// <summary>
-    /// Converts RGB byte array to PDF color space values (0.0 to 1.0).
-    /// </summary>
-    /// <param name="color">RGB color as byte array.</param>
-    /// <returns>PDF color string (three decimal values).</returns>
-    private string ColorToPdfRgb(byte[] color)
-    {
-        if (color.Length != 3)
-            throw new ArgumentException("Color must be a 3-byte RGB array", nameof(color));
-
-        var r = ToStr(color[0] / (float)255);
-        var g = ToStr(color[1] / (float)255);
-        var b = ToStr(color[2] / (float)255);
-
-        return r + " " + g + " " + b;
-    }
-
-    /// <summary>
     /// Creates a PDF document with specified colors and DPI.
     /// </summary>
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
@@ -235,6 +191,50 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         }
 
         return stream.ToArray();
+    }
+
+    /// <summary>
+    /// Creates a PDF path with rectangles for all dark modules in the QR code.
+    /// Each dark module becomes a 1x1 rectangle in the path.
+    /// </summary>
+    /// <returns>PDF path commands as a string.</returns>
+    private string CreatePathFromModules()
+    {
+        var pathCommands = new System.Text.StringBuilder();
+        var matrix = QrCodeData.ModuleMatrix;
+        var size = matrix.Count;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                if (matrix[y][x])
+                {
+                    // Create a 1x1 rectangle for each dark module using the 're' (rectangle) operator
+                    // Format: x y width height re
+                    pathCommands.Append(ToStr(x) + " " + ToStr(y) + " 1 1 re\r\n");
+                }
+            }
+        }
+
+        return pathCommands.ToString();
+    }
+
+    /// <summary>
+    /// Converts RGB byte array to PDF color space values (0.0 to 1.0).
+    /// </summary>
+    /// <param name="color">RGB color as byte array.</param>
+    /// <returns>PDF color string (three decimal values).</returns>
+    private static string ColorToPdfRgb(byte[] color)
+    {
+        if (color.Length != 3)
+            throw new ArgumentException("Color must be a 3-byte RGB array", nameof(color));
+
+        var r = ToStr(color[0] / (float)255);
+        var g = ToStr(color[1] / (float)255);
+        var b = ToStr(color[2] / (float)255);
+
+        return r + " " + g + " " + b;
     }
 
     /// <summary>
