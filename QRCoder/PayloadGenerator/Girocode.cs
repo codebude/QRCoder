@@ -36,16 +36,16 @@ public static partial class PayloadGenerator
         /// <param name="version">Girocode version. Either 001 or 002. Default: 001.</param>
         /// <param name="encoding">Encoding of the Girocode payload. Default: ISO-8859-1</param>
         /// <exception cref="GirocodeException">Thrown when the input values are not valid according to the Girocode specification.</exception>
-        public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", TypeOfRemittance typeOfRemittance = TypeOfRemittance.Unstructured, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", GirocodeVersion version = GirocodeVersion.Version1, GirocodeEncoding encoding = GirocodeEncoding.ISO_8859_1)
+        public Girocode(string iban, string? bic, string name, decimal amount, string remittanceInformation = "", TypeOfRemittance typeOfRemittance = TypeOfRemittance.Unstructured, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", GirocodeVersion version = GirocodeVersion.Version1, GirocodeEncoding encoding = GirocodeEncoding.ISO_8859_1)
         {
             _version = version;
             _encoding = encoding;
             if (!IsValidIban(iban))
                 throw new GirocodeException("The IBAN entered isn't valid.");
             _iban = iban.Replace(" ", "").ToUpper();
-            if (!IsValidBic(bic))
+            if (!IsValidBic(bic, _version == GirocodeVersion.Version1))
                 throw new GirocodeException("The BIC entered isn't valid.");
-            _bic = bic.Replace(" ", "").ToUpper();
+            _bic = bic?.Replace(" ", "").ToUpper() ?? string.Empty;
             if (name.Length > 70)
                 throw new GirocodeException("(Payee-)Name must be shorter than 71 chars.");
             _name = name;
