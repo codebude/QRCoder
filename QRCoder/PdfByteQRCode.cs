@@ -228,9 +228,10 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         if (color.Length != 3)
             throw new ArgumentException("Color must be a 3-byte RGB array", nameof(color));
 
-        var r = ToStr(color[0] / (float)255);
-        var g = ToStr(color[1] / (float)255);
-        var b = ToStr(color[2] / (float)255);
+        const float inv255 = 1 / 255f;
+        var r = ToStr(color[0] * inv255);
+        var g = ToStr(color[1] * inv255);
+        var b = ToStr(color[2] * inv255);
 
         return r + " " + g + " " + b;
     }
