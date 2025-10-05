@@ -6,11 +6,9 @@ namespace QRCoderTests;
 
 public class PdfByteQRCodeRendererTests
 {
-
     [Fact]
     public void can_render_pdfbyte_qrcode_blackwhite()
     {
-        //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
         var pdfCodeGfx = new PdfByteQRCode(data).GetGraphic(5);
@@ -20,7 +18,6 @@ public class PdfByteQRCodeRendererTests
     [Fact]
     public void can_render_pdfbyte_qrcode_color()
     {
-        //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
         var pdfCodeGfx = new PdfByteQRCode(data).GetGraphic(5, "#FF0000", "#0000FF");
@@ -30,7 +27,6 @@ public class PdfByteQRCodeRendererTests
     [Fact]
     public void can_render_pdfbyte_qrcode_custom_dpi()
     {
-        //Create QR code
         var gen = new QRCodeGenerator();
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
         var pdfCodeGfx = new PdfByteQRCode(data).GetGraphic(5, "#000000", "#FFFFFF", 300);
@@ -48,7 +44,6 @@ public class PdfByteQRCodeRendererTests
     [Fact]
     public void can_render_pdfbyte_qrcode_from_helper()
     {
-        //Create QR code
         var pdfCodeGfx = PdfByteQRCodeHelper.GetQRCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L, 10);
         pdfCodeGfx.ShouldMatchApproved("pdf");
     }
@@ -56,7 +51,6 @@ public class PdfByteQRCodeRendererTests
     [Fact]
     public void can_render_pdfbyte_qrcode_from_helper_2()
     {
-        //Create QR code
         var pdfCodeGfx = PdfByteQRCodeHelper.GetQRCode("This is a quick test! 123#?", 5, "#FF0000", "#0000FF", QRCodeGenerator.ECCLevel.L);
         pdfCodeGfx.ShouldMatchApproved("pdf");
     }
