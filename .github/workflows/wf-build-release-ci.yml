@@ -91,4 +91,5 @@ jobs:
         path: out/*
 
     - name: Publish packages to Github packages
+      shell: bash
       run: dotnet nuget push "out/*" -k ${{secrets.GITHUB_TOKEN}}
