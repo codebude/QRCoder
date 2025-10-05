@@ -12,8 +12,14 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
 
+  <!-- Normalize file paths for releases -->
+  <PropertyGroup>
+    <ContinuousIntegrationBuild Condition="'$(Configuration)' == 'Release' AND '$(GITHUB_ACTIONS)' == 'true'">true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
   <!-- Suppress XML comment warnings for non-packable projects -->
   <PropertyGroup Condition="'$(IsPackable)' != 'true'">
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
+
 </Project>
