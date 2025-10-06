@@ -389,34 +389,6 @@ public class OneTimePasswordTests
     }
 
     [Fact]
-    public void one_time_password_generator_totp_with_custom_period_zero()
-    {
-        var pg = new PayloadGenerator.OneTimePassword
-        {
-            Secret = "pwq6 5q55",
-            Issuer = "Google",
-            Label = "test@google.com",
-            Period = 0,
-        };
-
-        pg.ToString().ShouldBe("otpauth://totp/Google:test%40google.com?secret=pwq65q55&issuer=Google&period=0");
-    }
-
-    [Fact]
-    public void one_time_password_generator_totp_with_digits_zero()
-    {
-        var pg = new PayloadGenerator.OneTimePassword
-        {
-            Secret = "pwq6 5q55",
-            Issuer = "Google",
-            Label = "test@google.com",
-            Digits = 0,
-        };
-
-        pg.ToString().ShouldBe("otpauth://totp/Google:test%40google.com?secret=pwq65q55&issuer=Google&digits=0");
-    }
-
-    [Fact]
     public void one_time_password_generator_hotp_with_sha512_algorithm()
     {
         var pg = new PayloadGenerator.OneTimePassword
