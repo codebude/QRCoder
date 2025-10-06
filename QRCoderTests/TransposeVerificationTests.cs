@@ -25,6 +25,7 @@ public class TransposeVerificationTests
     [InlineData("BitmapByteQRCode")]
     [InlineData("Base64QRCode")]
     [InlineData("PngByteQRCode")]
+    [InlineData("SvgQRCode")]
     public void image_renderers(string rendererType)
     {
         byte[] imageBytes = rendererType switch
