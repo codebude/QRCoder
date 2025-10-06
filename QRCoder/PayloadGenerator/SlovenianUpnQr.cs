@@ -85,19 +85,19 @@ public static partial class PayloadGenerator
         /// <param name="code">The code of the payment.</param>
         public SlovenianUpnQr(string payerName, string payerAddress, string payerPlace, string recipientName, string recipientAddress, string recipientPlace, string recipientIban, string description, double amount, DateTime? deadline, string recipientSiModel = "SI99", string recipientSiReference = "", string code = "OTHR")
         {
-            _payerName = SlovenianUpnQr.LimitLength(payerName.Trim(), 33);
-            _payerAddress = SlovenianUpnQr.LimitLength(payerAddress.Trim(), 33);
-            _payerPlace = SlovenianUpnQr.LimitLength(payerPlace.Trim(), 33);
+            _payerName = LimitLength(payerName.Trim(), 33);
+            _payerAddress = LimitLength(payerAddress.Trim(), 33);
+            _payerPlace = LimitLength(payerPlace.Trim(), 33);
             _amount = FormatAmount(amount);
-            _code = SlovenianUpnQr.LimitLength(code.Trim().ToUpperInvariant(), 4);
-            _purpose = SlovenianUpnQr.LimitLength(description.Trim(), 42);
+            _code = LimitLength(code.Trim().ToUpperInvariant(), 4);
+            _purpose = LimitLength(description.Trim(), 42);
             _deadLine = (deadline == null) ? "" : deadline.Value.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture);
-            _recipientIban = SlovenianUpnQr.LimitLength(recipientIban.Trim(), 34);
-            _recipientName = SlovenianUpnQr.LimitLength(recipientName.Trim(), 33);
-            _recipientAddress = SlovenianUpnQr.LimitLength(recipientAddress.Trim(), 33);
-            _recipientPlace = SlovenianUpnQr.LimitLength(recipientPlace.Trim(), 33);
-            _recipientSiModel = SlovenianUpnQr.LimitLength(recipientSiModel.Trim().ToUpperInvariant(), 4);
-            _recipientSiReference = SlovenianUpnQr.LimitLength(recipientSiReference.Trim(), 22);
+            _recipientIban = LimitLength(recipientIban.Trim(), 34);
+            _recipientName = LimitLength(recipientName.Trim(), 33);
+            _recipientAddress = LimitLength(recipientAddress.Trim(), 33);
+            _recipientPlace = LimitLength(recipientPlace.Trim(), 33);
+            _recipientSiModel = LimitLength(recipientSiModel.Trim().ToUpperInvariant(), 4);
+            _recipientSiReference = LimitLength(recipientSiReference.Trim(), 22);
         }
 
 
