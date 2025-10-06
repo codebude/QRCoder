@@ -65,11 +65,20 @@ jobs:
 
     - name: Run tests for ${{ matrix.dotnet-framework.name }}
       working-directory: QRCoderTests
+      shell: bash
       run: |
-        $coverage = if ("${{ matrix.dotnet-framework.coverage }}" -eq "true") { "/p:CollectCoverage=true /p:CoverletOutputFormat=opencover" } else { "" }
-        $noBuild = if ("${{ matrix.dotnet-framework.no-build }}" -eq "true") { "--no-build" } else { "" }
-        dotnet test -c Debug -f ${{ matrix.dotnet-framework.framework }} --nologo $noBuild $coverage
+        coverage=""
+        if [ "${{ matrix.dotnet-framework.coverage }}" == "true" ]; then
+          coverage="/p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+        fi
 
+        noBuild=""
+        if [ "${{ matrix.dotnet-framework.no-build }}" == "true" ]; then
+          noBuild="--no-build"
+        fi
+
+        dotnet test -c Debug -f ${{ matrix.dotnet-framework.framework }} --nologo $noBuild $coverage
+        
   additional-tests:
     runs-on: windows-latest
     steps:
