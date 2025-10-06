@@ -123,12 +123,12 @@ public static partial class PayloadGenerator
             }
             else if (internalMode == 2)
             {
-#pragma warning disable CS0612
+#pragma warning disable CS0618
                 if (authority != AuthorityType.periodicsinglepayment && authority != AuthorityType.singledirectdebit && authority != AuthorityType.singlepayment)
                     throw new BezahlCodeException("The constructor with 'account' and 'bnc' may only be used with 'non SEPA' authority types. Either choose another authority type or switch constructor.");
                 if (authority == AuthorityType.periodicsinglepayment && (string.IsNullOrEmpty(periodicTimeunit) || periodicTimeunitRotation == 0))
                     throw new BezahlCodeException("When using 'periodicsinglepayment' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
-#pragma warning restore CS0612
+#pragma warning restore CS0618
             }
             else if (internalMode == 3)
             {
@@ -155,17 +155,17 @@ public static partial class PayloadGenerator
             _reason = reason;
 
             //Non-SEPA payment types
-#pragma warning disable CS0612
+#pragma warning disable CS0618
             if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.singledirectdebit || authority == AuthorityType.singlepayment || authority == AuthorityType.contact || (authority == AuthorityType.contact_v2 && oldWayFilled))
             {
-#pragma warning restore CS0612
+#pragma warning restore CS0618
 
                 if (!Regex.IsMatch(account.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The account entered isn't valid.");
-                _account = account.Replace(" ", "").ToUpper();
+                _account = account.Replace(" ", "").ToUpperInvariant();
                 if (!Regex.IsMatch(bnc.Replace(" ", ""), @"^[0-9]{1,9}$"))
                     throw new BezahlCodeException("The bnc entered isn't valid.");
-                _bnc = bnc.Replace(" ", "").ToUpper();
+                _bnc = bnc.Replace(" ", "").ToUpperInvariant();
 
                 if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
                 {
@@ -180,10 +180,10 @@ public static partial class PayloadGenerator
             {
                 if (!IsValidIban(iban))
                     throw new BezahlCodeException("The IBAN entered isn't valid.");
-                _iban = iban.Replace(" ", "").ToUpper();
+                _iban = iban.Replace(" ", "").ToUpperInvariant();
                 if (!IsValidBic(bic))
                     throw new BezahlCodeException("The BIC entered isn't valid.");
-                _bic = bic.Replace(" ", "").ToUpper();
+                _bic = bic.Replace(" ", "").ToUpperInvariant();
 
                 if (authority != AuthorityType.contact_v2)
                 {
@@ -205,7 +205,7 @@ public static partial class PayloadGenerator
             //Checks for all payment types
             if (authority != AuthorityType.contact && authority != AuthorityType.contact_v2)
             {
-                if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",", ".").Split('.')[1].TrimEnd('0').Length > 2)
+                if (amount.ToString(CultureInfo.InvariantCulture).Contains('.') && amount.ToString(CultureInfo.InvariantCulture).Split('.')[1].TrimEnd('0').Length > 2)
                     throw new BezahlCodeException("Amount must have less than 3 digits after decimal point.");
                 if (amount < 0.01m || amount > 999999999.99m)
                     throw new BezahlCodeException("Amount has to at least 0.01 and must be smaller or equal to 999999999.99.");
@@ -221,11 +221,11 @@ public static partial class PayloadGenerator
                         throw new BezahlCodeException("Execution date must be today or in future.");
                     _executionDate = (DateTime)executionDate;
                 }
-#pragma warning disable CS0612
+#pragma warning disable CS0618
                 if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
-#pragma warning restore CS0612
+#pragma warning restore CS0618
                 {
-                    if (periodicTimeunit.ToUpper() != "M" && periodicTimeunit.ToUpper() != "W")
+                    if (periodicTimeunit.ToUpperInvariant() != "M" && periodicTimeunit.ToUpperInvariant() != "W")
                         throw new BezahlCodeException("The periodicTimeunit must be either 'M' (monthly) or 'W' (weekly).");
                     _periodicTimeunit = periodicTimeunit;
                     if (periodicTimeunitRotation < 1 || periodicTimeunitRotation > 52)
@@ -253,9 +253,9 @@ public static partial class PayloadGenerator
             if (_authority != AuthorityType.contact && _authority != AuthorityType.contact_v2)
             {
                 //Handle what is same for all payments
-#pragma warning disable CS0612
+#pragma warning disable CS0618
                 if (_authority == AuthorityType.periodicsinglepayment || _authority == AuthorityType.singledirectdebit || _authority == AuthorityType.singlepayment)
-#pragma warning restore CS0612
+#pragma warning restore CS0618
                 {
                     bezahlCodePayload += $"account={_account}&";
                     bezahlCodePayload += $"bnc={_bnc}&";
@@ -277,26 +277,26 @@ public static partial class PayloadGenerator
                         if (!string.IsNullOrEmpty(_mandateId))
                             bezahlCodePayload += $"mandateid={Uri.EscapeDataString(_mandateId)}&";
                         if (_dateOfSignature != DateTime.MinValue)
-                            bezahlCodePayload += $"dateofsignature={_dateOfSignature.ToString("ddMMyyyy")}&";
+                            bezahlCodePayload += $"dateofsignature={_dateOfSignature.ToString("ddMMyyyy", CultureInfo.InvariantCulture)}&";
                     }
                 }
-                bezahlCodePayload += $"amount={_amount:0.00}&".Replace(".", ",");
+                bezahlCodePayload += string.Format(CultureInfo.InvariantCulture, "amount={0:0.00}&", _amount).Replace(".", ",");
 
                 if (!string.IsNullOrEmpty(_reason))
                     bezahlCodePayload += $"reason={Uri.EscapeDataString(_reason)}&";
                 bezahlCodePayload += $"currency={_currency}&";
-                bezahlCodePayload += $"executiondate={_executionDate.ToString("ddMMyyyy")}&";
-#pragma warning disable CS0612
+                bezahlCodePayload += $"executiondate={_executionDate.ToString("ddMMyyyy", CultureInfo.InvariantCulture)}&";
+#pragma warning disable CS0618
                 if (_authority == AuthorityType.periodicsinglepayment || _authority == AuthorityType.periodicsinglepaymentsepa)
                 {
                     bezahlCodePayload += $"periodictimeunit={_periodicTimeunit}&";
                     bezahlCodePayload += $"periodictimeunitrotation={_periodicTimeunitRotation}&";
                     if (_periodicFirstExecutionDate != DateTime.MinValue)
-                        bezahlCodePayload += $"periodicfirstexecutiondate={_periodicFirstExecutionDate.ToString("ddMMyyyy")}&";
+                        bezahlCodePayload += $"periodicfirstexecutiondate={_periodicFirstExecutionDate.ToString("ddMMyyyy", CultureInfo.InvariantCulture)}&";
                     if (_periodicLastExecutionDate != DateTime.MinValue)
-                        bezahlCodePayload += $"periodiclastexecutiondate={_periodicLastExecutionDate.ToString("ddMMyyyy")}&";
+                        bezahlCodePayload += $"periodiclastexecutiondate={_periodicLastExecutionDate.ToString("ddMMyyyy", CultureInfo.InvariantCulture)}&";
                 }
-#pragma warning restore CS0612
+#pragma warning restore CS0618
             }
             else
             {
@@ -1047,6 +1047,7 @@ public static partial class PayloadGenerator
         }
 
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>
         /// Operation modes of the BezahlCode
         /// </summary>
@@ -1055,7 +1056,7 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Single payment (Überweisung)
             /// </summary>
-            [Obsolete]
+            [Obsolete("Use singlepaymentsepa instead for SEPA-compliant payments")]
             singlepayment,
             /// <summary>
             /// Single SEPA payment (SEPA-Überweisung)
@@ -1064,7 +1065,7 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Single debit (Lastschrift)
             /// </summary>
-            [Obsolete]
+            [Obsolete("Use singledirectdebitsepa instead for SEPA-compliant payments")]
             singledirectdebit,
             /// <summary>
             /// Single SEPA debit (SEPA-Lastschrift)
@@ -1073,7 +1074,7 @@ public static partial class PayloadGenerator
             /// <summary>
             /// Periodic payment (Dauerauftrag)
             /// </summary>
-            [Obsolete]
+            [Obsolete("Use periodicsinglepaymentsepa instead for SEPA-compliant payments")]
             periodicsinglepayment,
             /// <summary>
             /// Periodic SEPA payment (SEPA-Dauerauftrag)
@@ -1088,6 +1089,7 @@ public static partial class PayloadGenerator
             /// </summary>
             contact_v2
         }
+#pragma warning restore CA1707 // Underscore in identifier
 
         /// <summary>
         /// Exception class for BezahlCode errors.

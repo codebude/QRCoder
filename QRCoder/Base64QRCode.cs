@@ -141,7 +141,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
 #if NET6_0_OR_GREATER
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-    private string BitmapToBase64(Bitmap bmp, ImageType imgType)
+    private static string BitmapToBase64(Bitmap bmp, ImageType imgType)
     {
         var iFormat = imgType switch
         {

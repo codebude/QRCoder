@@ -1,3 +1,5 @@
+#pragma warning disable CA1707 // Underscore in identifier
+
 namespace QRCoder;
 
 public partial class QRCodeGenerator

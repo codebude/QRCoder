@@ -31,7 +31,7 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
     public string GetGraphic(int repeatPerModule, string darkColorString = "██", string whiteSpaceString = "  ", bool drawQuietZones = true, string endOfLine = "\n")
     {
         if (repeatPerModule < 1)
-            throw new Exception("The repeatPerModule-parameter must be 1 or greater.");
+            throw new ArgumentOutOfRangeException(nameof(repeatPerModule), "The repeatPerModule parameter must be 1 or greater.");
         return string.Join(endOfLine, GetLineByLineGraphic(repeatPerModule, darkColorString, whiteSpaceString, drawQuietZones));
     }
 

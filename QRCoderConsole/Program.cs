@@ -16,7 +16,6 @@ internal class MainClass
     {
         var friendlyName = AppDomain.CurrentDomain.FriendlyName;
         var newLine = Environment.NewLine;
-        var setter = new OptionSetter();
 
         string? fileName = null, outputFileName = null, payload = null;
 
@@ -33,7 +32,7 @@ internal class MainClass
         var optionSet = new OptionSet {
             {    "e|ecc-level=",
                 "error correction level",
-                value => eccLevel = setter.GetECCLevel(value)
+                value => eccLevel = OptionSetter.GetECCLevel(value)
             },
             {   "f|output-format=",
                 $"Image format for outputfile. Possible values: {string.Join(", ", Enum.GetNames(typeof(SupportedImageFormat)))} (default: png)",
@@ -146,7 +145,7 @@ internal class MainClass
                 using (var code = new QRCode(data))
                 {
                     using var bitmap = code.GetGraphic(pixelsPerModule, foreground, background, true);
-                    var actualFormat = new OptionSetter().GetImageFormat(imgFormat.ToString());
+                    var actualFormat = OptionSetter.GetImageFormat(imgFormat.ToString());
                     bitmap.Save(outputFileName, actualFormat);
                 }
                 break;
@@ -223,20 +222,15 @@ internal class MainClass
     }
 }
 
-public class OptionSetter
+public static class OptionSetter
 {
-    public QRCodeGenerator.ECCLevel GetECCLevel(string value)
-    {
-
-        Enum.TryParse(value, out QRCodeGenerator.ECCLevel level);
-
-        return level;
-    }
+    public static QRCodeGenerator.ECCLevel GetECCLevel(string value)
+        => Enum.TryParse(value, true, out QRCodeGenerator.ECCLevel level) ? level : QRCodeGenerator.ECCLevel.Default;
 
 #if NET6_0 && WINDOWS
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-    public ImageFormat GetImageFormat(string value) => value.ToLower() switch
+    public static ImageFormat GetImageFormat(string value) => value.ToLowerInvariant() switch
     {
         "jpg" => ImageFormat.Jpeg,
         "jpeg" => ImageFormat.Jpeg,

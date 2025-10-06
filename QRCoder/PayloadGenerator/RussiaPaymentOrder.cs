@@ -90,7 +90,7 @@ public static partial class PayloadGenerator
             _separator = DetermineSeparator();
 
             //Create the payload string
-            string ret = $"ST0001" + ((int)_characterSet).ToString() + //(separator != "|" ? separator : "") + 
+            string ret = $"ST0001" + ((int)_characterSet).ToString(CultureInfo.InvariantCulture) + //(separator != "|" ? separator : "") +
                 $"{_separator}Name={_mFields.Name}" +
                 $"{_separator}PersonalAcc={_mFields.PersonalAcc}" +
                 $"{_separator}BankName={_mFields.BankName}" +
@@ -156,7 +156,7 @@ public static partial class PayloadGenerator
                     .Select(field =>
                     {
                         var objValue = field.GetValue(_oFields, null);
-                        var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
+                        var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue!.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
@@ -186,7 +186,7 @@ public static partial class PayloadGenerator
                     .Select(field =>
                     {
                         var objValue = field.GetValue(_mFields);
-                        var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
+                        var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue!.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
@@ -575,6 +575,7 @@ public static partial class PayloadGenerator
             public TechCode? TechCode { get; set; }
         }
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>            
         /// (List of values of the technical code of the payment)
         /// <para>Перечень значений технического кода платежа</para>
@@ -692,6 +693,7 @@ public static partial class PayloadGenerator
             /// </summary>
             koi8_r = 3
         }
+#pragma warning restore CA1707 // Underscore in identifier
 
         /// <summary>
         /// Represents errors that occur during the generation of a RussiaPaymentOrder payload.

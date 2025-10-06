@@ -5,6 +5,7 @@
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
     <OutputType>Exe</OutputType>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <NeutralLanguage>en-us</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net462'">
