@@ -55,6 +55,9 @@ jobs:
       working-directory: QRCoderTrimAnalysis
       run: dotnet publish -c Release -o bin/publish
 
+    - name: Build solution
+      run: dotnet build -c Release
+
     - name: Run API approval tests
       working-directory: QRCoderApiTests
       run: dotnet test -c Release --nologo
