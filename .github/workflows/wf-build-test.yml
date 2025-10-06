@@ -26,11 +26,8 @@ jobs:
           - { name: ".NET 6.0 Windows", framework: "net6.0-windows", coverage: true, no-build: true, sdk: "6.0.x" }
 
     steps:
-    - name: Download artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: Compiled project
-        path: ${{ github.workspace }}
+    - name: Checkout code
+      uses: actions/checkout@v5
 
     - name: Install .NET SDK ${{ matrix.dotnet-framework.sdk }}
       uses: actions/setup-dotnet@v4
@@ -46,8 +43,8 @@ jobs:
   additional-tests:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v4
-      name: Checkout Code
+    - name: Checkout code
+      uses: actions/checkout@v5
 
     - name: Install .NET SDK
       uses: actions/setup-dotnet@v4
