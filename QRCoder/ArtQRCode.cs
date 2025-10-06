@@ -63,7 +63,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
                              BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap? finderPatternImage = null)
     {
         if (pixelSizeFactor > 1)
-            throw new ArgumentOutOfRangeException(nameof(pixelSizeFactor), "The parameter pixelSize must be between 0 and 1. (0-100%)");
+            throw new ArgumentOutOfRangeException(nameof(pixelSizeFactor), "The parameter pixelSizeFactor must be between 0 and 1. (0-100%)");
         int pixelSize = (int)Math.Min(pixelsPerModule, Math.Floor(pixelsPerModule * pixelSizeFactor));
 
         var numModules = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
