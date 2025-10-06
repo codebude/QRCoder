@@ -69,7 +69,7 @@ jobs:
       run: |
         coverage=""
         if [ "${{ matrix.dotnet-framework.coverage }}" == "true" ]; then
-          coverage="/p:CollectCoverage=true /p:CoverletOutputFormat=opencover"
+          coverage="-p:CollectCoverage=true -p:CoverletOutputFormat=opencover"
         fi
 
         noBuild=""
