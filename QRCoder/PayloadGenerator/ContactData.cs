@@ -136,7 +136,7 @@ public static partial class PayloadGenerator
                 if (!string.IsNullOrEmpty(_note))
                     payload += $"NOTE:{_note}\r\n";
                 if (_birthday != null)
-                    payload += $"BDAY:{((DateTime)_birthday).ToString("yyyyMMdd")}\r\n";
+                    payload += $"BDAY:{((DateTime)_birthday).ToString("yyyyMMdd", CultureInfo.InvariantCulture)}\r\n";
                 // RFC 2426 Section 3.2.1: ADR format is PO Box; Extended Address; Street; Locality (City); Region; Postal Code; Country
                 string addressString = string.Empty;
                 if (_addressOrder == AddressOrder.Default)
@@ -232,7 +232,7 @@ public static partial class PayloadGenerator
                 payload += addressString;
 
                 if (_birthday != null)
-                    payload += $"BDAY:{((DateTime)_birthday).ToString("yyyyMMdd")}\r\n";
+                    payload += $"BDAY:{((DateTime)_birthday).ToString("yyyyMMdd", CultureInfo.InvariantCulture)}\r\n";
                 if (!string.IsNullOrEmpty(_website))
                     payload += $"URL:{_website}\r\n";
                 if (!string.IsNullOrEmpty(_email))

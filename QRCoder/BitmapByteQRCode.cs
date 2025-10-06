@@ -41,7 +41,7 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
     /// <param name="lightColorHtmlHex">The color of the light modules in HTML hex format.</param>
     /// <returns>Returns the QR code graphic as a bitmap byte array.</returns>
     public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex)
-        => GetGraphic(pixelsPerModule, HexColorToByteArray(darkColorHtmlHex), HexColorToByteArray(lightColorHtmlHex));
+        => GetGraphic(pixelsPerModule, darkColorHtmlHex.HexColorToByteArray(), lightColorHtmlHex.HexColorToByteArray());
 
     /// <summary>
     /// Returns the QR code graphic as a bitmap byte array.
@@ -135,28 +135,12 @@ public class BitmapByteQRCode : AbstractQRCode, IDisposable
 
 
     /// <summary>
-    /// Converts a hex color string to a byte array.
-    /// </summary>
-    /// <param name="colorString">The hex color string to convert.</param>
-    /// <returns>Returns the color as a byte array.</returns>
-    private byte[] HexColorToByteArray(string colorString)
-    {
-        if (colorString.StartsWith("#"))
-            colorString = colorString.Substring(1);
-        byte[] byteColor = new byte[colorString.Length / 2];
-        for (int i = 0; i < byteColor.Length; i++)
-            byteColor[i] = byte.Parse(colorString.Substring(i * 2, 2), System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
-        return byteColor;
-    }
-
-
-    /// <summary>
     /// Converts an integer to a 4 bytes and writes them to a byte array at given position
     /// </summary>
     /// <param name="inp">The integer to convert.</param>
     /// <param name="destinationIndex">Index of destinationArray where the converted bytes are written to</param>
     /// <param name="destinationArray">Destination byte array that receives the bytes</param>
-    private void CopyIntAs4ByteToArray(int inp, int destinationIndex, byte[] destinationArray)
+    private static void CopyIntAs4ByteToArray(int inp, int destinationIndex, byte[] destinationArray)
     {
         unchecked
         {

@@ -36,7 +36,7 @@ public partial class QRCodeGenerator
         public void RemoveAt(int index)
         {
             if ((uint)index >= (uint)Count)
-                throw new IndexOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index));
 
             if (index < Count - 1)
                 Array.Copy(_polyItems, index + 1, _polyItems, index, Count - index - 1);
@@ -52,13 +52,13 @@ public partial class QRCodeGenerator
             get
             {
                 if ((uint)index >= Count)
-                    ThrowIndexOutOfRangeException();
+                    ThrowArgumentOutOfRangeException();
                 return _polyItems[index];
             }
             set
             {
                 if ((uint)index >= Count)
-                    ThrowIndexOutOfRangeException();
+                    ThrowArgumentOutOfRangeException();
                 _polyItems[index] = value;
             }
         }
@@ -66,7 +66,7 @@ public partial class QRCodeGenerator
 #if NET6_0_OR_GREATER
         [StackTraceHidden]
 #endif
-        private static void ThrowIndexOutOfRangeException() => throw new IndexOutOfRangeException();
+        private static void ThrowArgumentOutOfRangeException() => throw new ArgumentOutOfRangeException("index");
 
 
         /// <summary>

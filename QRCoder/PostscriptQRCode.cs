@@ -100,13 +100,13 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         var drawableModulesCount = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
         var pointsPerModule = (double)Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
 
-        string psFile = string.Format(PS_HEADER, new object[] {
-            DateTime.Now.ToString("s"), CleanSvgVal(viewBox.Width), CleanSvgVal(pointsPerModule),
+        string psFile = string.Format(CultureInfo.InvariantCulture, PS_HEADER, new object[] {
+            DateTime.Now.ToString("s", CultureInfo.InvariantCulture), PostscriptQRCode.CleanSvgVal(viewBox.Width), PostscriptQRCode.CleanSvgVal(pointsPerModule),
             epsFormat ? "EPSF-3.0" : string.Empty
         });
-        psFile += string.Format(PS_FUNCTIONS, new object[] {
-            CleanSvgVal(darkColor.R /255.0), CleanSvgVal(darkColor.G /255.0), CleanSvgVal(darkColor.B /255.0),
-            CleanSvgVal(lightColor.R /255.0), CleanSvgVal(lightColor.G /255.0), CleanSvgVal(lightColor.B /255.0),
+        psFile += string.Format(CultureInfo.InvariantCulture, PS_FUNCTIONS, new object[] {
+            PostscriptQRCode.CleanSvgVal(darkColor.R /255.0), PostscriptQRCode.CleanSvgVal(darkColor.G /255.0), PostscriptQRCode.CleanSvgVal(darkColor.B /255.0),
+            PostscriptQRCode.CleanSvgVal(lightColor.R /255.0), PostscriptQRCode.CleanSvgVal(lightColor.G /255.0), PostscriptQRCode.CleanSvgVal(lightColor.B /255.0),
             drawableModulesCount
         });
 
@@ -128,7 +128,7 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
     /// </summary>
     /// <param name="input">The input double value.</param>
     /// <returns>Returns the cleaned string representation of the double value.</returns>
-    private string CleanSvgVal(double input) => input.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string CleanSvgVal(double input) => input.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
     private const string PS_HEADER = @"%!PS-Adobe-3.0 {3}
 %%Creator: QRCoder.NET

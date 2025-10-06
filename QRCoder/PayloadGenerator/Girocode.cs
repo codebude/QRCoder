@@ -42,14 +42,14 @@ public static partial class PayloadGenerator
             _encoding = encoding;
             if (!IsValidIban(iban))
                 throw new GirocodeException("The IBAN entered isn't valid.");
-            _iban = iban.Replace(" ", "").ToUpper();
+            _iban = iban.Replace(" ", "").ToUpperInvariant();
             if (!IsValidBic(bic, _version == GirocodeVersion.Version1))
                 throw new GirocodeException("The BIC entered isn't valid.");
-            _bic = bic?.Replace(" ", "").ToUpper() ?? string.Empty;
+            _bic = bic?.Replace(" ", "").ToUpperInvariant() ?? string.Empty;
             if (name.Length > 70)
                 throw new GirocodeException("(Payee-)Name must be shorter than 71 chars.");
             _name = name;
-            if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",", ".").Split('.')[1].TrimEnd('0').Length > 2)
+            if (amount.ToString(CultureInfo.InvariantCulture).Contains('.') && amount.ToString(CultureInfo.InvariantCulture).Split('.')[1].TrimEnd('0').Length > 2)
                 throw new GirocodeException("Amount must have less than 3 digits after decimal point.");
             if (amount < 0.01m || amount > 999999999.99m)
                 throw new GirocodeException("Amount has to be at least 0.01 and must be smaller or equal to 999999999.99.");
@@ -81,7 +81,7 @@ public static partial class PayloadGenerator
             girocodePayload += _bic + _br;
             girocodePayload += _name + _br;
             girocodePayload += _iban + _br;
-            girocodePayload += $"EUR{_amount:0.00}".Replace(",", ".") + _br;
+            girocodePayload += string.Format(CultureInfo.InvariantCulture, "EUR{0:0.00}", _amount) + _br;
             girocodePayload += _purposeOfCreditTransfer + _br;
             girocodePayload += ((_typeOfRemittance == TypeOfRemittance.Structured)
                 ? _remittanceInformation

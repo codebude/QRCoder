@@ -32,21 +32,6 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         => GetGraphic(pixelsPerModule, "#000000", "#ffffff");
 
     /// <summary>
-    /// Converts a hexadecimal color string to a byte array.
-    /// </summary>
-    /// <param name="colorString">Color in HEX format like #ffffff.</param>
-    /// <returns>Returns the color as a byte array.</returns>
-    private byte[] HexColorToByteArray(string colorString)
-    {
-        if (colorString.StartsWith("#"))
-            colorString = colorString.Substring(1);
-        byte[] byteColor = new byte[colorString.Length / 2];
-        for (int i = 0; i < byteColor.Length; i++)
-            byteColor[i] = byte.Parse(colorString.Substring(i * 2, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture);
-        return byteColor;
-    }
-
-    /// <summary>
     /// Creates a PDF document with specified colors and DPI.
     /// </summary>
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
@@ -63,8 +48,8 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         var pdfMediaSize = ToStr(imgSize * 72 / (float)dpi);
 
         // Parse colors
-        var darkColor = HexColorToByteArray(darkColorHtmlHex);
-        var lightColor = HexColorToByteArray(lightColorHtmlHex);
+        var darkColor = darkColorHtmlHex.HexColorToByteArray();
+        var lightColor = lightColorHtmlHex.HexColorToByteArray();
         var darkColorPdf = ColorToPdfRgb(darkColor);
         var lightColorPdf = ColorToPdfRgb(lightColor);
 
