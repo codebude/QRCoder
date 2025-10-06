@@ -174,7 +174,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
     /// <summary>
     /// Creates a PDF path with rectangles for all dark modules in the QR code.
-    /// Each dark module becomes a 1x1 rectangle in the path.
+    /// Uses Run-Length Encoding (RLE) to combine adjoining dark modules in each row into single rectangles.
     /// </summary>
     /// <returns>PDF path commands as a string.</returns>
     private string CreatePathFromModules()
@@ -185,14 +185,31 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
         for (int y = 0; y < size; y++)
         {
-            for (int x = 0; x < size; x++)
+            int x = 0;
+            while (x < size)
             {
-                if (matrix[y][x])
+                // Skip light modules
+                if (!matrix[y][x])
                 {
-                    // Create a 1x1 rectangle for each dark module using the 're' (rectangle) operator
-                    // Format: x y width height re
-                    pathCommands.Append(ToStr(x) + " " + ToStr(y) + " 1 1 re\r\n");
+                    x++;
+                    continue;
                 }
+
+                // Found a dark module - find the run length
+                int startX = x;
+                while (x < size && matrix[y][x])
+                {
+                    x++;
+                }
+
+                // Create a single rectangle for the entire run of dark modules
+                // Format: x y width height re
+                pathCommands.Append(ToStr(startX));
+                pathCommands.Append(' ');
+                pathCommands.Append(ToStr(y));
+                pathCommands.Append(' ');
+                pathCommands.Append(ToStr(x - startX));
+                pathCommands.Append(" 1 re\r\n");
             }
         }
 
