@@ -5,7 +5,6 @@
     <TargetFrameworks>net35;net40;net5.0-windows;net6.0-windows</TargetFrameworks>
     <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' OR '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
     <IsPackable>true</IsPackable>
-    <AnalysisMode>Recommended</AnalysisMode>
 
     <!-- Set NuGet package properties -->
     <Description>QRCoder.Xaml is the XamlQRCode-extension for the popular QRCoder .NET library.</Description>

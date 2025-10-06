@@ -1,3 +1,5 @@
+#pragma warning disable CA5350 // Weak cryptography algorithm (SHA1).
+
 using System.Reflection;
 using ECCLevel = QRCoder.QRCodeGenerator.ECCLevel;
 
