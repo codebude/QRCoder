@@ -41,6 +41,8 @@ public class QRGeneratorTests
     [InlineData("123456789", ECCLevel.L, "gCY4Cj1uLhI/0JjWG1F9kC4S1+I", 13)] //verified
     [InlineData("abcd56789012345", ECCLevel.L, "kqcKfCCdu1VTjjtsmK4iBav9FTs", 17)] //verified
     [InlineData("abc", ECCLevel.M, "334sxrtY5KkNZRGj1pBgb87/cFc", 15)] //reads fine, but unable to verify repeating pattern
+    [InlineData("ABCDEFGHIJKLMNOPQR", ECCLevel.M, "6wDTTApiAonkc6zZk451niMR06Y", 17)] // M4 with M - 18 chars for M4
+    [InlineData("ABCDEFGHIJKLM", ECCLevel.Q, "RptOJSwvxUmQYoQXIPf9c1L4Ayc", 17)] // M4 with Q - 13 chars for M4
     public void validate_micro_qr_code(string input, ECCLevel eccLevel, string expectedHash, int expectedSize)
     {
         var qrData = QRCodeGenerator.GenerateMicroQrCode(input, eccLevel);
@@ -656,6 +658,118 @@ public class QRGeneratorTests
         reloadedQrData.Version.ShouldBe(originalQrData.Version);
         reloadedQrData.ModuleMatrix.Count.ShouldBe(originalQrData.ModuleMatrix.Count);
         reloadedMatrix.ShouldBe(originalMatrix);
+    }
+
+    [Fact]
+    public void micro_qr_throws_when_data_too_long_for_any_version()
+    {
+        // M4 with L can hold max 35 alphanumeric characters
+        var input = new string('A', 36);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.L));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void micro_qr_throws_when_data_too_long_for_selected_version()
+    {
+        // M2 with L can hold max 10 alphanumeric characters, but M3 can hold 23
+        var input = new string('A', 11);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.L, -2));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void qr_throws_when_data_too_long_for_any_version()
+    {
+        // Version 40 with L can hold max 4296 alphanumeric characters
+        var input = new string('A', 4297);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateQrCode(input, ECCLevel.L));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void qr_throws_when_data_too_long_for_selected_version()
+    {
+        // Version 1 with L can hold max 25 alphanumeric characters, but version 2 can hold 47
+        var input = new string('A', 26);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateQrCode(input, ECCLevel.L, requestedVersion: 1));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_invalid_version_too_low()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.L, -5));
+        ex.ParamName.ShouldBe("requestedVersion");
+        ex.Message.ShouldContain("must be -1 to -4");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_invalid_version_too_high()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.L, 1));
+        ex.ParamName.ShouldBe("requestedVersion");
+        ex.Message.ShouldContain("must be -1 to -4");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_ecc_level_h()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.H));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("does not support error correction level H");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_ecc_level_q_without_m4()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.Q, -3));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("only supports error correction level Q for version M4");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_non_default_ecc_with_m1()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("1", ECCLevel.L, -1));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("Please specify ECCLevel.Default for version M1");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_null_plaintext()
+    {
+        var ex = Should.Throw<ArgumentNullException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode(null!, ECCLevel.L));
+        ex.ParamName.ShouldBe("plainText");
+    }
+
+    [Fact]
+    public void throws_on_invalid_ecc_level_cast()
+    {
+        var invalidEccLevel = (ECCLevel)99;
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateQrCode("test", invalidEccLevel));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("Invalid error correction level");
+    }
+
+    [Fact]
+    public void micro_qr_should_auto_select_m4_for_ecc_level_q()
+    {
+        // Q level is only supported on M4, so the generator should automatically select M4
+        var qrData = QRCodeGenerator.GenerateMicroQrCode("ABC", ECCLevel.Q);
+        (qrData.ModuleMatrix.Count - 8).ShouldBe(17); // M4 size is 17x17
+        qrData.Version.ShouldBe(-4);
     }
 }
 
