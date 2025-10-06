@@ -1047,6 +1047,7 @@ public static partial class PayloadGenerator
         }
 
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>
         /// Operation modes of the BezahlCode
         /// </summary>
@@ -1088,6 +1089,7 @@ public static partial class PayloadGenerator
             /// </summary>
             contact_v2
         }
+#pragma warning restore CA1707 // Underscore in identifier
 
         /// <summary>
         /// Exception class for BezahlCode errors.

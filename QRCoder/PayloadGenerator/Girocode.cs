@@ -126,6 +126,7 @@ public static partial class PayloadGenerator
             Unstructured
         }
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>
         /// Defines the encoding types for Girocode payloads.
         /// </summary>
@@ -171,6 +172,7 @@ public static partial class PayloadGenerator
             /// </summary>
             ISO_8859_15
         }
+#pragma warning restore CA1707 // Underscore in identifier
 
         /// <summary>
         /// Represents errors that occur during Girocode generation.

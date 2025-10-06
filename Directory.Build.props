@@ -38,7 +38,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);IDE0005;CA1707</NoWarn>
+    <NoWarn>$(NoWarn);IDE0005</NoWarn>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisMode>None</AnalysisMode>
   </PropertyGroup>

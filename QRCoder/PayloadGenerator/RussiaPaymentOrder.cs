@@ -575,6 +575,7 @@ public static partial class PayloadGenerator
             public TechCode? TechCode { get; set; }
         }
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>            
         /// (List of values of the technical code of the payment)
         /// <para>Перечень значений технического кода платежа</para>
@@ -692,6 +693,7 @@ public static partial class PayloadGenerator
             /// </summary>
             koi8_r = 3
         }
+#pragma warning restore CA1707 // Underscore in identifier
 
         /// <summary>
         /// Represents errors that occur during the generation of a RussiaPaymentOrder payload.
