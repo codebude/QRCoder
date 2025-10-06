@@ -101,12 +101,12 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         var pointsPerModule = (double)Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
 
         string psFile = string.Format(CultureInfo.InvariantCulture, PS_HEADER, new object[] {
-            DateTime.Now.ToString("s", CultureInfo.InvariantCulture), PostscriptQRCode.CleanSvgVal(viewBox.Width), PostscriptQRCode.CleanSvgVal(pointsPerModule),
+            DateTime.Now.ToString("s", CultureInfo.InvariantCulture), CleanSvgVal(viewBox.Width), CleanSvgVal(pointsPerModule),
             epsFormat ? "EPSF-3.0" : string.Empty
         });
         psFile += string.Format(CultureInfo.InvariantCulture, PS_FUNCTIONS, new object[] {
-            PostscriptQRCode.CleanSvgVal(darkColor.R /255.0), PostscriptQRCode.CleanSvgVal(darkColor.G /255.0), PostscriptQRCode.CleanSvgVal(darkColor.B /255.0),
-            PostscriptQRCode.CleanSvgVal(lightColor.R /255.0), PostscriptQRCode.CleanSvgVal(lightColor.G /255.0), PostscriptQRCode.CleanSvgVal(lightColor.B /255.0),
+            CleanSvgVal(darkColor.R /255.0), CleanSvgVal(darkColor.G /255.0), CleanSvgVal(darkColor.B /255.0),
+            CleanSvgVal(lightColor.R /255.0), CleanSvgVal(lightColor.G /255.0), CleanSvgVal(lightColor.B /255.0),
             drawableModulesCount
         });
 
