@@ -14,6 +14,7 @@
     <PackageReference Include="KGySoft.Drawing" Version="9.2.0" />
     <PackageReference Include="KGySoft.Drawing.Core" Version="9.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.3" />
+    <PackageReference Include="Svg" Version="3.4.7" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Include="shouldly" Version="4.3.0" />
@@ -59,11 +60,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="QRCoder"/>
-    <Using Include="QRCoderTests.Helpers"/>
-    <Using Include="Shouldly"/>
-    <Using Include="System.Drawing"/>
-    <Using Include="Xunit"/>
+    <Using Include="QRCoder" />
+    <Using Include="QRCoderTests.Helpers" />
+    <Using Include="Shouldly" />
+    <Using Include="System.Drawing" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

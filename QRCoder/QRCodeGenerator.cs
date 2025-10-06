@@ -174,6 +174,8 @@ public partial class QRCodeGenerator : IDisposable
         ValidateECCLevel(eccLevel);
         if (eccLevel == ECCLevel.H)
             throw new ArgumentOutOfRangeException(nameof(eccLevel), eccLevel, "Micro QR codes does not support error correction level H.");
+        if (eccLevel == ECCLevel.Q && requestedVersion == 0)
+            requestedVersion = -4; // If Q level is specified without a version, automatically select M4 since Q is only supported on M4
         if (eccLevel == ECCLevel.Q && requestedVersion != -4)
             throw new ArgumentOutOfRangeException(nameof(eccLevel), eccLevel, "Micro QR codes only supports error correction level Q for version M4.");
         if (eccLevel != ECCLevel.Default && requestedVersion == -1)

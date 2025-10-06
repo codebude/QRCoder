@@ -586,4 +586,197 @@ public class SwissQrCodeTests
 
         exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
     }
+
+    [Fact]
+    public void swissqrcode_generator_should_generate_with_combined_address_type()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress("John Doe", "CH", "Parlamentsgebäude 1", "3003 Bern");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2430043000000789012", PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR, "990005000000000320071012303", ReferenceTextType.QrReference);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator
+            .ToString()
+            .ShouldBe("SPC\r\n0200\r\n1\r\nCH2430043000000789012\r\nK\r\nJohn Doe\r\nParlamentsgebäude 1\r\n3003 Bern\r\n\r\n\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nCHF\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nQRR\r\n990005000000000320071012303\r\n\r\nEPD");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_name_empty()
+    {
+        var name = "";
+        var country = "CH";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "3003 Bern";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Name must not be empty.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_name_too_long()
+    {
+        var name = "John Dorian Peter Charles Lord of the Rings and Master of Disaster Grayham";
+        var country = "CH";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "3003 Bern";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Name must be shorter than 71 chars.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_line1_too_long()
+    {
+        var name = "John Doe";
+        var country = "CH";
+        var addressLine1 = "This is a very long address line that exceeds the maximum allowed length of 70 characters for combined address";
+        var addressLine2 = "City";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Address line 1 must be shorter than 71 chars.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_line2_too_long()
+    {
+        var name = "John Doe";
+        var country = "CH";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "This is a very long address line that exceeds the maximum allowed length of 70 characters for combined address";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Address line 2 must be shorter than 71 chars.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_country_invalid()
+    {
+        var name = "John Doe";
+        var country = "CHE";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "3003 Bern";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_generate_with_minimal_reference()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator
+            .ToString()
+            .ShouldBe("SPC\r\n0200\r\n1\r\nCH2609000000857666015\r\nS\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nCHF\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nNON\r\n\r\n\r\nEPD");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_generate_with_scor_reference()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.SCOR, "RF18539007547034", ReferenceTextType.CreditorReferenceIso11649);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator
+            .ToString()
+            .ShouldBe("SPC\r\n0200\r\n1\r\nCH2609000000857666015\r\nS\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nCHF\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nSCOR\r\nRF18539007547034\r\n\r\nEPD");
+    }
+
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_liechtenstein_iban()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "9490", "Vaduz", "LI", "Städtle", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("LI21088100002324013AA", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator.ToString().ShouldContain("LI21088100002324013AA");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_qrr_reference_without_qr_iban()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR, "990005000000000320071012303", ReferenceTextType.QrReference);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.SwissQrCodeException>(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference));
+
+        exception.Message.ShouldBe("If non QR-IBAN is used, you have to choose either \"SCOR\" or \"NON\" as reference type!");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_additional_information_without_bill_information()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+        var additionalInformation = new PayloadGenerator.SwissQrCode.AdditionalInformation("Unstructured message only");
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation);
+
+        generator.ToString().ShouldContain("Unstructured message only\r\nEPD");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_bill_information_without_unstructured_message()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+        var additionalInformation = new PayloadGenerator.SwissQrCode.AdditionalInformation(null, "Bill information only");
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation);
+
+        generator.ToString().ShouldContain("\r\nEPD\r\nBill information only");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_empty_additional_information()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+        var additionalInformation = new PayloadGenerator.SwissQrCode.AdditionalInformation();
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation);
+
+        generator.ToString().ShouldContain("\r\nEPD");
+    }
+
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_qr_iban_with_qrr_reference_default_counter()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2430043000000789012", PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator.ToString().ShouldContain("QRR\r\n\r\n");
+    }
 }
