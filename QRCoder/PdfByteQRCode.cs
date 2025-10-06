@@ -197,16 +197,19 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
                 // Found a dark module - find the run length
                 int startX = x;
-                int runLength = 0;
                 while (x < size && matrix[y][x])
                 {
-                    runLength++;
                     x++;
                 }
 
                 // Create a single rectangle for the entire run of dark modules
                 // Format: x y width height re
-                pathCommands.Append(ToStr(startX) + " " + ToStr(y) + " " + ToStr(runLength) + " 1 re\r\n");
+                pathCommands.Append(ToStr(startX));
+                pathCommands.Append(' ');
+                pathCommands.Append(ToStr(y));
+                pathCommands.Append(' ');
+                pathCommands.Append(ToStr(x - startX));
+                pathCommands.Append(" 1 re\r\n");
             }
         }
 
