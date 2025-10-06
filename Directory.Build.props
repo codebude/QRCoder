@@ -40,7 +40,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);IDE0005</NoWarn>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <AnalysisMode>None</AnalysisMode>
+    <AnalysisMode>Recommended</AnalysisMode>
   </PropertyGroup>
 
   <!-- Include README for packable projects -->

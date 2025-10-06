@@ -52,7 +52,7 @@ public static partial class PayloadGenerator
         /// <summary>
         /// The counter value for HOTP (only used if Type is HOTP).
         /// </summary>
-        public int? Counter { get; set; } = null;
+        public int? Counter { get; set; }
 
         /// <summary>
         /// The period in seconds for TOTP (default is 30).
@@ -153,7 +153,7 @@ public static partial class PayloadGenerator
         {
             if (Period == null)
             {
-                throw new Exception("Period must be set when using OneTimePasswordAuthType.TOTP");
+                throw new InvalidOperationException("Period must be set when using OneTimePasswordAuthType.TOTP");
             }
 
             var sb = new StringBuilder("otpauth://totp/");
@@ -176,7 +176,7 @@ public static partial class PayloadGenerator
         {
             if (Secret.IsNullOrWhiteSpace())
             {
-                throw new Exception("Secret must be a filled out base32 encoded string");
+                throw new InvalidOperationException("Secret must be a filled out base32 encoded string");
             }
             string strippedSecret = Secret.Replace(" ", "");
             string? escapedIssuer = null;
@@ -185,18 +185,18 @@ public static partial class PayloadGenerator
 
             if (!Issuer.IsNullOrWhiteSpace())
             {
-                if (Issuer.Contains(":"))
+                if (Issuer.Contains(':'))
                 {
-                    throw new Exception("Issuer must not have a ':'");
+                    throw new InvalidOperationException("Issuer must not have a ':'");
                 }
                 escapedIssuer = Uri.EscapeDataString(Issuer);
             }
 
             if (!Label.IsNullOrWhiteSpace())
             {
-                if (Label.Contains(":"))
+                if (Label.Contains(':'))
                 {
-                    throw new Exception("Label must not have a ':'");
+                    throw new InvalidOperationException("Label must not have a ':'");
                 }
                 escapedLabel = Uri.EscapeDataString(Label);
             }

@@ -11,12 +11,12 @@ public class BezahlCodeTests
         var bnc = "100205000";
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount);
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         generator
             .ToString()
-            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -30,12 +30,12 @@ public class BezahlCodeTests
         var amount = 10.00m;
         var postingKey = 69;
         var currency = Currency.USD;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, DateTime.Now);
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         generator
             .ToString()
-            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -49,12 +49,12 @@ public class BezahlCodeTests
         var amount = 10.00m;
         var postingKey = 69;
         var currency = Currency.USD;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singledirectdebit, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, DateTime.Now);
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         generator
             .ToString()
-            .ShouldBe("bank://singledirectdebit?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singledirectdebit?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -72,12 +72,12 @@ public class BezahlCodeTests
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
         var currency = Currency.USD;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepayment, name, account, bnc, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, reason, postingKey, currency, DateTime.Now);
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         generator
             .ToString()
-            .ShouldBe("bank://periodicsinglepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "&periodictimeunit=W&periodictimeunitrotation=2&periodicfirstexecutiondate=" + periodicFirstExecutionDate.ToString("ddMMyyyy") + "&periodiclastexecutiondate=" + periodicLastExecutionDate.ToString("ddMMyyyy"));
+            .ShouldBe("bank://periodicsinglepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&postingkey=69&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "&periodictimeunit=W&periodictimeunitrotation=2&periodicfirstexecutiondate=" + periodicFirstExecutionDate.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "&periodiclastexecutiondate=" + periodicLastExecutionDate.ToString("ddMMyyyy", CultureInfo.InvariantCulture));
     }
 
 
@@ -93,7 +93,7 @@ public class BezahlCodeTests
 
         generator
             .ToString()
-            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -112,7 +112,7 @@ public class BezahlCodeTests
 
         generator
             .ToString()
-            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -133,7 +133,7 @@ public class BezahlCodeTests
 
         generator
             .ToString()
-            .ShouldBe("bank://singledirectdebitsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&creditorid=DE%2002%20TSV%2001234567890&mandateid=987543CB2&dateofsignature=01032017&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singledirectdebitsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&creditorid=DE%2002%20TSV%2001234567890&mandateid=987543CB2&dateofsignature=01032017&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -156,7 +156,7 @@ public class BezahlCodeTests
 
         generator
             .ToString()
-            .ShouldBe("bank://periodicsinglepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "&periodictimeunit=M&periodictimeunitrotation=1&periodicfirstexecutiondate=" + periodicFirstExecutionDate.ToString("ddMMyyyy") + "&periodiclastexecutiondate=" + periodicLastExecutionDate.ToString("ddMMyyyy"));
+            .ShouldBe("bank://periodicsinglepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&separeference=Fake%20SEPA%20reference&amount=10,00&reason=Thanks%20for%20all%20your%20efforts&currency=USD&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "&periodictimeunit=M&periodictimeunitrotation=1&periodicfirstexecutiondate=" + periodicFirstExecutionDate.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "&periodiclastexecutiondate=" + periodicLastExecutionDate.ToString("ddMMyyyy", CultureInfo.InvariantCulture));
     }
 
 
@@ -245,12 +245,12 @@ public class BezahlCodeTests
         var bnc = "100205000";
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount);
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         generator
             .ToString()
-            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=01194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=01194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -261,12 +261,12 @@ public class BezahlCodeTests
         var bnc = "10020 5000";
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount);
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         generator
             .ToString()
-            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -282,7 +282,7 @@ public class BezahlCodeTests
 
         generator
             .ToString()
-            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -298,7 +298,7 @@ public class BezahlCodeTests
 
         generator
             .ToString()
-            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepaymentsepa?name=Wikimedia%20F%C3%B6rdergesellschaft&iban=DE33100205000001194700&bic=BFSWDE33BER&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -309,12 +309,12 @@ public class BezahlCodeTests
         var bnc = "10020 5000";
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var generator = new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount);
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         generator
             .ToString()
-            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy") + "");
+            .ShouldBe("bank://singlepayment?name=Wikimedia%20F%C3%B6rdergesellschaft&account=001194700&bnc=100205000&amount=10,00&currency=EUR&executiondate=" + DateTime.Now.ToString("ddMMyyyy", CultureInfo.InvariantCulture) + "");
     }
 
 
@@ -324,9 +324,9 @@ public class BezahlCodeTests
         var account = "0001194700";
         var bnc = "10020 5000";
         var name = "Wikimedia Fördergesellschaft";
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, "", "", "New business contact."));
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         exception.Message.ShouldBe("The constructor without an amount may only ne used with authority types 'contact' and 'contact_v2'.");
     }
 
@@ -371,9 +371,9 @@ public class BezahlCodeTests
         var periodicFirstExecutionDate = DateTime.Now;
         var periodicLastExecutionDate = DateTime.Now.AddMonths(3);
         var currency = Currency.USD;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.periodicsinglepayment, name, account, bnc, amount, periodicTimeunit, periodicTimeunitRotation, periodicFirstExecutionDate, periodicLastExecutionDate, reason, postingKey, currency, DateTime.Now));
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         exception.Message.ShouldBe("When using 'periodicsinglepayment' as authority type, the parameters 'periodicTimeunit' and 'periodicTimeunitRotation' must be set.");
     }
 
@@ -385,9 +385,9 @@ public class BezahlCodeTests
         var bic = "BFSWDE33BER";
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, iban: iban, bic: bic, amount: amount));
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         exception.Message.ShouldBe("The constructor with 'iban' and 'bic' may only be used with 'SEPA' authority types. Either choose another authority type or switch constructor.");
 
     }
@@ -452,9 +452,9 @@ public class BezahlCodeTests
         var bnc = "100205000";
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount));
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         exception.Message.ShouldBe("The account entered isn't valid.");
     }
 
@@ -466,9 +466,9 @@ public class BezahlCodeTests
         var bnc = "10020500023545626226262";
         var name = "Wikimedia Fördergesellschaft";
         var amount = 10.00m;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount));
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         exception.Message.ShouldBe("The bnc entered isn't valid.");
     }
 
@@ -481,9 +481,9 @@ public class BezahlCodeTests
         var name = "Wikimedia Fördergesellschaft";
         var postingKey = 101;
         var amount = 10.00m;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account: account, bnc: bnc, amount: amount, postingKey: postingKey));
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         exception.Message.ShouldBe("PostingKey must be within 0 and 99.");
     }
 
@@ -616,9 +616,9 @@ public class BezahlCodeTests
         var postingKey = 69;
         var executionDate = new DateTime(2017, 1, 1);
         var currency = Currency.USD;
-#pragma warning disable CS0612
+#pragma warning disable CS0618
         var exception = Should.Throw<BezahlCodeException>(() => new PayloadGenerator.BezahlCode(AuthorityType.singlepayment, name, account, bnc, amount, "", 0, null, null, reason, postingKey, currency, executionDate));
-#pragma warning restore CS0612
+#pragma warning restore CS0618
         exception.Message.ShouldBe("Execution date must be today or in future.");
     }
 

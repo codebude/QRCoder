@@ -53,8 +53,8 @@ public class ArtQRCodeRendererTests
         var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
         var aCode = new ArtQRCode(data);
 
-        var exception = Should.Throw<System.Exception>(() => aCode.GetGraphic(10, Color.Black, Color.White, Color.Transparent, pixelSizeFactor: 2));
-        exception.Message.ShouldBe("The parameter pixelSize must be between 0 and 1. (0-100%)");
+        var exception = Should.Throw<ArgumentOutOfRangeException>(() => aCode.GetGraphic(10, Color.Black, Color.White, Color.Transparent, pixelSizeFactor: 2));
+        exception.Message.ShouldStartWith("The parameter pixelSizeFactor must be between 0 and 1. (0-100%)");
     }
 
     [Fact]

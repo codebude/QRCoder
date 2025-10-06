@@ -45,7 +45,7 @@ public static partial class PayloadGenerator
         /// <param name="value">The string to limit.</param>
         /// <param name="maxLength">The maximum length of the string.</param>
         /// <returns>The limited string.</returns>
-        private string LimitLength(string value, int maxLength)
+        private static string LimitLength(string value, int maxLength)
             => (value.Length <= maxLength) ? value : value.Substring(0, maxLength);
 
         /// <summary>
@@ -89,14 +89,14 @@ public static partial class PayloadGenerator
             _payerAddress = LimitLength(payerAddress.Trim(), 33);
             _payerPlace = LimitLength(payerPlace.Trim(), 33);
             _amount = FormatAmount(amount);
-            _code = LimitLength(code.Trim().ToUpper(), 4);
+            _code = LimitLength(code.Trim().ToUpperInvariant(), 4);
             _purpose = LimitLength(description.Trim(), 42);
-            _deadLine = (deadline == null) ? "" : deadline.Value.ToString("dd.MM.yyyy");
+            _deadLine = (deadline == null) ? "" : deadline.Value.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture);
             _recipientIban = LimitLength(recipientIban.Trim(), 34);
             _recipientName = LimitLength(recipientName.Trim(), 33);
             _recipientAddress = LimitLength(recipientAddress.Trim(), 33);
             _recipientPlace = LimitLength(recipientPlace.Trim(), 33);
-            _recipientSiModel = LimitLength(recipientSiModel.Trim().ToUpper(), 4);
+            _recipientSiModel = LimitLength(recipientSiModel.Trim().ToUpperInvariant(), 4);
             _recipientSiReference = LimitLength(recipientSiReference.Trim(), 22);
         }
 
@@ -106,10 +106,10 @@ public static partial class PayloadGenerator
         /// </summary>
         /// <param name="amount">The amount to format.</param>
         /// <returns>The formatted amount string.</returns>
-        private string FormatAmount(double amount)
+        private static string FormatAmount(double amount)
         {
             int _amt = (int)Math.Round(amount * 100.0);
-            return string.Format("{0:00000000000}", _amt);
+            return string.Format(CultureInfo.InvariantCulture, "{0:00000000000}", _amt);
         }
 
         /// <summary>
@@ -148,15 +148,15 @@ public static partial class PayloadGenerator
             _sb.Append(_payerAddress).Append('\n');
             _sb.Append(_payerPlace).Append('\n');
             _sb.Append(_amount).Append('\n').Append('\n').Append('\n');
-            _sb.Append(_code.ToUpper()).Append('\n');
+            _sb.Append(_code.ToUpperInvariant()).Append('\n');
             _sb.Append(_purpose).Append('\n');
             _sb.Append(_deadLine).Append('\n');
-            _sb.Append(_recipientIban.ToUpper()).Append('\n');
+            _sb.Append(_recipientIban.ToUpperInvariant()).Append('\n');
             _sb.Append(_recipientSiModel).Append(_recipientSiReference).Append('\n');
             _sb.Append(_recipientName).Append('\n');
             _sb.Append(_recipientAddress).Append('\n');
             _sb.Append(_recipientPlace).Append('\n');
-            _sb.AppendFormat("{0:000}", CalculateChecksum()).Append('\n');
+            _sb.AppendFormat(CultureInfo.InvariantCulture, "{0:000}", CalculateChecksum()).Append('\n');
             return _sb.ToString();
         }
     }

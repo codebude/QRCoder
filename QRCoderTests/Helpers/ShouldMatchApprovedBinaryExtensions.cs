@@ -1,5 +1,3 @@
-#nullable enable
-
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -59,19 +57,19 @@ public static partial class ShouldMatchApprovedExtensions
         }
 
         if (frame == null)
-            throw new Exception("Unable to get stack frame information");
+            throw new ShouldAssertException("Unable to get stack frame information");
         if (method == null)
-            throw new Exception("Unable to get method information from stack frame");
+            throw new ShouldAssertException("Unable to get method information from stack frame");
 
         var fileName = frame.GetFileName();
         if (string.IsNullOrEmpty(fileName))
-            throw new Exception($"Source information not available, make sure you are compiling with full debug information. Method: {method.DeclaringType?.Name}.{method.Name}");
+            throw new ShouldAssertException($"Source information not available, make sure you are compiling with full debug information. Method: {method.DeclaringType?.Name}.{method.Name}");
 
         var outputFolder = Path.GetDirectoryName(fileName);
         if (string.IsNullOrEmpty(outputFolder))
-            throw new Exception($"Unable to determine output folder from file: {fileName}");
+            throw new ShouldAssertException($"Unable to determine output folder from file: {fileName}");
 
-        var className = method.DeclaringType?.Name ?? throw new Exception("Unable to get class name from method information");
+        var className = method.DeclaringType?.Name ?? throw new ShouldAssertException("Unable to get class name from method information");
         var testMethodName = method.Name;
         var discriminatorPart = string.IsNullOrEmpty(discriminator) ? "" : $".{discriminator}";
 

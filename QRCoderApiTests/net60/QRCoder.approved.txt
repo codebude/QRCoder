@@ -8,6 +8,46 @@ namespace QRCoder
         public void Dispose() { }
         public virtual void SetQRCodeData(QRCoder.QRCodeData data) { }
     }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public class ArtQRCode : QRCoder.AbstractQRCode, System.IDisposable
+    {
+        public ArtQRCode() { }
+        public ArtQRCode(QRCoder.QRCodeData data) { }
+        public System.Drawing.Bitmap GetGraphic(System.Drawing.Bitmap? backgroundImage = null) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, System.Drawing.Color backgroundColor, System.Drawing.Bitmap? backgroundImage = null, double pixelSizeFactor = 1, bool drawQuietZones = true, QRCoder.ArtQRCode.QuietZoneStyle quietZoneRenderingStyle = 0, QRCoder.ArtQRCode.BackgroundImageStyle backgroundImageStyle = 1, System.Drawing.Bitmap? finderPatternImage = null) { }
+        public enum BackgroundImageStyle
+        {
+            Fill = 0,
+            DataAreaOnly = 1,
+        }
+        public enum QuietZoneStyle
+        {
+            Dotted = 0,
+            Flat = 1,
+        }
+    }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public static class ArtQRCodeHelper
+    {
+        public static System.Drawing.Bitmap GetQRCode(
+                    string plainText,
+                    int pixelsPerModule,
+                    System.Drawing.Color darkColor,
+                    System.Drawing.Color lightColor,
+                    System.Drawing.Color backgroundColor,
+                    QRCoder.QRCodeGenerator.ECCLevel eccLevel,
+                    bool forceUtf8 = false,
+                    bool utf8BOM = false,
+                    QRCoder.QRCodeGenerator.EciMode eciMode = 0,
+                    int requestedVersion = -1,
+                    System.Drawing.Bitmap? backgroundImage = null,
+                    double pixelSizeFactor = 1,
+                    bool drawQuietZones = true,
+                    QRCoder.ArtQRCode.QuietZoneStyle quietZoneRenderingStyle = 1,
+                    QRCoder.ArtQRCode.BackgroundImageStyle backgroundImageStyle = 1,
+                    System.Drawing.Bitmap? finderPatternImage = null) { }
+    }
     public class AsciiQRCode : QRCoder.AbstractQRCode, System.IDisposable
     {
         public AsciiQRCode() { }
@@ -32,6 +72,8 @@ namespace QRCoder
         public string GetGraphic(int pixelsPerModule) { }
         public string GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, QRCoder.Base64QRCode.ImageType imgType = 2) { }
         public string GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true, QRCoder.Base64QRCode.ImageType imgType = 2) { }
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+        public string GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, System.Drawing.Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true, QRCoder.Base64QRCode.ImageType imgType = 2) { }
         public enum ImageType
         {
             [System.Runtime.Versioning.SupportedOSPlatform("windows")]
@@ -106,13 +148,13 @@ namespace QRCoder
             public override string ToString() { }
             public enum AuthorityType
             {
-                [System.Obsolete]
+                [System.Obsolete("Use singlepaymentsepa instead for SEPA-compliant payments")]
                 singlepayment = 0,
                 singlepaymentsepa = 1,
-                [System.Obsolete]
+                [System.Obsolete("Use singledirectdebitsepa instead for SEPA-compliant payments")]
                 singledirectdebit = 2,
                 singledirectdebitsepa = 3,
-                [System.Obsolete]
+                [System.Obsolete("Use periodicsinglepaymentsepa instead for SEPA-compliant payments")]
                 periodicsinglepayment = 4,
                 periodicsinglepaymentsepa = 5,
                 contact = 6,
@@ -851,6 +893,16 @@ namespace QRCoder
     {
         public static string GetQRCode(string plainText, int pointsPerModule, string darkColorHex, string lightColorHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, bool drawQuietZones = true, bool epsFormat = false) { }
     }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public class QRCode : QRCoder.AbstractQRCode, System.IDisposable
+    {
+        public QRCode() { }
+        public QRCode(QRCoder.QRCodeData data) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, System.Drawing.Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true, System.Drawing.Color? iconBackgroundColor = default) { }
+    }
     public class QRCodeData : System.IDisposable
     {
         public QRCodeData(int version) { }
@@ -859,7 +911,7 @@ namespace QRCoder
         public QRCodeData(string pathToRawData, QRCoder.QRCodeData.Compression compressMode) { }
         public System.Collections.Generic.List<System.Collections.BitArray> ModuleMatrix { get; set; }
         public int Version { get; }
-        public void Dispose() { }
+        public virtual void Dispose() { }
         public byte[] GetRawData(QRCoder.QRCodeData.Compression compressMode) { }
         public void SaveRawData(string filePath, QRCoder.QRCodeData.Compression compressMode) { }
         public enum Compression
@@ -876,7 +928,7 @@ namespace QRCoder
         public QRCoder.QRCodeData CreateQrCode(QRCoder.PayloadGenerator.Payload payload, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
         public QRCoder.QRCodeData CreateQrCode(byte[] binaryData, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
         public QRCoder.QRCodeData CreateQrCode(string plainText, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1) { }
-        public void Dispose() { }
+        public virtual void Dispose() { }
         public static QRCoder.QRCodeData GenerateMicroQrCode(string plainText, QRCoder.QRCodeGenerator.ECCLevel eccLevel = -1, int requestedVersion = 0) { }
         public static QRCoder.QRCodeData GenerateQrCode(QRCoder.PayloadGenerator.Payload payload) { }
         public static QRCoder.QRCodeData GenerateQrCode(QRCoder.PayloadGenerator.Payload payload, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
@@ -898,6 +950,11 @@ namespace QRCoder
             Utf8 = 26,
         }
     }
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+    public static class QRCodeHelper
+    {
+        public static System.Drawing.Bitmap GetQRCode(string plainText, int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, System.Drawing.Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true) { }
+    }
     public class SvgQRCode : QRCoder.AbstractQRCode, System.IDisposable
     {
         public SvgQRCode() { }
@@ -916,6 +973,8 @@ namespace QRCoder
         public class SvgLogo
         {
             public SvgLogo(byte[] iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true) { }
+            [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+            public SvgLogo(System.Drawing.Bitmap iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true) { }
             public SvgLogo(string iconVectorized, int iconSizePercent = 15, bool fillLogoBackground = true, bool iconEmbedded = true) { }
             public bool FillLogoBackground() { }
             public string GetDataUri() { }
@@ -953,6 +1012,7 @@ namespace QRCoder.Extensions
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("This method uses reflection to examine the provided enum value.")]
         public static string? GetStringValue(this System.Enum value) { }
     }
+    [System.AttributeUsage(System.AttributeTargets.Field)]
     [System.Obsolete("This attribute will be removed in a future version of QRCoder.")]
     public class StringValueAttribute : System.Attribute
     {

@@ -152,7 +152,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <param name="rect">The rectangle for which to create the rounded path.</param>
     /// <param name="cornerRadius">The radius of the corners.</param>
     /// <returns>Returns the rounded rectangle path.</returns>
-    internal GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
+    internal static GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
     {
         var roundedRect = new GraphicsPath();
         roundedRect.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);

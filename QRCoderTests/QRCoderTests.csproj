@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
+
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
     <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWPF>
     <DefineConstants Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);TEST_XAML</DefineConstants>
     <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
     <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'netcoreapp2.1'">2.1.30</RuntimeFrameworkVersion>
+    <NoWarn>$(NoWarn);CA1707;CA1416</NoWarn>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="KGySoft.Drawing" Version="9.2.0" />
     <PackageReference Include="KGySoft.Drawing.Core" Version="9.1.1" />
@@ -33,25 +34,25 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <Reference Include="PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="WindowsBase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows' ">
     <ProjectReference Include="..\QRCoder.Xaml\QRCoder.Xaml.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <EmbeddedResource Include="assets\*.svg" />
     <EmbeddedResource Include="assets\*.png" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <None Include="**\*.approved.*;**\*.received.*">
       <DependentUpon>$([System.String]::Copy('%(Filename)').Split('.')[0]).cs</DependentUpon>

@@ -50,8 +50,8 @@ public static partial class PayloadGenerator
                 if (end.Kind == DateTimeKind.Utc)
                     dtFormatEnd = "yyyyMMddTHHmmssZ";
             }
-            _start = start.ToString(dtFormatStart);
-            _end = end.ToString(dtFormatEnd);
+            _start = start.ToString(dtFormatStart, CultureInfo.InvariantCulture);
+            _end = end.ToString(dtFormatEnd, CultureInfo.InvariantCulture);
         }
 
         /// <summary>

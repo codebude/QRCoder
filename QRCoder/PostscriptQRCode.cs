@@ -100,11 +100,11 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         var drawableModulesCount = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
         var pointsPerModule = (double)Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
 
-        string psFile = string.Format(PS_HEADER, new object[] {
-            DateTime.Now.ToString("s"), CleanSvgVal(viewBox.Width), CleanSvgVal(pointsPerModule),
+        string psFile = string.Format(CultureInfo.InvariantCulture, PS_HEADER, new object[] {
+            CleanSvgVal(viewBox.Width), CleanSvgVal(pointsPerModule),
             epsFormat ? "EPSF-3.0" : string.Empty
         });
-        psFile += string.Format(PS_FUNCTIONS, new object[] {
+        psFile += string.Format(CultureInfo.InvariantCulture, PS_FUNCTIONS, new object[] {
             CleanSvgVal(darkColor.R /255.0), CleanSvgVal(darkColor.G /255.0), CleanSvgVal(darkColor.B /255.0),
             CleanSvgVal(lightColor.R /255.0), CleanSvgVal(lightColor.G /255.0), CleanSvgVal(lightColor.B /255.0),
             drawableModulesCount
@@ -128,70 +128,77 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
     /// </summary>
     /// <param name="input">The input double value.</param>
     /// <returns>Returns the cleaned string representation of the double value.</returns>
-    private string CleanSvgVal(double input) => input.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    private static string CleanSvgVal(double input) => input.ToString(System.Globalization.CultureInfo.InvariantCulture);
 
-    private const string PS_HEADER = @"%!PS-Adobe-3.0 {3}
-%%Creator: QRCoder.NET
-%%Title: QRCode
-%%CreationDate: {0}
-%%DocumentData: Clean7Bit
-%%Origin: 0
-%%DocumentMedia: Default {1} {1} 0 () ()
-%%BoundingBox: 0 0 {1} {1}
-%%LanguageLevel: 2 
-%%Pages: 1
-%%Page: 1 1
-%%EndComments
-%%BeginConstants
-/sz {1} def
-/sc {2} def
-%%EndConstants
-%%BeginFeature: *PageSize Default
-<< /PageSize [ sz sz ] /ImagingBBox null >> setpagedevice
-%%EndFeature
-";
+    // Note: line terminations here will encode differently based on which platform QRCoder was compiled on (CRLF vs LF);
+    // however, PostScript interpreters should handle both equally well.
+    private const string PS_HEADER = """
+        %!PS-Adobe-3.0 {2}
+        %%Creator: QRCoder.NET
+        %%Title: QRCode
+        %%DocumentData: Clean7Bit
+        %%Origin: 0
+        %%DocumentMedia: Default {0} {0} 0 () ()
+        %%BoundingBox: 0 0 {0} {0}
+        %%LanguageLevel: 2 
+        %%Pages: 1
+        %%Page: 1 1
+        %%EndComments
+        %%BeginConstants
+        /sz {0} def
+        /sc {1} def
+        %%EndConstants
+        %%BeginFeature: *PageSize Default
+        << /PageSize [ sz sz ] /ImagingBBox null >> setpagedevice
+        %%EndFeature
 
-    private const string PS_FUNCTIONS = @"%%BeginFunctions 
-/csquare {{
-    newpath
-    0 0 moveto
-    0 1 rlineto
-    1 0 rlineto
-    0 -1 rlineto
-    closepath
-    setrgbcolor
-    fill
-}} def
-/f {{ 
-    {0} {1} {2} csquare
-    1 0 translate
-}} def
-/b {{ 
-    1 0 translate
-}} def 
-/background {{ 
-    {3} {4} {5} csquare 
-}} def
-/nl {{
-    -{6} -1 translate
-}} def
-%%EndFunctions
-%%BeginBody
-0 0 moveto
-gsave
-sz sz scale
-background
-grestore
-gsave
-sc sc scale
-0 {6} 1 sub translate
-";
+        """;
 
-    private const string PS_FOOTER = @"%%EndBody
-grestore
-showpage   
-%%EOF
-";
+    private const string PS_FUNCTIONS = """
+        %%BeginFunctions 
+        /csquare {{
+            newpath
+            0 0 moveto
+            0 1 rlineto
+            1 0 rlineto
+            0 -1 rlineto
+            closepath
+            setrgbcolor
+            fill
+        }} def
+        /f {{ 
+            {0} {1} {2} csquare
+            1 0 translate
+        }} def
+        /b {{ 
+            1 0 translate
+        }} def 
+        /background {{ 
+            {3} {4} {5} csquare 
+        }} def
+        /nl {{
+            -{6} -1 translate
+        }} def
+        %%EndFunctions
+        %%BeginBody
+        0 0 moveto
+        gsave
+        sz sz scale
+        background
+        grestore
+        gsave
+        sc sc scale
+        0 {6} 1 sub translate
+
+        """;
+
+    private const string PS_FOOTER = """
+        %%EndBody
+        grestore
+        showpage   
+        %%EOF
+
+        """;
 }
 
 /// <summary>

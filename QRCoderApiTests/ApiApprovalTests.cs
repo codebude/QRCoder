@@ -1,3 +1,5 @@
+#pragma warning disable CA1861 // Prefer 'static readonly' fields over constant arrays
+
 using System.Diagnostics;
 using System.Reflection;
 using System.Xml.Linq;
@@ -61,7 +63,7 @@ public class ApiApprovalTests
         string[] tfms = project.Descendants("TargetFrameworks").Union(project.Descendants("TargetFramework")).First().Value.Split(";", StringSplitOptions.RemoveEmptyEntries);
 
         // There may be old stuff from earlier builds like net45, netcoreapp3.0, etc. so filter it out
-        string[] actualTfmDirs = Directory.GetDirectories(buildDir).Where(dir => tfms.Any(tfm => dir.EndsWith(tfm))).ToArray();
+        string[] actualTfmDirs = Directory.GetDirectories(buildDir).Where(dir => tfms.Any(tfm => dir.EndsWith(tfm, StringComparison.Ordinal))).ToArray();
         Debug.Assert(actualTfmDirs.Length > 0, $"Directory '{buildDir}' doesn't contain subdirectories matching {string.Join(";", tfms)}");
 
         (string tfm, string content)[] publicApi = actualTfmDirs.Select(tfmDir => (new DirectoryInfo(tfmDir).Name.Replace(".", ""), Assembly.LoadFile(Path.Combine(tfmDir, projectName + ".dll")).GeneratePublicApi(new ApiGeneratorOptions
