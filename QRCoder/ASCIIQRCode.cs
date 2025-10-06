@@ -102,14 +102,14 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
         {
             for (var col = 0; col < sideLength; col++)
             {
-                var current = moduleData[col + quietZonesOffset][row + quietZonesOffset] ^ invert;
+                var current = moduleData[row + quietZonesOffset][col + quietZonesOffset] ^ invert;
                 var nextRowId = row + quietZonesOffset + 1;
 
                 // Set next to whitespace "color"
                 var next = BLACK;
                 // Fill next with value, if in data range
                 if (nextRowId < QrCodeData.ModuleMatrix.Count)
-                    next = moduleData[col + quietZonesOffset][nextRowId] ^ invert;
+                    next = moduleData[nextRowId][col + quietZonesOffset] ^ invert;
 
                 if (current == WHITE && next == WHITE)
                     lineBuilder.Append(palette.WHITE_ALL);

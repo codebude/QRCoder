@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
     <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWPF>
     <DefineConstants Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);TEST_XAML</DefineConstants>

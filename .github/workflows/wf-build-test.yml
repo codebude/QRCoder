@@ -20,9 +20,7 @@ jobs:
           - { name: ".NET Framework 4.6.2", framework: "net462", coverage: false, no-build: true, sdk: "" }
           - { name: ".NET Core 2.1", framework: "netcoreapp2.1", coverage: true, no-build: false, sdk: "2.1.x" }
           - { name: ".NET Core 3.1", framework: "netcoreapp3.1", coverage: true, no-build: true, sdk: "3.1.x" }
-          - { name: ".NET 5.0", framework: "net5.0", coverage: true, no-build: true, sdk: "5.0.x" }
           - { name: ".NET 5.0 Windows", framework: "net5.0-windows", coverage: true, no-build: true, sdk: "5.0.x" }
-          - { name: ".NET 6.0", framework: "net6.0", coverage: true, no-build: true, sdk: "6.0.x" }
           - { name: ".NET 6.0 Windows", framework: "net6.0-windows", coverage: true, no-build: true, sdk: "6.0.x" }
 
     steps:
@@ -54,6 +52,9 @@ jobs:
     - name: Run trim analysis
       working-directory: QRCoderTrimAnalysis
       run: dotnet publish -c Release -o bin/publish
+
+    - name: Build solution
+      run: dotnet build -c Release
 
     - name: Run API approval tests
       working-directory: QRCoderApiTests
