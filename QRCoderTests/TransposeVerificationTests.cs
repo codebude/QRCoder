@@ -100,7 +100,7 @@ public class TransposeVerificationTests
         var asciiArt = sizeType switch
         {
             "FullSize" => qrCode.GetGraphic(1),
-            "Small" => qrCode.GetGraphicSmall(),
+            "Small" => qrCode.GetGraphicSmall(invert: true),
             _ => throw new ArgumentException($"Unknown size type: {sizeType}")
         };
         asciiArt.ShouldMatchApproved(x => x.NoDiff().WithDiscriminator(sizeType));
