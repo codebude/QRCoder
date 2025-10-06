@@ -54,7 +54,7 @@ public class ArtQRCodeRendererTests
         var aCode = new ArtQRCode(data);
 
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => aCode.GetGraphic(10, Color.Black, Color.White, Color.Transparent, pixelSizeFactor: 2));
-        exception.Message.ShouldStartWith("The parameter pixelSize must be between 0 and 1. (0-100%)");
+        exception.Message.ShouldStartWith("The parameter pixelSizeFactor must be between 0 and 1. (0-100%)");
     }
 
     [Fact]
