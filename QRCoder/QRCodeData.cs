@@ -158,12 +158,13 @@ public class QRCodeData : IDisposable
             targetStream.WriteByte((byte)ModuleMatrix.Count);
 
             //Build data queue
-            var dataQueue = new Queue<int>();
+            var capacity = ModuleMatrix.Count * ModuleMatrix.Count + 7; // Total modules + max padding for byte alignment
+            var dataQueue = new Queue<int>(capacity);
             foreach (var row in ModuleMatrix)
             {
-                foreach (var module in row)
+                for (int i = 0; i < row.Length; i++)
                 {
-                    dataQueue.Enqueue((bool)module ? 1 : 0);
+                    dataQueue.Enqueue(row[i] ? 1 : 0);
                 }
             }
             int mod = (int)(((uint)ModuleMatrix.Count * (uint)ModuleMatrix.Count) % 8);
