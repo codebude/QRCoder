@@ -9,18 +9,18 @@ public class EmailPayload : PayloadBase
         _address = address;
     }
 
-    private string _address { get; set; }
-    private string _subject { get; set; }
-    private string _body { get; set; }
+    private readonly string _address { get; set; }
+    private string? _subject { get; set; }
+    private string? _body { get; set; }
     private PayloadGenerator.Mail.MailEncoding _encoding { get; set; } = PayloadGenerator.Mail.MailEncoding.MAILTO;
 
-    public EmailPayload WithSubject(string subject)
+    public EmailPayload WithSubject(string? subject)
     {
         _subject = subject;
         return this;
     }
 
-    public EmailPayload WithBody(string body)
+    public EmailPayload WithBody(string? body)
     {
         _body = body;
         return this;

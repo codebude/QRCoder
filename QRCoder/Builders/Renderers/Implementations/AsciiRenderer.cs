@@ -2,11 +2,18 @@ namespace QRCoder.Builders.Renderers.Implementations;
 
 public class AsciiRenderer : RendererBase, ITextRenderer
 {
+    private bool _small;
     private string _darkString = "██";
     private string _lightString = "  ";
     private int _repeatPerModule = 1;
     private string _endOfLine = System.Environment.NewLine;
     private bool _inverseDarkLight = false;
+
+    public AsciiRenderer WithSmall()
+    {
+        _small = true;
+        return this;
+    }
 
     public AsciiRenderer WithText(string darkString, string lightString)
     {

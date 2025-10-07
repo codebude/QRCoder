@@ -4,5 +4,5 @@ namespace QRCoder.Builders.Renderers;
 
 public interface IRenderer
 {
-    IPayload Payload { set; }
+    public IPayload Payload { set; }
 }

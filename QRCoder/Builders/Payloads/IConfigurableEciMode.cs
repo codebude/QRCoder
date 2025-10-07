@@ -2,5 +2,5 @@ namespace QRCoder.Builders.Payloads;
 
 public interface IConfigurableEciMode
 {
-    QRCodeGenerator.EciMode EciMode { get; set; }
+    public QRCodeGenerator.EciMode EciMode { get; set; }
 }

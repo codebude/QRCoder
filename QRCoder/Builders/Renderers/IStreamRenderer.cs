@@ -4,5 +4,5 @@ namespace QRCoder.Builders.Renderers;
 
 public interface IStreamRenderer
 {
-    MemoryStream ToStream();
+    public MemoryStream ToStream();
 }

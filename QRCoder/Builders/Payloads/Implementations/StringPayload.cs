@@ -2,7 +2,7 @@ namespace QRCoder.Builders.Payloads.Implementations;
 
 public class StringPayload : PayloadBase
 {
-    private string _data;
+    private readonly string _data;
 
     public StringPayload(string data)
     {

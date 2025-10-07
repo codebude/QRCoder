@@ -2,11 +2,11 @@ namespace QRCoder.Builders.Payloads.Implementations;
 
 public class WiFiPayload : PayloadBase
 {
-    private string _ssid { get; set; }
-    private string _password { get; set; }
-    private PayloadGenerator.WiFi.Authentication _authentication { get; set; }
-    private bool _isHiddenSSID { get; set; }
-    private bool _isHexStrings { get; set; }
+    private readonly string _ssid;
+    private readonly string _password;
+    private readonly PayloadGenerator.WiFi.Authentication _authentication;
+    private bool _isHiddenSSID;
+    private bool _quoteHexStrings;
 
     public WiFiPayload(string ssid)
     {
@@ -28,9 +28,9 @@ public class WiFiPayload : PayloadBase
         return this;
     }
 
-    public WiFiPayload WithHexStrings()
+    public WiFiPayload WithQuotedHexStrings()
     {
-        _isHexStrings = true;
+        _quoteHexStrings = true;
         return this;
     }
 
@@ -38,7 +38,7 @@ public class WiFiPayload : PayloadBase
     {
         get
         {
-            var wifi = new PayloadGenerator.WiFi(_ssid, _password, _authentication, _isHiddenSSID, _isHexStrings);
+            var wifi = new PayloadGenerator.WiFi(_ssid, _password, _authentication, _isHiddenSSID, _quoteHexStrings);
             return wifi.ToString();
         }
     }

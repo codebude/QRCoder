@@ -4,5 +4,5 @@ namespace QRCoder.Builders.Renderers;
 
 public interface ITextRenderer
 {
-    string ToString();
+    public string ToString();
 }

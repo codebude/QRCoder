@@ -32,7 +32,7 @@ public static class RendererExtensions
         var memoryStream = streamRenderer.ToStream();
 #if NETSTANDARD || NETCOREAPP // todo: target .NET Framework 4.6 or newer so this code path is supported
         // by using TryGetBuffer, there is extremely small consequence to wrapping a byte[] in a MemoryStream temporarily
-        if (memoryStream.TryGetBuffer(out var buffer) && buffer.Count == buffer.Array.Length)
+        if (memoryStream.TryGetBuffer(out var buffer) && buffer.Count == buffer.Array!.Length)
         {
             return buffer.Array;
         }
@@ -70,33 +70,34 @@ public static class RendererExtensions
     public static string ToBase64String(this IStreamRenderer streamRenderer)
     {
         var data = ToArraySegment(streamRenderer);
-        return Convert.ToBase64String(data.Array, data.Offset, data.Count);
+        return Convert.ToBase64String(data.Array!, data.Offset, data.Count);
     }
 
     public static void ToFile(this IStreamRenderer streamRenderer, string fileName)
     {
         var memoryStream = streamRenderer.ToStream();
-        using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None))
-        {
-            memoryStream.CopyTo(file);
-        }
+        using var file = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None);
+        memoryStream.CopyTo(file);
     }
 
-    public static void ToFile(this ITextRenderer textRenderer, string fileName, Encoding encoding = null)
+    public static void ToFile(this ITextRenderer textRenderer, string fileName, Encoding? encoding = null)
     {
         File.WriteAllText(fileName, textRenderer.ToString(), encoding ?? Encoding.UTF8);
     }
 
-    public static void ToStream(this ITextRenderer textRenderer, Stream stream, Encoding encoding = null)
+    public static void ToStream(this ITextRenderer textRenderer, Stream stream, Encoding? encoding = null)
     {
-        using (var writer = new StreamWriter(stream, encoding))
-        {
-            writer.Write(textRenderer.ToString());
-            writer.Flush();
-        }
+#if NETSTANDARD1_3_OR_GREATER || NETCOREAPP
+        using var writer = new StreamWriter(stream, encoding ?? Encoding.UTF8, 1024, true);
+        writer.Write(textRenderer.ToString());
+#else
+        var writer = new StreamWriter(stream, encoding ?? Encoding.UTF8);
+        writer.Write(textRenderer.ToString());
+        writer.Flush();
+#endif
     }
 
-    public static MemoryStream ToStream(this ITextRenderer textRenderer, Encoding encoding = null)
+    public static MemoryStream ToStream(this ITextRenderer textRenderer, Encoding? encoding = null)
     {
         var str = textRenderer.ToString();
         var ms = new MemoryStream(str.Length);
