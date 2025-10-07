@@ -62,7 +62,7 @@ public class SvgQRCodeRendererTests
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
 
-#if SYSTEM_DRAWING && !NET5_0_OR_GREATER // .NET 5+ does not encode PNG images in a deterministic way, so the hash may be different across different runs
+#if SYSTEM_DRAWING
     [Fact]
     public void can_render_svg_qrcode_with_png_logo_bitmap()
     {
@@ -83,7 +83,7 @@ public class SvgQRCodeRendererTests
             RegexOptions.IgnoreCase);
         var match = regex.Match(svg);
         if (!match.Success || match.Groups.Count < 2)
-            throw new Exception("Could not find embedded image data in SVG output.");
+            throw new InvalidOperationException("Could not find embedded image data in SVG output.");
         var base64Data = match.Groups[1].Value;
         var imageData = Convert.FromBase64String(base64Data);
         imageData.ShouldMatchApprovedImage(discriminator: "embeddedLogo");
@@ -111,7 +111,7 @@ public class SvgQRCodeRendererTests
             RegexOptions.IgnoreCase);
         var match = regex.Match(svg);
         if (!match.Success || match.Groups.Count < 2)
-            throw new Exception("Could not find embedded image data in SVG output.");
+            throw new InvalidOperationException("Could not find embedded image data in SVG output.");
         var base64Data = match.Groups[1].Value;
         var imageData = Convert.FromBase64String(base64Data);
         imageData.ShouldMatchApprovedImage(discriminator: "embeddedLogo");
@@ -139,7 +139,7 @@ public class SvgQRCodeRendererTests
             RegexOptions.IgnoreCase);
         var match = regex.Match(svg);
         if (!match.Success || match.Groups.Count < 2)
-            throw new Exception("Could not find embedded image data in SVG output.");
+            throw new InvalidOperationException("Could not find embedded image data in SVG output.");
         var base64Data = match.Groups[1].Value;
         var imageData = Convert.FromBase64String(base64Data);
         imageData.ShouldMatchApprovedImage(discriminator: "embeddedLogo");
