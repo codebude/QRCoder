@@ -59,7 +59,7 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
 #if HAS_SPAN
         if (darkColorString.Length == whiteSpaceString.Length && lineCapacity < 510)
         {
-            Span<char> row = stackalloc char[lineCapacity];
+            Span<char> row = stackalloc char[512].Slice(0, lineCapacity);
             for (var y = 0; y < sideLength; y++)
             {
                 var offset = 0;
