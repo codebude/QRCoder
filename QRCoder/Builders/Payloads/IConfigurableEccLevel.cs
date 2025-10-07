@@ -1,7 +1,6 @@
-﻿namespace QRCoder.Builders.Payloads
+namespace QRCoder.Builders.Payloads;
+
+public interface IConfigurableEccLevel
 {
-    public interface IConfigurableEccLevel
-    {
-        QRCodeGenerator.ECCLevel EccLevel { get; set; }
-    }
+    QRCodeGenerator.ECCLevel EccLevel { get; set; }
 }

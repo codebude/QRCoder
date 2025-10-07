@@ -1,7 +1,6 @@
-﻿namespace QRCoder.Builders.Payloads
+namespace QRCoder.Builders.Payloads;
+
+public interface IPayload
 {
-    public interface IPayload
-    {
-        QRCodeData ToMatrix();
-    }
+    QRCodeData ToMatrix();
 }

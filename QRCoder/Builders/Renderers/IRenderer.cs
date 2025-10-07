@@ -1,9 +1,8 @@
-﻿using QRCoder.Builders.Payloads;
+using QRCoder.Builders.Payloads;
 
-namespace QRCoder.Builders.Renderers
+namespace QRCoder.Builders.Renderers;
+
+public interface IRenderer
 {
-    public interface IRenderer
-    {
-        IPayload Payload { set; }
-    }
+    IPayload Payload { set; }
 }

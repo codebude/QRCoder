@@ -1,9 +1,8 @@
-﻿using System.IO;
+using System.IO;
 
-namespace QRCoder.Builders.Renderers
+namespace QRCoder.Builders.Renderers;
+
+public interface ITextRenderer
 {
-    public interface ITextRenderer
-    {
-        string ToString();
-    }
+    string ToString();
 }

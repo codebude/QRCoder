@@ -1,7 +1,6 @@
-﻿namespace QRCoder.Builders.Payloads
+namespace QRCoder.Builders.Payloads;
+
+public interface IConfigurableVersion
 {
-    public interface IConfigurableVersion
-    {
-        int Version { get; set; }
-    }
+    int Version { get; set; }
 }

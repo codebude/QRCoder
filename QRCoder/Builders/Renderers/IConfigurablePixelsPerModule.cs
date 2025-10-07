@@ -1,7 +1,6 @@
-﻿namespace QRCoder.Builders.Renderers
+namespace QRCoder.Builders.Renderers;
+
+public interface IConfigurablePixelsPerModule
 {
-    public interface IConfigurablePixelsPerModule
-    {
-        int PixelsPerModule { get; set; }
-    }
+    int PixelsPerModule { get; set; }
 }

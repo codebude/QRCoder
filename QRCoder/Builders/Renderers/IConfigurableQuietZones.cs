@@ -1,7 +1,6 @@
-﻿namespace QRCoder.Builders.Renderers
+namespace QRCoder.Builders.Renderers;
+
+public interface IConfigurableQuietZones
 {
-    public interface IConfigurableQuietZones
-    {
-        bool QuietZone { get; set; }
-    }
+    bool QuietZone { get; set; }
 }

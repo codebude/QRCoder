@@ -1,13 +1,12 @@
-﻿using QRCoder.Builders.Payloads;
+using QRCoder.Builders.Payloads;
 
-namespace QRCoder.Builders.Renderers
+namespace QRCoder.Builders.Renderers;
+
+public abstract class RendererBase : IRenderer, IConfigurableQuietZones
 {
-    public abstract class RendererBase : IRenderer, IConfigurableQuietZones
-    {
-        protected QRCodeData QrCodeData { private set; get; }
+    protected QRCodeData QrCodeData { private set; get; }
 
-        protected bool QuietZone { get; set; } = true;
-        bool IConfigurableQuietZones.QuietZone { get => QuietZone; set => QuietZone = value; }
-        IPayload IRenderer.Payload { set => QrCodeData = value.ToMatrix(); }
-    }
+    protected bool QuietZone { get; set; } = true;
+    bool IConfigurableQuietZones.QuietZone { get => QuietZone; set => QuietZone = value; }
+    IPayload IRenderer.Payload { set => QrCodeData = value.ToMatrix(); }
 }
