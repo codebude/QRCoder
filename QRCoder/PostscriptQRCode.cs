@@ -101,24 +101,21 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         var drawableModulesCount = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
         var pointsPerModule = (double)Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
 
-        // Estimate capacity: PS_HEADER + PS_FUNCTIONS + PS_FOOTER + matrix content
-        // Each module generates 2 chars ("f " or "b "), plus newlines
-        // Add 200 characters for embedded numbers
         var estimatedCapacity = PS_HEADER.Length + PS_FUNCTIONS.Length + PS_FOOTER.Length +
-            (drawableModulesCount * drawableModulesCount * 2) + // modules
-            drawableModulesCount * 3 + // newlines
-            100;
+            (drawableModulesCount * drawableModulesCount * 2) + // modules (either "f " or "b ")
+            drawableModulesCount * 3 + // newlines ("nl\n")
+            200; // embedded numbers
         var sb = new StringBuilder(estimatedCapacity);
 
-        sb.AppendFormat(CultureInfo.InvariantCulture, PS_HEADER, new object[] {
+        sb.AppendFormat(CultureInfo.InvariantCulture, PS_HEADER, [
             CleanSvgVal(viewBox.Width), CleanSvgVal(pointsPerModule),
             epsFormat ? "EPSF-3.0" : string.Empty
-        });
-        sb.AppendFormat(CultureInfo.InvariantCulture, PS_FUNCTIONS, new object[] {
+        ]);
+        sb.AppendFormat(CultureInfo.InvariantCulture, PS_FUNCTIONS, [
             CleanSvgVal(darkColor.R /255.0), CleanSvgVal(darkColor.G /255.0), CleanSvgVal(darkColor.B /255.0),
             CleanSvgVal(lightColor.R /255.0), CleanSvgVal(lightColor.G /255.0), CleanSvgVal(lightColor.B /255.0),
             drawableModulesCount
-        });
+        ]);
 
         for (int xi = offset; xi < offset + drawableModulesCount; xi++)
         {
