@@ -26,7 +26,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string.
     /// </summary>
-    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn.</param>
+    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn; applicable only when using <see cref="SizingMode.WidthHeightAttribute"/>.</param>
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic(int pixelsPerModule)
     {
@@ -37,13 +37,13 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string with custom colors, optional quiet zones, and an optional logo.
     /// </summary>
-    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn.</param>
+    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn; applicable only when <paramref name="sizingMode"/> is <see cref="SizingMode.WidthHeightAttribute"/>.</param>
     /// <param name="darkColor">The color of the dark modules.</param>
     /// <param name="lightColor">The color of the light modules.</param>
     /// <param name="drawQuietZones">If true, a white border is drawn around the entire QR code.</param>
     /// <param name="sizingMode">Defines whether width/height or viewBox should be used for size definition.</param>
     /// <param name="logo">An optional logo to be rendered on the code (either Bitmap or SVG).</param>
-    /// <returns>Returns the QR code graphic as an SVG string.</returns>       
+    /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo? logo = null)
     {
         var offset = drawQuietZones ? 0 : 4;
@@ -55,7 +55,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string with custom colors (in HEX syntax), optional quiet zones, and an optional logo.
     /// </summary>
-    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn.</param>
+    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn; applicable only when <paramref name="sizingMode"/> is <see cref="SizingMode.WidthHeightAttribute"/>.</param>
     /// <param name="darkColorHex">The color of the dark/black modules in HEX format (e.g., #000000).</param>
     /// <param name="lightColorHex">The color of the light/white modules in HEX format (e.g., #ffffff).</param>
     /// <param name="drawQuietZones">If true, a white border is drawn around the entire QR code.</param>
@@ -73,7 +73,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string with optional quiet zones and an optional logo.
     /// </summary>
-    /// <param name="viewBox">The viewBox of the QR code graphic.</param>
+    /// <param name="viewBox">The width and height for the SVG when <paramref name="sizingMode"/> is <see cref="SizingMode.WidthHeightAttribute"/>; unused otherwise.</param>
     /// <param name="drawQuietZones">If true, a white border is drawn around the entire QR code.</param>
     /// <param name="sizingMode">Defines whether width/height or viewBox should be used for size definition.</param>
     /// <param name="logo">An optional logo to be rendered on the code (either Bitmap or SVG).</param>
@@ -84,7 +84,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string with custom colors and optional quiet zones and an optional logo.
     /// </summary>
-    /// <param name="viewBox">The viewBox of the QR code graphic.</param>
+    /// <param name="viewBox">The width and height for the SVG when <paramref name="sizingMode"/> is <see cref="SizingMode.WidthHeightAttribute"/>; unused otherwise.</param>
     /// <param name="darkColor">The color of the dark modules.</param>
     /// <param name="lightColor">The color of the light modules.</param>
     /// <param name="drawQuietZones">If true, a white border is drawn around the entire QR code.</param>
@@ -97,7 +97,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string with custom colors (in HEX syntax), optional quiet zones, and an optional logo.
     /// </summary>
-    /// <param name="viewBox">The viewBox of the QR code graphic.</param>
+    /// <param name="viewBox">The width and height for the SVG when <paramref name="sizingMode"/> is <see cref="SizingMode.WidthHeightAttribute"/>; unused otherwise.</param>
     /// <param name="darkColorHex">The color of the dark/black modules in HEX format (e.g., #000000).</param>
     /// <param name="lightColorHex">The color of the light/white modules in HEX format (e.g., #ffffff).</param>
     /// <param name="drawQuietZones">If true, a white border is drawn around the entire QR code.</param>
@@ -108,96 +108,93 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     {
         int offset = drawQuietZones ? 0 : 4;
         int drawableModulesCount = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
-        double pixelsPerModule = Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
-        double qrSize = drawableModulesCount * pixelsPerModule;
-        string svgSizeAttributes = (sizingMode == SizingMode.WidthHeightAttribute) ? $@"width=""{viewBox.Width}"" height=""{viewBox.Height}""" : $@"viewBox=""0 0 {viewBox.Width} {viewBox.Height}""";
+
+        // Build SVG opening tag with size attributes
+        var svgFile = new StringBuilder();
+        svgFile.Append(@"<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 ");
+        svgFile.Append(drawableModulesCount);
+        svgFile.Append(' ');
+        svgFile.Append(drawableModulesCount);
+        svgFile.Append(@""" shape-rendering=""crispEdges""");
+
+        // Add xlink namespace if logo is used
+        if (logo != null && !logo.IsEmbedded())
+        {
+            svgFile.Append(@" xmlns:xlink=""http://www.w3.org/1999/xlink""");
+        }
+
+        // Add width/height attributes if specified by sizing mode
+        if (sizingMode == SizingMode.WidthHeightAttribute)
+        {
+            svgFile.Append(@" width=""");
+            svgFile.Append(viewBox.Width);
+            svgFile.Append(@""" height=""");
+            svgFile.Append(viewBox.Height);
+            svgFile.Append('"');
+        }
+        svgFile.Append('>');
+        svgFile.AppendLine();
+
+        // Determine if we need to draw light modules as a path or as a background
+        bool drawLightModulesAsPath = IsPartiallyTransparent(darkColorHex);
+
+        // Draw light color background if not transparent and dark is fully opaque
+        if (!IsFullyTransparent(lightColorHex) && !drawLightModulesAsPath)
+        {
+            svgFile.Append(@"<rect x=""0"" y=""0"" width=""");
+            svgFile.Append(drawableModulesCount);
+            svgFile.Append(@""" height=""");
+            svgFile.Append(drawableModulesCount);
+            svgFile.Append(@""" fill=""");
+            svgFile.Append(lightColorHex);
+            svgFile.AppendLine(@"""/>");
+        }
+
+        // Calculate logo attributes if needed (in module coordinates)
         ImageAttributes? logoAttr = null;
         if (logo != null)
-            logoAttr = GetLogoAttributes(logo, viewBox);
-
-        // Merge horizontal rectangles
-        int[,] matrix = new int[drawableModulesCount, drawableModulesCount];
-        for (int yi = 0; yi < drawableModulesCount; yi += 1)
         {
-            var bitArray = QrCodeData.ModuleMatrix[yi + offset];
-
-            int x0 = -1;
-            int xL = 0;
-            for (int xi = 0; xi < drawableModulesCount; xi += 1)
+            var viewBoxLogoAttr = GetLogoAttributes(logo, viewBox);
+            // Convert from viewBox coordinates to module coordinates
+            double scale = drawableModulesCount / (double)Math.Min(viewBox.Width, viewBox.Height);
+            logoAttr = new ImageAttributes
             {
-                matrix[yi, xi] = 0;
-                if (bitArray[xi + offset] && (logo == null || !logo.FillLogoBackground() || !IsBlockedByLogo(xi * pixelsPerModule, yi * pixelsPerModule, logoAttr!.Value, pixelsPerModule)))
-                {
-                    if (x0 == -1)
-                    {
-                        x0 = xi;
-                    }
-                    xL += 1;
-                }
-                else
-                {
-                    if (xL > 0)
-                    {
-                        matrix[yi, x0] = xL;
-                        x0 = -1;
-                        xL = 0;
-                    }
-                }
-            }
-
-            if (xL > 0)
-            {
-                matrix[yi, x0] = xL;
-            }
+                X = viewBoxLogoAttr.X * scale,
+                Y = viewBoxLogoAttr.Y * scale,
+                Width = viewBoxLogoAttr.Width * scale,
+                Height = viewBoxLogoAttr.Height * scale
+            };
         }
 
-        var svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"" xmlns:xlink=""http://www.w3.org/1999/xlink"">");
-#pragma warning disable CA1305 // Specify IFormatProvider
-        svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{CleanSvgVal(qrSize)}"" height=""{CleanSvgVal(qrSize)}"" fill=""{lightColorHex}"" />");
-#pragma warning restore CA1305 // Specify IFormatProvider
-        for (int yi = 0; yi < drawableModulesCount; yi += 1)
+        // Draw light modules as path if dark is not fully opaque
+        if (!IsFullyTransparent(lightColorHex) && drawLightModulesAsPath)
         {
-            double y = yi * pixelsPerModule;
-            for (int xi = 0; xi < drawableModulesCount; xi += 1)
-            {
-                int xL = matrix[yi, xi];
-                if (xL > 0)
-                {
-                    // Merge vertical rectangles
-                    int yL = 1;
-                    for (int y2 = yi + 1; y2 < drawableModulesCount; y2 += 1)
-                    {
-                        if (matrix[y2, xi] == xL)
-                        {
-                            matrix[y2, xi] = 0;
-                            yL += 1;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    // Output SVG rectangles
-                    double x = xi * pixelsPerModule;
-                    if (logo == null || !logo.FillLogoBackground() || !IsBlockedByLogo(x, y, logoAttr!.Value, pixelsPerModule))
-#pragma warning disable CA1305 // Specify IFormatProvider
-                        svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");
-#pragma warning restore CA1305 // Specify IFormatProvider
-                }
-            }
+            DrawModulesPath(false, lightColorHex);
         }
 
-        //Render logo, if set
+        // Draw dark modules if not fully transparent
+        if (!IsFullyTransparent(darkColorHex))
+        {
+            DrawModulesPath(true, darkColorHex);
+        }
+
+        // Render logo, if set
         if (logo != null)
         {
+
             if (!logo.IsEmbedded())
             {
-                svgFile.AppendLine($@"<svg width=""100%"" height=""100%"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
-#pragma warning disable CA1305 // Specify IFormatProvider
-                svgFile.AppendLine($@"<image x=""{CleanSvgVal(logoAttr!.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" xlink:href=""{logo.GetDataUri()}"" />");
-#pragma warning restore CA1305 // Specify IFormatProvider
-                svgFile.AppendLine(@"</svg>");
+                svgFile.Append(@"<image x=""");
+                svgFile.Append(CleanSvgVal(logoAttr!.Value.X));
+                svgFile.Append(@""" y=""");
+                svgFile.Append(CleanSvgVal(logoAttr.Value.Y));
+                svgFile.Append(@""" width=""");
+                svgFile.Append(CleanSvgVal(logoAttr.Value.Width));
+                svgFile.Append(@""" height=""");
+                svgFile.Append(CleanSvgVal(logoAttr.Value.Height));
+                svgFile.Append(@""" xlink:href=""");
+                svgFile.Append(logo.GetDataUri());
+                svgFile.AppendLine(@"""/>");
             }
             else
             {
@@ -214,10 +211,84 @@ public class SvgQRCode : AbstractQRCode, IDisposable
 
         svgFile.Append(@"</svg>");
         return svgFile.ToString();
+
+        // Local function to draw modules as a path
+        void DrawModulesPath(bool drawDarkModules, string colorHex)
+        {
+            svgFile.Append(@"<path fill=""");
+            svgFile.Append(colorHex);
+            svgFile.Append(@""" d=""");
+
+            // Build path using RLE to combine rectangles
+            for (int y = 0; y < drawableModulesCount; y++)
+            {
+                int x = 0;
+
+                while (x < drawableModulesCount)
+                {
+                    if (!ShouldDrawModule(x, y))
+                    {
+                        x++;
+                        continue;
+                    }
+
+                    // Found a module to draw - find the run length
+                    int startX = x;
+                    x++;
+
+                    while (x < drawableModulesCount && ShouldDrawModule(x, y))
+                    {
+                        x++;
+                    }
+
+                    int width = x - startX;
+                    if (width > 0)
+                    {
+                        // Absolute move to start of rectangle
+                        svgFile.Append('M');
+                        svgFile.Append(startX);
+                        svgFile.Append(' ');
+                        svgFile.Append(y);
+
+                        // Draw rectangle using relative movements (width, height of 1)
+                        svgFile.Append('h');
+                        svgFile.Append(width);
+                        svgFile.Append("v1h-");
+                        svgFile.Append(width);
+                        svgFile.Append('z');
+                    }
+                }
+            }
+
+            svgFile.AppendLine(@"""/>");
+
+            // Local function to determine if a module should be drawn
+            bool ShouldDrawModule(int x, int y)
+            {
+                bool isDarkModule = QrCodeData.ModuleMatrix[y + offset][x + offset];
+                bool isBlockedByLogo = logo != null && logo.FillLogoBackground() &&
+                    IsBlockedByLogo(x, y, logoAttr!.Value, 1);
+
+                // For dark modules: draw only dark modules not blocked by logo
+                // For light modules: draw light modules not blocked by logo, or anywhere blocked by logo (regardless of module color)
+                return drawDarkModules
+                    ? (isDarkModule && !isBlockedByLogo)
+                    : (!isDarkModule || isBlockedByLogo);
+            }
+        }
     }
 
-    private static bool IsBlockedByLogo(double x, double y, ImageAttributes attr, double pixelPerModule)
-        => x + pixelPerModule >= attr.X && x <= attr.X + attr.Width && y + pixelPerModule >= attr.Y && y <= attr.Y + attr.Height;
+    private static bool IsBlockedByLogo(int x, int y, ImageAttributes attr, double moduleSize)
+    {
+        // Convert module coordinates to viewBox coordinates for comparison
+        double moduleX = x * moduleSize;
+        double moduleY = y * moduleSize;
+        double moduleEndX = (x + 1) * moduleSize;
+        double moduleEndY = (y + 1) * moduleSize;
+
+        return moduleEndX > attr.X && moduleX < attr.X + attr.Width &&
+               moduleEndY > attr.Y && moduleY < attr.Y + attr.Height;
+    }
 
     private static ImageAttributes GetLogoAttributes(SvgLogo logo, Size viewBox)
     {
@@ -243,10 +314,74 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     }
 
     //Clean double values for international use/formats
-    //We use explicitly "G15" to avoid differences between .NET full and Core platforms
+    //We use explicitly "G7" to avoid differences between .NET full and Core platforms
     //https://stackoverflow.com/questions/64898117/tostring-has-a-different-behavior-between-net-462-and-net-core-3-1
     private static string CleanSvgVal(double input)
-        => input.ToString("G15", System.Globalization.CultureInfo.InvariantCulture);
+        => input.ToString("G7", System.Globalization.CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Gets the transparency value (0-255) from a color string.
+    /// </summary>
+    /// <param name="colorHex">The color string in hex format (e.g., #RRGGBB, #RRGGBBAA) or the literal "transparent".</param>
+    /// <returns>The alpha/transparency value from 0 (fully transparent) to 255 (fully opaque). Returns 255 for colors without alpha channel.</returns>
+    private static int GetTransparency(string colorHex)
+    {
+        if (string.IsNullOrEmpty(colorHex))
+            throw new ArgumentNullException(nameof(colorHex), "Please specify a color using a hex format such as #RRGGBB or the string 'transparent'.");
+
+        // Check for literal "transparent" keyword
+        if (colorHex.Equals("transparent", StringComparison.OrdinalIgnoreCase))
+            return 0; // Fully transparent
+
+        // Check for hex color with alpha channel
+        if (colorHex.StartsWith("#", StringComparison.Ordinal))
+        {
+            // #RRGGBBAA format (9 characters)
+            if (colorHex.Length == 9)
+            {
+                // Extract alpha channel (last 2 characters)
+#if HAS_SPAN
+                if (int.TryParse(colorHex.AsSpan(7, 2), NumberStyles.HexNumber, null, out int alpha))
+#else
+                if (int.TryParse(colorHex.Substring(7, 2), NumberStyles.HexNumber, null, out int alpha))
+#endif
+                {
+                    return alpha;
+                }
+            }
+            // #RGBA format (5 characters)
+            else if (colorHex.Length == 5)
+            {
+                // Extract alpha channel (last character) and multiply by 17 to convert 4-bit to 8-bit
+#if HAS_SPAN
+                if (int.TryParse(colorHex.AsSpan(4, 1), NumberStyles.HexNumber, null, out int alpha))
+#else
+                if (int.TryParse(colorHex.Substring(4, 1), NumberStyles.HexNumber, null, out int alpha))
+#endif
+                {
+                    return alpha * 17;
+                }
+            }
+        }
+
+        return 255; // Fully opaque by default
+    }
+
+    /// <summary>
+    /// Determines if a color string represents a partially transparent color.
+    /// </summary>
+    /// <param name="colorHex">The color string in hex format (e.g., #RRGGBB, #RRGGBBAA) or the literal "transparent".</param>
+    /// <returns>True if the color is transparent; otherwise false.</returns>
+    private static bool IsPartiallyTransparent(string colorHex)
+        => GetTransparency(colorHex) < 255;
+
+    /// <summary>
+    /// Determines if a color string represents a fully transparent color.
+    /// </summary>
+    /// <param name="colorHex">The color string in hex format (e.g., #RRGGBB, #RRGGBBAA) or the literal "transparent".</param>
+    /// <returns>True if the color is fully transparent; otherwise false.</returns>
+    private static bool IsFullyTransparent(string colorHex)
+        => GetTransparency(colorHex) == 0;
 
     /// <summary>
     /// Mode of sizing attribution on svg root node
@@ -256,12 +391,12 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         /// <summary>
         /// Use width and height attributes for SVG sizing
         /// </summary>
-        WidthHeightAttribute,
+        WidthHeightAttribute = 0,
 
         /// <summary>
         /// Use viewBox attribute for SVG sizing
         /// </summary>
-        ViewBoxAttribute
+        ViewBoxAttribute = 1,
     }
 
     /// <summary>
