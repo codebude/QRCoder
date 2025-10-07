@@ -1,5 +1,6 @@
 #if !NETSTANDARD1_3
 using System.Drawing;
+using System.Text;
 using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder;
@@ -100,11 +101,20 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         var drawableModulesCount = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : offset * 2);
         var pointsPerModule = (double)Math.Min(viewBox.Width, viewBox.Height) / (double)drawableModulesCount;
 
-        string psFile = string.Format(CultureInfo.InvariantCulture, PS_HEADER, new object[] {
+        // Estimate capacity: PS_HEADER + PS_FUNCTIONS + PS_FOOTER + matrix content
+        // Each module generates 2 chars ("f " or "b "), plus newlines
+        // Add 200 characters for embedded numbers
+        var estimatedCapacity = PS_HEADER.Length + PS_FUNCTIONS.Length + PS_FOOTER.Length +
+            (drawableModulesCount * drawableModulesCount * 2) + // modules
+            drawableModulesCount * 3 + // newlines
+            100;
+        var sb = new StringBuilder(estimatedCapacity);
+
+        sb.AppendFormat(CultureInfo.InvariantCulture, PS_HEADER, new object[] {
             CleanSvgVal(viewBox.Width), CleanSvgVal(pointsPerModule),
             epsFormat ? "EPSF-3.0" : string.Empty
         });
-        psFile += string.Format(CultureInfo.InvariantCulture, PS_FUNCTIONS, new object[] {
+        sb.AppendFormat(CultureInfo.InvariantCulture, PS_FUNCTIONS, new object[] {
             CleanSvgVal(darkColor.R /255.0), CleanSvgVal(darkColor.G /255.0), CleanSvgVal(darkColor.B /255.0),
             CleanSvgVal(lightColor.R /255.0), CleanSvgVal(lightColor.G /255.0), CleanSvgVal(lightColor.B /255.0),
             drawableModulesCount
@@ -113,22 +123,23 @@ public class PostscriptQRCode : AbstractQRCode, IDisposable
         for (int xi = offset; xi < offset + drawableModulesCount; xi++)
         {
             if (xi > offset)
-                psFile += "nl\n";
+                sb.Append("nl\n");
             for (int yi = offset; yi < offset + drawableModulesCount; yi++)
             {
-                psFile += (QrCodeData.ModuleMatrix[xi][yi] ? "f " : "b ");
+                sb.Append(QrCodeData.ModuleMatrix[xi][yi] ? "f " : "b ");
             }
-            psFile += "\n";
         }
-        return psFile + PS_FOOTER;
+        sb.Append('\n');
+        sb.Append(PS_FOOTER);
+        return sb.ToString();
     }
 
     /// <summary>
     /// Cleans double values for international use/formats.
     /// </summary>
     /// <param name="input">The input double value.</param>
-    /// <returns>Returns the cleaned string representation of the double value.</returns>
-    private static string CleanSvgVal(double input) => input.ToString(System.Globalization.CultureInfo.InvariantCulture);
+    /// <returns>Returns the cleaned string representation of the double value, with a maximum of 7 significant digits.</returns>
+    private static string CleanSvgVal(double input) => input.ToString("G7", CultureInfo.InvariantCulture);
 
     // Note: line terminations here will encode differently based on which platform QRCoder was compiled on (CRLF vs LF);
     // however, PostScript interpreters should handle both equally well.
