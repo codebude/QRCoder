@@ -1,20 +1,13 @@
-using System;
-using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 using System.Reflection;
-#if !NETCOREAPP1_1
-using System.Drawing;
-#endif
 #if TEST_XAML
 using SW = System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 #endif
 
-
 namespace QRCoderTests.Helpers;
-
 public static class HelperFunctions
 {
 
@@ -46,59 +39,43 @@ public static class HelperFunctions
     public static string GetAssemblyPath()
 #if NET5_0_OR_GREATER
         => AppDomain.CurrentDomain.BaseDirectory;
-#elif NETFRAMEWORK
-        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase).Replace("file:\\", "");
-#elif NETCOREAPP1_1
-        => Path.GetDirectoryName(typeof(HelperFunctions).GetTypeInfo().Assembly.Location).Replace("file:\\", "");
 #else
-        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
+        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)?.Replace("file:\\", "") ?? "";
 #endif
 
-
-#if !NETCOREAPP1_1
     /// <summary>
-    /// Converts a bitmap to a hash string based on the pixel data
-    /// using a deterministic algorithm that ignores compression algorithm
-    /// differences across platforms.
+    /// Gets the embedded PNG icon as a Bitmap.
     /// </summary>
-    public static string BitmapToHash(Bitmap bitmap)
+    public static Bitmap GetIconBitmap()
     {
-        // Lock the bitmap's bits.
-        var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-        var bitmapData = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-        byte[] rgbValues;
-        try
-        {
-            // Create an array to hold the bytes of the bitmap.
-            int bytes = Math.Abs(bitmapData.Stride) * bitmap.Height;
-            rgbValues = new byte[bytes];
-
-            // Copy the RGB values into the array.
-            System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, rgbValues, 0, bytes);
-        }
-        finally
-        {
-            // Unlock the bits.
-            bitmap.UnlockBits(bitmapData);
-        }
-
-        // Hash the resulting byte array
-        return ByteArrayToHash(rgbValues);
-    }
-#endif
-
-    public static string ByteArrayToHash(byte[] data)
-    {
-#if !NETCOREAPP1_1
-        var md5 = MD5.Create();
-        var hash = md5.ComputeHash(data);
-#else
-        var hash = new SshNet.Security.Cryptography.MD5().ComputeHash(data);
-#endif
-        return BitConverter.ToString(hash).Replace("-", "").ToLower();
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        return new Bitmap(stream);
     }
 
-    public static string StringToHash(string data)
-        => ByteArrayToHash(Encoding.UTF8.GetBytes(data));
+    /// <summary>
+    /// Gets the embedded PNG icon as a byte array.
+    /// </summary>
+    public static byte[] GetIconBytes()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
+    }
+
+    /// <summary>
+    /// Gets the embedded SVG icon as a string.
+    /// </summary>
+    public static string GetIconSvg()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        var resourceName = "QRCoderTests.assets.noun_Scientist_2909361.svg";
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
+    }
 }

@@ -1,8 +1,3 @@
-using System;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 #if NETSTANDARD1_3
 using System.Reflection;
 #endif
@@ -22,20 +17,24 @@ public static partial class PayloadGenerator
     private static bool IsValidIban(string iban)
     {
         //Clean IBAN
-        var ibanCleared = iban.ToUpper().Replace(" ", "").Replace("-", "");
+        var ibanCleared = iban.ToUpperInvariant().Replace(" ", "").Replace("-", "");
 
         //Check for general structure
         var structurallyValid = Regex.IsMatch(ibanCleared, @"^[a-zA-Z]{2}[0-9]{2}([a-zA-Z0-9]?){16,30}$");
 
         //Check IBAN checksum
         var checksumValid = false;
-        var sum = $"{ibanCleared.Substring(4)}{ibanCleared.Substring(0, 4)}".ToCharArray().Aggregate("", (current, c) => current + (char.IsLetter(c) ? (c - 55).ToString() : c.ToString()));
+        var sum = $"{ibanCleared.Substring(4)}{ibanCleared.Substring(0, 4)}".ToCharArray().Aggregate("", (current, c) => current + (char.IsLetter(c) ? (c - 55).ToString(CultureInfo.InvariantCulture) : c.ToString(CultureInfo.InvariantCulture)));
         int m = 0;
         for (int i = 0; i < (int)Math.Ceiling((sum.Length - 2) / 7d); i++)
         {
             var offset = (i == 0 ? 0 : 2);
             var start = i * 7 + offset;
+#if NET5_0_OR_GREATER
+            var n = string.Concat(i == 0 ? "" : m.ToString(CultureInfo.InvariantCulture), sum.AsSpan(start, Math.Min(9 - offset, sum.Length - start)));
+#else
             var n = (i == 0 ? "" : m.ToString()) + sum.Substring(start, Math.Min(9 - offset, sum.Length - start));
+#endif
             if (!int.TryParse(n, NumberStyles.Any, CultureInfo.InvariantCulture, out m))
                 break;
             m %= 97;
@@ -54,8 +53,8 @@ public static partial class PayloadGenerator
         var foundQrIid = false;
         try
         {
-            var ibanCleared = iban.ToUpper().Replace(" ", "").Replace("-", "");
-            var possibleQrIid = Convert.ToInt32(ibanCleared.Substring(4, 5));
+            var ibanCleared = iban.ToUpperInvariant().Replace(" ", "").Replace("-", "");
+            var possibleQrIid = Convert.ToInt32(ibanCleared.Substring(4, 5), CultureInfo.InvariantCulture);
             foundQrIid = possibleQrIid >= 30000 && possibleQrIid <= 31999;
         }
         catch { }
@@ -70,6 +69,18 @@ public static partial class PayloadGenerator
     private static bool IsValidBic(string bic)
         => Regex.IsMatch(bic.Replace(" ", ""), @"^([a-zA-Z]{4}[a-zA-Z]{2}[a-zA-Z0-9]{2}([a-zA-Z0-9]{3})?)$");
 
+    /// <summary>
+    /// Validates the structure of a BIC with optional requirement check.
+    /// </summary>
+    /// <param name="bic">The BIC to validate.</param>
+    /// <param name="required">Whether the BIC is required. If false, null/empty values are considered valid.</param>
+    /// <returns>True if the BIC is valid; otherwise, false.</returns>
+    private static bool IsValidBic(string? bic, bool required)
+    {
+        if (string.IsNullOrEmpty(bic))
+            return !required;
+        return IsValidBic(bic!);
+    }
 
     /// <summary>
     /// Converts a string to a specified encoding.

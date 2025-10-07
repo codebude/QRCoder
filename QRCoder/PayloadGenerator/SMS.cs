@@ -1,5 +1,3 @@
-using System;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
@@ -49,6 +47,7 @@ public static partial class PayloadGenerator
             _ => string.Empty,
         };
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>
         /// Specifies the encoding type for the SMS payload.
         /// </summary>
@@ -67,5 +66,6 @@ public static partial class PayloadGenerator
             /// </summary>
             SMS_iOS
         }
+#pragma warning restore CA1707 // Underscore in identifier
     }
 }

@@ -1,5 +1,3 @@
-using System;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
@@ -38,20 +36,20 @@ public static partial class PayloadGenerator
         /// <param name="version">Girocode version. Either 001 or 002. Default: 001.</param>
         /// <param name="encoding">Encoding of the Girocode payload. Default: ISO-8859-1</param>
         /// <exception cref="GirocodeException">Thrown when the input values are not valid according to the Girocode specification.</exception>
-        public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", TypeOfRemittance typeOfRemittance = TypeOfRemittance.Unstructured, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", GirocodeVersion version = GirocodeVersion.Version1, GirocodeEncoding encoding = GirocodeEncoding.ISO_8859_1)
+        public Girocode(string iban, string? bic, string name, decimal amount, string remittanceInformation = "", TypeOfRemittance typeOfRemittance = TypeOfRemittance.Unstructured, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", GirocodeVersion version = GirocodeVersion.Version1, GirocodeEncoding encoding = GirocodeEncoding.ISO_8859_1)
         {
             _version = version;
             _encoding = encoding;
             if (!IsValidIban(iban))
                 throw new GirocodeException("The IBAN entered isn't valid.");
-            _iban = iban.Replace(" ", "").ToUpper();
-            if (!IsValidBic(bic))
+            _iban = iban.Replace(" ", "").ToUpperInvariant();
+            if (!IsValidBic(bic, _version == GirocodeVersion.Version1))
                 throw new GirocodeException("The BIC entered isn't valid.");
-            _bic = bic.Replace(" ", "").ToUpper();
+            _bic = bic?.Replace(" ", "").ToUpperInvariant() ?? string.Empty;
             if (name.Length > 70)
                 throw new GirocodeException("(Payee-)Name must be shorter than 71 chars.");
             _name = name;
-            if (amount.ToString().Replace(",", ".").Contains(".") && amount.ToString().Replace(",", ".").Split('.')[1].TrimEnd('0').Length > 2)
+            if (amount.ToString(CultureInfo.InvariantCulture).Contains('.') && amount.ToString(CultureInfo.InvariantCulture).Split('.')[1].TrimEnd('0').Length > 2)
                 throw new GirocodeException("Amount must have less than 3 digits after decimal point.");
             if (amount < 0.01m || amount > 999999999.99m)
                 throw new GirocodeException("Amount has to be at least 0.01 and must be smaller or equal to 999999999.99.");
@@ -83,7 +81,7 @@ public static partial class PayloadGenerator
             girocodePayload += _bic + _br;
             girocodePayload += _name + _br;
             girocodePayload += _iban + _br;
-            girocodePayload += $"EUR{_amount:0.00}".Replace(",", ".") + _br;
+            girocodePayload += string.Format(CultureInfo.InvariantCulture, "EUR{0:0.00}", _amount) + _br;
             girocodePayload += _purposeOfCreditTransfer + _br;
             girocodePayload += ((_typeOfRemittance == TypeOfRemittance.Structured)
                 ? _remittanceInformation
@@ -128,6 +126,7 @@ public static partial class PayloadGenerator
             Unstructured
         }
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>
         /// Defines the encoding types for Girocode payloads.
         /// </summary>
@@ -173,6 +172,7 @@ public static partial class PayloadGenerator
             /// </summary>
             ISO_8859_15
         }
+#pragma warning restore CA1707 // Underscore in identifier
 
         /// <summary>
         /// Represents errors that occur during Girocode generation.

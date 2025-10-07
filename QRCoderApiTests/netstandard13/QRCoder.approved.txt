@@ -99,13 +99,13 @@ namespace QRCoder
             public override string ToString() { }
             public enum AuthorityType
             {
-                [System.Obsolete]
+                [System.Obsolete("Use singlepaymentsepa instead for SEPA-compliant payments")]
                 singlepayment = 0,
                 singlepaymentsepa = 1,
-                [System.Obsolete]
+                [System.Obsolete("Use singledirectdebitsepa instead for SEPA-compliant payments")]
                 singledirectdebit = 2,
                 singledirectdebitsepa = 3,
-                [System.Obsolete]
+                [System.Obsolete("Use periodicsinglepaymentsepa instead for SEPA-compliant payments")]
                 periodicsinglepayment = 4,
                 periodicsinglepaymentsepa = 5,
                 contact = 6,
@@ -357,11 +357,40 @@ namespace QRCoder
                         QRCoder.PayloadGenerator.ContactData.AddressOrder addressOrder = 0,
                         string? org = null,
                         string? orgTitle = null) { }
+            public ContactData(
+                        QRCoder.PayloadGenerator.ContactData.ContactOutputType outputType,
+                        string firstname,
+                        string lastname,
+                        string? nickname,
+                        string? phone,
+                        string? mobilePhone,
+                        string? workPhone,
+                        string? email,
+                        System.DateTime? birthday,
+                        string? website,
+                        string? street,
+                        string? houseNumber,
+                        string? city,
+                        string? zipCode,
+                        string? country,
+                        string? note,
+                        string? stateRegion,
+                        QRCoder.PayloadGenerator.ContactData.AddressOrder addressOrder,
+                        string? org,
+                        string? orgTitle,
+                        QRCoder.PayloadGenerator.ContactData.AddressType addressType) { }
             public override string ToString() { }
             public enum AddressOrder
             {
                 Default = 0,
                 Reversed = 1,
+            }
+            public enum AddressType
+            {
+                Home = 0,
+                Work = 1,
+                HomePreferred = 2,
+                WorkPreferred = 3,
             }
             public enum ContactOutputType
             {
@@ -383,7 +412,7 @@ namespace QRCoder
         }
         public class Girocode : QRCoder.PayloadGenerator.Payload
         {
-            public Girocode(string iban, string bic, string name, decimal amount, string remittanceInformation = "", QRCoder.PayloadGenerator.Girocode.TypeOfRemittance typeOfRemittance = 1, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", QRCoder.PayloadGenerator.Girocode.GirocodeVersion version = 0, QRCoder.PayloadGenerator.Girocode.GirocodeEncoding encoding = 1) { }
+            public Girocode(string iban, string? bic, string name, decimal amount, string remittanceInformation = "", QRCoder.PayloadGenerator.Girocode.TypeOfRemittance typeOfRemittance = 1, string purposeOfCreditTransfer = "", string messageToGirocodeUser = "", QRCoder.PayloadGenerator.Girocode.GirocodeVersion version = 0, QRCoder.PayloadGenerator.Girocode.GirocodeEncoding encoding = 1) { }
             public override QRCoder.QRCodeGenerator.ECCLevel EccLevel { get; }
             public override string ToString() { }
             public enum GirocodeEncoding
@@ -775,6 +804,18 @@ namespace QRCoder
             }
         }
     }
+    public class PdfByteQRCode : QRCoder.AbstractQRCode, System.IDisposable
+    {
+        public PdfByteQRCode() { }
+        public PdfByteQRCode(QRCoder.QRCodeData data) { }
+        public byte[] GetGraphic(int pixelsPerModule) { }
+        public byte[] GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, int dpi = 150, long jpgQuality = 85) { }
+    }
+    public static class PdfByteQRCodeHelper
+    {
+        public static byte[] GetQRCode(string txt, QRCoder.QRCodeGenerator.ECCLevel eccLevel, int size) { }
+        public static byte[] GetQRCode(string plainText, int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1) { }
+    }
     public sealed class PngByteQRCode : QRCoder.AbstractQRCode, System.IDisposable
     {
         public PngByteQRCode() { }
@@ -807,7 +848,7 @@ namespace QRCoder
         public QRCodeData(string pathToRawData, QRCoder.QRCodeData.Compression compressMode) { }
         public System.Collections.Generic.List<System.Collections.BitArray> ModuleMatrix { get; set; }
         public int Version { get; }
-        public void Dispose() { }
+        public virtual void Dispose() { }
         public byte[] GetRawData(QRCoder.QRCodeData.Compression compressMode) { }
         public void SaveRawData(string filePath, QRCoder.QRCodeData.Compression compressMode) { }
         public enum Compression
@@ -824,7 +865,7 @@ namespace QRCoder
         public QRCoder.QRCodeData CreateQrCode(QRCoder.PayloadGenerator.Payload payload, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
         public QRCoder.QRCodeData CreateQrCode(byte[] binaryData, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
         public QRCoder.QRCodeData CreateQrCode(string plainText, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1) { }
-        public void Dispose() { }
+        public virtual void Dispose() { }
         public static QRCoder.QRCodeData GenerateMicroQrCode(string plainText, QRCoder.QRCodeGenerator.ECCLevel eccLevel = -1, int requestedVersion = 0) { }
         public static QRCoder.QRCodeData GenerateQrCode(QRCoder.PayloadGenerator.Payload payload) { }
         public static QRCoder.QRCodeData GenerateQrCode(QRCoder.PayloadGenerator.Payload payload, QRCoder.QRCodeGenerator.ECCLevel eccLevel) { }
@@ -977,6 +1018,7 @@ namespace QRCoder.Extensions
     {
         public static string? GetStringValue(this System.Enum value) { }
     }
+    [System.AttributeUsage(System.AttributeTargets.Field)]
     [System.Obsolete("This attribute will be removed in a future version of QRCoder.")]
     public class StringValueAttribute : System.Attribute
     {

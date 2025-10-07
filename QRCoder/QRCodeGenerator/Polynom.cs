@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace QRCoder;
 
@@ -39,7 +36,7 @@ public partial class QRCodeGenerator
         public void RemoveAt(int index)
         {
             if ((uint)index >= (uint)Count)
-                throw new IndexOutOfRangeException();
+                ThrowIndexArgumentOutOfRangeException();
 
             if (index < Count - 1)
                 Array.Copy(_polyItems, index + 1, _polyItems, index, Count - index - 1);
@@ -55,13 +52,13 @@ public partial class QRCodeGenerator
             get
             {
                 if ((uint)index >= Count)
-                    ThrowIndexOutOfRangeException();
+                    ThrowIndexArgumentOutOfRangeException();
                 return _polyItems[index];
             }
             set
             {
                 if ((uint)index >= Count)
-                    ThrowIndexOutOfRangeException();
+                    ThrowIndexArgumentOutOfRangeException();
                 _polyItems[index] = value;
             }
         }
@@ -69,7 +66,7 @@ public partial class QRCodeGenerator
 #if NET6_0_OR_GREATER
         [StackTraceHidden]
 #endif
-        private static void ThrowIndexOutOfRangeException() => throw new IndexOutOfRangeException();
+        private static void ThrowIndexArgumentOutOfRangeException() => throw new ArgumentOutOfRangeException("index");
 
 
         /// <summary>
@@ -197,7 +194,7 @@ public partial class QRCodeGenerator
             void ThrowNotSupportedException() => throw new NotSupportedException("The polynomial capacity is fixed and cannot be increased.");
         }
 
-#if NETCOREAPP
+#if HAS_SPAN
         /// <summary>
         /// Rents memory for the polynomial terms from the shared memory pool.
         /// </summary>

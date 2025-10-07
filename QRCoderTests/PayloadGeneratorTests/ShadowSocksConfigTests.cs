@@ -1,7 +1,3 @@
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests.PayloadGeneratorTests;
 
 public class ShadowSocksConfigTests
@@ -44,10 +40,8 @@ public class ShadowSocksConfigTests
         var password = "s3cr3t";
         var method = PayloadGenerator.ShadowSocksConfig.Method.Rc4Md5;
 
-        var exception = Record.Exception(() => new PayloadGenerator.ShadowSocksConfig(host, port, password, method));
+        var exception = Should.Throw<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>(() => new PayloadGenerator.ShadowSocksConfig(host, port, password, method));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>(exception);
         exception.Message.ShouldBe("Value of 'port' must be within 0 and 65535.");
     }
 
@@ -60,10 +54,8 @@ public class ShadowSocksConfigTests
         var password = "s3cr3t";
         var method = PayloadGenerator.ShadowSocksConfig.Method.Rc4Md5;
 
-        var exception = Record.Exception(() => new PayloadGenerator.ShadowSocksConfig(host, port, password, method));
+        var exception = Should.Throw<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>(() => new PayloadGenerator.ShadowSocksConfig(host, port, password, method));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.ShadowSocksConfig.ShadowSocksConfigException>(exception);
         exception.Message.ShouldBe("Value of 'port' must be within 0 and 65535.");
     }
 

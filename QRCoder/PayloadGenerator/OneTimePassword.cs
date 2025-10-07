@@ -1,6 +1,3 @@
-using System;
-using System.Text;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
@@ -55,7 +52,7 @@ public static partial class PayloadGenerator
         /// <summary>
         /// The counter value for HOTP (only used if Type is HOTP).
         /// </summary>
-        public int? Counter { get; set; } = null;
+        public int? Counter { get; set; }
 
         /// <summary>
         /// The period in seconds for TOTP (default is 30).
@@ -67,7 +64,14 @@ public static partial class PayloadGenerator
         /// </summary>
         public enum OneTimePasswordAuthType
         {
+            /// <summary>
+            /// Time-based One-Time Password (TOTP)
+            /// </summary>
             TOTP,
+
+            /// <summary>
+            /// HMAC-based One-Time Password (HOTP)
+            /// </summary>
             HOTP,
         }
 
@@ -76,8 +80,19 @@ public static partial class PayloadGenerator
         /// </summary>
         public enum OneTimePasswordAuthAlgorithm
         {
+            /// <summary>
+            /// SHA-1 hashing algorithm
+            /// </summary>
             SHA1,
+
+            /// <summary>
+            /// SHA-256 hashing algorithm
+            /// </summary>
             SHA256,
+
+            /// <summary>
+            /// SHA-512 hashing algorithm
+            /// </summary>
             SHA512,
         }
 
@@ -87,8 +102,19 @@ public static partial class PayloadGenerator
         [Obsolete("This enum is obsolete, use " + nameof(OneTimePasswordAuthAlgorithm) + " instead", false)]
         public enum OoneTimePasswordAuthAlgorithm
         {
+            /// <summary>
+            /// SHA-1 hashing algorithm (Obsolete)
+            /// </summary>
             SHA1,
+
+            /// <summary>
+            /// SHA-256 hashing algorithm (Obsolete)
+            /// </summary>
             SHA256,
+
+            /// <summary>
+            /// SHA-512 hashing algorithm (Obsolete)
+            /// </summary>
             SHA512,
         }
 
@@ -127,7 +153,7 @@ public static partial class PayloadGenerator
         {
             if (Period == null)
             {
-                throw new Exception("Period must be set when using OneTimePasswordAuthType.TOTP");
+                throw new InvalidOperationException("Period must be set when using OneTimePasswordAuthType.TOTP");
             }
 
             var sb = new StringBuilder("otpauth://totp/");
@@ -150,7 +176,7 @@ public static partial class PayloadGenerator
         {
             if (Secret.IsNullOrWhiteSpace())
             {
-                throw new Exception("Secret must be a filled out base32 encoded string");
+                throw new InvalidOperationException("Secret must be a filled out base32 encoded string");
             }
             string strippedSecret = Secret.Replace(" ", "");
             string? escapedIssuer = null;
@@ -159,18 +185,18 @@ public static partial class PayloadGenerator
 
             if (!Issuer.IsNullOrWhiteSpace())
             {
-                if (Issuer.Contains(":"))
+                if (Issuer.Contains(':'))
                 {
-                    throw new Exception("Issuer must not have a ':'");
+                    throw new InvalidOperationException("Issuer must not have a ':'");
                 }
                 escapedIssuer = Uri.EscapeDataString(Issuer);
             }
 
             if (!Label.IsNullOrWhiteSpace())
             {
-                if (Label.Contains(":"))
+                if (Label.Contains(':'))
                 {
-                    throw new Exception("Label must not have a ':'");
+                    throw new InvalidOperationException("Label must not have a ':'");
                 }
                 escapedLabel = Uri.EscapeDataString(Label);
             }
@@ -194,6 +220,11 @@ public static partial class PayloadGenerator
             if (escapedIssuer != null)
             {
                 sb.Append("&issuer=" + escapedIssuer);
+            }
+
+            if (AuthAlgorithm != OneTimePasswordAuthAlgorithm.SHA1)
+            {
+                sb.Append("&algorithm=" + AuthAlgorithm.ToString());
             }
 
             if (Digits != 6)

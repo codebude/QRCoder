@@ -1,7 +1,5 @@
 #if !NETSTANDARD1_3
-using System;
 using System.Drawing;
-using System.Text;
 using QRCoder.Extensions;
 using static QRCoder.QRCodeGenerator;
 using static QRCoder.SvgQRCode;
@@ -154,7 +152,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         }
 
         var svgFile = new StringBuilder($@"<svg version=""1.1"" baseProfile=""full"" shape-rendering=""crispEdges"" {svgSizeAttributes} xmlns=""http://www.w3.org/2000/svg"" xmlns:xlink=""http://www.w3.org/1999/xlink"">");
+#pragma warning disable CA1305 // Specify IFormatProvider
         svgFile.AppendLine($@"<rect x=""0"" y=""0"" width=""{CleanSvgVal(qrSize)}"" height=""{CleanSvgVal(qrSize)}"" fill=""{lightColorHex}"" />");
+#pragma warning restore CA1305 // Specify IFormatProvider
         for (int yi = 0; yi < drawableModulesCount; yi += 1)
         {
             double y = yi * pixelsPerModule;
@@ -181,7 +181,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
                     // Output SVG rectangles
                     double x = xi * pixelsPerModule;
                     if (logo == null || !logo.FillLogoBackground() || !IsBlockedByLogo(x, y, logoAttr!.Value, pixelsPerModule))
+#pragma warning disable CA1305 // Specify IFormatProvider
                         svgFile.AppendLine($@"<rect x=""{CleanSvgVal(x)}"" y=""{CleanSvgVal(y)}"" width=""{CleanSvgVal(xL * pixelsPerModule)}"" height=""{CleanSvgVal(yL * pixelsPerModule)}"" fill=""{darkColorHex}"" />");
+#pragma warning restore CA1305 // Specify IFormatProvider
                 }
             }
         }
@@ -192,7 +194,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             if (!logo.IsEmbedded())
             {
                 svgFile.AppendLine($@"<svg width=""100%"" height=""100%"" version=""1.1"" xmlns = ""http://www.w3.org/2000/svg"">");
+#pragma warning disable CA1305 // Specify IFormatProvider
                 svgFile.AppendLine($@"<image x=""{CleanSvgVal(logoAttr!.Value.X)}"" y=""{CleanSvgVal(logoAttr.Value.Y)}"" width=""{CleanSvgVal(logoAttr.Value.Width)}"" height=""{CleanSvgVal(logoAttr.Value.Height)}"" xlink:href=""{logo.GetDataUri()}"" />");
+#pragma warning restore CA1305 // Specify IFormatProvider
                 svgFile.AppendLine(@"</svg>");
             }
             else
@@ -212,10 +216,10 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         return svgFile.ToString();
     }
 
-    private bool IsBlockedByLogo(double x, double y, ImageAttributes attr, double pixelPerModule)
+    private static bool IsBlockedByLogo(double x, double y, ImageAttributes attr, double pixelPerModule)
         => x + pixelPerModule >= attr.X && x <= attr.X + attr.Width && y + pixelPerModule >= attr.Y && y <= attr.Y + attr.Height;
 
-    private ImageAttributes GetLogoAttributes(SvgLogo logo, Size viewBox)
+    private static ImageAttributes GetLogoAttributes(SvgLogo logo, Size viewBox)
     {
         var imgWidth = logo.GetIconSizePercent() / 100d * viewBox.Width;
         var imgHeight = logo.GetIconSizePercent() / 100d * viewBox.Height;
@@ -241,7 +245,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     //Clean double values for international use/formats
     //We use explicitly "G15" to avoid differences between .NET full and Core platforms
     //https://stackoverflow.com/questions/64898117/tostring-has-a-different-behavior-between-net-462-and-net-core-3-1
-    private string CleanSvgVal(double input)
+    private static string CleanSvgVal(double input)
         => input.ToString("G15", System.Globalization.CultureInfo.InvariantCulture);
 
     /// <summary>
@@ -249,7 +253,14 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum SizingMode
     {
+        /// <summary>
+        /// Use width and height attributes for SVG sizing
+        /// </summary>
         WidthHeightAttribute,
+
+        /// <summary>
+        /// Use viewBox attribute for SVG sizing
+        /// </summary>
         ViewBoxAttribute
     }
 
@@ -362,17 +373,24 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         /// </summary>
         public enum MediaType : int
         {
+            /// <summary>
+            /// Portable Network Graphics (PNG) image format
+            /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
             [StringValue("image/png")]
 #pragma warning restore CS0618 // Type or member is obsolete
             PNG = 0,
+
+            /// <summary>
+            /// Scalable Vector Graphics (SVG) image format
+            /// </summary>
 #pragma warning disable CS0618 // Type or member is obsolete
             [StringValue("image/svg+xml")]
 #pragma warning restore CS0618 // Type or member is obsolete
             SVG = 1
         }
 
-        private string GetMimeType(MediaType type) => type switch
+        private static string GetMimeType(MediaType type) => type switch
         {
             MediaType.PNG => "image/png",
             MediaType.SVG => "image/svg+xml",

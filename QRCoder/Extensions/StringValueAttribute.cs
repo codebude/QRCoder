@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
@@ -8,6 +7,7 @@ namespace QRCoder.Extensions;
 /// Used to represent a string value for a value in an enum
 /// </summary>
 [Obsolete("This attribute will be removed in a future version of QRCoder.")]
+[AttributeUsage(AttributeTargets.Field)]
 public class StringValueAttribute : Attribute
 {
 

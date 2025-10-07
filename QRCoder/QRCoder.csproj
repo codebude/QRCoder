@@ -1,65 +1,37 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;net5.0;net5.0-windows;net6.0;net6.0-windows</TargetFrameworks>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <DefineConstants Condition="'$(TargetFramework)' != 'net6.0' AND '$(TargetFramework)' != 'netstandard1.3'">$(DefineConstants);SYSTEM_DRAWING</DefineConstants>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net5.0-windows'">$(DefineConstants);NET5_0_WINDOWS</DefineConstants>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);NET6_0_WINDOWS</DefineConstants>
-    <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
+    <!-- Set essential properties -->
+    <TargetFrameworks>net35;net40;netstandard1.3;netstandard2.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
     <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
-    <WarningsAsErrors>$(WarningsAsErrors);CS1591</WarningsAsErrors>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+    <IsPackable>true</IsPackable>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn />
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <PackageId>QRCoder</PackageId>
-    <Version>1.6.1</Version>
-    <Authors>Raffael Herrmann</Authors>
-    <PackageOwners>Raffael Herrmann</PackageOwners>
-    <AssemblyName>QRCoder</AssemblyName>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/codebude/QRCoder/</PackageProjectUrl>
-    <PackageIcon>nuget-icon.png</PackageIcon>
-    <PackageReadmeFile>nuget-readme.md</PackageReadmeFile>
+    <!-- Set NuGet package properties -->
     <PackageTags>c# csharp qr qrcoder qrcode qr-generator qr-code-generator</PackageTags>
-    <RepositoryUrl>https://github.com/codebude/QRCoder.git</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <Description>QRCoder is a simple library, written in C#.NET, which enables you to create QR codes.</Description>
+
+    <!-- Set strong name and COM properties -->
+    <AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
+    <ComVisible>true</ComVisible>
+    <Guid>e668b98b-83bb-4e60-b33c-4fd5ed9c0156</Guid>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="Assets\nuget-icon.png" Pack="true" PackagePath="\" />
-    <None Include="Assets\nuget-readme.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' or '$(TargetFramework)' == 'netstandard2.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.3' OR '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' ">
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'net5.0' or '$(TargetFramework)' == 'net5.0-windows' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'net5.0' OR '$(TargetFramework)' == 'net5.0-windows' ">
     <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' OR '$(TargetFramework)' == 'net6.0-windows' ">
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
   </ItemGroup>
-
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
-  </PropertyGroup>
 
 </Project>

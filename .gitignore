@@ -221,4 +221,5 @@ pip-log.txt
 QRCoder/PortabilityAnalysis.html
 
 # Unaccepted approval files
+QRCoderTests/*.received.*
 *.received.txt

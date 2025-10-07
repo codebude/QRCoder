@@ -1,7 +1,3 @@
-using System;
-using QRCoder;
-using Shouldly;
-using Xunit;
 using static QRCoder.PayloadGenerator.SwissQrCode.AdditionalInformation;
 using static QRCoder.PayloadGenerator.SwissQrCode.Reference;
 using static QRCoder.QRCodeGenerator;
@@ -17,10 +13,8 @@ public class SwissQrCodeTests
         var reference = "1234567890123456";
         var refTextType = ReferenceTextType.CreditorReferenceIso11649;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
+        var exception = Should.Throw<SwissQrCodeReferenceException>(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<SwissQrCodeReferenceException>(exception);
         exception.Message.ShouldBe("Reference is only allowed when referenceType not equals \"NON\"");
     }
 
@@ -30,10 +24,8 @@ public class SwissQrCodeTests
         var refType = ReferenceType.SCOR;
         var reference = "1234567890123456";
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference));
+        var exception = Should.Throw<SwissQrCodeReferenceException>(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference));
 
-        Assert.NotNull(exception);
-        Assert.IsType<SwissQrCodeReferenceException>(exception);
         exception.Message.ShouldBe("You have to set an ReferenceTextType when using the reference text.");
     }
 
@@ -45,10 +37,8 @@ public class SwissQrCodeTests
         var reference = "9900050000000003200710123031234654574398214093682164062138462089364";
         var refTextType = ReferenceTextType.QrReference;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
+        var exception = Should.Throw<SwissQrCodeReferenceException>(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<SwissQrCodeReferenceException>(exception);
         exception.Message.ShouldBe("QR-references have to be shorter than 28 chars.");
     }
 
@@ -60,10 +50,8 @@ public class SwissQrCodeTests
         var reference = "99000ABCDF5000032007101230";
         var refTextType = ReferenceTextType.QrReference;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
+        var exception = Should.Throw<SwissQrCodeReferenceException>(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<SwissQrCodeReferenceException>(exception);
         exception.Message.ShouldBe("QR-reference must exist out of digits only.");
     }
 
@@ -75,10 +63,8 @@ public class SwissQrCodeTests
         var reference = "990005000000000320071012304";
         var refTextType = ReferenceTextType.QrReference;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
+        var exception = Should.Throw<SwissQrCodeReferenceException>(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<SwissQrCodeReferenceException>(exception);
         exception.Message.ShouldBe("QR-references is invalid. Checksum error.");
     }
 
@@ -90,10 +76,8 @@ public class SwissQrCodeTests
         var reference = "99000500000000032007101230312346545743982162138462089364";
         var refTextType = ReferenceTextType.CreditorReferenceIso11649;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
+        var exception = Should.Throw<SwissQrCodeReferenceException>(() => new PayloadGenerator.SwissQrCode.Reference(refType, reference, refTextType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<SwissQrCodeReferenceException>(exception);
         exception.Message.ShouldBe("Creditor references (ISO 11649) have to be shorter than 26 chars.");
     }
 
@@ -103,10 +87,8 @@ public class SwissQrCodeTests
         var billInformation = "This is sample bill information with a length below 140.";
         var unstructuredMessage = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum";
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.AdditionalInformation(unstructuredMessage, billInformation));
+        var exception = Should.Throw<SwissQrCodeAdditionalInformationException>(() => new PayloadGenerator.SwissQrCode.AdditionalInformation(unstructuredMessage, billInformation));
 
-        Assert.NotNull(exception);
-        Assert.IsType<SwissQrCodeAdditionalInformationException>(exception);
         exception.Message.ShouldBe("Unstructured message and bill information must be shorter than 141 chars in total/combined.");
     }
 
@@ -170,10 +152,8 @@ public class SwissQrCodeTests
         var iban = "CHC2609000000857666015";
         var ibanType = PayloadGenerator.SwissQrCode.Iban.IbanType.Iban;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(exception);
         exception.Message.ShouldBe("The IBAN entered isn't valid.");
     }
 
@@ -183,10 +163,8 @@ public class SwissQrCodeTests
         var iban = "CHC2609000000857666015";
         var ibanType = PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(exception);
         exception.Message.ShouldBe("The QR-IBAN entered isn't valid.");
     }
 
@@ -196,10 +174,8 @@ public class SwissQrCodeTests
         var iban = "DE2609000000857666015";
         var ibanType = PayloadGenerator.SwissQrCode.Iban.IbanType.Iban;
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(() => new PayloadGenerator.SwissQrCode.Iban(iban, ibanType));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Iban.SwissQrCodeIbanException>(exception);
         exception.Message.ShouldBe("The IBAN must start with \"CH\" or \"LI\".");
     }
 
@@ -248,10 +224,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("Name must not be empty.");
     }
 
@@ -266,10 +240,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("Name must be shorter than 71 chars.");
     }
 
@@ -284,10 +256,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude in der wunderschönen aber auch ziemlich teuren Stadt Bern in der Schweiz";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("Street must be shorter than 71 chars.");
     }
 
@@ -302,10 +272,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude 1 ♥";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe(@"Street must match the following pattern as defined in pain.001: ^([a-zA-Z0-9\.,;:'\ \+\-/\(\)?\*\[\]\{\}\\`´~ ^|]|[!""#%&<>÷=@_$£¡¢¤¥¦§¨©ª«¬®¯°±²³µ¶·¸¹º»¼½¾¿×Ø€]|[àáâäãåāăąçćĉċčďđèéêëēĕėęěĝğġģĥħìíîïĩīĭįıĳķĸĺļľŀłñńņňŉŋòóôöōŏőõŕŗřśŝşšșţťŧțùúûüũūŭůűųŵýÿŷźżžßÀÁÂÄÃÅĀĂĄÇĆĈĊČĎĐÈÉÊËĒĔĖĘĚĜĞĠĢĤĦÌÍÎÏĨĪĬĮİĲĴĵĶĹĻĽĿŁÑŃŅŇŊÒÓÔÖÕŌŎŐŔŖŘŚŜŞŠȘŢŤŦȚÙÚÛÜŨŪŬŮŰŲŴÝŶŸŹŻŽÆÐÞæðøþŒœſ])*$");
     }
 
@@ -320,10 +288,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "123456789123456789";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("House number must be shorter than 17 chars.");
     }
 
@@ -338,10 +304,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("Zip code must not be empty.");
     }
 
@@ -355,10 +319,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("Zip code must be shorter than 17 chars.");
     }
 
@@ -373,10 +335,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe(@"Zip code must match the following pattern as defined in pain.001: ^([a-zA-Z0-9\.,;:'\ \+\-/\(\)?\*\[\]\{\}\\`´~ ^|]|[!""#%&<>÷=@_$£¡¢¤¥¦§¨©ª«¬®¯°±²³µ¶·¸¹º»¼½¾¿×Ø€]|[àáâäãåāăąçćĉċčďđèéêëēĕėęěĝğġģĥħìíîïĩīĭįıĳķĸĺļľŀłñńņňŉŋòóôöōŏőõŕŗřśŝşšșţťŧțùúûüũūŭůűųŵýÿŷźżžßÀÁÂÄÃÅĀĂĄÇĆĈĊČĎĐÈÉÊËĒĔĖĘĚĜĞĠĢĤĦÌÍÎÏĨĪĬĮİĲĴĵĶĹĻĽĿŁÑŃŅŇŊÒÓÔÖÕŌŎŐŔŖŘŚŜŞŠȘŢŤŦȚÙÚÛÜŨŪŬŮŰŲŴÝŶŸŹŻŽÆÐÞæðøþŒœſ])*$");
     }
 
@@ -391,10 +351,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("City must not be empty.");
     }
 
@@ -409,10 +367,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("City name must be shorter than 36 chars.");
     }
 
@@ -427,10 +383,8 @@ public class SwissQrCodeTests
         var street = "Parlamentsgebäude";
         var houseNumber = "1";
 
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country, street, houseNumber));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
     }
 
@@ -550,10 +504,8 @@ public class SwissQrCodeTests
         var amount = 1234567891.25m;
         var reqDateOfPayment = new DateTime(2017, 03, 01);
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.SwissQrCodeException>(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.SwissQrCodeException>(exception);
         exception.Message.ShouldBe("Amount (including decimals) must be shorter than 13 places.");
     }
 
@@ -568,10 +520,8 @@ public class SwissQrCodeTests
         var amount = 100.25m;
         var reqDateOfPayment = new DateTime(2017, 03, 01);
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.SwissQrCodeException>(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.SwissQrCodeException>(exception);
         exception.Message.ShouldBe("If QR-IBAN is used, you have to choose \"QRR\" as reference type!");
     }
 
@@ -587,10 +537,8 @@ public class SwissQrCodeTests
         var reqDateOfPayment = new DateTime(2017, 03, 01);
         var alt1 = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean ma";
 
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral, alt1));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.SwissQrCodeException>(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral, alt1));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.SwissQrCodeException>(exception);
         exception.Message.ShouldBe("Alternative procedure information block 1 must be shorter than 101 chars.");
     }
 
@@ -606,10 +554,8 @@ public class SwissQrCodeTests
         var reqDateOfPayment = new DateTime(2017, 03, 01);
         var alt1 = "lorem ipsum";
         var alt2 = "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean ma";
-        var exception = Record.Exception(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral, alt1, alt2));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.SwissQrCodeException>(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation, contactGeneral, amount, reqDateOfPayment, contactGeneral, alt1, alt2));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.SwissQrCodeException>(exception);
         exception.Message.ShouldBe("Alternative procedure information block 2 must be shorter than 101 chars.");
     }
 
@@ -622,27 +568,215 @@ public class SwissQrCodeTests
 
         // Should work, as DE is a valid country code
         string country = "DE";
-        var exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
-        Assert.Null(exception);
+        Should.NotThrow(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
 
         // Should work, as de is a valid country code and case should be ignored
         country = "de";
-        exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
-        Assert.Null(exception);
+        Should.NotThrow(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
 
         // Should work, as XK is is defined as special case (not officially ISO-3166-1,but used in the wild)
-        // See https://en.wikipedia.org/wiki/XK_(user_assigned_code) and https://github.com/codebude/QRCoder/issues/420
+        // See https://en.wikipedia.org/wiki/XK_(user_assigned_code) and https://github.com/Shane32/QRCoder/issues/420
         country = "XK";
-        exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
-        Assert.Null(exception);
+        Should.NotThrow(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
 
 
         // Should throw exception, as ZZ isn't a valid country code
         country = "ZZ";
-        exception = Record.Exception(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress(name, zip, city, country));
 
-        Assert.NotNull(exception);
-        Assert.IsType<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(exception);
         exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_generate_with_combined_address_type()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress("John Doe", "CH", "Parlamentsgebäude 1", "3003 Bern");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2430043000000789012", PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR, "990005000000000320071012303", ReferenceTextType.QrReference);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator
+            .ToString()
+            .ShouldBe("SPC\r\n0200\r\n1\r\nCH2430043000000789012\r\nK\r\nJohn Doe\r\nParlamentsgebäude 1\r\n3003 Bern\r\n\r\n\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nCHF\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nQRR\r\n990005000000000320071012303\r\n\r\nEPD");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_name_empty()
+    {
+        var name = "";
+        var country = "CH";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "3003 Bern";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Name must not be empty.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_name_too_long()
+    {
+        var name = "John Dorian Peter Charles Lord of the Rings and Master of Disaster Grayham";
+        var country = "CH";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "3003 Bern";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Name must be shorter than 71 chars.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_line1_too_long()
+    {
+        var name = "John Doe";
+        var country = "CH";
+        var addressLine1 = "This is a very long address line that exceeds the maximum allowed length of 70 characters for combined address";
+        var addressLine2 = "City";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Address line 1 must be shorter than 71 chars.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_line2_too_long()
+    {
+        var name = "John Doe";
+        var country = "CH";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "This is a very long address line that exceeds the maximum allowed length of 70 characters for combined address";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Address line 2 must be shorter than 71 chars.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_combined_address_country_invalid()
+    {
+        var name = "John Doe";
+        var country = "CHE";
+        var addressLine1 = "Parlamentsgebäude 1";
+        var addressLine2 = "3003 Bern";
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.Contact.SwissQrCodeContactException>(() => PayloadGenerator.SwissQrCode.Contact.WithCombinedAddress(name, country, addressLine1, addressLine2));
+
+        exception.Message.ShouldBe("Country must be a valid \"two letter\" country code as defined by ISO 3166-1, but it isn't.");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_generate_with_minimal_reference()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator
+            .ToString()
+            .ShouldBe("SPC\r\n0200\r\n1\r\nCH2609000000857666015\r\nS\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nCHF\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nNON\r\n\r\n\r\nEPD");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_generate_with_scor_reference()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.SCOR, "RF18539007547034", ReferenceTextType.CreditorReferenceIso11649);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator
+            .ToString()
+            .ShouldBe("SPC\r\n0200\r\n1\r\nCH2609000000857666015\r\nS\r\nJohn Doe\r\nParlamentsgebäude\r\n1\r\n3003\r\nBern\r\nCH\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nCHF\r\n\r\n\r\n\r\n\r\n\r\n\r\n\r\nSCOR\r\nRF18539007547034\r\n\r\nEPD");
+    }
+
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_liechtenstein_iban()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "9490", "Vaduz", "LI", "Städtle", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("LI21088100002324013AA", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator.ToString().ShouldContain("LI21088100002324013AA");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_throw_qrr_reference_without_qr_iban()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR, "990005000000000320071012303", ReferenceTextType.QrReference);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var exception = Should.Throw<PayloadGenerator.SwissQrCode.SwissQrCodeException>(() => new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference));
+
+        exception.Message.ShouldBe("If non QR-IBAN is used, you have to choose either \"SCOR\" or \"NON\" as reference type!");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_additional_information_without_bill_information()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+        var additionalInformation = new PayloadGenerator.SwissQrCode.AdditionalInformation("Unstructured message only");
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation);
+
+        generator.ToString().ShouldContain("Unstructured message only\r\nEPD");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_bill_information_without_unstructured_message()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+        var additionalInformation = new PayloadGenerator.SwissQrCode.AdditionalInformation(null, "Bill information only");
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation);
+
+        generator.ToString().ShouldContain("\r\nEPD\r\nBill information only");
+    }
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_empty_additional_information()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2609000000857666015", PayloadGenerator.SwissQrCode.Iban.IbanType.Iban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.NON);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+        var additionalInformation = new PayloadGenerator.SwissQrCode.AdditionalInformation();
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference, additionalInformation);
+
+        generator.ToString().ShouldContain("\r\nEPD");
+    }
+
+
+    [Fact]
+    public void swissqrcode_generator_should_handle_qr_iban_with_qrr_reference_default_counter()
+    {
+        var contactGeneral = PayloadGenerator.SwissQrCode.Contact.WithStructuredAddress("John Doe", "3003", "Bern", "CH", "Parlamentsgebäude", "1");
+        var iban = new PayloadGenerator.SwissQrCode.Iban("CH2430043000000789012", PayloadGenerator.SwissQrCode.Iban.IbanType.QrIban);
+        var reference = new PayloadGenerator.SwissQrCode.Reference(ReferenceType.QRR);
+        var currency = PayloadGenerator.SwissQrCode.Currency.CHF;
+
+        var generator = new PayloadGenerator.SwissQrCode(iban, currency, contactGeneral, reference);
+
+        generator.ToString().ShouldContain("QRR\r\n\r\n");
     }
 }

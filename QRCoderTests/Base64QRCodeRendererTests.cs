@@ -1,11 +1,3 @@
-#if !NETCOREAPP1_1
-using System;
-using System.Drawing;
-using System.IO;
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests;
 
 public class Base64QRCodeRendererTests
@@ -54,17 +46,9 @@ public class Base64QRCodeRendererTests
     [Fact]
     public void can_render_base64_qrcode_jpeg()
     {
-        var ms = new MemoryStream();
-        using (var bitmap = new QRCode(_data).GetGraphic(5, Color.Black, Color.White, true))
-        {
-            bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
-        }
-        ms.Position = 0;
-        var jpgString = Convert.ToBase64String(ms.ToArray());
         var base64QRCode = new Base64QRCode(_data).GetGraphic(5, Color.Black, Color.White, true, Base64QRCode.ImageType.Jpeg);
-        base64QRCode.ShouldBe(jpgString);
+        var data = Convert.FromBase64String(base64QRCode);
+        data.ShouldMatchApprovedImage(asMonochrome: true); // remove JPEG compression artifacts by converting to monochrome
     }
 #endif
 }
-
-#endif
