@@ -50,54 +50,30 @@ grestore
 gsave
 sc sc scale
 0 25 1 sub translate
-f f f f f f f b f b f b f b b b f b f f f f f f f 
-nl
-f b b b b b f b b f f f f b b b b b f b b b b b f 
-nl
-f b f f f b f b f f f b b f f b b b f b f f f b f 
-nl
-f b f f f b f b f f f b f f f f f b f b f f f b f 
-nl
-f b f f f b f b f b b f f b b f f b f b f f f b f 
-nl
-f b b b b b f b b b f f b b b b f b f b b b b b f 
-nl
-f f f f f f f b f b f b f b f b f b f f f f f f f 
-nl
-b b b b b b b b b b f b f b b b b b b b b b b b b 
-nl
-f f f f b b f b f b f f b b f b f f b b f f f b f 
-nl
-f f b f f f b f f b f b f b f b b b b b b f f b b 
-nl
-b f f f f f f b b f f f f b b b f f b f f f b b b 
-nl
-b b b f b f b b f f f f f f b f f b b f b f f b b 
-nl
-f b f f b f f f b f f f b f b b b f f b f b f b b 
-nl
-b f f f b f b b b b b b b b f f f b f f f b b f f 
-nl
-b f b b b f f f f f b b f f b b b b b f b f b f b 
-nl
-f b f f b f b f f f f f f b f b b f f b b f b b f 
-nl
-b b f b f f f f f f f f b f f b f f f f f b f b b 
-nl
-b b b b b b b b f f b f b f b b f b b b f b f f b 
-nl
-f f f f f f f b b b b b b b b b f b f b f f b f f 
-nl
-f b b b b b f b b f f b b b f f f b b b f f b b f 
-nl
-f b f f f b f b b b f b f b b b f f f f f b b b f 
-nl
-f b f f f b f b f b f f f b f b b f f b f f f f f 
-nl
-f b f f f b f b f b b f b b f b f b f b f f b f b 
-nl
-f b b b b b f b f f f f b f f b b f b b f f f b b 
-nl
+f f f f f f f b f b f b f b b b f b f f f f f f f nl
+f b b b b b f b b f f f f b b b b b f b b b b b f nl
+f b f f f b f b f f f b b f f b b b f b f f f b f nl
+f b f f f b f b f f f b f f f f f b f b f f f b f nl
+f b f f f b f b f b b f f b b f f b f b f f f b f nl
+f b b b b b f b b b f f b b b b f b f b b b b b f nl
+f f f f f f f b f b f b f b f b f b f f f f f f f nl
+b b b b b b b b b b f b f b b b b b b b b b b b b nl
+f f f f b b f b f b f f b b f b f f b b f f f b f nl
+f f b f f f b f f b f b f b f b b b b b b f f b b nl
+b f f f f f f b b f f f f b b b f f b f f f b b b nl
+b b b f b f b b f f f f f f b f f b b f b f f b b nl
+f b f f b f f f b f f f b f b b b f f b f b f b b nl
+b f f f b f b b b b b b b b f f f b f f f b b f f nl
+b f b b b f f f f f b b f f b b b b b f b f b f b nl
+f b f f b f b f f f f f f b f b b f f b b f b b f nl
+b b f b f f f f f f f f b f f b f f f f f b f b b nl
+b b b b b b b b f f b f b f b b f b b b f b f f b nl
+f f f f f f f b b b b b b b b b f b f b f f b f f nl
+f b b b b b f b b f f b b b f f f b b b f f b b f nl
+f b f f f b f b b b f b f b b b f f f f f b b b f nl
+f b f f f b f b f b f f f b f b b f f b f f f f f nl
+f b f f f b f b f b b f b b f b f b f b f f b f b nl
+f b b b b b f b f f f f b f f b b f b b f f f b b nl
 f f f f f f f b f b b b b f b b b f f b b b f f f 
 %%EndBody
 grestore
