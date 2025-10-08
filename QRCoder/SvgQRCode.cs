@@ -29,7 +29,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic()
     {
-        return GetGraphic(Size.Empty, "#000", "#FFF", true, SizingMode.ViewBoxAttribute, null);
+        return GetGraphic(Size.Empty, Color.Black, Color.White, true, SizingMode.ViewBoxAttribute, null);
     }
 
     /// <summary>
@@ -40,7 +40,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     public string GetGraphic(int pixelsPerModule)
     {
         var viewBox = new Size(pixelsPerModule * QrCodeData.ModuleMatrix.Count, pixelsPerModule * QrCodeData.ModuleMatrix.Count);
-        return GetGraphic(viewBox, "#000", "#FFF");
+        return GetGraphic(viewBox, Color.Black, Color.White);
     }
 
     /// <summary>
@@ -422,17 +422,17 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     }
 
     /// <summary>
-    /// Mode of sizing attribution on svg root node
+    /// Mode of sizing attribute on SVG root node
     /// </summary>
     public enum SizingMode
     {
         /// <summary>
-        /// Use width and height attributes for SVG sizing
+        /// Specifies width and height attributes for SVG sizing
         /// </summary>
         WidthHeightAttribute = 0,
 
         /// <summary>
-        /// Use viewBox attribute for SVG sizing
+        /// Width and height are not included within the SVG tag; viewBox is scaled to fit the container
         /// </summary>
         ViewBoxAttribute = 1,
     }
