@@ -156,13 +156,14 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         {
             var viewBoxLogoAttr = GetLogoAttributes(logo, viewBox);
             // Convert from viewBox coordinates to module coordinates
-            double scale = drawableModulesCount / (double)Math.Min(viewBox.Width, viewBox.Height);
+            double scaleX = drawableModulesCount / (double)viewBox.Width;
+            double scaleY = drawableModulesCount / (double)viewBox.Height;
             logoAttr = new ImageAttributes
             {
-                X = viewBoxLogoAttr.X * scale,
-                Y = viewBoxLogoAttr.Y * scale,
-                Width = viewBoxLogoAttr.Width * scale,
-                Height = viewBoxLogoAttr.Height * scale
+                X = viewBoxLogoAttr.X * scaleX,
+                Y = viewBoxLogoAttr.Y * scaleY,
+                Width = viewBoxLogoAttr.Width * scaleX,
+                Height = viewBoxLogoAttr.Height * scaleY,
             };
         }
 
