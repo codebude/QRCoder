@@ -959,6 +959,7 @@ namespace QRCoder
     {
         public SvgQRCode() { }
         public SvgQRCode(QRCoder.QRCodeData data) { }
+        public string GetGraphic() { }
         public string GetGraphic(int pixelsPerModule) { }
         public string GetGraphic(System.Drawing.Size viewBox, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }
         public string GetGraphic(System.Drawing.Size viewBox, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true, QRCoder.SvgQRCode.SizingMode sizingMode = 0, QRCoder.SvgQRCode.SvgLogo? logo = null) { }

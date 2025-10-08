@@ -268,7 +268,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             {
                 bool isDarkModule = QrCodeData.ModuleMatrix[y + offset][x + offset];
                 bool isBlockedByLogo = logo != null && logo.FillLogoBackground() &&
-                    IsBlockedByLogo(x, y, logoAttr!.Value, 1);
+                    IsBlockedByLogo(x, y, logoAttr!.Value);
 
                 // For dark modules: draw only dark modules not blocked by logo
                 // For light modules: draw light modules not blocked by logo, or anywhere blocked by logo (regardless of module color)
