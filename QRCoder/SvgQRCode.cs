@@ -24,7 +24,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     public SvgQRCode(QRCodeData data) : base(data) { }
 
     /// <summary>
-    /// Returns a QR code as an SVG string.
+    /// Returns a scalable QR code as an SVG string.
     /// </summary>
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic()
@@ -35,7 +35,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string.
     /// </summary>
-    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn; applicable only when using <see cref="SizingMode.WidthHeightAttribute"/>.</param>
+    /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn.</param>
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic(int pixelsPerModule)
     {
