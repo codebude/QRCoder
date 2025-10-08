@@ -96,7 +96,7 @@ internal static class StringExtensions
             return;
         }
 #endif
-        sb.Append(num.ToString(CultureInfo.InvariantCulture));
+        sb.Append(num.ToString("G7", CultureInfo.InvariantCulture));
 #endif
     }
 }
