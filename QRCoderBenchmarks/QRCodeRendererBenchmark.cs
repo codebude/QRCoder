@@ -1,6 +1,5 @@
 using BenchmarkDotNet.Attributes;
 using QRCoder;
-using System.Drawing;
 
 namespace QRCoderBenchmarks;
 
