@@ -3,7 +3,7 @@ using BenchmarkDotNet.Attributes;
 namespace QRCoderBenchmarks;
 
 [MemoryDiagnoser]
-public class QRCodeGenerator
+public class QRCodeGeneratorBenchmark
 {
     [Benchmark]
     public void CreateQRCode()

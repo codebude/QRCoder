@@ -4,11 +4,11 @@ using QRCoder;
 namespace QRCoderBenchmarks;
 
 [MemoryDiagnoser]
-public class PngByteQRCodeBenchmark
+public class BitmapByteQRCodeRendererBenchmark
 {
     private readonly Dictionary<string, QRCodeData> _samples;
 
-    public PngByteQRCodeBenchmark()
+    public BitmapByteQRCodeRendererBenchmark()
     {
         var eccLvl = QRCoder.QRCodeGenerator.ECCLevel.L;
         _samples = new Dictionary<string, QRCodeData>()
@@ -21,30 +21,30 @@ public class PngByteQRCodeBenchmark
 
 
     [Benchmark]
-    public void RenderPngByteQRCodeSmall()
+    public void RenderBitmapByteQRCodeSmall()
     {
-        var qrCode = new PngByteQRCode(_samples["small"]);
+        var qrCode = new BitmapByteQRCode(_samples["small"]);
         _ = qrCode.GetGraphic(10);
     }
 
     [Benchmark]
-    public void RenderPngByteQRCodeMedium()
+    public void RenderBitmapByteQRCodeMedium()
     {
-        var qrCode = new PngByteQRCode(_samples["medium"]);
+        var qrCode = new BitmapByteQRCode(_samples["medium"]);
         _ = qrCode.GetGraphic(10);
     }
 
     [Benchmark]
-    public void RenderPngByteQRCodeBig()
+    public void RenderBitmapByteQRCodeBig()
     {
-        var qrCode = new PngByteQRCode(_samples["big"]);
+        var qrCode = new BitmapByteQRCode(_samples["big"]);
         _ = qrCode.GetGraphic(10);
     }
 
     [Benchmark]
-    public void RenderPngByteQRCodeHuge()
+    public void RenderBitmapByteQRCodeHuge()
     {
-        var qrCode = new PngByteQRCode(_samples["big"]);
+        var qrCode = new BitmapByteQRCode(_samples["big"]);
         _ = qrCode.GetGraphic(50);
     }
 }

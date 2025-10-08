@@ -223,3 +223,6 @@ QRCoder/PortabilityAnalysis.html
 # Unaccepted approval files
 QRCoderTests/*.received.*
 *.received.txt
+
+# Benchmarks
+BenchmarkDotNet.Artifacts/
