@@ -121,24 +121,24 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         // Build SVG opening tag with size attributes
         var svgFile = new StringBuilder();
 
-        svgFile.Append(@"<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 ");
+        svgFile.Append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 ");
         Append(drawableModulesCount);
         svgFile.Append(' ');
         Append(drawableModulesCount);
-        svgFile.Append(@""" shape-rendering=""crispEdges""");
+        svgFile.Append("\" shape-rendering=\"crispEdges\"");
 
         // Add xlink namespace if logo is used (to retain compatibility with older SVG viewers)
         if (logo != null && !logo.IsEmbedded())
         {
-            svgFile.Append(@" xmlns:xlink=""http://www.w3.org/1999/xlink""");
+            svgFile.Append(" xmlns:xlink=\"http://www.w3.org/1999/xlink\"");
         }
 
         // Add width/height attributes if specified by sizing mode
         if (sizingMode == SizingMode.WidthHeightAttribute)
         {
-            svgFile.Append(@" width=""");
+            svgFile.Append(" width=\"");
             Append(viewBox.Width);
-            svgFile.Append(@""" height=""");
+            svgFile.Append("\" height=\"");
             Append(viewBox.Height);
             svgFile.Append('"');
         }
@@ -151,13 +151,13 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         // Draw light color background if not transparent and dark is fully opaque
         if (!IsFullyTransparent(lightColorHex) && !drawLightModulesAsPath)
         {
-            svgFile.Append(@"<rect x=""0"" y=""0"" width=""");
+            svgFile.Append("<rect x=\"0\" y=\"0\" width=\"");
             Append(drawableModulesCount);
-            svgFile.Append(@""" height=""");
+            svgFile.Append("\" height=\"");
             Append(drawableModulesCount);
-            svgFile.Append(@""" fill=""");
+            svgFile.Append("\" fill=\"");
             svgFile.Append(lightColorHex);
-            svgFile.AppendLine(@"""/>");
+            svgFile.AppendLine("\"/>");
         }
 
         // Calculate logo attributes if needed (in module coordinates)
@@ -185,17 +185,17 @@ public class SvgQRCode : AbstractQRCode, IDisposable
 
             if (!logo.IsEmbedded())
             {
-                svgFile.Append(@"<image x=""");
+                svgFile.Append("<image x=\"");
                 svgFile.Append(CleanSvgVal(logoAttr!.Value.X));
-                svgFile.Append(@""" y=""");
+                svgFile.Append("\" y=\"");
                 svgFile.Append(CleanSvgVal(logoAttr.Value.Y));
-                svgFile.Append(@""" width=""");
+                svgFile.Append("\" width=\"");
                 svgFile.Append(CleanSvgVal(logoAttr.Value.Width));
-                svgFile.Append(@""" height=""");
+                svgFile.Append("\" height=\"");
                 svgFile.Append(CleanSvgVal(logoAttr.Value.Height));
-                svgFile.Append(@""" xlink:href=""");
+                svgFile.Append("\" xlink:href=\"");
                 svgFile.Append(logo.GetDataUri());
-                svgFile.AppendLine(@"""/>");
+                svgFile.AppendLine("\"/>");
             }
             else
             {
@@ -216,9 +216,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         // Local function to draw modules as a path
         void DrawModulesPath(bool drawDarkModules, string colorHex)
         {
-            svgFile.Append(@"<path fill=""");
+            svgFile.Append("<path fill=\"");
             svgFile.Append(colorHex);
-            svgFile.Append(@""" d=""");
+            svgFile.Append("\" d=\"");
 
             // Build path using RLE to combine rectangles
             for (int y = 0; y < drawableModulesCount; y++)
@@ -261,7 +261,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
                 }
             }
 
-            svgFile.AppendLine(@"""/>");
+            svgFile.AppendLine("\"/>");
 
             // Local function to determine if a module should be drawn
             bool ShouldDrawModule(int x, int y)
