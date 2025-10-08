@@ -26,12 +26,21 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <summary>
     /// Returns a QR code as an SVG string.
     /// </summary>
+    /// <returns>Returns the QR code graphic as an SVG string.</returns>
+    public string GetGraphic()
+    {
+        return GetGraphic(Size.Empty, "#000", "#FFF", true, SizingMode.ViewBoxAttribute, null);
+    }
+
+    /// <summary>
+    /// Returns a QR code as an SVG string.
+    /// </summary>
     /// <param name="pixelsPerModule">The pixel size each dark/light module is drawn; applicable only when using <see cref="SizingMode.WidthHeightAttribute"/>.</param>
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic(int pixelsPerModule)
     {
         var viewBox = new Size(pixelsPerModule * QrCodeData.ModuleMatrix.Count, pixelsPerModule * QrCodeData.ModuleMatrix.Count);
-        return GetGraphic(viewBox, Color.Black, Color.White);
+        return GetGraphic(viewBox, "#000", "#FFF");
     }
 
     /// <summary>
@@ -152,20 +161,10 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         }
 
         // Calculate logo attributes if needed (in module coordinates)
-        ImageAttributes? logoAttr = null;
+        RectangleF? logoAttr = null;
         if (logo != null)
         {
-            var viewBoxLogoAttr = GetLogoAttributes(logo, viewBox);
-            // Convert from viewBox coordinates to module coordinates
-            double scaleX = drawableModulesCount / (double)viewBox.Width;
-            double scaleY = drawableModulesCount / (double)viewBox.Height;
-            logoAttr = new ImageAttributes
-            {
-                X = viewBoxLogoAttr.X * scaleX,
-                Y = viewBoxLogoAttr.Y * scaleY,
-                Width = viewBoxLogoAttr.Width * scaleX,
-                Height = viewBoxLogoAttr.Height * scaleY,
-            };
+            logoAttr = GetLogoAttributes(logo, new Size(drawableModulesCount, drawableModulesCount));
         }
 
         // Draw light modules as path if dark is not fully opaque
@@ -294,45 +293,34 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         }
     }
 
-    private static bool IsBlockedByLogo(int x, int y, ImageAttributes attr, double moduleSize)
+    /// <summary>
+    /// Determines if a module at (x,y) is blocked by the logo area defined by attr.
+    /// </summary>
+    private static bool IsBlockedByLogo(int x, int y, RectangleF attr)
     {
-        // Convert module coordinates to viewBox coordinates for comparison
-        double moduleX = x * moduleSize;
-        double moduleY = y * moduleSize;
-        double moduleEndX = (x + 1) * moduleSize;
-        double moduleEndY = (y + 1) * moduleSize;
-
-        return moduleEndX > attr.X && moduleX < attr.X + attr.Width &&
-               moduleEndY > attr.Y && moduleY < attr.Y + attr.Height;
+        return
+            x + 1 > attr.X &&             // Right edge of module > left edge of logo
+            x < attr.X + attr.Width &&    // Left edge of module < right edge of logo
+            y + 1 > attr.Y &&             // Bottom edge of module > top edge of logo
+            y < attr.Y + attr.Height;     // Top edge of module < bottom edge of logo
     }
 
-    private static ImageAttributes GetLogoAttributes(SvgLogo logo, Size viewBox)
+    /// <summary>
+    /// Calculates the logo's position and size within the QR code based on the specified percentage size.
+    /// </summary>
+    private static RectangleF GetLogoAttributes(SvgLogo logo, Size viewBox)
     {
-        var imgWidth = logo.GetIconSizePercent() / 100d * viewBox.Width;
-        var imgHeight = logo.GetIconSizePercent() / 100d * viewBox.Height;
-        var imgPosX = viewBox.Width / 2d - imgWidth / 2d;
-        var imgPosY = viewBox.Height / 2d - imgHeight / 2d;
-        return new ImageAttributes()
-        {
-            Width = imgWidth,
-            Height = imgHeight,
-            X = imgPosX,
-            Y = imgPosY
-        };
-    }
-
-    private struct ImageAttributes
-    {
-        public double Width;
-        public double Height;
-        public double X;
-        public double Y;
+        var imgWidth = logo.GetIconSizePercent() * viewBox.Width / 100f;
+        var imgHeight = logo.GetIconSizePercent() * viewBox.Height / 100f;
+        var imgPosX = viewBox.Width / 2f - imgWidth / 2f;
+        var imgPosY = viewBox.Height / 2f - imgHeight / 2f;
+        return new RectangleF(imgPosX, imgPosY, imgWidth, imgHeight);
     }
 
     //Clean double values for international use/formats
     //We use explicitly "G7" to avoid differences between .NET full and Core platforms
     //https://stackoverflow.com/questions/64898117/tostring-has-a-different-behavior-between-net-462-and-net-core-3-1
-    private static string CleanSvgVal(double input)
+    private static string CleanSvgVal(float input)
         => input.ToString("G7", CultureInfo.InvariantCulture);
 
     /// <summary>
