@@ -62,6 +62,7 @@ public class QRCode : AbstractQRCode, IDisposable
         using (var lightBrush = new SolidBrush(lightColor))
         using (var darkBrush = new SolidBrush(darkColor))
         {
+            gfx.FillRectangle(lightBrush, new Rectangle(0, 0, bmp.Width, bmp.Height));
             for (var x = 0; x < size + offset; x += pixelsPerModule)
             {
                 for (var y = 0; y < size + offset; y += pixelsPerModule)
@@ -71,10 +72,6 @@ public class QRCode : AbstractQRCode, IDisposable
                     if (module)
                     {
                         gfx.FillRectangle(darkBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
-                    }
-                    else
-                    {
-                        gfx.FillRectangle(lightBrush, new Rectangle(x - offset, y - offset, pixelsPerModule, pixelsPerModule));
                     }
                 }
             }
