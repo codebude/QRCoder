@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Compression;
 
 namespace QRCoder;
@@ -82,23 +78,23 @@ public class QRCodeData : IDisposable
         }
 
         if (rawData.Length < 5)
-            throw new Exception("Invalid raw data file. File too short.");
+            throw new InvalidDataException("Invalid raw data file. File too short.");
         if (rawData[0] != 0x51 || rawData[1] != 0x52 || rawData[2] != 0x52)
-            throw new Exception("Invalid raw data file. Filetype doesn't match \"QRR\".");
+            throw new InvalidDataException("Invalid raw data file. Filetype doesn't match \"QRR\".");
 
         // Set QR code version from side length (includes 8-module quiet zone)
         var sideLen = (int)rawData[4];
         if (sideLen < 29) // Micro QR: sideLen = 19 + 2*(m-1), m in [1..4] -> versions -1..-4
         {
             if (((sideLen - 19) & 1) != 0)
-                throw new Exception("Invalid raw data file. Side length not valid for Micro QR.");
+                throw new InvalidDataException("Invalid raw data file. Side length not valid for Micro QR.");
             var m = ((sideLen - 19) / 2) + 1;
             Version = -m;
         }
         else // Standard QR: sideLen = 29 + 4*(v-1), v in [1..40]
         {
             if (((sideLen - 29) % 4) != 0)
-                throw new Exception("Invalid raw data file. Side length not valid for QR.");
+                throw new InvalidDataException("Invalid raw data file. Side length not valid for QR.");
             Version = ((sideLen - 29) / 4) + 1;
         }
 
@@ -162,12 +158,13 @@ public class QRCodeData : IDisposable
             targetStream.WriteByte((byte)ModuleMatrix.Count);
 
             //Build data queue
-            var dataQueue = new Queue<int>();
+            var capacity = ModuleMatrix.Count * ModuleMatrix.Count + 7; // Total modules + max padding for byte alignment
+            var dataQueue = new Queue<int>(capacity);
             foreach (var row in ModuleMatrix)
             {
-                foreach (var module in row)
+                for (int i = 0; i < row.Length; i++)
                 {
-                    dataQueue.Enqueue((bool)module ? 1 : 0);
+                    dataQueue.Enqueue(row[i] ? 1 : 0);
                 }
             }
             int mod = (int)(((uint)ModuleMatrix.Count * (uint)ModuleMatrix.Count) % 8);
@@ -223,11 +220,11 @@ public class QRCodeData : IDisposable
     /// <summary>
     /// Releases all resources used by the <see cref="QRCodeData"/>.
     /// </summary>
-    public void Dispose()
+    public virtual void Dispose()
     {
         ModuleMatrix = null!;
         Version = 0;
-
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>

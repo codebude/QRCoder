@@ -1,13 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+#pragma warning disable CA5350 // Weak cryptography algorithm (SHA1).
+
 using System.Reflection;
-using System.Text;
-using QRCoder;
-using Shouldly;
-using Xunit;
 using ECCLevel = QRCoder.QRCodeGenerator.ECCLevel;
 
 
@@ -23,7 +16,7 @@ public class QRGeneratorTests
 
         var checkString = string.Empty;
         var tablesType = Type.GetType("QRCoder.QRCodeGenerator+GaloisField, QRCoder");
-        var gField = tablesType.GetField("_galoisFieldByExponentAlpha", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null).ShouldBeOfType<int[]>();
+        var gField = tablesType!.GetField("_galoisFieldByExponentAlpha", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null).ShouldBeOfType<int[]>();
         gField.Length.ShouldBe(256);
         for (int i = 0; i < gField.Length; i++)
         {
@@ -31,7 +24,7 @@ public class QRGeneratorTests
         }
         checkString.ShouldBe("0,1,:1,2,:2,4,:3,8,:4,16,:5,32,:6,64,:7,128,:8,29,:9,58,:10,116,:11,232,:12,205,:13,135,:14,19,:15,38,:16,76,:17,152,:18,45,:19,90,:20,180,:21,117,:22,234,:23,201,:24,143,:25,3,:26,6,:27,12,:28,24,:29,48,:30,96,:31,192,:32,157,:33,39,:34,78,:35,156,:36,37,:37,74,:38,148,:39,53,:40,106,:41,212,:42,181,:43,119,:44,238,:45,193,:46,159,:47,35,:48,70,:49,140,:50,5,:51,10,:52,20,:53,40,:54,80,:55,160,:56,93,:57,186,:58,105,:59,210,:60,185,:61,111,:62,222,:63,161,:64,95,:65,190,:66,97,:67,194,:68,153,:69,47,:70,94,:71,188,:72,101,:73,202,:74,137,:75,15,:76,30,:77,60,:78,120,:79,240,:80,253,:81,231,:82,211,:83,187,:84,107,:85,214,:86,177,:87,127,:88,254,:89,225,:90,223,:91,163,:92,91,:93,182,:94,113,:95,226,:96,217,:97,175,:98,67,:99,134,:100,17,:101,34,:102,68,:103,136,:104,13,:105,26,:106,52,:107,104,:108,208,:109,189,:110,103,:111,206,:112,129,:113,31,:114,62,:115,124,:116,248,:117,237,:118,199,:119,147,:120,59,:121,118,:122,236,:123,197,:124,151,:125,51,:126,102,:127,204,:128,133,:129,23,:130,46,:131,92,:132,184,:133,109,:134,218,:135,169,:136,79,:137,158,:138,33,:139,66,:140,132,:141,21,:142,42,:143,84,:144,168,:145,77,:146,154,:147,41,:148,82,:149,164,:150,85,:151,170,:152,73,:153,146,:154,57,:155,114,:156,228,:157,213,:158,183,:159,115,:160,230,:161,209,:162,191,:163,99,:164,198,:165,145,:166,63,:167,126,:168,252,:169,229,:170,215,:171,179,:172,123,:173,246,:174,241,:175,255,:176,227,:177,219,:178,171,:179,75,:180,150,:181,49,:182,98,:183,196,:184,149,:185,55,:186,110,:187,220,:188,165,:189,87,:190,174,:191,65,:192,130,:193,25,:194,50,:195,100,:196,200,:197,141,:198,7,:199,14,:200,28,:201,56,:202,112,:203,224,:204,221,:205,167,:206,83,:207,166,:208,81,:209,162,:210,89,:211,178,:212,121,:213,242,:214,249,:215,239,:216,195,:217,155,:218,43,:219,86,:220,172,:221,69,:222,138,:223,9,:224,18,:225,36,:226,72,:227,144,:228,61,:229,122,:230,244,:231,245,:232,247,:233,243,:234,251,:235,235,:236,203,:237,139,:238,11,:239,22,:240,44,:241,88,:242,176,:243,125,:244,250,:245,233,:246,207,:247,131,:248,27,:249,54,:250,108,:251,216,:252,173,:253,71,:254,142,:255,1,:");
 
-        var gField2 = tablesType.GetField("_galoisFieldByIntegerValue", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null).ShouldBeOfType<int[]>();
+        var gField2 = tablesType!.GetField("_galoisFieldByIntegerValue", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null).ShouldBeOfType<int[]>();
         gField2.Length.ShouldBe(256);
         var checkString2 = string.Empty;
         for (int i = 0; i < gField2.Length; i++)
@@ -48,6 +41,8 @@ public class QRGeneratorTests
     [InlineData("123456789", ECCLevel.L, "gCY4Cj1uLhI/0JjWG1F9kC4S1+I", 13)] //verified
     [InlineData("abcd56789012345", ECCLevel.L, "kqcKfCCdu1VTjjtsmK4iBav9FTs", 17)] //verified
     [InlineData("abc", ECCLevel.M, "334sxrtY5KkNZRGj1pBgb87/cFc", 15)] //reads fine, but unable to verify repeating pattern
+    [InlineData("ABCDEFGHIJKLMNOPQR", ECCLevel.M, "6wDTTApiAonkc6zZk451niMR06Y", 17)] // M4 with M - 18 chars for M4
+    [InlineData("ABCDEFGHIJKLM", ECCLevel.Q, "RptOJSwvxUmQYoQXIPf9c1L4Ayc", 17)] // M4 with Q - 13 chars for M4
     public void validate_micro_qr_code(string input, ECCLevel eccLevel, string expectedHash, int expectedSize)
     {
         var qrData = QRCodeGenerator.GenerateMicroQrCode(input, eccLevel);
@@ -388,8 +383,8 @@ public class QRGeneratorTests
 
         var checkString = string.Empty;
         var encoderType = Type.GetType("QRCoder.QRCodeGenerator+AlphanumericEncoder, QRCoder");
-        var gField = encoderType.GetField("_alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Static);
-        foreach (var listitem in (Dictionary<char, int>)gField.GetValue(gen))
+        var gField = encoderType!.GetField("_alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Static);
+        foreach (var listitem in (Dictionary<char, int>)gField!.GetValue(gen)!)
         {
             checkString += $"{listitem.Key},{listitem.Value}:";
         }
@@ -401,7 +396,7 @@ public class QRGeneratorTests
     {
         var gen = new QRCodeGenerator();
         var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
-        var result = (int)method.Invoke(gen, new object[] { "0123456789", false });
+        var result = (int)method!.Invoke(gen, new object[] { "0123456789", false })!;
 
         result.ShouldBe(1);
     }
@@ -412,7 +407,7 @@ public class QRGeneratorTests
     {
         var gen = new QRCodeGenerator();
         var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
-        var result = (int)method.Invoke(gen, new object[] { "0123456789ABC", false });
+        var result = (int)method!.Invoke(gen, new object[] { "0123456789ABC", false })!;
 
         result.ShouldBe(2);
     }
@@ -423,7 +418,7 @@ public class QRGeneratorTests
     {
         var gen = new QRCodeGenerator();
         var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
-        var result = (int)method.Invoke(gen, new object[] { "0123456789", true });
+        var result = (int)method!.Invoke(gen, new object[] { "0123456789", true })!;
 
         result.ShouldBe(4);
     }
@@ -434,7 +429,7 @@ public class QRGeneratorTests
     {
         var gen = new QRCodeGenerator();
         var method = gen.GetType().GetMethod("GetEncodingFromPlaintext", BindingFlags.NonPublic | BindingFlags.Static);
-        var result = (int)method.Invoke(gen, new object[] { "0123456789äöüß", false });
+        var result = (int)method!.Invoke(gen, new object[] { "0123456789äöüß", false })!;
 
         result.ShouldBe(4);
     }
@@ -663,6 +658,118 @@ public class QRGeneratorTests
         reloadedQrData.Version.ShouldBe(originalQrData.Version);
         reloadedQrData.ModuleMatrix.Count.ShouldBe(originalQrData.ModuleMatrix.Count);
         reloadedMatrix.ShouldBe(originalMatrix);
+    }
+
+    [Fact]
+    public void micro_qr_throws_when_data_too_long_for_any_version()
+    {
+        // M4 with L can hold max 35 alphanumeric characters
+        var input = new string('A', 36);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.L));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void micro_qr_throws_when_data_too_long_for_selected_version()
+    {
+        // M2 with L can hold max 10 alphanumeric characters, but M3 can hold 23
+        var input = new string('A', 11);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode(input, ECCLevel.L, -2));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void qr_throws_when_data_too_long_for_any_version()
+    {
+        // Version 40 with L can hold max 4296 alphanumeric characters
+        var input = new string('A', 4297);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateQrCode(input, ECCLevel.L));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void qr_throws_when_data_too_long_for_selected_version()
+    {
+        // Version 1 with L can hold max 25 alphanumeric characters, but version 2 can hold 47
+        var input = new string('A', 26);
+        var ex = Should.Throw<QRCoder.Exceptions.DataTooLongException>(() =>
+            QRCodeGenerator.GenerateQrCode(input, ECCLevel.L, requestedVersion: 1));
+        ex.Message.ShouldContain("exceeds the maximum size", Case.Insensitive);
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_invalid_version_too_low()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.L, -5));
+        ex.ParamName.ShouldBe("requestedVersion");
+        ex.Message.ShouldContain("must be -1 to -4");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_invalid_version_too_high()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.L, 1));
+        ex.ParamName.ShouldBe("requestedVersion");
+        ex.Message.ShouldContain("must be -1 to -4");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_ecc_level_h()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.H));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("does not support error correction level H");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_ecc_level_q_without_m4()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("test", ECCLevel.Q, -3));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("only supports error correction level Q for version M4");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_non_default_ecc_with_m1()
+    {
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode("1", ECCLevel.L, -1));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("Please specify ECCLevel.Default for version M1");
+    }
+
+    [Fact]
+    public void micro_qr_throws_on_null_plaintext()
+    {
+        var ex = Should.Throw<ArgumentNullException>(() =>
+            QRCodeGenerator.GenerateMicroQrCode(null!, ECCLevel.L));
+        ex.ParamName.ShouldBe("plainText");
+    }
+
+    [Fact]
+    public void throws_on_invalid_ecc_level_cast()
+    {
+        var invalidEccLevel = (ECCLevel)99;
+        var ex = Should.Throw<ArgumentOutOfRangeException>(() =>
+            QRCodeGenerator.GenerateQrCode("test", invalidEccLevel));
+        ex.ParamName.ShouldBe("eccLevel");
+        ex.Message.ShouldContain("Invalid error correction level");
+    }
+
+    [Fact]
+    public void micro_qr_should_auto_select_m4_for_ecc_level_q()
+    {
+        // Q level is only supported on M4, so the generator should automatically select M4
+        var qrData = QRCodeGenerator.GenerateMicroQrCode("ABC", ECCLevel.Q);
+        (qrData.ModuleMatrix.Count - 8).ShouldBe(17); // M4 size is 17x17
+        qrData.Version.ShouldBe(-4);
     }
 }
 

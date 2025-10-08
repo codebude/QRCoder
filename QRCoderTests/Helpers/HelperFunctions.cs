@@ -1,18 +1,13 @@
-using System;
-using System.Text;
 using System.IO;
 using System.Security.Cryptography;
 using System.Reflection;
-using System.Drawing;
 #if TEST_XAML
 using SW = System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 #endif
 
-
 namespace QRCoderTests.Helpers;
-
 public static class HelperFunctions
 {
 
@@ -45,49 +40,8 @@ public static class HelperFunctions
 #if NET5_0_OR_GREATER
         => AppDomain.CurrentDomain.BaseDirectory;
 #else
-        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location).Replace("file:\\", "");
+        => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)?.Replace("file:\\", "") ?? "";
 #endif
-
-    /// <summary>
-    /// Converts a bitmap to a hash string based on the pixel data
-    /// using a deterministic algorithm that ignores compression algorithm
-    /// differences across platforms.
-    /// </summary>
-    public static string BitmapToHash(Bitmap bitmap)
-    {
-        // Lock the bitmap's bits.
-        var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-        var bitmapData = bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-
-        byte[] rgbValues;
-        try
-        {
-            // Create an array to hold the bytes of the bitmap.
-            int bytes = Math.Abs(bitmapData.Stride) * bitmap.Height;
-            rgbValues = new byte[bytes];
-
-            // Copy the RGB values into the array.
-            System.Runtime.InteropServices.Marshal.Copy(bitmapData.Scan0, rgbValues, 0, bytes);
-        }
-        finally
-        {
-            // Unlock the bits.
-            bitmap.UnlockBits(bitmapData);
-        }
-
-        // Hash the resulting byte array
-        return ByteArrayToHash(rgbValues);
-    }
-
-    public static string ByteArrayToHash(byte[] data)
-    {
-        var md5 = MD5.Create();
-        var hash = md5.ComputeHash(data);
-        return BitConverter.ToString(hash).Replace("-", "").ToLower();
-    }
-
-    public static string StringToHash(string data)
-        => ByteArrayToHash(Encoding.UTF8.GetBytes(data));
 
     /// <summary>
     /// Gets the embedded PNG icon as a Bitmap.
@@ -96,12 +50,8 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            return new Bitmap(stream);
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        return new Bitmap(stream);
     }
 
     /// <summary>
@@ -111,16 +61,10 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_software engineer_2909346.png";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            using (var memoryStream = new MemoryStream())
-            {
-                stream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
     }
 
     /// <summary>
@@ -130,14 +74,8 @@ public static class HelperFunctions
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "QRCoderTests.assets.noun_Scientist_2909361.svg";
-        using (var stream = assembly.GetManifestResourceStream(resourceName))
-        {
-            if (stream == null)
-                throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
-            using (var reader = new StreamReader(stream))
-            {
-                return reader.ReadToEnd();
-            }
-        }
+        using var stream = assembly.GetManifestResourceStream(resourceName) ?? throw new InvalidOperationException($"Embedded resource '{resourceName}' not found.");
+        using var reader = new StreamReader(stream);
+        return reader.ReadToEnd();
     }
 }

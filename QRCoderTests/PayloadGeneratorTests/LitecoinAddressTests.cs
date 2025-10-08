@@ -1,9 +1,3 @@
-using System.Globalization;
-using System.Threading;
-using QRCoder;
-using Shouldly;
-using Xunit;
-
 namespace QRCoderTests.PayloadGeneratorTests;
 
 public class LitecoinAddressTests

@@ -1,17 +1,16 @@
 #if SYSTEM_DRAWING
-using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using static QRCoder.QRCodeGenerator;
 
 namespace QRCoder;
 
-#if NET6_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
 /// <summary>
 /// Represents a QR code generator that outputs QR codes as bitmap images.
 /// </summary>
+#if NET6_0_OR_GREATER
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
 public class QRCode : AbstractQRCode, IDisposable
 {
     /// <summary>
@@ -150,7 +149,7 @@ public class QRCode : AbstractQRCode, IDisposable
     /// <param name="rect">The rectangle for which to create the rounded path.</param>
     /// <param name="cornerRadius">The radius of the corners.</param>
     /// <returns>Returns the rounded rectangle path.</returns>
-    internal GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
+    internal static GraphicsPath CreateRoundedRectanglePath(RectangleF rect, int cornerRadius)
     {
         var roundedRect = new GraphicsPath();
         roundedRect.AddArc(rect.X, rect.Y, cornerRadius * 2, cornerRadius * 2, 180, 90);
@@ -166,12 +165,12 @@ public class QRCode : AbstractQRCode, IDisposable
     }
 }
 
-#if NET6_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
 /// <summary>
 /// Provides static methods for creating bitmap QR codes.
 /// </summary>
+#if NET6_0_OR_GREATER
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
 public static class QRCodeHelper
 {
     /// <summary>

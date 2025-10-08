@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
@@ -41,6 +36,7 @@ public static partial class PayloadGenerator
         /// <param name="currency">Currency (either EUR or CHF)</param>
         /// <param name="creditor">Creditor (payee) information</param>
         /// <param name="reference">Reference information</param>
+        /// <param name="additionalInformation">Additional information for the QR code</param>
         /// <param name="debitor">Debitor (payer) information</param>
         /// <param name="amount">Amount</param>
         /// <param name="requestedDateOfPayment">Requested date of debitor's payment</param>
@@ -56,7 +52,7 @@ public static partial class PayloadGenerator
 
             _additionalInformation = additionalInformation ?? new AdditionalInformation();
 
-            if (amount != null && amount.ToString()!.Length > 12)
+            if (amount != null && amount.Value.ToString(CultureInfo.InvariantCulture).Length > 12)
                 throw new SwissQrCodeException("Amount (including decimals) must be shorter than 13 places.");
             _amount = amount;
 
@@ -279,7 +275,7 @@ public static partial class PayloadGenerator
                     throw new SwissQrCodeIbanException("The IBAN entered isn't valid.");
                 if (ibanType == IbanType.QrIban && !IsValidQRIban(iban))
                     throw new SwissQrCodeIbanException("The QR-IBAN entered isn't valid.");
-                if (!iban.StartsWith("CH") && !iban.StartsWith("LI"))
+                if (!iban.StartsWith("CH", StringComparison.Ordinal) && !iban.StartsWith("LI", StringComparison.Ordinal))
                     throw new SwissQrCodeIbanException("The IBAN must start with \"CH\" or \"LI\".");
                 _iban = iban;
                 _ibanType = ibanType;
@@ -595,7 +591,7 @@ public static partial class PayloadGenerator
                 SwissQrCodePayload += _alternativeProcedure2!.Replace("\n", "") + _br; //AltPmt
 
             //S-QR specification 2.0, chapter 4.2.3
-            if (SwissQrCodePayload.EndsWith(_br))
+            if (SwissQrCodePayload.EndsWith(_br, StringComparison.Ordinal))
                 SwissQrCodePayload = SwissQrCodePayload.Remove(SwissQrCodePayload.Length - _br.Length);
 
             return SwissQrCodePayload;

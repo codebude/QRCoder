@@ -1,7 +1,5 @@
-using System;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Text;
 using System.Windows.Markup;
 using NDesk.Options;
 using QRCoder;
@@ -9,7 +7,7 @@ using QRCoderConsole.DataObjects;
 
 namespace QRCoderConsole;
 
-#if NET6_0_WINDOWS
+#if NET6_0 && WINDOWS
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
 internal class MainClass
@@ -18,9 +16,8 @@ internal class MainClass
     {
         var friendlyName = AppDomain.CurrentDomain.FriendlyName;
         var newLine = Environment.NewLine;
-        var setter = new OptionSetter();
 
-        string fileName = null, outputFileName = null, payload = null;
+        string? fileName = null, outputFileName = null, payload = null;
 
         var eccLevel = QRCodeGenerator.ECCLevel.L;
         var imageFormat = SupportedImageFormat.Png;
@@ -35,7 +32,7 @@ internal class MainClass
         var optionSet = new OptionSet {
             {    "e|ecc-level=",
                 "error correction level",
-                value => eccLevel = setter.GetECCLevel(value)
+                value => eccLevel = OptionSetter.GetECCLevel(value)
             },
             {   "f|output-format=",
                 $"Image format for outputfile. Possible values: {string.Join(", ", Enum.GetNames(typeof(SupportedImageFormat)))} (default: png)",
@@ -97,7 +94,7 @@ internal class MainClass
                 ShowHelp(optionSet);
             }
 
-            string text = null;
+            string? text = null;
             if (fileName != null)
             {
                 var fileInfo = new FileInfo(fileName);
@@ -121,7 +118,7 @@ internal class MainClass
                 text = GetTextFromStream(stdin);
             }
 
-            if (text != null)
+            if (text != null && outputFileName != null)
             {
                 GenerateQRCode(text, eccLevel, outputFileName, imageFormat, pixelsPerModule, foregroundColor, backgroundColor);
             }
@@ -148,7 +145,7 @@ internal class MainClass
                 using (var code = new QRCode(data))
                 {
                     using var bitmap = code.GetGraphic(pixelsPerModule, foreground, background, true);
-                    var actualFormat = new OptionSetter().GetImageFormat(imgFormat.ToString());
+                    var actualFormat = OptionSetter.GetImageFormat(imgFormat.ToString());
                     bitmap.Save(outputFileName, actualFormat);
                 }
                 break;
@@ -161,7 +158,7 @@ internal class MainClass
                     f.Flush();
                 }
                 break;
-#if NETFRAMEWORK || NET5_0_WINDOWS || NET6_0_WINDOWS
+#if NETFRAMEWORK || WINDOWS
             case SupportedImageFormat.Xaml:
                 using (var code = new QRCoder.Xaml.XamlQRCode(data))
                 {
@@ -225,20 +222,15 @@ internal class MainClass
     }
 }
 
-public class OptionSetter
+public static class OptionSetter
 {
-    public QRCodeGenerator.ECCLevel GetECCLevel(string value)
-    {
+    public static QRCodeGenerator.ECCLevel GetECCLevel(string value)
+        => Enum.TryParse(value, true, out QRCodeGenerator.ECCLevel level) ? level : QRCodeGenerator.ECCLevel.Default;
 
-        Enum.TryParse(value, out QRCodeGenerator.ECCLevel level);
-
-        return level;
-    }
-
-#if NET6_0_WINDOWS
+#if NET6_0 && WINDOWS
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-    public ImageFormat GetImageFormat(string value) => value.ToLower() switch
+    public static ImageFormat GetImageFormat(string value) => value.ToLowerInvariant() switch
     {
         "jpg" => ImageFormat.Jpeg,
         "jpeg" => ImageFormat.Jpeg,

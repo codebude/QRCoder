@@ -1,6 +1,5 @@
 #if SYSTEM_DRAWING
 
-using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using static QRCoder.ArtQRCode;
@@ -64,7 +63,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
                              BackgroundImageStyle backgroundImageStyle = BackgroundImageStyle.DataAreaOnly, Bitmap? finderPatternImage = null)
     {
         if (pixelSizeFactor > 1)
-            throw new Exception("The parameter pixelSize must be between 0 and 1. (0-100%)");
+            throw new ArgumentOutOfRangeException(nameof(pixelSizeFactor), "The parameter pixelSizeFactor must be between 0 and 1. (0-100%)");
         int pixelSize = (int)Math.Min(pixelsPerModule, Math.Floor(pixelsPerModule * pixelSizeFactor));
 
         var numModules = QrCodeData.ModuleMatrix.Count - (drawQuietZones ? 0 : 8);
@@ -135,7 +134,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <param name="pixelSize">Size of the dots</param>
     /// <param name="brush">Color of the pixels</param>
     /// <returns></returns>
-    private Bitmap MakeDotPixel(int pixelsPerModule, int pixelSize, SolidBrush brush)
+    private static Bitmap MakeDotPixel(int pixelsPerModule, int pixelSize, SolidBrush brush)
     {
         // draw a dot
         var bitmap = new Bitmap(pixelSize, pixelSize);
@@ -169,7 +168,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <param name="y">Y position</param>
     /// <param name="numModules">Total number of modules per row</param>
     /// <returns>true, if position is part of quiet zone</returns>
-    private bool IsPartOfQuietZone(int x, int y, int numModules)
+    private static bool IsPartOfQuietZone(int x, int y, int numModules)
     {
         return
             x < 4 || //left 
@@ -187,7 +186,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <param name="numModules">Total number of modules per row</param>
     /// <param name="offset">Offset in modules (usually depending on drawQuietZones parameter)</param>
     /// <returns>true, if position is part of any finder pattern</returns>
-    private bool IsPartOfFinderPattern(int x, int y, int numModules, int offset)
+    private static bool IsPartOfFinderPattern(int x, int y, int numModules, int offset)
     {
         var cornerSize = 11 - offset;
         var outerLimitLow = (numModules - cornerSize - 1);
@@ -205,7 +204,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// <param name="image"></param>
     /// <param name="newSize"></param>
     /// <returns>Resized image as bitmap</returns>
-    private Bitmap Resize(Bitmap image, int newSize)
+    private static Bitmap Resize(Bitmap image, int newSize)
     {
         float scale = Math.Min((float)newSize / image.Width, (float)newSize / image.Height);
         var scaledWidth = (int)(image.Width * scale);
@@ -236,7 +235,14 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum QuietZoneStyle
     {
+        /// <summary>
+        /// Quiet zones are rendered with dotted modules.
+        /// </summary>
         Dotted,
+
+        /// <summary>
+        /// Quiet zones are rendered with flat, solid modules.
+        /// </summary>
         Flat
     }
 
@@ -245,7 +251,14 @@ public class ArtQRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum BackgroundImageStyle
     {
+        /// <summary>
+        /// Background image spans the complete graphic.
+        /// </summary>
         Fill,
+
+        /// <summary>
+        /// Background image is only painted in the data area, excluding the quiet zone.
+        /// </summary>
         DataAreaOnly
     }
 }

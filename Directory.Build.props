@@ -1,8 +1,60 @@
 <Project>
+
+  <!-- https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022#choose-between-adding-properties-to-a-props-or-targets-file -->
+  <!-- Processing order: -->
+  <!-- 1: PropertyGroups - Directory.Build.props -->
+  <!-- 2: PropertyGroups - csproj -->
+  <!-- 3: PropertyGroups - Directory.Build.targets -->
+  <!-- 4: ItemGroups - Directory.Build.props -->
+  <!-- 5: ItemGroups - csproj -->
+  <!-- 6: ItemGroups - Directory.Build.targets -->
+  
   <PropertyGroup>
+    <!-- Set version and default properties -->
+    <VersionPrefix>1.6.1-preview</VersionPrefix>
     <LangVersion>12</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsNotAsErrors>$(WarningsNotAsErrors);IDE0005</WarningsNotAsErrors>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- Set common NuGet package properties -->
+    <Authors>Raffael Herrmann, Shane Krueger</Authors>
+    <PackageOwners>Shane Krueger</PackageOwners>
+    <Copyright>Copyright © 2013-2025 Raffael Herrmann. Copyright © 2024-2025 Shane Krueger. All rights reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryType>git</RepositoryType>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageIcon>nuget-icon.png</PackageIcon>
+
+    <!-- Set misc build properties -->
+    <DebugType>embedded</DebugType>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
+    <SignAssembly>false</SignAssembly>
+
+    <!-- Enable analyzers; treat all warnings as errors; disable 'using directive is unnecessary' and XML comment warnings -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);IDE0005</NoWarn>
+    <EnableNETAnalyzers>True</EnableNETAnalyzers>
+    <AnalysisMode>Recommended</AnalysisMode>
   </PropertyGroup>
+
+  <!-- Include README for packable projects -->
+  <ItemGroup Condition="'$(IsPackable)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" />
+    <None Include="$(MSBuildThisFileDirectory)nuget-icon.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- Configure implicit usings -->
+  <ItemGroup>
+    <Using Include="System.Collections.BitArray" Alias="BitArray" />
+    <Using Include="System.Globalization"/>
+    <Using Include="System.Text" />
+    <Using Include="System.Text.RegularExpressions"/>
+  </ItemGroup>
+
 </Project>

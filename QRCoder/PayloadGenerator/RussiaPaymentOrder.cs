@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 #if NETSTANDARD1_3
 using System.Reflection;
 #endif
@@ -95,7 +90,7 @@ public static partial class PayloadGenerator
             _separator = DetermineSeparator();
 
             //Create the payload string
-            string ret = $"ST0001" + ((int)_characterSet).ToString() + //(separator != "|" ? separator : "") + 
+            string ret = $"ST0001" + ((int)_characterSet).ToString(CultureInfo.InvariantCulture) + //(separator != "|" ? separator : "") +
                 $"{_separator}Name={_mFields.Name}" +
                 $"{_separator}PersonalAcc={_mFields.PersonalAcc}" +
                 $"{_separator}BankName={_mFields.BankName}" +
@@ -161,7 +156,7 @@ public static partial class PayloadGenerator
                     .Select(field =>
                     {
                         var objValue = field.GetValue(_oFields, null);
-                        var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
+                        var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue!.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
@@ -191,7 +186,7 @@ public static partial class PayloadGenerator
                     .Select(field =>
                     {
                         var objValue = field.GetValue(_mFields);
-                        var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy") : objValue!.ToString();
+                        var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue!).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue!.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
@@ -580,26 +575,101 @@ public static partial class PayloadGenerator
             public TechCode? TechCode { get; set; }
         }
 
+#pragma warning disable CA1707 // Underscore in identifier
         /// <summary>            
         /// (List of values of the technical code of the payment)
         /// <para>Перечень значений технического кода платежа</para>
         /// </summary>
         public enum TechCode
         {
+            /// <summary>
+            /// Mobile and landline telephone services
+            /// <para>Мобильная связь и стационарный телефон</para>
+            /// </summary>
             Мобильная_связь_стационарный_телефон = 01,
+
+            /// <summary>
+            /// Utility services (Housing and Communal Services)
+            /// <para>Коммунальные услуги (ЖКХ)</para>
+            /// </summary>
             Коммунальные_услуги_ЖКХAFN = 02,
+
+            /// <summary>
+            /// Traffic police, taxes, duties, and budget payments
+            /// <para>ГИБДД, налоги, пошлины, бюджетные платежи</para>
+            /// </summary>
             ГИБДД_налоги_пошлины_бюджетные_платежи = 03,
+
+            /// <summary>
+            /// Security services
+            /// <para>Охранные услуги</para>
+            /// </summary>
             Охранные_услуги = 04,
+
+            /// <summary>
+            /// Services provided by the Federal Migration Service
+            /// <para>Услуги, оказываемые УФМС</para>
+            /// </summary>
             Услуги_оказываемые_УФМС = 05,
+
+            /// <summary>
+            /// Pension Fund of the Russian Federation
+            /// <para>Пенсионный фонд России (ПФР)</para>
+            /// </summary>
             ПФР = 06,
+
+            /// <summary>
+            /// Loan repayment
+            /// <para>Погашение кредитов</para>
+            /// </summary>
             Погашение_кредитов = 07,
+
+            /// <summary>
+            /// Educational institutions
+            /// <para>Образовательные учреждения</para>
+            /// </summary>
             Образовательные_учреждения = 08,
+
+            /// <summary>
+            /// Internet and TV services
+            /// <para>Интернет и телевидение</para>
+            /// </summary>
             Интернет_и_ТВ = 09,
+
+            /// <summary>
+            /// Electronic money
+            /// <para>Электронные деньги</para>
+            /// </summary>
             Электронные_деньги = 10,
+
+            /// <summary>
+            /// Recreation and travel
+            /// <para>Отдых и путешествия</para>
+            /// </summary>
             Отдых_и_путешествия = 11,
+
+            /// <summary>
+            /// Investments and insurance
+            /// <para>Инвестиции и страхование</para>
+            /// </summary>
             Инвестиции_и_страхование = 12,
+
+            /// <summary>
+            /// Sports and health
+            /// <para>Спорт и здоровье</para>
+            /// </summary>
             Спорт_и_здоровье = 13,
+
+            /// <summary>
+            /// Charitable and public organizations
+            /// <para>Благотворительные и общественные организации</para>
+            /// </summary>
             Благотворительные_и_общественные_организации = 14,
+
+            /// <summary>
+            /// Other services
+            /// <para>Прочие услуги</para>
+            /// </summary>
             Прочие_услуги = 15
         }
 
@@ -623,6 +693,7 @@ public static partial class PayloadGenerator
             /// </summary>
             koi8_r = 3
         }
+#pragma warning restore CA1707 // Underscore in identifier
 
         /// <summary>
         /// Represents errors that occur during the generation of a RussiaPaymentOrder payload.

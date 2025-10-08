@@ -1,8 +1,6 @@
 #if !NETSTANDARD1_3
-using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.IO;
 using System.Runtime.InteropServices;
 using static QRCoder.Base64QRCode;
 using static QRCoder.QRCodeGenerator;
@@ -143,7 +141,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
 #if NET6_0_OR_GREATER
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-    private string BitmapToBase64(Bitmap bmp, ImageType imgType)
+    private static string BitmapToBase64(Bitmap bmp, ImageType imgType)
     {
         var iFormat = imgType switch
         {
@@ -163,22 +161,22 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     /// </summary>
     public enum ImageType
     {
+        /// <summary>
+        /// Graphics Interchange Format (GIF) image format, a bitmap image format with limited color support
+        /// </summary>
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-        /// <summary>
-        /// GIF image format.
-        /// </summary>
         Gif,
+        /// <summary>
+        /// Joint Photographic Experts Group (JPEG) image format, a lossy compressed image format
+        /// </summary>
 #if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-        /// <summary>
-        /// JPEG image format.
-        /// </summary>
         Jpeg,
         /// <summary>
-        /// PNG image format.
+        /// Portable Network Graphics (PNG) image format, a lossless raster graphics format
         /// </summary>
         Png
     }
