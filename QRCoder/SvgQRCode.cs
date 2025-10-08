@@ -101,7 +101,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <param name="logo">An optional logo to be rendered on the code (either Bitmap or SVG).</param>
     /// <returns>Returns the QR code graphic as an SVG string.</returns>
     public string GetGraphic(Size viewBox, Color darkColor, Color lightColor, bool drawQuietZones = true, SizingMode sizingMode = SizingMode.WidthHeightAttribute, SvgLogo? logo = null)
-        => GetGraphic(viewBox, ColorTranslator.ToHtml(Color.FromArgb(darkColor.ToArgb())), ColorTranslator.ToHtml(Color.FromArgb(lightColor.ToArgb())), drawQuietZones, sizingMode, logo);
+        => GetGraphic(viewBox, ColorToHex(darkColor), ColorToHex(lightColor), drawQuietZones, sizingMode, logo);
 
     /// <summary>
     /// Returns a QR code as an SVG string with custom colors (in HEX syntax), optional quiet zones, and an optional logo.
@@ -386,6 +386,40 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     /// <returns>True if the color is fully transparent; otherwise false.</returns>
     private static bool IsFullyTransparent(string colorHex)
         => GetTransparency(colorHex) == 0;
+
+    /// <summary>
+    /// Converts a Color to a hex string in #RGB, #RRGGBB or #RRGGBBAA format; or 'transparent' for fully transparent colors.
+    /// </summary>
+    /// <param name="color">The color to convert.</param>
+    /// <returns>A hex string representation of the color.</returns>
+    private static string ColorToHex(Color color)
+    {
+        if (color == Color.Black)
+        {
+            // Use shorthand #000 for black
+            return "#000";
+        }
+        else if (color == Color.White)
+        {
+            // Use shorthand #FFF for white
+            return "#FFF";
+        }
+        else if (color.A == 255)
+        {
+            // Fully opaque - use #RRGGBB format
+            return $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+        }
+        else if (color.A == 0)
+        {
+            // Fully transparent - use "transparent" keyword
+            return "transparent";
+        }
+        else
+        {
+            // Has transparency - use #RRGGBBAA format
+            return $"#{color.R:X2}{color.G:X2}{color.B:X2}{color.A:X2}";
+        }
+    }
 
     /// <summary>
     /// Mode of sizing attribution on svg root node
