@@ -3,6 +3,16 @@ namespace QRCoderTests;
 public class SvgQRCodeRendererTests
 {
     [Fact]
+    public void can_render_svg_qrcode_simple_unscaled()
+    {
+        //Create QR code
+        var gen = new QRCodeGenerator();
+        var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
+        var svg = new SvgQRCode(data).GetGraphic();
+        svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
+    }
+
+    [Fact]
     public void can_render_svg_qrcode_simple()
     {
         //Create QR code
