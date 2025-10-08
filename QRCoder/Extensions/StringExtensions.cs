@@ -55,4 +55,48 @@ internal static class StringExtensions
     internal static string ToString(this char c, CultureInfo _)
         => c.ToString();
 #endif
+
+    /// <summary>
+    /// Appends an integer value to the StringBuilder using invariant culture formatting.
+    /// </summary>
+    /// <param name="sb">The StringBuilder to append to.</param>
+    /// <param name="num">The integer value to append.</param>
+    internal static void AppendInvariant(this StringBuilder sb, int num)
+    {
+#if NET6_0_OR_GREATER
+        sb.Append(CultureInfo.InvariantCulture, $"{num}");
+#else
+#if HAS_SPAN
+        Span<char> buffer = stackalloc char[16];
+        if (num.TryFormat(buffer, out int charsWritten, default, CultureInfo.InvariantCulture))
+        {
+            sb.Append(buffer.Slice(0, charsWritten));
+            return;
+        }
+#endif
+        sb.Append(num.ToString(CultureInfo.InvariantCulture));
+#endif
+    }
+
+    /// <summary>
+    /// Appends a float value to the StringBuilder using invariant culture formatting with G7 precision.
+    /// </summary>
+    /// <param name="sb">The StringBuilder to append to.</param>
+    /// <param name="num">The float value to append.</param>
+    internal static void AppendInvariant(this StringBuilder sb, float num)
+    {
+#if NET6_0_OR_GREATER
+        sb.Append(CultureInfo.InvariantCulture, $"{num:G7}");
+#else
+#if HAS_SPAN
+        Span<char> buffer = stackalloc char[16];
+        if (num.TryFormat(buffer, out int charsWritten, "G7", CultureInfo.InvariantCulture))
+        {
+            sb.Append(buffer.Slice(0, charsWritten));
+            return;
+        }
+#endif
+        sb.Append(num.ToString("G7", CultureInfo.InvariantCulture));
+#endif
+    }
 }

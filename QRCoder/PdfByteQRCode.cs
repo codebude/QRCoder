@@ -204,11 +204,11 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
 
                 // Create a single rectangle for the entire run of dark modules
                 // Format: x y width height re
-                pathCommands.Append(ToStr(startX));
+                pathCommands.AppendInvariant(startX);
                 pathCommands.Append(' ');
-                pathCommands.Append(ToStr(y));
+                pathCommands.AppendInvariant(y);
                 pathCommands.Append(' ');
-                pathCommands.Append(ToStr(x - startX));
+                pathCommands.AppendInvariant(x - startX);
                 pathCommands.Append(" 1 re\r\n");
             }
         }
@@ -242,11 +242,11 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     private static string ToStr(int value) => value.ToString(CultureInfo.InvariantCulture);
 
     /// <summary>
-    /// Converts an integer to a string using invariant culture for consistent PDF formatting.
+    /// Converts a float to a string using invariant culture for consistent PDF formatting.
     /// </summary>
-    /// <param name="value">The integer value to convert.</param>
-    /// <returns>String representation of the integer.</returns>
-    private static string ToStr(float value) => value.ToString("0.######", CultureInfo.InvariantCulture);
+    /// <param name="value">The float value to convert.</param>
+    /// <returns>String representation of the float.</returns>
+    private static string ToStr(float value) => value.ToString("G7", CultureInfo.InvariantCulture);
 }
 
 /// <summary>

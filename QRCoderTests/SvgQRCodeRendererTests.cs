@@ -3,6 +3,16 @@ namespace QRCoderTests;
 public class SvgQRCodeRendererTests
 {
     [Fact]
+    public void can_render_svg_qrcode_simple_unscaled()
+    {
+        //Create QR code
+        var gen = new QRCodeGenerator();
+        var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
+        var svg = new SvgQRCode(data).GetGraphic();
+        svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
+    }
+
+    [Fact]
     public void can_render_svg_qrcode_simple()
     {
         //Create QR code
@@ -208,6 +218,61 @@ public class SvgQRCodeRendererTests
     {
         //Create QR code                   
         var svg = SvgQRCodeHelper.GetQRCode("A", 2, "#000000", "#ffffff", QRCodeGenerator.ECCLevel.Q);
+        svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
+    }
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void can_render_svg_qrcode_blue_light_with_half_red_dark(bool useColor)
+    {
+        //Create QR code
+        var gen = new QRCodeGenerator();
+        var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
+        var svg = useColor
+            ? new SvgQRCode(data).GetGraphic(10, Color.FromArgb(128, 255, 0, 0), Color.Blue)
+            : new SvgQRCode(data).GetGraphic(10, "#FF000080", "#0000FF");
+        svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void can_render_svg_qrcode_transparent_light_with_black_dark(bool useColor)
+    {
+        //Create QR code
+        var gen = new QRCodeGenerator();
+        var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
+        var svg = useColor
+            ? new SvgQRCode(data).GetGraphic(10, Color.Black, Color.Transparent)
+            : new SvgQRCode(data).GetGraphic(10, "#000", "transparent");
+        svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void can_render_svg_qrcode_transparent_light_with_half_red_dark(bool useColor)
+    {
+        //Create QR code
+        var gen = new QRCodeGenerator();
+        var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.L);
+        var svg = useColor
+            ? new SvgQRCode(data).GetGraphic(10, Color.FromArgb(128, 255, 0, 0), Color.Transparent)
+            : new SvgQRCode(data).GetGraphic(10, "#FF000080", "transparent");
+        svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void can_render_svg_qrcode_transparent_dark_with_black_light(bool useColor)
+    {
+        //Create QR code
+        var gen = new QRCodeGenerator();
+        var data = gen.CreateQrCode("This is a quick test! 123#?", QRCodeGenerator.ECCLevel.H);
+        var svg = useColor
+            ? new SvgQRCode(data).GetGraphic(10, Color.Transparent, Color.Black)
+            : new SvgQRCode(data).GetGraphic(10, "transparent", "#000");
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
 }
