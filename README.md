@@ -1,144 +1,164 @@
 # QRCoder
 
-|Build|Code coverage|Build status|NuGet Package|
-|-----|-------------|------------|-------------|
-|Latest / Stable|[![codecov](https://codecov.io/gh/Shane32/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/Shane32/QRCoder)|[![Build, test, pack, push (Release)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release.yml/badge.svg)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release.yml)|[![NuGet Badge](https://img.shields.io/nuget/v/QRCoder)](https://www.nuget.org/packages/QRCoder/)|
-|CI / Last commit|[![codecov](https://codecov.io/gh/Shane32/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/Shane32/QRCoder)|[![Build, test, pack, push (CI)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release-ci.yml/badge.svg)](https://github.com/Shane32/QRCoder/actions/workflows/wf-build-release-ci.yml)|[![Github packages](https://img.shields.io/badge/Github-Packages-blue)](https://github.com/Shane32/qrcoder/packages)|
+[![License](https://img.shields.io/github/license/graphql-dotnet/graphql-dotnet)](LICENSE.md)
+[![NuGet](https://img.shields.io/nuget/v/QRCoder)](https://www.nuget.org/packages/QRCoder/)
+[![Nuget](https://img.shields.io/nuget/dt/QRCoder)](https://www.nuget.org/packages/QRCoder)
+[![Coverage](https://codecov.io/gh/Shane32/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/Shane32/QRCoder)
+[![GitHub contributors](https://img.shields.io/github/contributors/Shane32/QRCoder)](https://github.com/Shane32/QRCoder/graphs/contributors)
 
+QRCoder is a simple C# library originally created by [Raffael Herrmann](https://raffaelherrmann.de) for generating QR codes and Micro QR codes.
 
-## Info
+- 📚 [Documentation & Wiki](https://github.com/Shane32/QRCoder/wiki)
+- 📋 [Release notes / Changelog](https://github.com/Shane32/QRCoder/releases)
 
-QRCoder is a simple C# library that enables you to create QR codes. QRCoder has no dependencies to external libraries<sup>1</sup>. It's available as package on NuGet and supports most .NET versions (Framework, Core, Standard), a full list of supported target frameworks can be [found here](https://www.nuget.org/packages/QRCoder/#supportedframeworks-body-tab).
+## ✨ Features
 
-Feel free to grab-up/fork the project and make it better!
+- 🚀 **Zero dependencies** - No external libraries required (framework dependencies only)
+- ⚡ **Fast performance** - Optimized QR code generation with low memory footprint
+- 🎨 **Multiple output formats** - PNG, SVG, PDF, ASCII, Bitmap, PostScript, and more
+- 📱 **23+ payload generators** - WiFi, vCard, URLs, payments, and many more
+- 🔧 **Highly configurable** - Error correction levels, custom colors, logos, and styling
+- 🌐 **Cross-platform** - Supports .NET Framework 3.5+, .NET Core 1.0+, and .NET Standard 1.3+
+- 📦 **Micro QR codes** - Smaller QR codes for space-constrained applications
 
-For more information see:
-[**QRCode Wiki**](https://github.com/Shane32/QRCoder/wiki) | [Creator's blog (english)](http://en.code-bude.net/2013/10/17/qrcoder-an-open-source-qr-code-generator-implementation-in-csharp/) | [Creator's blog (german)](http://code-bude.net/2013/10/17/qrcoder-eine-open-source-qr-code-implementierung-in-csharp/)
+## 📦 Installation
 
-### Release Notes
-The release notes for the current and all past releases can be read here: [📄 Release Notes](https://github.com/Shane32/QRCoder/wiki/Release-notes)
+Install via NuGet Package Manager:
 
-## Legal information and credits
-
-QRCoder is a project originally by [Raffael Herrmann](https://raffaelherrmann.de) and was first released in 10/2013. It's licensed under the [MIT license](https://github.com/Shane32/QRCoder/blob/master/LICENSE.txt).
-
-Since 2025, QRCoder has been maintained by [Shane Krueger](https://github.com/Shane32) with contributions from the community.
-
-
-* * *
-
-
-## Installation
-
-Either checkout this Github repository or install QRCoder via NuGet Package Manager. If you want to use NuGet just search for "QRCoder" or run the following command in the NuGet Package Manager console:
 ```bash
 PM> Install-Package QRCoder
 ```
 
-#### CI builds
-The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/Shane32/qrcoder/packages).
-_(More information on how to use Github Packages in Nuget Package Manager can be [found here](https://samlearnsazure.blog/2021/08/08/consuming-a-nuget-package-from-github-packages/).)_
+## 🚀 Quick Start
 
-
-## Usage
-
-You only need a couple lines of code, to generate your first QR code.
+Generate a QR code with just a few lines of code, either using a renderer's static helper method, or by creating a QR code first and then passing it to a renderer:
 
 ```csharp
-using (QRCodeGenerator qrGenerator = new QRCodeGenerator())
-using (QRCodeData qrCodeData = qrGenerator.CreateQrCode("The text which should be encoded.", QRCodeGenerator.ECCLevel.Q))
-using (PngByteQRCode qrCode = new PngByteQRCode(qrCodeData))
-{
-    byte[] qrCodeImage = qrCode.GetGraphic(20);
-}
+using QRCoder;
+
+// Generate a simple black and white PNG QR code
+byte[] qrCodeImage = PngByteQRCodeHelper.GetQRCode("Hello World", QRCodeGenerator.ECCLevel.Q, 20);
+
+// Generate a scalable black and white SVG QR code
+using var qrCodeData = QRCodeGenerator.GenerateQrCode("Hello World", QRCodeGenerator.ECCLevel.Q);
+using var svgRenderer = new SvgQRCode(qrCodeData);
+string svg = svgRenderer.GetGraphic();
 ```
 
-There are a plenty of other options. So feel free to read more on that in our wiki: [Wiki: How to use QRCoder](https://github.com/Shane32/QRCoder/wiki/How-to-use-QRCoder)
+For more examples and detailed usage instructions, see: [Wiki: How to use QRCoder](https://github.com/Shane32/QRCoder/wiki/How-to-use-QRCoder)
 
-### Special rendering types
+## 📱 Payload Generators
 
-Besides the normal PngByteQRCode-class (which is shown in the example above) for creating QR codes in Bitmap format, there are some more QR code rendering classes, each for another special purpose.
+QR codes can encode structured data that triggers specific actions when scanned (e.g., WiFi credentials, contact information, URLs). QRCoder includes payload generators that create properly formatted strings for these common use cases.
 
-* [QRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail)
-* [ArtQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail)
-* [AsciiQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail)
-* [Base64QRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail)
-* [BitmapByteQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail)
-* [PdfByteQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#210-pdfbyteqrcode-renderer-in-detail)
-* [PngByteQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail)
-* [PostscriptQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#29-postscriptqrcode-renderer-in-detail)
-* [SvgQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail)
-* [UnityQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) (_via [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity)_)
-* [XamlQRCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail) (_via [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml)_)
-
-*Note: Please be aware that not all renderers are available on all target frameworks. Please check the [compatibility table](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#2-overview-of-the-different-renderers) in our wiki, to see if a specific renderer is available on your favourite target framework.*  
-
-
-
-For more information about the different rendering types click on one of the types in the list above or have a look at: [Wiki: Advanced usage - QR-Code renderers](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
-
-## PayloadGenerator.cs - Generate QR code payloads
-
-Technically QR code is just a visual representation of a text/string. Nevertheless most QR code readers can read "special" QR codes which trigger different actions.
-
-For example: WiFi-QRcodes which, when scanned by smartphone, let the smartphone join an access point automatically.
-
-This "special" QR codes are generated by using special structured payload string, when generating the QR code. The [PayloadGenerator.cs class](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators) helps you to generate this payload strings. To generate a WiFi payload for example, you need just this one line of code:
+### Usage Example
 
 ```csharp
-PayloadGenerator.WiFi wifiPayload = new PayloadGenerator.WiFi("MyWiFi-SSID", "MyWiFi-Pass", PayloadGenerator.WiFi.Authentication.WPA);
+using QRCoder;
+
+// Create a bookmark payload
+var bookmarkPayload = new PayloadGenerator.Bookmark("https://github.com/Shane32/QRCoder", "QRCoder Repository");
+
+// Generate the QR code data from the payload
+using var qrCodeData = QRCodeGenerator.GenerateQrCode(bookmarkPayload);
+
+// Or override the ECC level
+using var qrCodeData2 = QRCodeGenerator.GenerateQrCode(bookmarkPayload, QRCodeGenerator.ECCLevel.H);
+
+// Render the QR code
+using var pngRenderer = new PngByteQRCode(qrCodeData);
+byte[] qrCodeImage = pngRenderer.GetGraphic(20);
 ```
 
-To generate a QR code from this payload, just call the "ToString()"-method and pass it to the QRCoder.
+### Available Payload Types
+
+| Payload Type | Usage Example | Description |
+|--------------|---------------|-------------|
+| [**WiFi**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#321-wifi) | `new PayloadGenerator.WiFi(ssid, password, auth)` | WiFi network credentials |
+| [**URL**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#319-url) | `new PayloadGenerator.Url("https://example.com")` | Website URL |
+| [**Bookmark**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#33-bookmark) | `new PayloadGenerator.Bookmark(url, title)` | Browser bookmark |
+| [**Mail**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#38-mail) | `new PayloadGenerator.Mail(email, subject, body)` | Email with pre-filled fields |
+| [**SMS**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#317-sms) | `new PayloadGenerator.SMS(number, message)` | SMS message |
+| [**MMS**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#39-mms) | `new PayloadGenerator.MMS(number, subject)` | MMS message |
+| [**Geolocation**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#36-geolocation) | `new PayloadGenerator.Geolocation(lat, lng)` | GPS coordinates |
+| [**PhoneNumber**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#312-phonenumber) | `new PayloadGenerator.PhoneNumber(number)` | Phone number for calling |
+| [**SkypeCall**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#315-skype-call) | `new PayloadGenerator.SkypeCall(username)` | Skype call |
+| [**WhatsAppMessage**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#320-whatsappmessage) | `new PayloadGenerator.WhatsAppMessage(number, msg)` | WhatsApp message |
+| [**ContactData**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#35-contactdata-mecardvcard) | `new PayloadGenerator.ContactData(...)` | vCard/MeCard contact |
+| [**CalendarEvent**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#34-calendar-events-icalvevent) | `new PayloadGenerator.CalendarEvent(...)` | iCal/vEvent |
+| [**OneTimePassword**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#311-one-time-password) | `new PayloadGenerator.OneTimePassword(...)` | TOTP/HOTP for 2FA |
+| [**BitcoinAddress**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-like-crypto-currency-payment-address) | `new PayloadGenerator.BitcoinAddress(address)` | Bitcoin payment |
+| [**BitcoinCashAddress**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-like-crypto-currency-payment-address) | `new PayloadGenerator.BitcoinCashAddress(address)` | Bitcoin Cash payment |
+| [**LitecoinAddress**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-like-crypto-currency-payment-address) | `new PayloadGenerator.LitecoinAddress(address)` | Litecoin payment |
+| [**MoneroTransaction**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#310-monero-addresspayment) | `new PayloadGenerator.MoneroTransaction(...)` | Monero payment |
+| [**SwissQrCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#318-swissqrcode-iso-20022) | `new PayloadGenerator.SwissQrCode(...)` | Swiss QR bill (ISO-20022) |
+| [**Girocode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#37-girocode) | `new PayloadGenerator.Girocode(...)` | SEPA payment (EPC QR) |
+| [**BezahlCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#31-bezahlcode) | `new PayloadGenerator.BezahlCode(...)` | German payment code |
+| [**RussiaPaymentOrder**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#313-russiapaymentorder) | `new PayloadGenerator.RussiaPaymentOrder(...)` | Russian payment (ГОСТ Р 56042-2014) |
+| [**SlovenianUpnQr**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#316-slovenianupnqr) | `new PayloadGenerator.SlovenianUpnQr(...)` | Slovenian UPN payment |
+| [**ShadowSocksConfig**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#314-shadowsocks-configuration) | `new PayloadGenerator.ShadowSocksConfig(...)` | Shadowsocks proxy config |
+
+For detailed information about payload generators, see: [Wiki: Advanced usage - Payload generators](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators)
+
+## 🎨 QR Code Renderers
+
+QRCoder provides multiple renderers for different output formats and use cases. Each renderer has specific capabilities and framework requirements.
+
+| Renderer | Output Format | Usage Example |
+|----------|---------------|---------------|
+| [**PngByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail) | PNG byte array | `new PngByteQRCode(data).GetGraphic(20)` |
+| [**SvgQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail) | SVG string | `new SvgQRCode(data).GetGraphic(20)` |
+| [**QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail) | System.Drawing.Bitmap | `new QRCode(data).GetGraphic(20)` |
+| [**ArtQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail) | Artistic bitmap with custom images | `new ArtQRCode(data).GetGraphic(20)` |
+| [**AsciiQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail) | ASCII art string | `new AsciiQRCode(data).GetGraphic(1)`<br/>`new AsciiQRCode(data).GetGraphicSmall()` |
+| [**Base64QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail) | Base64 encoded image | `new Base64QRCode(data).GetGraphic(20)` |
+| [**BitmapByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail) | BMP byte array | `new BitmapByteQRCode(data).GetGraphic(20)` |
+| [**PdfByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#210-pdfbyteqrcode-renderer-in-detail) | PDF byte array | `new PdfByteQRCode(data).GetGraphic(20)` |
+| [**PostscriptQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#29-postscriptqrcode-renderer-in-detail) | PostScript/EPS string | `new PostscriptQRCode(data).GetGraphic(20)` |
+| [**XamlQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail) | XAML DrawingImage | `new XamlQRCode(data).GetGraphic(20)` |
+| [**UnityQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) | Unity Texture2D | `new UnityQRCode(data).GetGraphic(20)` |
+
+**Note:** XamlQRCode requires the [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml) package. UnityQRCode requires the [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity) package.
+
+**Framework Compatibility:** Not all renderers are available on all target frameworks. Check the [compatibility table](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#2-overview-of-the-different-renderers) for details.
+
+For comprehensive information about renderers, see: [Wiki: Advanced usage - QR Code renderers](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers)
+
+## 🔧 Advanced Features
+
+### Micro QR Codes
+
+QRCoder supports Micro QR codes, which are smaller versions of standard QR codes suitable for applications with limited space. Micro QR codes can store less data but require less space.
 
 ```csharp
-//[...]
-QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload.ToString(), QRCodeGenerator.ECCLevel.Q);
-//[...]
+using QRCoder;
+
+// Generate a Micro QR code (versions M1-M4, represented as -1 to -4)
+using var qrCodeData = QRCodeGenerator.GenerateMicroQrCode("Hello", QRCodeGenerator.ECCLevel.L, requestedVersion: -2);
+using var qrCode = new PngByteQRCode(qrCodeData);
+byte[] qrCodeImage = qrCode.GetGraphic(20);
 ```
 
-You can also use overloaded method that accepts Payload as parameter. Payload generator can have QR Code Version set (default is auto set), ECC Level (default is M) and ECI mode (default is automatic detection).
-
-```csharp
-//[...]
-QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload);
-//[...]
-```
-
-Or if you want to override ECC Level set by Payload generator, you can use overloaded method, that allows setting ECC Level.
-
-```csharp
-//[...]
-QRCodeData qrCodeData = qrGenerator.CreateQrCode(wifiPayload, QRCodeGenerator.ECCLevel.Q);
-//[...]
-```
-
-
-You can learn more about the payload generator [in our Wiki](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators).
-
-The PayloadGenerator supports the following types of payloads:
-
-* [BezahlCode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#31-bezahlcode)
-* [Bitcoin-Like cryptocurrency (Bitcoin, Bitcoin Cash, Litecoin) payment address](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#32-bitcoin-like-crypto-currency-payment-address)
-* [Bookmark](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#33-bookmark)
-* [Calendar events (iCal/vEvent)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#34-calendar-events-icalvevent)
-* [ContactData (MeCard/vCard)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#35-contactdata-mecardvcard)
-* [Geolocation](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#36-geolocation)
-* [Girocode](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#37-girocode)
-* [Mail](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#38-mail)
-* [MMS](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#39-mms)
-* [Monero address/payment](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#310-monero-addresspayment)
-* [One-Time-Password](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#311-one-time-password)
-* [Phonenumber](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#312-phonenumber)
-* [RussiaPaymentOrder (ГОСТ Р 56042-2014)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#313-russiapaymentorder)
-* [Shadowsocks configuration](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#314-shadowsocks-configuration)
-* [Skype call](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#315-skype-call)
-* [SlovenianUpnQr](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#316-slovenianupnqr)
-* [SMS](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#317-sms)
-* [SwissQrCode (ISO-20022)](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#318-swissqrcode-iso-20022)
-* [URL](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#319-url)
-* [WhatsAppMessage](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#320-whatsappmessage)
-* [WiFi](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---Payload-generators#321-wifi)
+**Note:** Micro QR codes have limitations on data capacity and error correction levels. They support versions M1 through M4 (specified as -1 to -4), and not all ECC levels are available for all versions. M1 only supports detection (no ECC), M2 and M3 support L and M levels, and M4 supports L, M, and Q levels.
 
 ***
-<sup>(1)</sup> *Depending on the targeted framework the .NET libraries System.Drawing.Common and System.Text.Encoding.CodePages will used as package dependencies.*
+
+## 🚀 CI Builds
+
+The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/Shane32/qrcoder/packages).
+
+_(More information on how to use Github Packages in Nuget Package Manager can be [found here](https://samlearnsazure.blog/2021/08/08/consuming-a-nuget-package-from-github-packages/).)_
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+
+## 📄 License
+
+QRCoder is a project originally by [Raffael Herrmann](https://raffaelherrmann.de) and was first released in 10/2013. It's licensed under the [MIT license](https://github.com/Shane32/QRCoder/blob/master/LICENSE.txt).
+
+Since 2025, QRCoder has been maintained by [Shane32](https://github.com/Shane32) with contributions from the community.
+
+## 🙏 Credits
+
+Glory to Jehovah, Lord of Lords and King of Kings, creator of Heaven and Earth, who through his Son Jesus Christ, has redeemed me to become a child of God. -[Shane32](https://github.com/Shane32)
