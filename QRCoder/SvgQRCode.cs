@@ -122,9 +122,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         var svgFile = new StringBuilder();
 
         svgFile.Append("<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 ");
-        Append(drawableModulesCount);
+        svgFile.AppendInvariant(drawableModulesCount);
         svgFile.Append(' ');
-        Append(drawableModulesCount);
+        svgFile.AppendInvariant(drawableModulesCount);
         svgFile.Append("\" shape-rendering=\"crispEdges\"");
 
         // Add xlink namespace if logo is used (to retain compatibility with older SVG viewers)
@@ -137,9 +137,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         if (sizingMode == SizingMode.WidthHeightAttribute)
         {
             svgFile.Append(" width=\"");
-            Append(viewBox.Width);
+            svgFile.AppendInvariant(viewBox.Width);
             svgFile.Append("\" height=\"");
-            Append(viewBox.Height);
+            svgFile.AppendInvariant(viewBox.Height);
             svgFile.Append('"');
         }
         svgFile.Append('>');
@@ -152,9 +152,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         if (!IsFullyTransparent(lightColorHex) && !drawLightModulesAsPath)
         {
             svgFile.Append("<rect x=\"0\" y=\"0\" width=\"");
-            Append(drawableModulesCount);
+            svgFile.AppendInvariant(drawableModulesCount);
             svgFile.Append("\" height=\"");
-            Append(drawableModulesCount);
+            svgFile.AppendInvariant(drawableModulesCount);
             svgFile.Append("\" fill=\"");
             svgFile.Append(lightColorHex);
             svgFile.AppendLine("\"/>");
@@ -186,13 +186,13 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             if (!logo.IsEmbedded())
             {
                 svgFile.Append("<image x=\"");
-                svgFile.Append(CleanSvgVal(logoAttr!.Value.X));
+                svgFile.AppendInvariant(logoAttr!.Value.X);
                 svgFile.Append("\" y=\"");
-                svgFile.Append(CleanSvgVal(logoAttr.Value.Y));
+                svgFile.AppendInvariant(logoAttr.Value.Y);
                 svgFile.Append("\" width=\"");
-                svgFile.Append(CleanSvgVal(logoAttr.Value.Width));
+                svgFile.AppendInvariant(logoAttr.Value.Width);
                 svgFile.Append("\" height=\"");
-                svgFile.Append(CleanSvgVal(logoAttr.Value.Height));
+                svgFile.AppendInvariant(logoAttr.Value.Height);
                 svgFile.Append("\" xlink:href=\"");
                 svgFile.Append(logo.GetDataUri());
                 svgFile.AppendLine("\"/>");
@@ -247,15 +247,15 @@ public class SvgQRCode : AbstractQRCode, IDisposable
                     {
                         // Absolute move to start of rectangle
                         svgFile.Append('M');
-                        Append(startX);
+                        svgFile.AppendInvariant(startX);
                         svgFile.Append(' ');
-                        Append(y);
+                        svgFile.AppendInvariant(y);
 
                         // Draw rectangle using relative movements (width, height of 1)
                         svgFile.Append('h');
-                        Append(width);
+                        svgFile.AppendInvariant(width);
                         svgFile.Append("v1h-");
-                        Append(width);
+                        svgFile.AppendInvariant(width);
                         svgFile.Append('z');
                     }
                 }
@@ -276,20 +276,6 @@ public class SvgQRCode : AbstractQRCode, IDisposable
                     ? (isDarkModule && !isBlockedByLogo)
                     : (!isDarkModule || isBlockedByLogo);
             }
-        }
-
-        // Local function to append integers efficiently
-        void Append(int num)
-        {
-#if HAS_SPAN
-            Span<char> buffer = stackalloc char[16];
-            if (num.TryFormat(buffer, out int charsWritten, default, CultureInfo.InvariantCulture))
-            {
-                svgFile.Append(buffer.Slice(0, charsWritten));
-                return;
-            }
-#endif
-            svgFile.Append(num.ToString(CultureInfo.InvariantCulture));
         }
     }
 
