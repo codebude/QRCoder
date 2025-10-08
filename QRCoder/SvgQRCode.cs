@@ -127,7 +127,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         Append(drawableModulesCount);
         svgFile.Append(@""" shape-rendering=""crispEdges""");
 
-        // Add xlink namespace if logo is used
+        // Add xlink namespace if logo is used (to retain compatibility with older SVG viewers)
         if (logo != null && !logo.IsEmbedded())
         {
             svgFile.Append(@" xmlns:xlink=""http://www.w3.org/1999/xlink""");
