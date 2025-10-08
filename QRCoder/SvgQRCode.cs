@@ -287,6 +287,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             if (num.TryFormat(buffer, out int charsWritten, default, CultureInfo.InvariantCulture))
             {
                 svgFile.Append(buffer.Slice(0, charsWritten));
+                return;
             }
 #endif
             svgFile.Append(num.ToString(CultureInfo.InvariantCulture));
