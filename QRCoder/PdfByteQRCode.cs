@@ -246,7 +246,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
     /// </summary>
     /// <param name="value">The float value to convert.</param>
     /// <returns>String representation of the float.</returns>
-    private static string ToStr(float value) => value.ToString("0.######", CultureInfo.InvariantCulture);
+    private static string ToStr(float value) => value.ToString("G7", CultureInfo.InvariantCulture);
 }
 
 /// <summary>
