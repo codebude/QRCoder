@@ -4,11 +4,11 @@ using QRCoder;
 namespace QRCoderBenchmarks;
 
 [MemoryDiagnoser]
-public class BitmapByteQRCodeBenchmark
+public class BitmapByteQRCodeRendererBenchmark
 {
     private readonly Dictionary<string, QRCodeData> _samples;
 
-    public BitmapByteQRCodeBenchmark()
+    public BitmapByteQRCodeRendererBenchmark()
     {
         var eccLvl = QRCoder.QRCodeGenerator.ECCLevel.L;
         _samples = new Dictionary<string, QRCodeData>()
