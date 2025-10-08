@@ -111,10 +111,11 @@ public class SvgQRCode : AbstractQRCode, IDisposable
 
         // Build SVG opening tag with size attributes
         var svgFile = new StringBuilder();
+
         svgFile.Append(@"<svg xmlns=""http://www.w3.org/2000/svg"" viewBox=""0 0 ");
-        svgFile.Append(drawableModulesCount);
+        Append(drawableModulesCount);
         svgFile.Append(' ');
-        svgFile.Append(drawableModulesCount);
+        Append(drawableModulesCount);
         svgFile.Append(@""" shape-rendering=""crispEdges""");
 
         // Add xlink namespace if logo is used
@@ -127,9 +128,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         if (sizingMode == SizingMode.WidthHeightAttribute)
         {
             svgFile.Append(@" width=""");
-            svgFile.Append(viewBox.Width);
+            Append(viewBox.Width);
             svgFile.Append(@""" height=""");
-            svgFile.Append(viewBox.Height);
+            Append(viewBox.Height);
             svgFile.Append('"');
         }
         svgFile.Append('>');
@@ -142,9 +143,9 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         if (!IsFullyTransparent(lightColorHex) && !drawLightModulesAsPath)
         {
             svgFile.Append(@"<rect x=""0"" y=""0"" width=""");
-            svgFile.Append(drawableModulesCount);
+            Append(drawableModulesCount);
             svgFile.Append(@""" height=""");
-            svgFile.Append(drawableModulesCount);
+            Append(drawableModulesCount);
             svgFile.Append(@""" fill=""");
             svgFile.Append(lightColorHex);
             svgFile.AppendLine(@"""/>");
@@ -247,15 +248,15 @@ public class SvgQRCode : AbstractQRCode, IDisposable
                     {
                         // Absolute move to start of rectangle
                         svgFile.Append('M');
-                        svgFile.Append(startX);
+                        Append(startX);
                         svgFile.Append(' ');
-                        svgFile.Append(y);
+                        Append(y);
 
                         // Draw rectangle using relative movements (width, height of 1)
                         svgFile.Append('h');
-                        svgFile.Append(width);
+                        Append(width);
                         svgFile.Append("v1h-");
-                        svgFile.Append(width);
+                        Append(width);
                         svgFile.Append('z');
                     }
                 }
@@ -276,6 +277,19 @@ public class SvgQRCode : AbstractQRCode, IDisposable
                     ? (isDarkModule && !isBlockedByLogo)
                     : (!isDarkModule || isBlockedByLogo);
             }
+        }
+
+        // Local function to append integers efficiently
+        void Append(int num)
+        {
+#if HAS_SPAN
+            Span<char> buffer = stackalloc char[16];
+            if (num.TryFormat(buffer, out int charsWritten, default, CultureInfo.InvariantCulture))
+            {
+                svgFile.Append(buffer.Slice(0, charsWritten));
+            }
+#endif
+            svgFile.Append(num.ToString(CultureInfo.InvariantCulture));
         }
     }
 
@@ -318,7 +332,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
     //We use explicitly "G7" to avoid differences between .NET full and Core platforms
     //https://stackoverflow.com/questions/64898117/tostring-has-a-different-behavior-between-net-462-and-net-core-3-1
     private static string CleanSvgVal(double input)
-        => input.ToString("G7", System.Globalization.CultureInfo.InvariantCulture);
+        => input.ToString("G7", CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Gets the transparency value (0-255) from a color string.
