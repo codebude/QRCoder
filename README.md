@@ -132,7 +132,7 @@ For comprehensive information about renderers, see: [Wiki: Advanced usage - QR C
 
 ### Micro QR Codes
 
-QRCoder supports Micro QR codes, which are smaller versions of standard QR codes suitable for applications with limited space. Micro QR codes have significantly limited storage capacity—as few as 5 numeric digits (M1) or as many as 35 numeric digits (M4), with alphanumeric and byte data storing even less.
+QRCoder supports Micro QR codes, which are smaller versions of standard QR codes suitable for applications with limited space. Micro QR codes have significantly limited storage capacity—as few as 5 numeric digits (M1) or as many as 35 numeric digits (M4), with alphanumeric and byte data storing considerably less.
 
 ```csharp
 using QRCoder;
