@@ -18,7 +18,7 @@ QRCoder is a simple C# library originally created by [Raffael Herrmann](https://
 - 🎨 **Multiple output formats** - PNG, SVG, PDF, ASCII, Bitmap, PostScript, and more
 - 📱 **23+ payload generators** - WiFi, vCard, URLs, payments, and many more
 - 🔧 **Highly configurable** - Error correction levels, custom colors, logos, and styling
-- 🌐 **Cross-platform** - Supports .NET Framework 3.5+, .NET Core 1.0+, and .NET Standard 1.3+
+- 🌐 **Cross-platform** - Supports .NET 5+, .NET Framework 3.5+, .NET Core 1.0+, and .NET Standard 1.3+
 - 📦 **Micro QR codes** - Smaller QR codes for space-constrained applications
 
 ## 📦 Installation
