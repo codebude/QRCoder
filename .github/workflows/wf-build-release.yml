@@ -12,11 +12,11 @@ jobs:
     - uses: actions/checkout@v5
       name: Checkout Code
 
-    - name: Check github.ref starts with 'refs/tags/'
-      if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    - name: Check github.ref starts with 'refs/tags/v'
+      if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
       shell: bash
       run: |
-        echo Error! github.ref does not start with 'refs/tags'
+        echo Error! github.ref does not start with 'refs/tags/v'
         echo github.ref: ${{ github.ref }}
         exit 1
 
@@ -25,7 +25,7 @@ jobs:
         github_ref: ${{ github.ref }}
       shell: bash
       run: |
-        version="${github_ref:10}"
+        version="${github_ref:11}"
         echo version=$version
         echo "version=$version" >> $GITHUB_ENV
 
