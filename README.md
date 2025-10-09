@@ -144,7 +144,34 @@ byte[] qrCodeImage = qrCode.GetGraphic(20);
 
 **Note:** Micro QR codes have limitations on data capacity and error correction levels. They support versions M1 through M4 (specified as -1 to -4), and not all ECC levels are available for all versions. M1 only supports detection (no ECC), M2 and M3 support L and M levels, and M4 supports L, M, and Q levels.
 
-***
+### Working with QRCodeData
+
+`QRCodeData` is the core data structure that represents a QR code's module matrix. It contains a `List<BitArray>` called `ModuleMatrix`, where each `BitArray` represents a row of modules in the QR code. A module is set to `true` for dark/black modules and `false` for light/white modules.
+
+You can access the `ModuleMatrix` directly to read or manipulate the QR code data at the module level. This is useful for custom rendering implementations or analyzing QR code structure.
+
+```csharp
+using QRCoder;
+
+// Generate QR code data
+using var qrCodeData = QRCodeGenerator.GenerateQrCode("Hello World", QRCodeGenerator.ECCLevel.Q);
+
+// Access the module matrix
+var moduleMatrix = qrCodeData.ModuleMatrix;
+int size = moduleMatrix.Count; // Size of the QR code (includes quiet zone)
+
+// Manually render as ASCII (versus the included ASCII renderer)
+for (int y = 0; y < size; y++)
+{
+    for (int x = 0; x < size; x++)
+    {
+        // Check if module is dark (true) or light (false)
+        bool isDark = moduleMatrix[y][x];
+        Console.Write(isDark ? "██" : "  ");
+    }
+    Console.WriteLine();
+}
+```
 
 ## 🚀 CI Builds
 

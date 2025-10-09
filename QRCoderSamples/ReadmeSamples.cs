@@ -56,4 +56,29 @@ public static class ReadmeSamples
         using var qrCode = new PngByteQRCode(qrCodeData);
         byte[] qrCodeImage = qrCode.GetGraphic(20);
     }
+
+    /// <summary>
+    /// Working with QRCodeData - Access the module matrix directly
+    /// </summary>
+    public static void QRCodeData_ModuleMatrix()
+    {
+        // Generate QR code data
+        using var qrCodeData = QRCodeGenerator.GenerateQrCode("Hello World", QRCodeGenerator.ECCLevel.Q);
+
+        // Access the module matrix
+        var moduleMatrix = qrCodeData.ModuleMatrix;
+        int size = moduleMatrix.Count; // Size of the QR code (includes quiet zone)
+
+        // Manually render as ASCII (versus the included ASCII renderer)
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                // Check if module is dark (true) or light (false)
+                bool isDark = moduleMatrix[y][x];
+                Console.Write(isDark ? "██" : "  ");
+            }
+            Console.WriteLine();
+        }
+    }
 }
