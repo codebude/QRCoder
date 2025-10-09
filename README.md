@@ -111,7 +111,7 @@ QRCoder provides multiple renderers for different output formats and use cases. 
 | [**SvgQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail) | SVG string | — | `new SvgQRCode(data).GetGraphic(20)` |
 | [**QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail) | System.Drawing.Bitmap | Windows¹ | `new QRCode(data).GetGraphic(20)` |
 | [**ArtQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail) | Artistic bitmap with custom images | Windows¹ | `new ArtQRCode(data).GetGraphic(20)` |
-| [**AsciiQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail) | ASCII art string | — | `new AsciiQRCode(data).GetGraphic(1)`<br/>`new AsciiQRCode(data).GetGraphicSmall()` |
+| [**AsciiQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail) | ASCII art string | — | `new AsciiQRCode(data).GetGraphic(1)` or `new AsciiQRCode(data).GetGraphicSmall()` |
 | [**Base64QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail) | Base64 encoded image | — | `new Base64QRCode(data).GetGraphic(20)` |
 | [**BitmapByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail) | BMP byte array | — | `new BitmapByteQRCode(data).GetGraphic(20)` |
 | [**PdfByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#210-pdfbyteqrcode-renderer-in-detail) | PDF byte array | — | `new PdfByteQRCode(data).GetGraphic(20)` |
