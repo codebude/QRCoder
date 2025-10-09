@@ -104,21 +104,24 @@ For detailed information about payload generators, see: [Wiki: Advanced usage - 
 
 QRCoder provides multiple renderers for different output formats and use cases. Each renderer has specific capabilities and framework requirements.
 
-| Renderer | Output Format | Usage Example |
-|----------|---------------|---------------|
-| [**PngByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail) | PNG byte array | `new PngByteQRCode(data).GetGraphic(20)` |
-| [**SvgQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail) | SVG string | `new SvgQRCode(data).GetGraphic(20)` |
-| [**QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail) | System.Drawing.Bitmap | `new QRCode(data).GetGraphic(20)` |
-| [**ArtQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail) | Artistic bitmap with custom images | `new ArtQRCode(data).GetGraphic(20)` |
-| [**AsciiQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail) | ASCII art string | `new AsciiQRCode(data).GetGraphic(1)`<br/>`new AsciiQRCode(data).GetGraphicSmall()` |
-| [**Base64QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail) | Base64 encoded image | `new Base64QRCode(data).GetGraphic(20)` |
-| [**BitmapByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail) | BMP byte array | `new BitmapByteQRCode(data).GetGraphic(20)` |
-| [**PdfByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#210-pdfbyteqrcode-renderer-in-detail) | PDF byte array | `new PdfByteQRCode(data).GetGraphic(20)` |
-| [**PostscriptQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#29-postscriptqrcode-renderer-in-detail) | PostScript/EPS string | `new PostscriptQRCode(data).GetGraphic(20)` |
-| [**XamlQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail) | XAML DrawingImage | `new XamlQRCode(data).GetGraphic(20)` |
-| [**UnityQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) | Unity Texture2D | `new UnityQRCode(data).GetGraphic(20)` |
+| Renderer | Output Format | Requires | Usage Example |
+|----------|---------------|----------|---------------|
+| [**PngByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail) | PNG byte array | — | `new PngByteQRCode(data).GetGraphic(20)` |
+| [**SvgQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail) | SVG string | — | `new SvgQRCode(data).GetGraphic(20)` |
+| [**QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail) | System.Drawing.Bitmap | Windows¹ | `new QRCode(data).GetGraphic(20)` |
+| [**ArtQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail) | Artistic bitmap with custom images | Windows¹ | `new ArtQRCode(data).GetGraphic(20)` |
+| [**AsciiQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail) | ASCII art string | — | `new AsciiQRCode(data).GetGraphic(1)`<br/>`new AsciiQRCode(data).GetGraphicSmall()` |
+| [**Base64QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail) | Base64 encoded image | — | `new Base64QRCode(data).GetGraphic(20)` |
+| [**BitmapByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail) | BMP byte array | — | `new BitmapByteQRCode(data).GetGraphic(20)` |
+| [**PdfByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#210-pdfbyteqrcode-renderer-in-detail) | PDF byte array | — | `new PdfByteQRCode(data).GetGraphic(20)` |
+| [**PostscriptQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#29-postscriptqrcode-renderer-in-detail) | PostScript/EPS string | — | `new PostscriptQRCode(data).GetGraphic(20)` |
+| [**XamlQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#28-xamlqrcode-renderer-in-detail) | XAML DrawingImage | XAML² | `new XamlQRCode(data).GetGraphic(20)` |
+| [**UnityQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) | Unity Texture2D | Unity³ | `new UnityQRCode(data).GetGraphic(20)` |
 
-**Note:** XamlQRCode requires the [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml) package. UnityQRCode requires the [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity) package.
+**Notes:**
+- ¹ Requires Windows or System.Drawing.Common package (uses GDI+)
+- ² Requires the [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml) package
+- ³ Requires the [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity) package
 
 **Framework Compatibility:** Not all renderers are available on all target frameworks. Check the [compatibility table](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#2-overview-of-the-different-renderers) for details.
 
