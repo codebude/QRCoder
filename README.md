@@ -1,6 +1,6 @@
 # QRCoder
 
-[![License](https://img.shields.io/github/license/Shane32/QRCoder)](LICENSE.md)
+[![License](https://img.shields.io/github/license/Shane32/QRCoder)](LICENSE.txt)
 [![NuGet](https://img.shields.io/nuget/v/QRCoder)](https://www.nuget.org/packages/QRCoder/)
 [![Nuget](https://img.shields.io/nuget/dt/QRCoder)](https://www.nuget.org/packages/QRCoder)
 [![Coverage](https://codecov.io/gh/Shane32/QRCoder/branch/master/graph/badge.svg?token=3yNs88KD8S)](https://codecov.io/gh/Shane32/QRCoder)
