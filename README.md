@@ -193,7 +193,7 @@ Solutions include:
 1. Use Windows-specific TFMs such as `<TargetFramework>net8.0-windows</TargetFramework>`
 2. Mark methods with the `[SupportedOSPlatform("windows")]` attribute
 3. Add platform guards by wrapping code with `#if WINDOWS` or `if (OperatingSystem.IsWindows())`
-4. Use cross-platform renderers: `PngByteQRCode`, `SvgQRCode`, or `BitmapByteQRCode`
+4. Use cross-platform renderers such as `PngByteQRCode`, `SvgQRCode`, or `BitmapByteQRCode`
 
 ## 🚀 CI Builds
 
