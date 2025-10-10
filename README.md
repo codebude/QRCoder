@@ -188,7 +188,7 @@ System.TypeInitializationException: The type initializer for 'Gdip' threw an exc
 System.PlatformNotSupportedException: System.Drawing.Common is not supported on this platform.
 ```
 
-**Solutions:**
+Solutions include:
 
 1. Use Windows-specific TFMs such as `<TargetFramework>net8.0-windows</TargetFramework>`
 2. Mark methods with the `[SupportedOSPlatform("windows")]` attribute
