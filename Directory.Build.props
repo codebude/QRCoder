@@ -33,6 +33,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <CheckEolTargetFramework>false</CheckEolTargetFramework>
     <SignAssembly>false</SignAssembly>
+    <Deterministic>true</Deterministic>
 
     <!-- Enable analyzers; treat all warnings as errors; disable 'using directive is unnecessary' and XML comment warnings -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
