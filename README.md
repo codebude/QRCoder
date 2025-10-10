@@ -174,6 +174,27 @@ for (int y = 0; y < size; y++)
 }
 ```
 
+## ⚠️ Troubleshooting
+
+### System.Drawing.Common Warnings (QRCode and ArtQRCode renderers)
+
+The `QRCode` and `ArtQRCode` renderers depend on `System.Drawing.Common`, which Microsoft has [removed cross-platform support for in .NET 6+](https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/6.0/system-drawing-common-windows-only). You may encounter one of the following build or runtime errors:
+
+```
+CA1416: This call site is reachable on all platforms. 'QRCode.QRCode(QRCodeData)' is only supported on: 'windows'
+
+System.TypeInitializationException: The type initializer for 'Gdip' threw an exception.
+
+System.PlatformNotSupportedException: System.Drawing.Common is not supported on this platform.
+```
+
+Solutions include:
+
+1. Use Windows-specific TFMs such as `<TargetFramework>net8.0-windows</TargetFramework>`
+2. Mark methods with the `[SupportedOSPlatform("windows")]` attribute
+3. Add platform guards by wrapping code with `#if WINDOWS` or `if (OperatingSystem.IsWindows())`
+4. Use cross-platform renderers such as `PngByteQRCode`, `SvgQRCode`, or `BitmapByteQRCode`
+
 ## 🚀 CI Builds
 
 The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/Shane32/qrcoder/packages).
