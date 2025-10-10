@@ -174,7 +174,7 @@ for (int y = 0; y < size; y++)
 }
 ```
 
-## 🔧 Troubleshooting
+## ⚠️ Troubleshooting
 
 ### System.Drawing.Common Warnings (QRCode and ArtQRCode renderers)
 
