@@ -25,7 +25,7 @@ public partial class QRCodeGenerator
         /// <summary>
         /// Whether this segment includes an ECI mode indicator
         /// </summary>
-        public bool HasEciMode => EciMode == EciMode.Default;
+        public bool HasEciMode => EciMode != EciMode.Default;
 
         /// <summary>
         /// The ECI mode value (only valid if HasEciMode is true)
