@@ -116,6 +116,55 @@ public partial class QRCodeGenerator
             }
         }
 
+        /// <summary>
+        /// Attempts to determine the minimum QR code version required to encode a data segment with a specific error correction level.
+        /// This method accounts for the version-dependent size of mode and count indicators when calculating the total bit length.
+        /// </summary>
+        /// <param name="segment">The data segment to be encoded (includes encoding mode, character count, and data bits).</param>
+        /// <param name="eccLevel">The error correction level (e.g., Low, Medium, Quartile, High).</param>
+        /// <param name="version">When this method returns, contains the minimum version number (1-40) that can accommodate the data segment if a suitable version was found; otherwise, 0.</param>
+        /// <returns><see langword="true"/> if a suitable QR code version was found; otherwise, <see langword="false"/>.</returns>
+        public static bool TryCalculateMinimumVersion(DataSegment segment, ECCLevel eccLevel, out int version)
+        {
+            // Versions 1-9: Count indicator length is constant within this range
+            var segmentBitLength = segment.GetBitLength(1);
+            for (version = 1; version <= 9; version++)
+            {
+                var eccInfo = GetEccInfo(version, eccLevel);
+                // Check if this version has enough capacity for the segment's total bits
+                if (eccInfo.TotalDataBits >= segmentBitLength)
+                {
+                    return true;
+                }
+            }
+
+            // Versions 10-26: Count indicator length is constant within this range
+            segmentBitLength = segment.GetBitLength(10);
+            for (version = 10; version <= 26; version++)
+            {
+                var eccInfo = GetEccInfo(version, eccLevel);
+                // Check if this version has enough capacity for the segment's total bits
+                if (eccInfo.TotalDataBits >= segmentBitLength)
+                {
+                    return true;
+                }
+            }
+
+            // Versions 27-40: Count indicator length is constant within this range
+            segmentBitLength = segment.GetBitLength(27);
+            for (version = 27; version <= 40; version++)
+            {
+                var eccInfo = GetEccInfo(version, eccLevel);
+                // Check if this version has enough capacity for the segment's total bits
+                if (eccInfo.TotalDataBits >= segmentBitLength)
+                {
+                    return true;
+                }
+            }
+
+            version = 0;
+            return false;
+        }
 
         /// <summary>
         /// Determines the minimum Micro QR code version required to encode a given amount of data with a specific encoding mode and error correction level.
