@@ -1,8 +1,10 @@
 #if HAS_SPAN
 using System.Buffers;
 #endif
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 namespace QRCoder;
 
@@ -109,14 +111,39 @@ public partial class QRCodeGenerator : IDisposable
     public static QRCodeData GenerateQrCode(string plainText, ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, EciMode eciMode = EciMode.Default, int requestedVersion = -1)
     {
         eccLevel = ValidateECCLevel(eccLevel);
+        // Create data segment from plain text
+        var segment = CreateDataSegment(plainText, forceUtf8, utf8BOM, eciMode);
+        // Determine the appropriate version based on segment bit length
+        int version = DetermineVersion(segment, eccLevel, requestedVersion);
+        // Build the complete bit array for the determined version
+        var completeBitArray = BuildBitArrayFromSegment(segment, version);
+        return GenerateQrCode(completeBitArray, eccLevel, version);
+    }
+
+    /// <summary>
+    /// Creates a data segment from plain text, encoding it appropriately.
+    /// </summary>
+    private static DataSegment CreateDataSegment(string plainText, bool forceUtf8, bool utf8BOM, EciMode eciMode)
+    {
         var encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
         var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
         var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
-        int version = requestedVersion;
-        int minVersion = CapacityTables.CalculateMinimumVersion(dataInputLength + (eciMode != EciMode.Default ? 2 : 0), encoding, eccLevel);
-        if (version == -1)
+        return new DataSegment(encoding, dataInputLength, codedText, eciMode);
+    }
+
+    /// <summary>
+    /// Determines the appropriate QR code version based on the data segment and error correction level.
+    /// Validates that the data fits within the requested version, or finds the minimum version if not specified.
+    /// </summary>
+    private static int DetermineVersion(DataSegment segment, ECCLevel eccLevel, int version)
+    {
+        if (!CapacityTables.TryCalculateMinimumVersion(segment, eccLevel, out var minVersion))
         {
-            version = minVersion;
+            return Throw(eccLevel, segment.EncodingMode, version == -1 ? 40 : version);
+        }
+        else if (version == -1)
+        {
+            return minVersion;
         }
         else
         {
@@ -124,19 +151,30 @@ public partial class QRCodeGenerator : IDisposable
             if (minVersion > version)
             {
                 // Use a throw-helper to avoid allocating a closure
-                Throw(eccLevel, encoding, version);
-
-                static void Throw(ECCLevel eccLevel, EncodingMode encoding, int version)
-                {
-                    var maxSizeByte = CapacityTables.GetVersionInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
-                    throw new Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
-                }
+                return Throw(eccLevel, segment.EncodingMode, version);
             }
+            return version;
         }
 
-        var modeIndicatorLength = eciMode != EciMode.Default ? 16 : 4;
-        var countIndicatorLength = GetCountIndicatorLength(version, encoding);
-        var completeBitArrayLength = modeIndicatorLength + countIndicatorLength + codedText.Length;
+        static int Throw(ECCLevel eccLevel, EncodingMode encoding, int version)
+        {
+            var maxSizeByte = CapacityTables.GetVersionInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
+            throw new Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
+        }
+    }
+
+    /// <summary>
+    /// Builds a complete BitArray from a data segment for a specific QR code version.
+    /// </summary>
+    private static BitArray BuildBitArrayFromSegment(DataSegment segment, int version)
+    {
+        // todo in subsequent PR: eliminate these local variables and directly access the struct
+        var eciMode = segment.EciMode;
+        var encoding = segment.EncodingMode;
+        int dataInputLength = segment.CharacterCount;
+        var codedText = segment.Data;
+        int completeBitArrayLength = segment.GetBitLength(version);
+        int countIndicatorLength = GetCountIndicatorLength(version, segment.EncodingMode);
 
         var completeBitArray = new BitArray(completeBitArrayLength);
 
@@ -156,7 +194,7 @@ public partial class QRCodeGenerator : IDisposable
             completeBitArray[completeBitArrayIndex++] = codedText[i];
         }
 
-        return GenerateQrCode(completeBitArray, eccLevel, version);
+        return completeBitArray;
     }
 
     /// <summary>
@@ -366,6 +404,7 @@ public partial class QRCodeGenerator : IDisposable
 
             void AddCodeWordBlocks(int blockNum, int blocksInGroup, int codewordsInGroup, int offset2, int count, Polynom generatorPolynom)
             {
+                _ = blockNum;
                 var groupLength = codewordsInGroup * 8;
                 groupLength = groupLength > count ? count : groupLength;
                 for (var i = 0; i < blocksInGroup; i++)
