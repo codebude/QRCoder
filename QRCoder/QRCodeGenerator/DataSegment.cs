@@ -75,8 +75,8 @@ public partial class QRCodeGenerator
         /// Writes this data segment to an existing BitArray at the specified index for a specific QR code version.
         /// </summary>
         /// <param name="bitArray">The target BitArray to write to</param>
-        /// <param name="version">The QR code version (1-40, or -1 to -4 for Micro QR)</param>
         /// <param name="startIndex">The starting index in the BitArray where writing should begin</param>
+        /// <param name="version">The QR code version (1-40, or -1 to -4 for Micro QR)</param>
         /// <returns>The next index in the BitArray after the last bit written</returns>
         public int WriteTo(BitArray bitArray, int startIndex, int version)
         {
