@@ -126,18 +126,42 @@ public partial class QRCodeGenerator
         /// <returns><see langword="true"/> if a suitable QR code version was found; otherwise, <see langword="false"/>.</returns>
         public static bool TryCalculateMinimumVersion(DataSegment segment, ECCLevel eccLevel, out int version)
         {
-            // Iterate through all versions to find the first one that can hold the required bits
-            for (version = 1; version <= 40; version++)
+            // Versions 1-9: Count indicator length is constant within this range
+            var segmentBitLength = segment.GetBitLength(1);
+            for (version = 1; version <= 9; version++)
             {
                 var eccInfo = GetEccInfo(version, eccLevel);
-                var segmentBitLength = segment.GetBitLength(version);
-
                 // Check if this version has enough capacity for the segment's total bits
                 if (eccInfo.TotalDataBits >= segmentBitLength)
                 {
                     return true;
                 }
             }
+
+            // Versions 10-26: Count indicator length is constant within this range
+            segmentBitLength = segment.GetBitLength(10);
+            for (version = 10; version <= 26; version++)
+            {
+                var eccInfo = GetEccInfo(version, eccLevel);
+                // Check if this version has enough capacity for the segment's total bits
+                if (eccInfo.TotalDataBits >= segmentBitLength)
+                {
+                    return true;
+                }
+            }
+
+            // Versions 27-40: Count indicator length is constant within this range
+            segmentBitLength = segment.GetBitLength(27);
+            for (version = 27; version <= 40; version++)
+            {
+                var eccInfo = GetEccInfo(version, eccLevel);
+                // Check if this version has enough capacity for the segment's total bits
+                if (eccInfo.TotalDataBits >= segmentBitLength)
+                {
+                    return true;
+                }
+            }
+
             version = 0;
             return false;
         }
