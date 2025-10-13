@@ -995,22 +995,21 @@ public partial class QRCodeGenerator : IDisposable
         bool IsUtf8() => (encoding == EncodingMode.Byte && (forceUtf8 || !IsValidISO(plainText)));
     }
 
-    private static readonly Encoding _iso88591ExceptionFallback = Encoding.GetEncoding(28591, new EncoderExceptionFallback(), new DecoderExceptionFallback()); // ISO-8859-1
     /// <summary>
     /// Checks if the given string can be accurately represented and retrieved in ISO-8859-1 encoding.
     /// </summary>
     private static bool IsValidISO(string input)
     {
-        // No heap allocations if the string is ISO-8859-1
-        try
+        // ISO-8859-1 contains the same characters as UTF-16 for the range 0x00-0xFF.
+        //   0x00-0x7F: ASCII (0-127)
+        //   0x80-0x9F: C1 control characters (128-159)
+        //   0xA0-0xFF: Extended Latin (160-255
+        foreach (char c in input)
         {
-            _ = _iso88591ExceptionFallback.GetByteCount(input);
-            return true;
+            if (c > 0xFF)
+                return false;
         }
-        catch (EncoderFallbackException) // The exception is a heap allocation and not ideal
-        {
-            return false;
-        }
+        return true;
     }
 
     /// <summary>
