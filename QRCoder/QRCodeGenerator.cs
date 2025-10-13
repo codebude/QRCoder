@@ -1010,41 +1010,52 @@ public partial class QRCodeGenerator : IDisposable
     /// <param name="plainText">The numeric text to be encoded, which should only contain digit characters.</param>
     /// <returns>A BitArray representing the binary data of the encoded numeric text.</returns>
     private static BitArray PlainTextToBinaryNumeric(string plainText)
+        => PlainTextToBinaryNumeric(plainText, 0, plainText.Length);
+
+    /// <summary>
+    /// Converts numeric plain text into a binary format specifically optimized for QR codes.
+    /// Numeric compression groups up to 3 digits into 10 bits, less for remaining digits if they do not complete a group of three.
+    /// </summary>
+    /// <param name="plainText">The numeric text to be encoded, which should only contain digit characters.</param>
+    /// <param name="offset">The starting position in the plainText string.</param>
+    /// <param name="count">The number of characters to encode from the plainText string.</param>
+    /// <returns>A BitArray representing the binary data of the encoded numeric text.</returns>
+    private static BitArray PlainTextToBinaryNumeric(string plainText, int offset, int count)
     {
         // Calculate the length of the BitArray needed to encode the text.
         // Groups of three digits are encoded in 10 bits, remaining groups of two or one digits take 7 or 4 bits respectively.
-        var bitArray = new BitArray(plainText.Length / 3 * 10 + (plainText.Length % 3 == 1 ? 4 : plainText.Length % 3 == 2 ? 7 : 0));
+        var bitArray = new BitArray(count / 3 * 10 + (count % 3 == 1 ? 4 : count % 3 == 2 ? 7 : 0));
         var index = 0;
 
         // Process each group of three digits.
-        for (int i = 0; i < plainText.Length - 2; i += 3)
+        for (int i = 0; i < count - 2; i += 3)
         {
             // Parse the next three characters as a decimal integer.
 #if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.AsSpan(offset + i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
-            var dec = int.Parse(plainText.Substring(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.Substring(offset + i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
             // Convert the decimal to binary and store it in the BitArray.
             index = DecToBin(dec, 10, bitArray, index);
         }
 
         // Handle any remaining digits if the total number is not a multiple of three.
-        if (plainText.Length % 3 == 2)  // Two remaining digits are encoded in 7 bits.
+        if (count % 3 == 2)  // Two remaining digits are encoded in 7 bits.
         {
 #if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.AsSpan(offset + (count / 3 * 3), 2), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
-            var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.Substring(offset + (count / 3 * 3), 2), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
             index = DecToBin(dec, 7, bitArray, index);
         }
-        else if (plainText.Length % 3 == 1)  // One remaining digit is encoded in 4 bits.
+        else if (count % 3 == 1)  // One remaining digit is encoded in 4 bits.
         {
 #if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.AsSpan(offset + (count / 3 * 3), 1), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
-            var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.Substring(offset + (count / 3 * 3), 1), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
             index = DecToBin(dec, 4, bitArray, index);
         }
@@ -1074,6 +1085,24 @@ public partial class QRCodeGenerator : IDisposable
     /// when not ISO-8859-1.
     /// </remarks>
     private static BitArray PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
+        => PlainTextToBinaryByte(plainText, 0, plainText.Length, eciMode, utf8BOM, forceUtf8);
+
+    /// <summary>
+    /// Converts plain text into a binary format using byte mode encoding, which supports various character encodings through ECI (Extended Channel Interpretations).
+    /// </summary>
+    /// <param name="plainText">The text to be encoded.</param>
+    /// <param name="offset">The starting position in the plainText string.</param>
+    /// <param name="count">The number of characters to encode from the plainText string.</param>
+    /// <param name="eciMode">The ECI mode that specifies the character encoding to use.</param>
+    /// <param name="utf8BOM">Specifies whether to include a Byte Order Mark (BOM) for UTF-8 encoding.</param>
+    /// <param name="forceUtf8">Forces UTF-8 encoding regardless of the text content's compatibility with ISO-8859-1.</param>
+    /// <returns>A BitArray representing the binary data of the encoded text.</returns>
+    /// <remarks>
+    /// The returned text is always encoded as ISO-8859-1 unless either the text contains a non-ISO-8859-1 character or
+    /// UTF-8 encoding is forced. This does not meet the QR Code standard, which requires the use of ECI to specify the encoding
+    /// when not ISO-8859-1.
+    /// </remarks>
+    private static BitArray PlainTextToBinaryByte(string plainText, int offset, int count, EciMode eciMode, bool utf8BOM, bool forceUtf8)
     {
         Encoding targetEncoding;
 
@@ -1116,15 +1145,15 @@ public partial class QRCodeGenerator : IDisposable
         // We can use stackalloc for small arrays to prevent heap allocations
         const int MAX_STACK_SIZE_IN_BYTES = 512;
 
-        int count = targetEncoding.GetByteCount(plainText);
+        int byteCount = targetEncoding.GetByteCount(plainText.AsSpan(offset, count));
         byte[]? bufferFromPool = null;
-        Span<byte> codeBytes = (count <= MAX_STACK_SIZE_IN_BYTES)
+        Span<byte> codeBytes = (byteCount <= MAX_STACK_SIZE_IN_BYTES)
             ? (stackalloc byte[MAX_STACK_SIZE_IN_BYTES])
-            : (bufferFromPool = ArrayPool<byte>.Shared.Rent(count));
-        codeBytes = codeBytes.Slice(0, count);
-        targetEncoding.GetBytes(plainText, codeBytes);
+            : (bufferFromPool = ArrayPool<byte>.Shared.Rent(byteCount));
+        codeBytes = codeBytes.Slice(0, byteCount);
+        targetEncoding.GetBytes(plainText.AsSpan(offset, count), codeBytes);
 #else
-        byte[] codeBytes = targetEncoding.GetBytes(plainText);
+        byte[] codeBytes = targetEncoding.GetBytes(plainText.Substring(offset, count));
 #endif
 
         // Convert the array of bytes into a BitArray.

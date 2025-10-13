@@ -53,12 +53,22 @@ public partial class QRCodeGenerator
         /// <param name="plainText">The alphanumeric text to be encoded, which should only contain characters valid in QR alphanumeric mode.</param>
         /// <returns>A BitArray representing the binary data of the encoded alphanumeric text.</returns>
         public static BitArray GetBitArray(string plainText)
+            => GetBitArray(plainText, 0, plainText.Length);
+
+        /// <summary>
+        /// Converts alphanumeric plain text into a binary format optimized for QR codes.
+        /// Alphanumeric encoding packs characters into 11-bit groups for each pair of characters,
+        /// and 6 bits for a single remaining character if the total count is odd.
+        /// </summary>
+        /// <param name="plainText">The alphanumeric text to be encoded, which should only contain characters valid in QR alphanumeric mode.</param>
+        /// <param name="index">The starting position in the plainText string.</param>
+        /// <param name="count">The number of characters to encode from the plainText string.</param>
+        /// <returns>A BitArray representing the binary data of the encoded alphanumeric text.</returns>
+        public static BitArray GetBitArray(string plainText, int index, int count)
         {
             // Calculate the length of the BitArray needed based on the number of character pairs.
-            var codeText = new BitArray((plainText.Length / 2) * 11 + (plainText.Length & 1) * 6);
+            var codeText = new BitArray((count / 2) * 11 + (count & 1) * 6);
             var codeIndex = 0;
-            var index = 0;
-            var count = plainText.Length;
 
             // Process each pair of characters.
             while (count >= 2)

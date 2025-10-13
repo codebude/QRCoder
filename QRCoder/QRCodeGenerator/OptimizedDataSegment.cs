@@ -36,9 +36,9 @@ public partial class QRCodeGenerator
             var segmentLength = segmentEnd - startPos;
             var segmentData = mode switch
             {
-                EncodingMode.Byte => PlainTextToBinaryByte(text.Substring(startPos, segmentLength), EciMode.Iso8859_1, false, false),
-                EncodingMode.Alphanumeric => AlphanumericEncoder.GetBitArray(text.Substring(startPos, segmentLength)),
-                EncodingMode.Numeric => PlainTextToBinaryNumeric(text.Substring(startPos, segmentLength)),
+                EncodingMode.Byte => PlainTextToBinaryByte(text, startPos, segmentLength, EciMode.Iso8859_1, false, false),
+                EncodingMode.Alphanumeric => AlphanumericEncoder.GetBitArray(text, startPos, segmentLength),
+                EncodingMode.Numeric => PlainTextToBinaryNumeric(text, startPos, segmentLength),
                 _ => throw new InvalidOperationException("Unsupported encoding mode")
             };
             var segment = new DataSegment(mode, segmentLength, segmentData, EciMode.Default);
