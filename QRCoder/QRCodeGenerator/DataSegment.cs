@@ -5,22 +5,27 @@ public partial class QRCodeGenerator
     /// <summary>
     /// Represents a data segment for QR code encoding, containing the encoding mode, character count, and encoded data.
     /// </summary>
-    private readonly struct DataSegment
+    private class DataSegment
     {
         /// <summary>
         /// The encoding mode for this segment (Numeric, Alphanumeric, Byte, etc.)
         /// </summary>
-        public readonly EncodingMode EncodingMode;
+        public EncodingMode EncodingMode { get; }
 
         /// <summary>
         /// The character count (or byte count for byte mode)
         /// </summary>
-        public readonly int CharacterCount;
+        public int CharacterCount { get; }
 
         /// <summary>
         /// The encoded data as a BitArray
         /// </summary>
-        public readonly BitArray Data;
+        public BitArray Data { get; }
+
+        /// <summary>
+        /// The next data segment in the chain, or null if this is the last segment
+        /// </summary>
+        public DataSegment? Next { get; set; }
 
         /// <summary>
         /// Whether this segment includes an ECI mode indicator
@@ -30,7 +35,7 @@ public partial class QRCodeGenerator
         /// <summary>
         /// The ECI mode value (only valid if HasEciMode is true)
         /// </summary>
-        public readonly EciMode EciMode;
+        public EciMode EciMode { get; }
 
         /// <summary>
         /// Initializes a new instance of the DataSegment struct.
@@ -49,6 +54,7 @@ public partial class QRCodeGenerator
 
         /// <summary>
         /// Calculates the total bit length for this segment when encoded for a specific QR code version.
+        /// Includes the length of all chained segments.
         /// </summary>
         /// <param name="version">The QR code version (1-40, or -1 to -4 for Micro QR)</param>
         /// <returns>The total number of bits required for this segment including mode indicator, count indicator, and data</returns>
@@ -56,7 +62,13 @@ public partial class QRCodeGenerator
         {
             int modeIndicatorLength = HasEciMode ? 16 : 4;
             int countIndicatorLength = GetCountIndicatorLength(version, EncodingMode);
-            return modeIndicatorLength + countIndicatorLength + Data.Length;
+            int length = modeIndicatorLength + countIndicatorLength + Data.Length;
+
+            // Add length of next segment if present
+            if (Next != null)
+                length += Next.GetBitLength(version);
+
+            return length;
         }
 
         /// <summary>
@@ -73,6 +85,7 @@ public partial class QRCodeGenerator
 
         /// <summary>
         /// Writes this data segment to an existing BitArray at the specified index for a specific QR code version.
+        /// Chains to the next segment if present.
         /// </summary>
         /// <param name="bitArray">The target BitArray to write to</param>
         /// <param name="startIndex">The starting index in the BitArray where writing should begin</param>
@@ -97,8 +110,13 @@ public partial class QRCodeGenerator
 
             // write data
             Data.CopyTo(bitArray, 0, index, Data.Length);
+            index += Data.Length;
 
-            return index + Data.Length;
+            // write next segment if present
+            if (Next != null)
+                index = Next.WriteTo(bitArray, index, version);
+
+            return index;
         }
     }
 }
