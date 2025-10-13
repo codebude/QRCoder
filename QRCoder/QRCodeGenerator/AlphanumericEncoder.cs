@@ -38,7 +38,7 @@ public partial class QRCodeGenerator
         /// <summary>
         /// Checks if a character is present in the alphanumeric encoding table.
         /// </summary>
-        public static bool CanEncode(char c) => IsInRange(c, 'A', 'Z') || Array.IndexOf(_alphanumEncTable, c) >= 0;
+        public static bool CanEncode(char c) => IsInRange(c, '0', '9') || IsInRange(c, 'A', 'Z') || Array.IndexOf(_alphanumEncTable, c) >= 0;
 
         /// <summary>
         /// Converts alphanumeric plain text into a binary format optimized for QR codes.
