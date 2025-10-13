@@ -1,3 +1,5 @@
+#pragma warning disable IDE0018 // Inline variable declaration -- false positive
+
 namespace QRCoder;
 
 public partial class QRCodeGenerator
