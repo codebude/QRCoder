@@ -10,7 +10,7 @@ public partial class QRCodeGenerator
     /// This implements the QR Code optimization algorithm from ISO/IEC 18004:2015 Annex J.2.
     /// It does not support Kanji mode.
     /// </summary>
-    private static DataSegment CreateOptimizedDataSegment(string plainText)
+    private static DataSegment CreateOptimizedLatin1DataSegment(string plainText)
     {
         if (string.IsNullOrEmpty(plainText))
             return new DataSegment(EncodingMode.Byte, 0, _emptyBitArray, EciMode.Default);

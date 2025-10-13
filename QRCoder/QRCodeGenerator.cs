@@ -114,7 +114,7 @@ public partial class QRCodeGenerator : IDisposable
         // Create data segment from plain text
         // Use optimized segmentation when not forcing UTF-8, no BOM, and default ECI mode
         var segment = (!forceUtf8 && !utf8BOM && eciMode == EciMode.Default && IsValidISO(plainText))
-            ? CreateOptimizedDataSegment(plainText)
+            ? CreateOptimizedLatin1DataSegment(plainText)
             : CreateDataSegment(plainText, forceUtf8, utf8BOM, eciMode);
         // Determine the appropriate version based on segment bit length
         int version = DetermineVersion(segment, eccLevel, requestedVersion);
