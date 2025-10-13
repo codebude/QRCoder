@@ -41,6 +41,11 @@ public partial class QRCodeGenerator
         public static bool CanEncodeNonDigit(char c) => IsInRange(c, 'A', 'Z') || Array.IndexOf(_alphanumEncTable, c) >= 0;
 
         /// <summary>
+        /// Checks if a character is present in the alphanumeric encoding table.
+        /// </summary>
+        public static bool CanEncode(char c) => IsInRange(c, '0', '9') || IsInRange(c, 'A', 'Z') || Array.IndexOf(_alphanumEncTable, c) >= 0;
+
+        /// <summary>
         /// Converts alphanumeric plain text into a binary format optimized for QR codes.
         /// Alphanumeric encoding packs characters into 11-bit groups for each pair of characters,
         /// and 6 bits for a single remaining character if the total count is odd.
