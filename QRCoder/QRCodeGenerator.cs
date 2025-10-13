@@ -116,7 +116,7 @@ public partial class QRCodeGenerator : IDisposable
         // Determine the appropriate version based on segment bit length
         int version = DetermineVersion(segment, eccLevel, requestedVersion);
         // Build the complete bit array for the determined version
-        var completeBitArray = BuildBitArrayFromSegment(segment, version);
+        var completeBitArray = segment.ToBitArray(version);
         return GenerateQrCode(completeBitArray, eccLevel, version);
     }
 
@@ -161,40 +161,6 @@ public partial class QRCodeGenerator : IDisposable
             var maxSizeByte = CapacityTables.GetVersionInfo(version).Details.First(x => x.ErrorCorrectionLevel == eccLevel).CapacityDict[encoding];
             throw new Exceptions.DataTooLongException(eccLevel.ToString(), encoding.ToString(), version, maxSizeByte);
         }
-    }
-
-    /// <summary>
-    /// Builds a complete BitArray from a data segment for a specific QR code version.
-    /// </summary>
-    private static BitArray BuildBitArrayFromSegment(DataSegment segment, int version)
-    {
-        // todo in subsequent PR: eliminate these local variables and directly access the struct
-        var eciMode = segment.EciMode;
-        var encoding = segment.EncodingMode;
-        int dataInputLength = segment.CharacterCount;
-        var codedText = segment.Data;
-        int completeBitArrayLength = segment.GetBitLength(version);
-        int countIndicatorLength = GetCountIndicatorLength(version, segment.EncodingMode);
-
-        var completeBitArray = new BitArray(completeBitArrayLength);
-
-        // write mode indicator
-        var completeBitArrayIndex = 0;
-        if (eciMode != EciMode.Default)
-        {
-            completeBitArrayIndex = DecToBin((int)EncodingMode.ECI, 4, completeBitArray, completeBitArrayIndex);
-            completeBitArrayIndex = DecToBin((int)eciMode, 8, completeBitArray, completeBitArrayIndex);
-        }
-        completeBitArrayIndex = DecToBin((int)encoding, 4, completeBitArray, completeBitArrayIndex);
-        // write count indicator
-        completeBitArrayIndex = DecToBin(dataInputLength, countIndicatorLength, completeBitArray, completeBitArrayIndex);
-        // write data
-        for (int i = 0; i < codedText.Length; i++)
-        {
-            completeBitArray[completeBitArrayIndex++] = codedText[i];
-        }
-
-        return completeBitArray;
     }
 
     /// <summary>
