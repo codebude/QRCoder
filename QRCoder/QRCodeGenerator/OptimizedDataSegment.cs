@@ -204,21 +204,4 @@ public partial class QRCodeGenerator
         // Checks if a character is alphanumeric (can be encoded in alphanumeric mode).
         static bool IsAlphanumeric(char c) => AlphanumericEncoder.CanEncode(c);
     }
-
-    /// <summary>
-    /// Helper struct to store segment information during optimization.
-    /// </summary>
-    private readonly struct SegmentInfo
-    {
-        public int Start { get; }
-        public int Length { get; }
-        public EncodingMode Mode { get; }
-
-        public SegmentInfo(int start, int length, EncodingMode mode)
-        {
-            Start = start;
-            Length = length;
-            Mode = mode;
-        }
-    }
 }
