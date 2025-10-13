@@ -1003,7 +1003,7 @@ public partial class QRCodeGenerator : IDisposable
         // ISO-8859-1 contains the same characters as UTF-16 for the range 0x00-0xFF.
         //   0x00-0x7F: ASCII (0-127)
         //   0x80-0x9F: C1 control characters (128-159)
-        //   0xA0-0xFF: Extended Latin (160-255
+        //   0xA0-0xFF: Extended Latin (160-255)
         foreach (char c in input)
         {
             if (c > 0xFF)
