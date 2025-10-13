@@ -750,7 +750,7 @@ public partial class QRCodeGenerator : IDisposable
             if (IsInRange(c, '0', '9'))
                 continue;   // numeric - char.IsDigit() for Latin1
             result = EncodingMode.Alphanumeric;     // not numeric, assume alphanumeric
-            if (AlphanumericEncoder.CanEncode(c))
+            if (AlphanumericEncoder.CanEncodeNonDigit(c))
                 continue; // alphanumeric
             return EncodingMode.Byte;               // not numeric or alphanumeric, assume byte
         }
