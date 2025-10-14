@@ -9,7 +9,7 @@ public partial class QRCodeGenerator
     /// <summary>
     /// Data segment for byte mode encoding (used for UTF-8 and other text encodings).
     /// </summary>
-    private class ByteDataSegment : DataSegment
+    private sealed class ByteDataSegment : DataSegment
     {
         /// <summary>
         /// Whether to force UTF-8 encoding
