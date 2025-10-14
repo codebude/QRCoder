@@ -130,27 +130,9 @@ public partial class QRCodeGenerator : IDisposable
         // Use specialized segment classes based on encoding mode
         return encoding switch
         {
-            EncodingMode.Numeric => new NumericDataSegment(
-#if HAS_SPAN
-                plainText.AsMemory()
-#else
-                plainText
-#endif
-            ),
-            EncodingMode.Alphanumeric => new AlphanumericDataSegment(
-#if HAS_SPAN
-                plainText.AsMemory()
-#else
-                plainText
-#endif
-            ),
-            EncodingMode.Byte => new ByteDataSegment(
-#if HAS_SPAN
-                plainText.AsMemory(),
-#else
-                plainText,
-#endif
-                forceUtf8, utf8BOM, eciMode),
+            EncodingMode.Numeric => new NumericDataSegment(plainText),
+            EncodingMode.Alphanumeric => new AlphanumericDataSegment(plainText),
+            EncodingMode.Byte => new ByteDataSegment(plainText, forceUtf8, utf8BOM, eciMode),
             _ => throw new InvalidOperationException($"Unsupported encoding mode: {encoding}")
         };
     }
