@@ -126,9 +126,15 @@ public partial class QRCodeGenerator : IDisposable
     private static DataSegment CreateDataSegment(string plainText, bool forceUtf8, bool utf8BOM, EciMode eciMode)
     {
         var encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
-        var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
-        var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
-        return new DataSegment(encoding, dataInputLength, codedText, eciMode);
+
+        // Use specialized segment classes based on encoding mode
+        return encoding switch
+        {
+            EncodingMode.Numeric => new NumericDataSegment(plainText),
+            EncodingMode.Alphanumeric => new AlphanumericDataSegment(plainText),
+            EncodingMode.Byte => new ByteDataSegment(plainText, forceUtf8, utf8BOM, eciMode),
+            _ => throw new InvalidOperationException($"Unsupported encoding mode: {encoding}")
+        };
     }
 
     /// <summary>
@@ -1001,154 +1007,6 @@ public partial class QRCodeGenerator : IDisposable
     private static readonly BitArray _emptyBitArray = new BitArray(0);
 
     /// <summary>
-    /// Converts numeric plain text into a binary format specifically optimized for QR codes.
-    /// Numeric compression groups up to 3 digits into 10 bits, less for remaining digits if they do not complete a group of three.
-    /// </summary>
-    /// <param name="plainText">The numeric text to be encoded, which should only contain digit characters.</param>
-    /// <returns>A BitArray representing the binary data of the encoded numeric text.</returns>
-    private static BitArray PlainTextToBinaryNumeric(string plainText)
-    {
-        // Calculate the length of the BitArray needed to encode the text.
-        // Groups of three digits are encoded in 10 bits, remaining groups of two or one digits take 7 or 4 bits respectively.
-        var bitArray = new BitArray(plainText.Length / 3 * 10 + (plainText.Length % 3 == 1 ? 4 : plainText.Length % 3 == 2 ? 7 : 0));
-        var index = 0;
-
-        // Process each group of three digits.
-        for (int i = 0; i < plainText.Length - 2; i += 3)
-        {
-            // Parse the next three characters as a decimal integer.
-#if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
-#else
-            var dec = int.Parse(plainText.Substring(i, 3), NumberStyles.None, CultureInfo.InvariantCulture);
-#endif
-            // Convert the decimal to binary and store it in the BitArray.
-            index = DecToBin(dec, 10, bitArray, index);
-        }
-
-        // Handle any remaining digits if the total number is not a multiple of three.
-        if (plainText.Length % 3 == 2)  // Two remaining digits are encoded in 7 bits.
-        {
-#if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
-#else
-            var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 2), NumberStyles.None, CultureInfo.InvariantCulture);
-#endif
-            index = DecToBin(dec, 7, bitArray, index);
-        }
-        else if (plainText.Length % 3 == 1)  // One remaining digit is encoded in 4 bits.
-        {
-#if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
-#else
-            var dec = int.Parse(plainText.Substring(plainText.Length / 3 * 3, 1), NumberStyles.None, CultureInfo.InvariantCulture);
-#endif
-            index = DecToBin(dec, 4, bitArray, index);
-        }
-
-        return bitArray;
-    }
-
-    private static readonly Encoding _iso8859_1 =
-#if NET5_0_OR_GREATER
-        Encoding.Latin1;
-#else
-        Encoding.GetEncoding(28591); // ISO-8859-1
-#endif
-    private static Encoding? _iso8859_2;
-
-    /// <summary>
-    /// Converts plain text into a binary format using byte mode encoding, which supports various character encodings through ECI (Extended Channel Interpretations).
-    /// </summary>
-    /// <param name="plainText">The text to be encoded.</param>
-    /// <param name="eciMode">The ECI mode that specifies the character encoding to use.</param>
-    /// <param name="utf8BOM">Specifies whether to include a Byte Order Mark (BOM) for UTF-8 encoding.</param>
-    /// <param name="forceUtf8">Forces UTF-8 encoding regardless of the text content's compatibility with ISO-8859-1.</param>
-    /// <returns>A BitArray representing the binary data of the encoded text.</returns>
-    /// <remarks>
-    /// The returned text is always encoded as ISO-8859-1 unless either the text contains a non-ISO-8859-1 character or
-    /// UTF-8 encoding is forced. This does not meet the QR Code standard, which requires the use of ECI to specify the encoding
-    /// when not ISO-8859-1.
-    /// </remarks>
-    private static BitArray PlainTextToBinaryByte(string plainText, EciMode eciMode, bool utf8BOM, bool forceUtf8)
-    {
-        Encoding targetEncoding;
-
-        // Check if the text is valid ISO-8859-1 and UTF-8 is not forced, then encode using ISO-8859-1.
-        if (IsValidISO(plainText) && !forceUtf8)
-        {
-            targetEncoding = _iso8859_1;
-            utf8BOM = false;
-        }
-        else
-        {
-            // Determine the encoding based on the specified ECI mode.
-            switch (eciMode)
-            {
-                case EciMode.Iso8859_1:
-                    // Convert text to ISO-8859-1 and encode.
-                    targetEncoding = _iso8859_1;
-                    utf8BOM = false;
-                    break;
-                case EciMode.Iso8859_2:
-                    // Note: ISO-8859-2 is not natively supported on .NET Core
-                    //
-                    // Users must install the System.Text.Encoding.CodePages package and call Encoding.RegisterProvider(CodePagesEncodingProvider.Instance)
-                    // before using this encoding mode.
-                    _iso8859_2 ??= Encoding.GetEncoding(28592); // ISO-8859-2
-                    // Convert text to ISO-8859-2 and encode.
-                    targetEncoding = _iso8859_2;
-                    utf8BOM = false;
-                    break;
-                case EciMode.Default:
-                case EciMode.Utf8:
-                default:
-                    // Handle UTF-8 encoding, optionally adding a BOM if specified.
-                    targetEncoding = Encoding.UTF8;
-                    break;
-            }
-        }
-
-#if HAS_SPAN
-        // We can use stackalloc for small arrays to prevent heap allocations
-        const int MAX_STACK_SIZE_IN_BYTES = 512;
-
-        int count = targetEncoding.GetByteCount(plainText);
-        byte[]? bufferFromPool = null;
-        Span<byte> codeBytes = (count <= MAX_STACK_SIZE_IN_BYTES)
-            ? (stackalloc byte[MAX_STACK_SIZE_IN_BYTES])
-            : (bufferFromPool = ArrayPool<byte>.Shared.Rent(count));
-        codeBytes = codeBytes.Slice(0, count);
-        targetEncoding.GetBytes(plainText, codeBytes);
-#else
-        byte[] codeBytes = targetEncoding.GetBytes(plainText);
-#endif
-
-        // Convert the array of bytes into a BitArray.
-        BitArray bitArray;
-        if (utf8BOM)
-        {
-            // convert to bit array, leaving 24 bits for the UTF-8 preamble
-            bitArray = ToBitArray(codeBytes, 24);
-            // write UTF8 preamble (EF BB BF) to the BitArray
-            DecToBin(0xEF, 8, bitArray, 0);
-            DecToBin(0xBB, 8, bitArray, 8);
-            DecToBin(0xBF, 8, bitArray, 16);
-        }
-        else
-        {
-            bitArray = ToBitArray(codeBytes);
-        }
-
-#if HAS_SPAN
-        if (bufferFromPool != null)
-            ArrayPool<byte>.Shared.Return(bufferFromPool);
-#endif
-
-        return bitArray;
-    }
-
-    /// <summary>
     /// Converts an array of bytes into a BitArray, considering the proper bit order within each byte.
     /// Unlike the constructor of BitArray, this function preserves the MSB-to-LSB order within each byte.
     /// </summary>
@@ -1165,6 +1023,26 @@ public partial class QRCodeGenerator : IDisposable
     {
         // Calculate the total number of bits in the resulting BitArray including the prefix zeros.
         var bitArray = new BitArray((int)((uint)byteArray.Length * 8) + prefixZeros);
+        CopyToBitArray(byteArray, bitArray, prefixZeros);
+        return bitArray;
+    }
+
+    /// <summary>
+    /// Converts an array of bytes into a BitArray at a specified offset, considering the proper bit order within each byte.
+    /// Unlike the constructor of BitArray, this function preserves the MSB-to-LSB order within each byte.
+    /// </summary>
+    /// <param name="byteArray">The byte array to convert into a BitArray.</param>
+    /// <param name="bitArray">The target BitArray to write to.</param>
+    /// <param name="offset">The starting offset in the BitArray where bits will be written.</param>
+    private static void CopyToBitArray(
+#if HAS_SPAN
+        ReadOnlySpan<byte> byteArray, // byte[] has an implicit cast to ReadOnlySpan<byte>
+#else
+        byte[] byteArray,
+#endif
+        BitArray bitArray,
+        int offset)
+    {
         for (var i = 0; i < byteArray.Length; i++)
         {
             var byteVal = byteArray[i];
@@ -1172,10 +1050,9 @@ public partial class QRCodeGenerator : IDisposable
             {
                 // Set each bit in the BitArray based on the corresponding bit in the byte array.
                 // It shifts bits within the byte to align with the MSB-to-LSB order.
-                bitArray[(int)((uint)i * 8) + j + prefixZeros] = (byteVal & (1 << (7 - j))) != 0;
+                bitArray[(int)((uint)i * 8) + j + offset] = (byteVal & (1 << (7 - j))) != 0;
             }
         }
-        return bitArray;
     }
 
     /// <summary>
