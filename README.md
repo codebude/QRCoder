@@ -195,6 +195,22 @@ Solutions include:
 3. Add platform guards by wrapping code with `#if WINDOWS` or `if (OperatingSystem.IsWindows())`
 4. Use cross-platform renderers such as `PngByteQRCode`, `SvgQRCode`, or `BitmapByteQRCode`
 
+### ISO-8859-2 Encoding Support (.NET Core and .NET 5+)
+
+ISO-8859-2 encoding is not natively supported on .NET Core and .NET 5+. If you need to use ISO-8859-2 encoding in your code, you must:
+
+1. Install the `System.Text.Encoding.CodePages` NuGet package
+2. Register the encoding provider in your application startup code:
+
+```csharp
+using System.Text;
+
+// Register the code pages encoding provider
+Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+```
+
+Note that the `RussiaPaymentOrder` payload generator already includes this registration internally, so no additional setup is required when using that class.
+
 ## 🚀 CI Builds
 
 The NuGet feed contains only **major/stable** releases. If you want the latest functions and features, you can use the CI builds [via Github packages](https://github.com/Shane32/qrcoder/packages).
