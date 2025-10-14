@@ -30,6 +30,17 @@ internal static class StringExtensions
 #endif
     }
 
+#if !NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+    /// <summary>
+    /// Determines whether the beginning of this string instance matches the specified character.
+    /// </summary>
+    /// <param name="value">The string to check.</param>
+    /// <param name="c">The character to compare.</param>
+    /// <returns>true if value starts with c; otherwise, false.</returns>
+    internal static bool StartsWith(this string value, char c)
+        => value.Length > 0 && value[0] == c;
+#endif
+
     /// <summary>
     /// Converts a hex color string to a byte array.
     /// </summary>
@@ -38,7 +49,7 @@ internal static class StringExtensions
     internal static byte[] HexColorToByteArray(this string colorString)
     {
         var offset = 0;
-        if (colorString.StartsWith("#", StringComparison.Ordinal))
+        if (colorString.StartsWith('#'))
             offset = 1;
         byte[] byteColor = new byte[(colorString.Length - offset) / 2];
         for (int i = 0; i < byteColor.Length; i++)

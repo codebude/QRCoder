@@ -324,7 +324,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             return 0; // Fully transparent
 
         // Check for hex color with alpha channel
-        if (colorHex.StartsWith("#", StringComparison.Ordinal))
+        if (colorHex.StartsWith('#'))
         {
             // #RRGGBBAA format (9 characters)
             if (colorHex.Length == 9)
