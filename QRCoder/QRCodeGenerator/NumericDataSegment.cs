@@ -5,7 +5,7 @@ public partial class QRCodeGenerator
     /// <summary>
     /// Data segment optimized for numeric data encoding.
     /// </summary>
-    private class NumericDataSegment : DataSegment
+    private sealed class NumericDataSegment : DataSegment
     {
         /// <summary>
         /// Gets the encoding mode (always Numeric)
