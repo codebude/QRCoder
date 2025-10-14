@@ -21,7 +21,7 @@ public partial class QRCodeGenerator
         public static bool CanEncode(string plainText) => IsValidISO(plainText);
 
         /// <summary>
-        /// Gets the encoding mode (not applicable for optimized segments as they use multiple modes)
+        /// Gets the encoding mode (used only for DataTooLongException)
         /// </summary>
         public override EncodingMode EncodingMode => EncodingMode.Byte;
 
