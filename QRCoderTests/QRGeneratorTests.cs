@@ -1,5 +1,6 @@
 #pragma warning disable CA5350 // Weak cryptography algorithm (SHA1).
 
+using System.Linq.Expressions;
 using System.Reflection;
 using ECCLevel = QRCoder.QRCodeGenerator.ECCLevel;
 
@@ -379,14 +380,70 @@ public class QRGeneratorTests
     [Fact]
     public void validate_alphanumencdict()
     {
-        var gen = new QRCodeGenerator();
-
-        var checkString = string.Empty;
         var encoderType = Type.GetType("QRCoder.QRCodeGenerator+AlphanumericEncoder, QRCoder");
-        var gField = encoderType!.GetField("_alphanumEncDict", BindingFlags.NonPublic | BindingFlags.Static);
-        foreach (var listitem in (Dictionary<char, int>)gField!.GetValue(gen)!)
+        encoderType.ShouldNotBeNull();
+
+        // Get the byte array from _map
+        byte[] mapBytes;
+#if NETCOREAPP3_0_OR_GREATER // HAS_SPAN would be defined for .NET Core 2.1 but we don't target that
+        // When HAS_SPAN is defined in AlphanumericEncoder, _map returns ReadOnlySpan<byte>
+        // We need to compile a function that calls _map and converts it to byte[] (since a span cannot be boxed)
+        var mapProperty = encoderType.GetProperty("_map", BindingFlags.NonPublic | BindingFlags.Static);
+        mapProperty.ShouldNotBeNull();
+
+        // Get the ToArray method from ReadOnlySpan<byte>
+        var toArrayMethod = typeof(ReadOnlySpan<byte>).GetMethod("ToArray");
+        toArrayMethod.ShouldNotBeNull();
+
+        // Build an expression tree: () => _map.ToArray()
+        // First, create an expression to call the _map property getter
+        var mapPropertyAccess = Expression.Property(null, mapProperty);
+
+        // Then, create an expression to call ToArray() on the result
+        var toArrayCall = Expression.Call(mapPropertyAccess, toArrayMethod);
+
+        // Compile the expression into a function
+        var lambda = Expression.Lambda<Func<byte[]>>(toArrayCall);
+        var getMapFunc = lambda.Compile();
+
+        // Invoke the compiled function to get the byte array
+        mapBytes = getMapFunc();
+#else
+        // When HAS_SPAN is not defined in AlphanumericEncoder, _map returns byte[] directly
+        var mapField = encoderType.GetField("_map", BindingFlags.NonPublic | BindingFlags.Static);
+        mapField.ShouldNotBeNull();
+        mapBytes = (byte[])mapField.GetValue(null)!;
+#endif
+
+        // Create a dictionary from the byte array (char -> int mapping, excluding 255)
+        var charToIntDict = new Dictionary<char, int>();
+        for (int i = 0; i < mapBytes.Length; i++)
         {
-            checkString += $"{listitem.Key},{listitem.Value}:";
+            if (mapBytes[i] != 255)
+            {
+                charToIntDict[(char)i] = mapBytes[i];
+            }
+        }
+
+        // Get the CanEncode method
+        var canEncodeMethod = encoderType.GetMethod("CanEncode", BindingFlags.Public | BindingFlags.Static);
+        canEncodeMethod.ShouldNotBeNull();
+
+        // Verify CanEncode for all possible char values (0-65535)
+        for (int i = 0; i < 65536; i++)
+        {
+            char c = (char)i;
+            bool canEncode = (bool)canEncodeMethod.Invoke(null, new object[] { c })!;
+            bool shouldEncode = charToIntDict.ContainsKey(c);
+
+            canEncode.ShouldBe(shouldEncode, $"CanEncode mismatch for char '{c}' (code {i})");
+        }
+
+        // Assemble the string as before and validate
+        var checkString = string.Empty;
+        foreach (var kvp in charToIntDict.OrderBy(x => x.Value))
+        {
+            checkString += $"{kvp.Key},{kvp.Value}:";
         }
         checkString.ShouldBe("0,0:1,1:2,2:3,3:4,4:5,5:6,6:7,7:8,8:9,9:A,10:B,11:C,12:D,13:E,14:F,15:G,16:H,17:I,18:J,19:K,20:L,21:M,22:N,23:O,24:P,25:Q,26:R,27:S,28:T,29:U,30:V,31:W,32:X,33:Y,34:Z,35: ,36:$,37:%,38:*,39:+,40:-,41:.,42:/,43::,44:");
     }
