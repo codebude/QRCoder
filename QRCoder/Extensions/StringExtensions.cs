@@ -30,7 +30,7 @@ internal static class StringExtensions
 #endif
     }
 
-#if !NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+#if !NETCOREAPP2_0_OR_GREATER && !NETSTANDARD2_1_OR_GREATER
     /// <summary>
     /// Determines whether the beginning of this string instance matches the specified character.
     /// </summary>
