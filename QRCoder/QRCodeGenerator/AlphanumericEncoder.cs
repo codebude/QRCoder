@@ -41,16 +41,6 @@ public partial class QRCodeGenerator
         public static bool CanEncodeNonDigit(char c) => IsInRange(c, 'A', 'Z') || Array.IndexOf(_alphanumEncTable, c) >= 0;
 
         /// <summary>
-        /// Calculates the bit length required to encode alphanumeric text of a given length.
-        /// </summary>
-        /// <param name="textLength">The length of the alphanumeric text to be encoded.</param>
-        /// <returns>The number of bits required to encode the text.</returns>
-        public static int GetBitLength(int textLength)
-        {
-            return (textLength / 2) * 11 + (textLength & 1) * 6;
-        }
-
-        /// <summary>
         /// Calculates the bit length required to encode the given alphanumeric text.
         /// </summary>
         /// <param name="plainText">The alphanumeric text to be encoded.</param>
@@ -58,6 +48,16 @@ public partial class QRCodeGenerator
         public static int GetBitLength(string plainText)
         {
             return GetBitLength(plainText.Length);
+        }
+
+        /// <summary>
+        /// Calculates the bit length required to encode alphanumeric text of a given length.
+        /// </summary>
+        /// <param name="textLength">The length of the alphanumeric text to be encoded.</param>
+        /// <returns>The number of bits required to encode the text.</returns>
+        public static int GetBitLength(int textLength)
+        {
+            return (textLength / 2) * 11 + (textLength & 1) * 6;
         }
 
         /// <summary>
