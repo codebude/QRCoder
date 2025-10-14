@@ -134,23 +134,14 @@ public partial class QRCodeGenerator
         }
 
         // Handle any remaining digits if the total number is not a multiple of three.
-        if (length == 2)  // Two remaining digits are encoded in 7 bits.
+        if (length > 0)  // Two remaining digits are encoded in 7 bits; one remaining digit is encoded in 4 bits.
         {
 #if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(offset, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.AsSpan(offset, length), NumberStyles.None, CultureInfo.InvariantCulture);
 #else
-            var dec = int.Parse(plainText.Substring(offset, 2), NumberStyles.None, CultureInfo.InvariantCulture);
+            var dec = int.Parse(plainText.Substring(offset, length), NumberStyles.None, CultureInfo.InvariantCulture);
 #endif
-            bitIndex = DecToBin(dec, 7, bitArray, bitIndex);
-        }
-        else if (length == 1)  // One remaining digit is encoded in 4 bits.
-        {
-#if HAS_SPAN
-            var dec = int.Parse(plainText.AsSpan(offset, 1), NumberStyles.None, CultureInfo.InvariantCulture);
-#else
-            var dec = int.Parse(plainText.Substring(offset, 1), NumberStyles.None, CultureInfo.InvariantCulture);
-#endif
-            bitIndex = DecToBin(dec, 4, bitArray, bitIndex);
+            bitIndex = DecToBin(dec, length == 2 ? 7 : 4, bitArray, bitIndex);
         }
 
         return bitIndex;
