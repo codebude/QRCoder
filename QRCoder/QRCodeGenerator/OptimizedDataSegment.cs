@@ -15,42 +15,48 @@ public partial class QRCodeGenerator
         if (string.IsNullOrEmpty(plainText))
             return new DataSegment(EncodingMode.Byte, 0, _emptyBitArray, EciMode.Default);
 
-        // Start recursive segment creation from position 0 with initial mode
-        var initialMode = SelectInitialMode(plainText, 0);
-        return CreateSegment(plainText, 0, initialMode);
+        // Create segments iteratively, building a chain from position 0 with initial mode
+        var mode = SelectInitialMode(plainText, 0);
+        var startPos = 0;
 
-        // Recursively creates a data segment starting at the given position with the specified initial mode.
-        // Returns the first segment in a chain, with subsequent segments linked via the Next property.
-        DataSegment CreateSegment(string text, int startPos, EncodingMode mode)
+        DataSegment? firstSegment = null;
+        DataSegment? lastSegment = null;
+
+        do
         {
             // Find the extent of the current mode
             EncodingMode nextMode;
             var segmentEnd = mode switch
             {
-                EncodingMode.Byte => ProcessByteMode(text, startPos, out nextMode),
-                EncodingMode.Alphanumeric => ProcessAlphanumericMode(text, startPos, out nextMode),
-                EncodingMode.Numeric => ProcessNumericMode(text, startPos, out nextMode),
+                EncodingMode.Byte => ProcessByteMode(plainText, startPos, out nextMode),
+                EncodingMode.Alphanumeric => ProcessAlphanumericMode(plainText, startPos, out nextMode),
+                EncodingMode.Numeric => ProcessNumericMode(plainText, startPos, out nextMode),
                 _ => throw new InvalidOperationException("Unsupported encoding mode")
             };
 
             var segmentLength = segmentEnd - startPos;
             var segmentData = mode switch
             {
-                EncodingMode.Byte => PlainTextToBinaryByte(text, startPos, segmentLength, EciMode.Iso8859_1, false, false),
-                EncodingMode.Alphanumeric => AlphanumericEncoder.GetBitArray(text, startPos, segmentLength),
-                EncodingMode.Numeric => PlainTextToBinaryNumeric(text, startPos, segmentLength),
+                EncodingMode.Byte => PlainTextToBinaryByte(plainText, startPos, segmentLength, EciMode.Iso8859_1, false, false),
+                EncodingMode.Alphanumeric => AlphanumericEncoder.GetBitArray(plainText, startPos, segmentLength),
+                EncodingMode.Numeric => PlainTextToBinaryNumeric(plainText, startPos, segmentLength),
                 _ => throw new InvalidOperationException("Unsupported encoding mode")
             };
             var segment = new DataSegment(mode, segmentLength, segmentData, EciMode.Default);
 
-            // Recursively create the next segment if there's more text
-            if (segmentEnd < text.Length)
-                segment.Next = CreateSegment(text, segmentEnd, nextMode);
+            // Link the segment to the chain
+            firstSegment ??= segment;
+            if (lastSegment != null)
+                lastSegment.Next = segment;
+            lastSegment = segment;
 
-            return segment;
+            // Move to the next segment
+            startPos = segmentEnd;
+            mode = nextMode;
         }
+        while (startPos < plainText.Length);
 
-        // Local functions
+        return firstSegment;
 
         // Selects the initial encoding mode based on the first character(s) of the input.
         // Implements rules from ISO/IEC 18004:2015 Annex J.2 section a.
