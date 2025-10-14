@@ -35,13 +35,13 @@
     <SignAssembly>false</SignAssembly>
     <Deterministic>true</Deterministic>
 
-    <!-- Enable analyzers; treat all warnings as errors; disable 'using directive is unnecessary' and XML comment warnings -->
+    <!-- Enable analyzers; treat all warnings as errors; disable 'using directive is unnecessary' and throw helper warnings -->
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);IDE0005</NoWarn>
+    <NoWarn>$(NoWarn);IDE0005;CA1510</NoWarn>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <AnalysisMode>Recommended</AnalysisMode>
+    <AnalysisLevel>8-recommended</AnalysisLevel>
   </PropertyGroup>
 
   <!-- Include README for packable projects -->

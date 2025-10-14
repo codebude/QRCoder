@@ -40,7 +40,7 @@ public static partial class PayloadGenerator
                         parts.Add("subject=" + Uri.EscapeDataString(_subject));
                     if (!string.IsNullOrEmpty(_message))
                         parts.Add("body=" + Uri.EscapeDataString(_message));
-                    var queryString = parts.Any() ? $"?{string.Join("&", parts.ToArray())}" : "";
+                    var queryString = parts.Count > 0 ? $"?{string.Join("&", parts.ToArray())}" : "";
                     return $"mailto:{_mailReceiver}{queryString}";
                 case MailEncoding.MATMSG:
                     return $"MATMSG:TO:{_mailReceiver};SUB:{EscapeInput(_subject ?? "")};BODY:{EscapeInput(_message ?? "")};;";

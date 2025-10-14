@@ -7,7 +7,7 @@
     <DefineConstants Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);TEST_XAML</DefineConstants>
     <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
     <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'netcoreapp2.1'">2.1.30</RuntimeFrameworkVersion>
-    <NoWarn>$(NoWarn);CA1707;CA1416</NoWarn>
+    <NoWarn>$(NoWarn);CA1707;CA1416;CA1850</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

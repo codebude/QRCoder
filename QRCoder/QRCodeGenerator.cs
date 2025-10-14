@@ -1231,9 +1231,13 @@ public partial class QRCodeGenerator : IDisposable
             var dic = new Dictionary<int, bool>(list.Count);
             foreach (var row in list)
             {
+#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+                if (!dic.TryAdd(row.Exponent, false))
+#else
                 if (!dic.ContainsKey(row.Exponent))
                     dic.Add(row.Exponent, false);
                 else
+#endif
                     dic[row.Exponent] = true;
             }
 

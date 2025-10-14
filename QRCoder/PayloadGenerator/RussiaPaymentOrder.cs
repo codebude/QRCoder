@@ -146,7 +146,7 @@ public static partial class PayloadGenerator
                     .Select(field =>
                     {
                         var objValue = field.GetValue(_oFields, null);
-                        var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
+                        var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
@@ -176,7 +176,7 @@ public static partial class PayloadGenerator
                     .Select(field =>
                     {
                         var objValue = field.GetValue(_mFields);
-                        var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy") : objValue.ToString();
+                        var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue.ToString();
                         return $"{field.Name}={value}";
                     })
                     .ToList();
@@ -224,7 +224,7 @@ public static partial class PayloadGenerator
             return input;
         }
 
-        private class MandatoryFields
+        private sealed class MandatoryFields
         {
             public string Name = null!;
             public string PersonalAcc = null!;
