@@ -146,8 +146,8 @@ public partial class QRCodeGenerator
         {
             int modeIndicatorLength = 4;
             int countIndicatorLength = GetCountIndicatorLength(version, EncodingMode.Alphanumeric);
-            var data = AlphanumericEncoder.GetBitArray(Text);
-            int length = modeIndicatorLength + countIndicatorLength + data.Length;
+            int dataLength = AlphanumericEncoder.GetBitLength(Text);
+            int length = modeIndicatorLength + countIndicatorLength + dataLength;
 
             return length;
         }
@@ -171,9 +171,7 @@ public partial class QRCodeGenerator
             index = DecToBin(Text.Length, countIndicatorLength, bitArray, index);
 
             // write data - encode alphanumeric text
-            var data = AlphanumericEncoder.GetBitArray(Text);
-            data.CopyTo(bitArray, 0, index, data.Length);
-            index += data.Length;
+            index = AlphanumericEncoder.WriteToBitArray(Text, bitArray, index);
 
             return index;
         }
