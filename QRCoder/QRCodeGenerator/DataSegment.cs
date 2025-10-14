@@ -260,7 +260,7 @@ public partial class QRCodeGenerator
 
             // write count indicator
             var data = PlainTextToBinaryByte(Text, EciMode, Utf8BOM, ForceUtf8);
-            int characterCount = GetDataLength(EncodingMode.Byte, Text, data, ForceUtf8);
+            int characterCount = data.Length / 8;
             int countIndicatorLength = GetCountIndicatorLength(version, EncodingMode.Byte);
             index = DecToBin(characterCount, countIndicatorLength, bitArray, index);
 
