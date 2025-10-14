@@ -70,12 +70,11 @@ public partial class QRCodeGenerator
         /// and 6 bits for a single remaining character if the total count is odd.
         /// </summary>
         /// <param name="plainText">The alphanumeric text to be encoded, which should only contain characters valid in QR alphanumeric mode.</param>
-        /// <param name="bitArray">The target BitArray to write to.</param>
-        /// <param name="startIndex">The starting index in the BitArray where writing should begin.</param>
+        /// <param name="codeText">The target BitArray to write to.</param>
+        /// <param name="codeIndex">The starting index in the BitArray where writing should begin.</param>
         /// <returns>The next index in the BitArray after the last bit written.</returns>
-        public static int WriteToBitArray(string plainText, BitArray bitArray, int startIndex)
+        public static int WriteToBitArray(string plainText, BitArray codeText, int codeIndex)
         {
-            var codeIndex = startIndex;
             var index = 0;
             var count = plainText.Length;
 
@@ -85,14 +84,14 @@ public partial class QRCodeGenerator
                 // Convert each pair of characters to a number by looking them up in the alphanumeric dictionary and calculating.
                 var dec = _alphanumEncDict[plainText[index++]] * 45 + _alphanumEncDict[plainText[index++]];
                 // Convert the number to binary and store it in the BitArray.
-                codeIndex = DecToBin(dec, 11, bitArray, codeIndex);
+                codeIndex = DecToBin(dec, 11, codeText, codeIndex);
                 count -= 2;
             }
 
             // Handle the last character if the length is odd.
             if (count > 0)
             {
-                codeIndex = DecToBin(_alphanumEncDict[plainText[index]], 6, bitArray, codeIndex);
+                codeIndex = DecToBin(_alphanumEncDict[plainText[index]], 6, codeText, codeIndex);
             }
 
             return codeIndex;
