@@ -126,9 +126,33 @@ public partial class QRCodeGenerator : IDisposable
     private static DataSegment CreateDataSegment(string plainText, bool forceUtf8, bool utf8BOM, EciMode eciMode)
     {
         var encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
-        var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
-        var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
-        return new StandardDataSegment(encoding, dataInputLength, codedText, eciMode);
+
+        // Use specialized segment classes based on encoding mode
+        return encoding switch
+        {
+            EncodingMode.Numeric => new NumericDataSegment(
+#if HAS_SPAN
+                plainText.AsMemory()
+#else
+                plainText
+#endif
+            ),
+            EncodingMode.Alphanumeric => new AlphanumericDataSegment(
+#if HAS_SPAN
+                plainText.AsMemory()
+#else
+                plainText
+#endif
+            ),
+            EncodingMode.Byte => new ByteDataSegment(
+#if HAS_SPAN
+                plainText.AsMemory(),
+#else
+                plainText,
+#endif
+                forceUtf8, utf8BOM, eciMode),
+            _ => throw new InvalidOperationException($"Unsupported encoding mode: {encoding}")
+        };
     }
 
     /// <summary>
