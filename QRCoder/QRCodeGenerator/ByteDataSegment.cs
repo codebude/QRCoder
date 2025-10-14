@@ -122,7 +122,7 @@ public partial class QRCodeGenerator
         Encoding targetEncoding;
 
         // Check if the text is valid ISO-8859-1 and UTF-8 is not forced, then encode using ISO-8859-1.
-        if (IsValidISO(plainText) && !forceUtf8)
+        if (eciMode == EciMode.Default && !forceUtf8 && IsValidISO(plainText))
         {
             targetEncoding = _iso8859_1;
             includeUtf8BOM = false;
