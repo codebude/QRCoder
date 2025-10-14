@@ -128,7 +128,7 @@ public partial class QRCodeGenerator : IDisposable
         var encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
         var codedText = PlainTextToBinary(plainText, encoding, eciMode, utf8BOM, forceUtf8);
         var dataInputLength = GetDataLength(encoding, plainText, codedText, forceUtf8);
-        return new DataSegment(encoding, dataInputLength, codedText, eciMode);
+        return new StandardDataSegment(encoding, dataInputLength, codedText, eciMode);
     }
 
     /// <summary>
