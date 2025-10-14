@@ -65,27 +65,25 @@ public partial class QRCodeGenerator
         /// Includes mode indicator, count indicator, and data bits.
         /// </summary>
         /// <param name="text">The full alphanumeric text</param>
-        /// <param name="startIndex">The starting index in the text to encode from</param>
+        /// <param name="offset">The starting index in the text to encode from</param>
         /// <param name="length">The number of characters to encode</param>
         /// <param name="bitArray">The target BitArray to write to</param>
         /// <param name="bitIndex">The starting index in the BitArray</param>
         /// <param name="version">The QR code version (1-40, or -1 to -4 for Micro QR)</param>
         /// <returns>The next index in the BitArray after the last bit written</returns>
-        public static int WriteTo(string text, int startIndex, int length, BitArray bitArray, int bitIndex, int version)
+        public static int WriteTo(string text, int offset, int length, BitArray bitArray, int bitIndex, int version)
         {
-            var index = bitIndex;
-
             // write mode indicator
-            index = DecToBin((int)EncodingMode.Alphanumeric, 4, bitArray, index);
+            bitIndex = DecToBin((int)EncodingMode.Alphanumeric, 4, bitArray, bitIndex);
 
             // write count indicator
             int countIndicatorLength = GetCountIndicatorLength(version, EncodingMode.Alphanumeric);
-            index = DecToBin(length, countIndicatorLength, bitArray, index);
+            bitIndex = DecToBin(length, countIndicatorLength, bitArray, bitIndex);
 
             // write data - encode alphanumeric text
-            index = AlphanumericEncoder.WriteToBitArray(text, startIndex, length, bitArray, index);
+            bitIndex = AlphanumericEncoder.WriteToBitArray(text, offset, length, bitArray, bitIndex);
 
-            return index;
+            return bitIndex;
         }
     }
 }
