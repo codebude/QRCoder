@@ -7,6 +7,7 @@ public static partial class PayloadGenerator
     /// </summary>
     public class ContactData : Payload
     {
+        private static readonly char[] _trimChars = { '\r', '\n' };
         private readonly string _firstname;
         private readonly string _lastname;
         private readonly string? _nickname;
@@ -152,7 +153,7 @@ public static partial class PayloadGenerator
                     payload += $"URL:{_website}\r\n";
                 if (!string.IsNullOrEmpty(_nickname))
                     payload += $"NICKNAME:{_nickname}\r\n";
-                payload = payload.Trim(new char[] { '\r', '\n' });
+                payload = payload.Trim(_trimChars);
             }
             else
             {

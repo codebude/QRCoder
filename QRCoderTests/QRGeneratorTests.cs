@@ -622,7 +622,7 @@ public class QRGeneratorTests
         string Encode(QRCodeData qrData) => string.Join("", qrData.ModuleMatrix.Select(x => x.ToBitString()).ToArray());
     }
 
-    private class SamplePayload : PayloadGenerator.Payload
+    private sealed class SamplePayload : PayloadGenerator.Payload
     {
         private readonly string _data;
         private readonly QRCodeGenerator.ECCLevel _eccLevel;

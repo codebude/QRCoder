@@ -45,7 +45,7 @@ public static partial class ShouldMatchApprovedExtensions
             var declaringType = currentMethod?.DeclaringType;
 
             // Check if the declaring type has the ShouldlyMethods attribute
-            var hasShouldlyAttribute = declaringType?.GetCustomAttributes(typeof(ShouldlyMethodsAttribute), false).Any() ?? false;
+            var hasShouldlyAttribute = declaringType?.GetCustomAttributes(typeof(ShouldlyMethodsAttribute), false).Length > 0;
 
             // If this method is NOT in a ShouldlyMethods class, use it
             if (!hasShouldlyAttribute)

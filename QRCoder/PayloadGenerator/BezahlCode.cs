@@ -225,7 +225,7 @@ public static partial class PayloadGenerator
                 if (authority == AuthorityType.periodicsinglepayment || authority == AuthorityType.periodicsinglepaymentsepa)
 #pragma warning restore CS0618
                 {
-                    if (periodicTimeunit.ToUpperInvariant() != "M" && periodicTimeunit.ToUpperInvariant() != "W")
+                    if (!periodicTimeunit.Equals("M", StringComparison.OrdinalIgnoreCase) && !periodicTimeunit.Equals("W", StringComparison.OrdinalIgnoreCase))
                         throw new BezahlCodeException("The periodicTimeunit must be either 'M' (monthly) or 'W' (weekly).");
                     _periodicTimeunit = periodicTimeunit;
                     if (periodicTimeunitRotation < 1 || periodicTimeunitRotation > 52)
