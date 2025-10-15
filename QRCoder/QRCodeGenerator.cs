@@ -125,6 +125,10 @@ public partial class QRCodeGenerator : IDisposable
     /// </summary>
     private static DataSegment CreateDataSegment(string plainText, bool forceUtf8, bool utf8BOM, EciMode eciMode)
     {
+        // Fast path: Use optimized Latin1 segment if conditions allow
+        if (!forceUtf8 && !utf8BOM && eciMode == EciMode.Default && OptimizedLatin1DataSegment.CanEncode(plainText))
+            return new OptimizedLatin1DataSegment(plainText);
+
         var encoding = GetEncodingFromPlaintext(plainText, forceUtf8);
 
         // Use specialized segment classes based on encoding mode
