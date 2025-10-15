@@ -32,7 +32,7 @@ public partial class QRCodeGenerator
         ];
 
         /// <summary>
-        /// Checks if a non-digit character is present in the alphanumeric encoding table.
+        /// Checks if a character is present in the alphanumeric encoding table.
         /// </summary>
         public static bool CanEncode(char c) => c <= 90 && _map[c] != 255;
 
