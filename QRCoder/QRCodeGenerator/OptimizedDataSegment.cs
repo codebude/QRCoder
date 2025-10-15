@@ -175,7 +175,7 @@ public partial class QRCodeGenerator
                 if (numericCount < threshold)
                 {
                     var nextPos = startPos + numericCount;
-                    if (nextPos < text.Length && !IsAlphanumericNonDigit(text[nextPos]))
+                    if (nextPos < text.Length && !IsAlphanumeric(text[nextPos]))
                         return EncodingMode.Byte;
                 }
                 // ELSE IF there are less than [7-9] characters followed by data from the exclusive subset of the Alphanumeric character set
@@ -184,7 +184,7 @@ public partial class QRCodeGenerator
                 if (numericCount < threshold)
                 {
                     var nextPos = startPos + numericCount;
-                    if (nextPos < text.Length && IsAlphanumericNonDigit(text[nextPos]))
+                    if (nextPos < text.Length && IsAlphanumeric(text[nextPos]))
                         return EncodingMode.Alphanumeric;
                 }
                 return EncodingMode.Numeric;
@@ -329,9 +329,6 @@ public partial class QRCodeGenerator
         private static bool IsNumeric(char c) => IsInRange(c, '0', '9');
 
         // Checks if a character is alphanumeric (can be encoded in alphanumeric mode).
-        private static bool IsAlphanumeric(char c) => IsNumeric(c) || IsAlphanumericNonDigit(c);
-
-        // Checks if a non-digit character can be encoded in alphanumeric mode.
-        private static bool IsAlphanumericNonDigit(char c) => AlphanumericEncoder.CanEncodeNonDigit(c);
+        private static bool IsAlphanumeric(char c) => AlphanumericEncoder.CanEncode(c);
     }
 }
