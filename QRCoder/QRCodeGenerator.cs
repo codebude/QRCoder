@@ -746,7 +746,7 @@ public partial class QRCodeGenerator : IDisposable
     /// Determines the most efficient encoding mode for the given plain text based on its character content
     /// and a flag indicating whether to force UTF-8 encoding.
     /// </summary>
-    private static EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
+    internal static EncodingMode GetEncodingFromPlaintext(string plainText, bool forceUtf8)
     {
         if (forceUtf8)
             return EncodingMode.Byte;

@@ -14,7 +14,7 @@ public static partial class PayloadGenerator
     /// </summary>
     /// <param name="iban">The IBAN to validate.</param>
     /// <returns>True if the IBAN is valid; otherwise, false.</returns>
-    private static bool IsValidIban(string iban)
+    internal static bool IsValidIban(string iban)
     {
         //Clean IBAN
         var ibanCleared = iban.ToUpperInvariant().Replace(" ", "").Replace("-", "");
@@ -48,7 +48,7 @@ public static partial class PayloadGenerator
     /// </summary>
     /// <param name="iban">The QR IBAN to validate.</param>
     /// <returns>True if the QR IBAN is valid; otherwise, false.</returns>
-    private static bool IsValidQRIban(string iban)
+    internal static bool IsValidQRIban(string iban)
     {
         var foundQrIid = false;
         try

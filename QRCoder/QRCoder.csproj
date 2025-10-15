@@ -16,6 +16,10 @@
     <Guid>e668b98b-83bb-4e60-b33c-4fd5ed9c0156</Guid>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="QRCoderTests" />
+  </ItemGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

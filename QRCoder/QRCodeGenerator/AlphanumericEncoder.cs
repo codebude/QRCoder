@@ -5,14 +5,14 @@ public partial class QRCodeGenerator
     /// <summary>
     /// Encodes alphanumeric characters (<c>0–9</c>, <c>A–Z</c> (uppercase), space, <c>$</c>, <c>%</c>, <c>*</c>, <c>+</c>, <c>-</c>, period, <c>/</c>, colon) into a binary format suitable for QR codes.
     /// </summary>
-    private static class AlphanumericEncoder
+    internal static class AlphanumericEncoder
     {
 #if HAS_SPAN
         // With C# 7.3 and later, this byte array is inlined into the assembly's read-only data section, improving performance and reducing memory usage.
         // See: https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-core-3-0/
-        private static ReadOnlySpan<byte> _map =>
+        internal static ReadOnlySpan<byte> _map =>
 #else
-        private static readonly byte[] _map =
+        internal static readonly byte[] _map =
 #endif
         [
             // 0..31
