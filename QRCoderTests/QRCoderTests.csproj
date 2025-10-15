@@ -8,6 +8,7 @@
     <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
     <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'netcoreapp2.1'">2.1.30</RuntimeFrameworkVersion>
     <NoWarn>$(NoWarn);CA1707;CA1416;CA1850</NoWarn>
+    <AssemblyOriginatorKeyFile>..\QRCoder\QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
