@@ -16,6 +16,14 @@
     <Guid>e668b98b-83bb-4e60-b33c-4fd5ed9c0156</Guid>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <InternalsVisibleTo Include="QRCoderTests, PublicKey=002400000480000094000000060200000024000052534131000400000100010071e74d3f6dcbba7726fcbb7ad05a2dfa3b8e13f9bf2938c05de266a83a7f3c95201b7cdc9e1f88842093ece868c3ec7874e3b8907008763c85711bf0e2e9757a3068385380a757bd52fa77248f227f602b0785e040756ef42dabc7de7f8376847c71b3f20356a9176cc88067583ee3501e61f8aa07bdd70f41418986fb79a1a3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'Release'">
+    <InternalsVisibleTo Include="QRCoderTests" />
+  </ItemGroup>
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

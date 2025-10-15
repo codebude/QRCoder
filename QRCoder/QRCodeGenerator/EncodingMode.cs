@@ -5,7 +5,7 @@ public partial class QRCodeGenerator
     /// <summary>
     /// Specifies the encoding modes for the characters in a QR code.
     /// </summary>
-    private enum EncodingMode
+    internal enum EncodingMode
     {
         /// <summary>
         /// Numeric encoding mode, which is used to encode numeric data (digits 0-9).
