@@ -174,7 +174,7 @@ public static partial class PayloadGenerator
         /// <param name="sb">StringBuilder to append the common fields.</param>
         private void ProcessCommonFields(StringBuilder sb)
         {
-            if (Secret.IsNullOrWhiteSpace())
+            if (string.IsNullOrWhiteSpace(Secret))
             {
                 throw new InvalidOperationException("Secret must be a filled out base32 encoded string");
             }
@@ -183,18 +183,18 @@ public static partial class PayloadGenerator
             string? escapedLabel = null;
             string? label = null;
 
-            if (!Issuer.IsNullOrWhiteSpace())
+            if (!string.IsNullOrWhiteSpace(Issuer))
             {
-                if (Issuer.Contains(':'))
+                if (Issuer!.Contains(':'))
                 {
                     throw new InvalidOperationException("Issuer must not have a ':'");
                 }
                 escapedIssuer = Uri.EscapeDataString(Issuer);
             }
 
-            if (!Label.IsNullOrWhiteSpace())
+            if (!string.IsNullOrWhiteSpace(Label))
             {
-                if (Label.Contains(':'))
+                if (Label!.Contains(':'))
                 {
                     throw new InvalidOperationException("Label must not have a ':'");
                 }

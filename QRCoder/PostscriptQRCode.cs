@@ -1,4 +1,3 @@
-#if !NETSTANDARD1_3
 using System.Drawing;
 using System.Text;
 using static QRCoder.QRCodeGenerator;
@@ -237,4 +236,3 @@ public static class PostscriptQRCodeHelper
         return qrCode.GetGraphic(pointsPerModule, darkColorHex, lightColorHex, drawQuietZones, epsFormat);
     }
 }
-#endif

@@ -63,9 +63,7 @@ public partial class QRCodeGenerator
             }
         }
 
-#if NET6_0_OR_GREATER
         [StackTraceHidden]
-#endif
         private static void ThrowIndexArgumentOutOfRangeException() => throw new ArgumentOutOfRangeException("index");
 
 
@@ -188,13 +186,10 @@ public partial class QRCodeGenerator
                 //_polyItems = newArray;
             }
 
-#if NET6_0_OR_GREATER
             [StackTraceHidden]
-#endif
             void ThrowNotSupportedException() => throw new NotSupportedException("The polynomial capacity is fixed and cannot be increased.");
         }
 
-#if HAS_SPAN
         /// <summary>
         /// Rents memory for the polynomial terms from the shared memory pool.
         /// </summary>
@@ -206,54 +201,6 @@ public partial class QRCodeGenerator
         /// </summary>
         private static void ReturnArray(PolynomItem[] array)
             => System.Buffers.ArrayPool<PolynomItem>.Shared.Return(array);
-#else
-        // Implement a poor-man's array pool for .NET Framework
-        [ThreadStatic]
-        private static List<PolynomItem[]>? _arrayPool;
-
-        /// <summary>
-        /// Rents memory for the polynomial terms from a shared memory pool.
-        /// </summary>
-        private static PolynomItem[] RentArray(int count)
-        {
-            if (count <= 0)
-                ThrowArgumentOutOfRangeException();
-
-            // Search for a suitable array in the thread-local pool, if it has been initialized
-            if (_arrayPool != null)
-            {
-                for (int i = 0; i < _arrayPool.Count; i++)
-                {
-                    var array = _arrayPool[i];
-                    if (array.Length >= count)
-                    {
-                        _arrayPool.RemoveAt(i);
-                        return array;
-                    }
-                }
-            }
-
-            // No suitable buffer found; create a new one
-            return new PolynomItem[count];
-
-            void ThrowArgumentOutOfRangeException() => throw new ArgumentOutOfRangeException(nameof(count), "The count must be a positive number.");
-        }
-
-        /// <summary>
-        /// Returns memory allocated for the polynomial terms back to a shared memory pool.
-        /// </summary>
-        private static void ReturnArray(PolynomItem[] array)
-        {
-            if (array == null)
-                return;
-
-            // Initialize the thread-local pool if it's not already done
-            _arrayPool ??= new List<PolynomItem[]>(8);
-
-            // Add the buffer back to the pool
-            _arrayPool.Add(array);
-        }
-#endif
 
         /// <summary>
         /// Returns an enumerator that iterates through the polynomial terms.

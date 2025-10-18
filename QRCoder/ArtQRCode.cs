@@ -1,5 +1,3 @@
-#if SYSTEM_DRAWING
-
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using static QRCoder.ArtQRCode;
@@ -11,9 +9,7 @@ namespace QRCoder;
 /// <summary>
 /// Represents an art-style QR code generator that provides functionality to render QR codes with dots as modules.
 /// </summary>
-#if NET6_0_OR_GREATER
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
 public class ArtQRCode : AbstractQRCode, IDisposable
 {
     /// <summary>
@@ -266,9 +262,7 @@ public class ArtQRCode : AbstractQRCode, IDisposable
 /// <summary>
 /// Provides static methods for creating art-style QR codes.
 /// </summary>
-#if NET6_0_OR_GREATER
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
 public static class ArtQRCodeHelper
 {
     /// <summary>
@@ -302,5 +296,3 @@ public static class ArtQRCodeHelper
         return qrCode.GetGraphic(pixelsPerModule, darkColor, lightColor, backgroundColor, backgroundImage, pixelSizeFactor, drawQuietZones, quietZoneRenderingStyle, backgroundImageStyle, finderPatternImage);
     }
 }
-
-#endif

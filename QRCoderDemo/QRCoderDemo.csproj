@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;net5.0-windows</TargetFrameworks>
-    <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
+    <TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+    <UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms>
     <OutputType>Exe</OutputType>
     <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     <NeutralLanguage>en-us</NeutralLanguage>

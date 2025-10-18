@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <!-- Set essential properties -->
-    <TargetFrameworks>net35;net40;net5.0-windows;net6.0-windows</TargetFrameworks>
-    <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' OR '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
+    <TargetFrameworks>net462;net6.0-windows</TargetFrameworks>
+    <UseWPF Condition="'$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
     <IsPackable>true</IsPackable>
 
     <!-- Set NuGet package properties -->
@@ -16,7 +16,7 @@
     <Guid>f9ec6466-b807-40ae-bc05-db9f88967c0c</Guid>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' OR '$(TargetFramework)' == 'net40' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />

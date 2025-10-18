@@ -39,7 +39,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);IDE0005;CA1510</NoWarn>
+    <NoWarn>$(NoWarn);IDE0005;CA1510;CA1708</NoWarn>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>8-recommended</AnalysisLevel>
   </PropertyGroup>

@@ -1,6 +1,4 @@
-#if HAS_SPAN
 using System.Buffers;
-#endif
 
 namespace QRCoder;
 
@@ -215,7 +213,7 @@ public partial class QRCodeGenerator
     {
         var targetEncoding = GetTargetEncoding(plainText, eciMode, utf8BOM, forceUtf8, out var includeUtf8BOM);
 
-#if HAS_SPAN
+#if !NETSTANDARD2_0
         // We can use stackalloc for small arrays to prevent heap allocations
         const int MAX_STACK_SIZE_IN_BYTES = 512;
 
@@ -242,7 +240,7 @@ public partial class QRCodeGenerator
         CopyToBitArray(codeBytes, bitArray, offset);
         offset += (int)((uint)codeBytes.Length * 8);
 
-#if HAS_SPAN
+#if !NETSTANDARD2_0
         if (bufferFromPool != null)
             ArrayPool<byte>.Shared.Return(bufferFromPool);
 #endif
