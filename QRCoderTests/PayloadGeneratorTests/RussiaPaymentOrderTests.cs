@@ -20,6 +20,9 @@ public class RussiaPaymentOrderTests
     [Fact]
     public void russiapayment_generator_can_generate_payload_encoding_win1251()
     {
+#if !NETFRAMEWORK
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
         var account = "40702810138250123017";
         var bic = "044525225";
         var bankName = "ОАО \"БАНК\"";
@@ -32,6 +35,9 @@ public class RussiaPaymentOrderTests
     [Fact]
     public void russiapayment_generator_can_generate_payload_encoding_koi8()
     {
+#if !NETFRAMEWORK
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
         var account = "40702810138250123017";
         var bic = "044525225";
         var bankName = "ОАО \"БАНК\"";
