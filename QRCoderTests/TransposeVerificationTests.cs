@@ -19,7 +19,6 @@ public class TransposeVerificationTests
         _sharedQrCodeData = gen.CreateQrCode("ABCD", QRCodeGenerator.ECCLevel.L);
     }
 
-#if SYSTEM_DRAWING
     [Theory]
     [InlineData("QRCode")]
     [InlineData("BitmapByteQRCode")]
@@ -89,7 +88,6 @@ public class TransposeVerificationTests
         using var bitmap = qrCode.GetGraphic(10, Color.Black, Color.White, Color.White, null, 1, true, ArtQRCode.QuietZoneStyle.Flat, ArtQRCode.BackgroundImageStyle.Fill, null);
         bitmap.ShouldMatchApproved();
     }
-#endif
 
     [Theory]
     [InlineData("FullSize")]
@@ -146,7 +144,6 @@ public class TransposeVerificationTests
         }
     }
 
-#if SYSTEM_DRAWING
     [Fact]
     public void black_module_reference()
     {
@@ -167,5 +164,4 @@ public class TransposeVerificationTests
         using var bitmap = qrCode.GetGraphic(10);
         bitmap.ShouldMatchApproved();
     }
-#endif
 }
