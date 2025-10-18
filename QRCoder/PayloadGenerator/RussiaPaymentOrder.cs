@@ -1,7 +1,3 @@
-#if NETSTANDARD1_3
-using System.Reflection;
-#endif
-
 namespace QRCoder;
 
 public static partial class PayloadGenerator
@@ -65,9 +61,6 @@ public static partial class PayloadGenerator
             var cp = _characterSet.ToString().Replace("_", "-");
             var bytes = ToBytes();
 
-#if !NETFRAMEWORK
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-#endif
             return Encoding.GetEncoding(cp).GetString(bytes, 0, bytes.Length);
         }
 
@@ -81,9 +74,6 @@ public static partial class PayloadGenerator
         {
             //Setup byte encoder
             //Encode return string as byte[] with correct CharacterSet
-#if !NETFRAMEWORK
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-#endif
             var cp = _characterSet.ToString().Replace("_", "-");
 
             //Calculate the seperator
@@ -140,17 +130,6 @@ public static partial class PayloadGenerator
         /// <returns>A List of strings</returns>
         private List<string> GetOptionalFieldsAsList()
         {
-#if NETSTANDARD1_3
-            return typeof(OptionalFields).GetRuntimeProperties()
-                    .Where(field => field.GetValue(_oFields) != null)
-                    .Select(field =>
-                    {
-                        var objValue = field.GetValue(_oFields, null);
-                        var value = field.PropertyType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue.ToString();
-                        return $"{field.Name}={value}";
-                    })
-                    .ToList();
-#else
             return typeof(OptionalFields).GetProperties()
                     .Where(field => field.GetValue(_oFields, null) != null)
                     .Select(field =>
@@ -160,7 +139,6 @@ public static partial class PayloadGenerator
                         return $"{field.Name}={value}";
                     })
                     .ToList();
-#endif
         }
 
 
@@ -170,17 +148,6 @@ public static partial class PayloadGenerator
         /// <returns>A List of strings</returns>
         private List<string> GetMandatoryFieldsAsList()
         {
-#if NETSTANDARD1_3
-            return typeof(MandatoryFields).GetRuntimeFields()
-                    .Where(field => field.GetValue(_mFields) != null)
-                    .Select(field =>
-                    {
-                        var objValue = field.GetValue(_mFields);
-                        var value = field.FieldType.Equals(typeof(DateTime?)) ? ((DateTime)objValue).ToString("dd.MM.yyyy", CultureInfo.InvariantCulture) : objValue.ToString();
-                        return $"{field.Name}={value}";
-                    })
-                    .ToList();
-#else
             return typeof(MandatoryFields).GetFields()
                     .Where(field => field.GetValue(_mFields) != null)
                     .Select(field =>
@@ -190,7 +157,6 @@ public static partial class PayloadGenerator
                         return $"{field.Name}={value}";
                     })
                     .ToList();
-#endif
         }
 
         /// <summary>

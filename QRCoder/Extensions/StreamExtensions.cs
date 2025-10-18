@@ -1,19 +1,17 @@
-#if NET35
+#if NETSTANDARD2_0
+
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace QRCoder;
 
 internal static class StreamExtensions
 {
-    /// <summary>
-    /// Copies a stream to another stream.
-    /// </summary>
-    public static void CopyTo(this System.IO.Stream input, System.IO.Stream output)
+    public static void Write(this Stream stream, ReadOnlySpan<byte> bytes)
     {
-        byte[] buffer = new byte[16 * 1024];
-        int bytesRead;
-        while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
-        {
-            output.Write(buffer, 0, bytesRead);
-        }
+        stream.Write(bytes.ToArray(), 0, bytes.Length);
     }
 }
+
 #endif

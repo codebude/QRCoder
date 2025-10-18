@@ -63,13 +63,8 @@ public class LitecoinAddressTests
     [Fact]
     public void litecoin_address_generator_disregards_current_culture()
     {
-#if NETCOREAPP1_1
-        var currentCulture = CultureInfo.DefaultThreadCurrentCulture;
-        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");
-#else
         var currentCulture = Thread.CurrentThread.CurrentCulture;
         Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-#endif
 
         var address = "LY1t7iLnwtPCb1DPZP38FA835XzFqXBq54";
         var amount = .123;
@@ -81,10 +76,6 @@ public class LitecoinAddressTests
             .ToString()
             .ShouldBe("litecoin:LY1t7iLnwtPCb1DPZP38FA835XzFqXBq54?amount=.123");
 
-#if NETCOREAPP1_1
-        CultureInfo.DefaultThreadCurrentCulture = currentCulture;
-#else
         Thread.CurrentThread.CurrentCulture = currentCulture;
-#endif
     }
 }

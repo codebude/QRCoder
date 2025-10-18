@@ -72,7 +72,6 @@ public class SvgQRCodeRendererTests
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
 
-#if SYSTEM_DRAWING
     [Fact]
     public void can_render_svg_qrcode_with_png_logo_bitmap()
     {
@@ -156,7 +155,6 @@ public class SvgQRCodeRendererTests
         svg = svg.Replace(base64Data, "=====BASE64DATA=====");
         svg.ShouldMatchApproved(x => x.NoDiff().WithFileExtension("svg"));
     }
-#endif
 
     [Fact]
     public void can_render_svg_qrcode_with_png_logo_bytearray()

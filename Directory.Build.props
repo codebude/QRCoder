@@ -11,7 +11,7 @@
   
   <PropertyGroup>
     <!-- Set version and default properties -->
-    <VersionPrefix>1.6.1-preview</VersionPrefix>
+    <VersionPrefix>2.0.0-preview</VersionPrefix>
     <LangVersion>12</LangVersion>
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
@@ -39,7 +39,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);IDE0005;CA1510</NoWarn>
+    <NoWarn>$(NoWarn);IDE0005;CA1510;CA1708</NoWarn>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>8-recommended</AnalysisLevel>
   </PropertyGroup>
