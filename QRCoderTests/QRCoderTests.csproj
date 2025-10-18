@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;netcoreapp3.1;net6.0-windows</TargetFrameworks>
     <UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms>
     <UseWPF Condition="'$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
     <DefineConstants Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);TEST_XAML</DefineConstants>
     <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
-    <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'netcoreapp2.1'">2.1.30</RuntimeFrameworkVersion>
     <NoWarn>$(NoWarn);CA1707;CA1416;CA1850</NoWarn>
     <AssemblyOriginatorKeyFile>..\QRCoder\QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
