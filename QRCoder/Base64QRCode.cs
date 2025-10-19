@@ -79,6 +79,21 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     }
 
     /// <summary>
+    /// Returns a base64-encoded string that contains the resulting QR code as a PNG image.
+    /// </summary>
+    /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
+    /// <param name="darkColor">The color of the dark modules.</param>
+    /// <param name="lightColor">The color of the light modules.</param>
+    /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
+    /// <returns>Returns the QR code graphic as a base64-encoded string.</returns>
+    public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
+    {
+        var pngCoder = new PngByteQRCode(QrCodeData);
+        var pngData = pngCoder.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones);
+        return Convert.ToBase64String(pngData, Base64FormattingOptions.None);
+    }
+
+    /// <summary>
     /// Specifies the type of image to generate.
     /// </summary>
     [Obsolete("ImageType enum is obsolete. Only PNG format is supported.")]
@@ -96,21 +111,6 @@ public class Base64QRCode : AbstractQRCode, IDisposable
         /// Portable Network Graphics (PNG) image format, a lossless raster graphics format
         /// </summary>
         Png
-    }
-
-    /// <summary>
-    /// Returns a base64-encoded string that contains the resulting QR code as a PNG image.
-    /// </summary>
-    /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
-    /// <param name="darkColor">The color of the dark modules.</param>
-    /// <param name="lightColor">The color of the light modules.</param>
-    /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
-    /// <returns>Returns the QR code graphic as a base64-encoded string.</returns>
-    public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
-    {
-        var pngCoder = new PngByteQRCode(QrCodeData);
-        var pngData = pngCoder.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones);
-        return Convert.ToBase64String(pngData, Base64FormattingOptions.None);
     }
 }
 
