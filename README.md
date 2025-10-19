@@ -110,8 +110,8 @@ QRCoder provides multiple renderers for different output formats and use cases. 
 |----------|---------------|----------|---------------|
 | [**PngByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#25-pngbyteqrcode-renderer-in-detail) | PNG byte array | — | `new PngByteQRCode(data).GetGraphic(20)` |
 | [**SvgQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#26-svgqrcode-renderer-in-detail) | SVG string | — | `new SvgQRCode(data).GetGraphic(20)` |
-| [**QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail) | System.Drawing.Bitmap | Windows¹ | `new QRCode(data).GetGraphic(20)` |
-| [**ArtQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail) | Artistic bitmap with custom images | Windows¹ | `new ArtQRCode(data).GetGraphic(20)` |
+| [**QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#21-qrcode-renderer-in-detail) | System.Drawing.Bitmap | SystemDrawing¹ | `new QRCode(data).GetGraphic(20)` |
+| [**ArtQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#211-artqrcode-renderer-in-detail) | Artistic bitmap with custom images | SystemDrawing¹ | `new ArtQRCode(data).GetGraphic(20)` |
 | [**AsciiQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#22-asciiqrcode-renderer-in-detail) | ASCII art string | — | `new AsciiQRCode(data).GetGraphic(1)` or `new AsciiQRCode(data).GetGraphicSmall()` |
 | [**Base64QRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#23-base64qrcode-renderer-in-detail) | Base64 encoded image | — | `new Base64QRCode(data).GetGraphic(20)` |
 | [**BitmapByteQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#24-bitmapbyteqrcode-renderer-in-detail) | BMP byte array | — | `new BitmapByteQRCode(data).GetGraphic(20)` |
@@ -121,7 +121,8 @@ QRCoder provides multiple renderers for different output formats and use cases. 
 | [**UnityQRCode**](https://github.com/Shane32/QRCoder/wiki/Advanced-usage---QR-Code-renderers#27-unityqrcode-renderer-in-detail) | Unity Texture2D | Unity³ | `new UnityQRCode(data).GetGraphic(20)` |
 
 **Notes:**
-- ¹ Requires Windows or System.Drawing.Common package (uses GDI+)
+
+- ¹ Requires the [QRCoder.SystemDrawing](https://www.nuget.org/packages/QRCoder.SystemDrawing) package (Windows or System.Drawing.Common, uses GDI+)
 - ² Requires the [QRCoder.Xaml](https://www.nuget.org/packages/QRCoder.Xaml) package
 - ³ Requires the [QRCoder.Unity](https://www.nuget.org/packages/QRCoder.Unity) package
 
