@@ -11,6 +11,7 @@ QRCoder is a simple C# library originally created by [Raffael Herrmann](https://
 - 📚 [Documentation & Wiki](https://github.com/Shane32/QRCoder/wiki)
 - 📋 [Release notes / Changelog](https://github.com/Shane32/QRCoder/releases)
 - 🚀 [Upcoming features](https://github.com/Shane32/QRCoder/milestones)
+- 🔄 [Migration guide for v2](https://github.com/Shane32/QRCoder/blob/master/docs/migrations/migration2.md)
 
 ## ✨ Features
 
