@@ -11,7 +11,7 @@
     <Description>QRCoder is a simple library, written in C#.NET, which enables you to create QR codes.</Description>
 
     <!-- Set strong name -->
-    <AssemblyOriginatorKeyFile>QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>../QRCoder/QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
