@@ -69,29 +69,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
     {
         var pngCoder = new PngByteQRCode(QrCodeData);
-
-        byte[] pngData;
-        if (darkColor == Color.Black && lightColor == Color.White)
-        {
-            pngData = pngCoder.GetGraphic(pixelsPerModule, drawQuietZones);
-        }
-        else
-        {
-            byte[] darkColorBytes;
-            byte[] lightColorBytes;
-            if (darkColor.A != 255 || lightColor.A != 255)
-            {
-                darkColorBytes = new byte[] { darkColor.R, darkColor.G, darkColor.B, darkColor.A };
-                lightColorBytes = new byte[] { lightColor.R, lightColor.G, lightColor.B, lightColor.A };
-            }
-            else
-            {
-                darkColorBytes = new byte[] { darkColor.R, darkColor.G, darkColor.B };
-                lightColorBytes = new byte[] { lightColor.R, lightColor.G, lightColor.B };
-            }
-            pngData = pngCoder.GetGraphic(pixelsPerModule, darkColorBytes, lightColorBytes, drawQuietZones);
-        }
-
+        var pngData = pngCoder.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones);
         return Convert.ToBase64String(pngData, Base64FormattingOptions.None);
     }
 
