@@ -40,7 +40,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
+    <ProjectReference Include="..\QRCoder.SystemDrawing\QRCoder.SystemDrawing.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net6.0-windows' ">

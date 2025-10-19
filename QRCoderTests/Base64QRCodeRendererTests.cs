@@ -43,10 +43,15 @@ public class Base64QRCodeRendererTests
     }
 
     [Fact]
-    public void can_render_base64_qrcode_jpeg()
+    public void can_render_base64_qrcode_jpeg_throws_exception()
     {
-        var base64QRCode = new Base64QRCode(_data).GetGraphic(5, Color.Black, Color.White, true, Base64QRCode.ImageType.Jpeg);
-        var data = Convert.FromBase64String(base64QRCode);
-        data.ShouldMatchApprovedImage(asMonochrome: true); // remove JPEG compression artifacts by converting to monochrome
+        var ex = Should.Throw<NotSupportedException>(() =>
+        {
+#pragma warning disable CS0618 // Type or member is obsolete
+            var base64QRCode = new Base64QRCode(_data).GetGraphic(5, Color.Black, Color.White, true, Base64QRCode.ImageType.Jpeg);
+#pragma warning restore CS0618 // Type or member is obsolete
+        });
+        ex.Message.ShouldContain("Only PNG format is supported");
+        ex.Message.ShouldContain("Jpeg");
     }
 }

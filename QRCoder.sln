@@ -31,6 +31,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoderSamples", "QRCoderSamples\QRCoderSamples.csproj", "{61ED615B-C22C-5E3E-DAAD-A77A820E16DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QRCoder.SystemDrawing", "QRCoder.SystemDrawing\QRCoder.SystemDrawing.csproj", "{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -201,6 +203,22 @@ Global
 		{61ED615B-C22C-5E3E-DAAD-A77A820E16DF}.Release|x64.Build.0 = Release|Any CPU
 		{61ED615B-C22C-5E3E-DAAD-A77A820E16DF}.Release|x86.ActiveCfg = Release|Any CPU
 		{61ED615B-C22C-5E3E-DAAD-A77A820E16DF}.Release|x86.Build.0 = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|ARM.Build.0 = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|x64.Build.0 = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Debug|x86.Build.0 = Debug|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|ARM.ActiveCfg = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|ARM.Build.0 = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|x64.ActiveCfg = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|x64.Build.0 = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{FEE6DC1D-BE5A-4498-A70D-35C516AD13F3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
