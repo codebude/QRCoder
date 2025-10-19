@@ -28,6 +28,6 @@
     <ProjectReference Include="..\QRCoder.Xaml\QRCoder.Xaml.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
+    <ProjectReference Include="..\QRCoder.SystemDrawing\QRCoder.SystemDrawing.csproj" />
   </ItemGroup>
 </Project>

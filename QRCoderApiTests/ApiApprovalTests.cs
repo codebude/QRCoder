@@ -44,6 +44,7 @@ public class ApiApprovalTests
 {
     [Theory]
     [InlineData(typeof(QRCoder.QRCodeData))]
+    [InlineData(typeof(QRCoder.QRCode))]
     [InlineData(typeof(QRCoder.Xaml.XamlQRCode))]
     public void PublicApi(Type type)
     {

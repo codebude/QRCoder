@@ -51,7 +51,9 @@ public sealed class PngByteQRCode : AbstractQRCode, IDisposable
     /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
     /// <returns>Returns the QR code graphic as a PNG byte array.</returns>
     public byte[] GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true)
-        => GetGraphic(pixelsPerModule, new byte[] { darkColor.R, darkColor.G, darkColor.B, darkColor.A }, new byte[] { lightColor.R, lightColor.G, lightColor.B, lightColor.A }, drawQuietZones);
+        => darkColor == System.Drawing.Color.Black && lightColor == System.Drawing.Color.White
+            ? GetGraphic(pixelsPerModule, drawQuietZones)
+            : GetGraphic(pixelsPerModule, [darkColor.R, darkColor.G, darkColor.B, darkColor.A], [lightColor.R, lightColor.G, lightColor.B, lightColor.A], drawQuietZones);
 
     /// <summary>
     /// Creates a 2-color PNG of the QR code, using 1-bit indexed color. Accepts 3-byte RGB colors for normal images and 4-byte RGBA-colors for transparent images.

@@ -1,0 +1,54 @@
+namespace QRCoder
+{
+    public class ArtQRCode : QRCoder.AbstractQRCode, System.IDisposable
+    {
+        public ArtQRCode() { }
+        public ArtQRCode(QRCoder.QRCodeData data) { }
+        public System.Drawing.Bitmap GetGraphic(System.Drawing.Bitmap? backgroundImage = null) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, System.Drawing.Color backgroundColor, System.Drawing.Bitmap? backgroundImage = null, double pixelSizeFactor = 1, bool drawQuietZones = true, QRCoder.ArtQRCode.QuietZoneStyle quietZoneRenderingStyle = 0, QRCoder.ArtQRCode.BackgroundImageStyle backgroundImageStyle = 1, System.Drawing.Bitmap? finderPatternImage = null) { }
+        public enum BackgroundImageStyle
+        {
+            Fill = 0,
+            DataAreaOnly = 1,
+        }
+        public enum QuietZoneStyle
+        {
+            Dotted = 0,
+            Flat = 1,
+        }
+    }
+    public static class ArtQRCodeHelper
+    {
+        public static System.Drawing.Bitmap GetQRCode(
+                    string plainText,
+                    int pixelsPerModule,
+                    System.Drawing.Color darkColor,
+                    System.Drawing.Color lightColor,
+                    System.Drawing.Color backgroundColor,
+                    QRCoder.QRCodeGenerator.ECCLevel eccLevel,
+                    bool forceUtf8 = false,
+                    bool utf8BOM = false,
+                    QRCoder.QRCodeGenerator.EciMode eciMode = 0,
+                    int requestedVersion = -1,
+                    System.Drawing.Bitmap? backgroundImage = null,
+                    double pixelSizeFactor = 1,
+                    bool drawQuietZones = true,
+                    QRCoder.ArtQRCode.QuietZoneStyle quietZoneRenderingStyle = 1,
+                    QRCoder.ArtQRCode.BackgroundImageStyle backgroundImageStyle = 1,
+                    System.Drawing.Bitmap? finderPatternImage = null) { }
+    }
+    public class QRCode : QRCoder.AbstractQRCode, System.IDisposable
+    {
+        public QRCode() { }
+        public QRCode(QRCoder.QRCodeData data) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, bool drawQuietZones = true) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, string darkColorHtmlHex, string lightColorHtmlHex, bool drawQuietZones = true) { }
+        public System.Drawing.Bitmap GetGraphic(int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, System.Drawing.Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true, System.Drawing.Color? iconBackgroundColor = default) { }
+    }
+    public static class QRCodeHelper
+    {
+        public static System.Drawing.Bitmap GetQRCode(string plainText, int pixelsPerModule, System.Drawing.Color darkColor, System.Drawing.Color lightColor, QRCoder.QRCodeGenerator.ECCLevel eccLevel, bool forceUtf8 = false, bool utf8BOM = false, QRCoder.QRCodeGenerator.EciMode eciMode = 0, int requestedVersion = -1, System.Drawing.Bitmap? icon = null, int iconSizePercent = 15, int iconBorderWidth = 0, bool drawQuietZones = true) { }
+    }
+}

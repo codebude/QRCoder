@@ -15,12 +15,9 @@
   <ItemGroup>
     <PackageReference Include="System.Resources.Extensions" Version="6.0.0" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj">
-      <Project>{aa6be23a-7813-4d2a-835e-b673631ae9f1}</Project>
-      <Name>QRCoder</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\QRCoder.SystemDrawing\QRCoder.SystemDrawing.csproj" />
   </ItemGroup>
   
 </Project>
