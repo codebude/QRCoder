@@ -88,7 +88,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     /// <returns>Returns the QR code graphic as a base64-encoded string.</returns>
     public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, bool drawQuietZones = true)
     {
-        var pngCoder = new PngByteQRCode(QrCodeData);
+        using var pngCoder = new PngByteQRCode(QrCodeData);
         var pngData = pngCoder.GetGraphic(pixelsPerModule, darkColor, lightColor, drawQuietZones);
         return Convert.ToBase64String(pngData, Base64FormattingOptions.None);
     }
