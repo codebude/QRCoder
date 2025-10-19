@@ -1,5 +1,5 @@
-using QRCoder;
 using System.Drawing.Imaging;
+using QRCoder;
 
 namespace QRCoderSamples;
 
