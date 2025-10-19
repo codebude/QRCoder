@@ -1,6 +1,4 @@
-#if !NETSTANDARD1_3
 using System.Drawing;
-using QRCoder.Extensions;
 using static QRCoder.QRCodeGenerator;
 using static QRCoder.SvgQRCode;
 
@@ -330,7 +328,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             if (colorHex.Length == 9)
             {
                 // Extract alpha channel (last 2 characters)
-#if HAS_SPAN
+#if !NETSTANDARD2_0
                 if (int.TryParse(colorHex.AsSpan(7, 2), NumberStyles.HexNumber, null, out int alpha))
 #else
                 if (int.TryParse(colorHex.Substring(7, 2), NumberStyles.HexNumber, null, out int alpha))
@@ -343,7 +341,7 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             else if (colorHex.Length == 5)
             {
                 // Extract alpha channel (last character) and multiply by 17 to convert 4-bit to 8-bit
-#if HAS_SPAN
+#if !NETSTANDARD2_0
                 if (int.TryParse(colorHex.AsSpan(4, 1), NumberStyles.HexNumber, null, out int alpha))
 #else
                 if (int.TryParse(colorHex.Substring(4, 1), NumberStyles.HexNumber, null, out int alpha))
@@ -435,16 +433,13 @@ public class SvgQRCode : AbstractQRCode, IDisposable
         private readonly object _logoRaw;
         private readonly bool _isEmbedded;
 
-#if SYSTEM_DRAWING
         /// <summary>
         /// Create a logo object to be used in SvgQRCode renderer
         /// </summary>
         /// <param name="iconRasterized">Logo to be rendered as Bitmap/rasterized graphic</param>
         /// <param name="iconSizePercent">Degree of percentage coverage of the QR code by the logo</param>
         /// <param name="fillLogoBackground">If true, the background behind the logo will be cleaned</param>
-#if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
         public SvgLogo(Bitmap iconRasterized, int iconSizePercent = 15, bool fillLogoBackground = true)
         {
             _iconSizePercent = iconSizePercent;
@@ -459,7 +454,6 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             _logoRaw = iconRasterized;
             _isEmbedded = false;
         }
-#endif
 
         /// <summary>
         /// Create a logo object to be used in SvgQRCode renderer
@@ -535,17 +529,11 @@ public class SvgQRCode : AbstractQRCode, IDisposable
             /// <summary>
             /// Portable Network Graphics (PNG) image format
             /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-            [StringValue("image/png")]
-#pragma warning restore CS0618 // Type or member is obsolete
             PNG = 0,
 
             /// <summary>
             /// Scalable Vector Graphics (SVG) image format
             /// </summary>
-#pragma warning disable CS0618 // Type or member is obsolete
-            [StringValue("image/svg+xml")]
-#pragma warning restore CS0618 // Type or member is obsolete
             SVG = 1
         }
 
@@ -588,5 +576,3 @@ public static class SvgQRCodeHelper
         return qrCode.GetGraphic(pixelsPerModule, darkColorHex, lightColorHex, drawQuietZones, sizingMode, logo);
     }
 }
-
-#endif

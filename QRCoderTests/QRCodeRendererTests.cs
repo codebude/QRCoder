@@ -1,5 +1,3 @@
-#if SYSTEM_DRAWING
-
 namespace QRCoderTests;
 
 public class QRCodeRendererTests
@@ -111,4 +109,3 @@ public class QRCodeRendererTests
         bmp.ShouldMatchApproved();
     }
 }
-#endif

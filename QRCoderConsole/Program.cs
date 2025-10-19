@@ -7,7 +7,7 @@ using QRCoderConsole.DataObjects;
 
 namespace QRCoderConsole;
 
-#if NET6_0 && WINDOWS
+#if NET6_0
 [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
 internal sealed class MainClass
@@ -227,7 +227,7 @@ public static class OptionSetter
     public static QRCodeGenerator.ECCLevel GetECCLevel(string value)
         => Enum.TryParse(value, true, out QRCodeGenerator.ECCLevel level) ? level : QRCodeGenerator.ECCLevel.Default;
 
-#if NET6_0 && WINDOWS
+#if NET6_0
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
     public static ImageFormat GetImageFormat(string value) => value.ToLowerInvariant() switch

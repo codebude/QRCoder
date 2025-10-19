@@ -56,7 +56,6 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
         var sideLength = (QrCodeData.ModuleMatrix.Count - quietZonesModifier) * verticalNumberOfRepeats;
         var qrCode = new string[sideLength];
         var lineCapacity = (QrCodeData.ModuleMatrix.Count - quietZonesModifier) * repeatPerModule * darkColorString.Length;
-#if HAS_SPAN
         if (darkColorString.Length == whiteSpaceString.Length && lineCapacity < 510)
         {
             Span<char> row = stackalloc char[512].Slice(0, lineCapacity);
@@ -78,7 +77,6 @@ public class AsciiQRCode : AbstractQRCode, IDisposable
             }
             return qrCode;
         }
-#endif
         var lineBuilder = new StringBuilder(lineCapacity);
         for (var y = 0; y < sideLength; y++)
         {

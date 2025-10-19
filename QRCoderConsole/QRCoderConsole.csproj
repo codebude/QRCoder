@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net45;net5.0;net5.0-windows;net6.0-windows</TargetFrameworks>
+    <TargetFrameworks>net462;net6.0;net6.0-windows</TargetFrameworks>
     <!-- <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>-->
-    <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
+    <UseWPF Condition="'$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
@@ -13,13 +13,10 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' or '$(TargetFramework)' == 'net45' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
-  </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-    <PackageReference Include="System.Drawing.Common" Version="5.0.3" />
   </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0-windows' ">
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
@@ -27,7 +24,7 @@
   <ItemGroup>
     <PackageReference Include="NDesk.Options.Core" Version="1.2.5" />
   </ItemGroup>
-  <ItemGroup Condition=" '$(TargetFramework)' != 'net5.0'">
+  <ItemGroup Condition=" '$(TargetFramework)' != 'net6.0'">
     <ProjectReference Include="..\QRCoder.Xaml\QRCoder.Xaml.csproj" />
   </ItemGroup>
   <ItemGroup>

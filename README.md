@@ -11,6 +11,7 @@ QRCoder is a simple C# library originally created by [Raffael Herrmann](https://
 - 📚 [Documentation & Wiki](https://github.com/Shane32/QRCoder/wiki)
 - 📋 [Release notes / Changelog](https://github.com/Shane32/QRCoder/releases)
 - 🚀 [Upcoming features](https://github.com/Shane32/QRCoder/milestones)
+- 🔄 [Migration guide for v2](https://github.com/Shane32/QRCoder/blob/master/docs/migrations/migration2.md)
 
 ## ✨ Features
 
@@ -19,7 +20,7 @@ QRCoder is a simple C# library originally created by [Raffael Herrmann](https://
 - 🎨 **Multiple output formats** - PNG, SVG, PDF, ASCII, Bitmap, PostScript, and more
 - 📱 **23+ payload generators** - WiFi, vCard, URLs, payments, and many more
 - 🔧 **Highly configurable** - Error correction levels, custom colors, logos, and styling
-- 🌐 **Cross-platform** - Supports .NET 5+, .NET Framework 3.5+, .NET Core 1.0+, and .NET Standard 1.3+
+- 🌐 **Cross-platform** - Supports .NET Standard 2.0+ and any compatible frameworks
 - 📦 **Micro QR codes** - Smaller QR codes for space-constrained applications
 
 ## 📦 Installation
@@ -208,8 +209,6 @@ using System.Text;
 // Register the code pages encoding provider
 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 ```
-
-Note that the `RussiaPaymentOrder` payload generator already includes this registration internally, so no additional setup is required when using that class.
 
 ## 🚀 CI Builds
 

@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net462;netcoreapp2.1;netcoreapp3.1;net5.0-windows;net6.0-windows</TargetFrameworks>
-    <UseWindowsForms Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWindowsForms>
-    <UseWPF Condition="'$(TargetFramework)' == 'net5.0-windows'">true</UseWPF>
-    <DefineConstants Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);TEST_XAML</DefineConstants>
+    <TargetFrameworks>net462;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+    <UseWindowsForms Condition="'$(TargetFramework)' == 'net6.0-windows'">true</UseWindowsForms>
+    <UseWPF Condition="'$(TargetFramework)' == 'net6.0-windows'">true</UseWPF>
+    <DefineConstants Condition="'$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net6.0-windows'">$(DefineConstants);TEST_XAML</DefineConstants>
     <SuppressTfmSupportBuildErrors>true</SuppressTfmSupportBuildErrors>
-    <RuntimeFrameworkVersion Condition="'$(TargetFramework)' == 'netcoreapp2.1'">2.1.30</RuntimeFrameworkVersion>
     <NoWarn>$(NoWarn);CA1707;CA1416;CA1850</NoWarn>
     <AssemblyOriginatorKeyFile>..\QRCoder\QRCoderStrongName.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
@@ -19,7 +18,6 @@
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3" />
     <PackageReference Include="shouldly" Version="4.3.0" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
     <PackageReference Include="System.Management" Version="6.0.1">
       <ExcludeAssets>buildTransitive</ExcludeAssets>
     </PackageReference>
@@ -45,7 +43,7 @@
     <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net5.0-windows' or '$(TargetFramework)' == 'net6.0-windows' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net6.0-windows' ">
     <ProjectReference Include="..\QRCoder.Xaml\QRCoder.Xaml.csproj" />
   </ItemGroup>
 
