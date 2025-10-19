@@ -10,6 +10,8 @@ internal static class ColorTranslator
 {
     /// <summary>
     /// Dictionary of known HTML color names mapped to their RGB values.
+    /// This list matches the CSS named colors as documented at:
+    /// https://developer.mozilla.org/en-US/docs/Web/CSS/named-color
     /// </summary>
     private static readonly Dictionary<string, System.Drawing.Color> _knownColors = new Dictionary<string, System.Drawing.Color>(StringComparer.OrdinalIgnoreCase)
     {
