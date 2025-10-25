@@ -1,6 +1,4 @@
-#if HAS_SPAN
 using System.Buffers;
-#endif
 
 namespace QRCoder;
 
@@ -47,12 +45,10 @@ public partial class QRCodeGenerator
 
         public static void ReturnList(List<CodewordBlock> list)
         {
-#if HAS_SPAN
             foreach (var item in list)
             {
                 ArrayPool<byte>.Shared.Return(item.ECCWords.Array!);
             }
-#endif
             list.Clear();
             Interlocked.CompareExchange(ref _codewordBlocks, list, null);
         }

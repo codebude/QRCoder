@@ -985,9 +985,7 @@ namespace QRCoder
             public bool IsEmbedded() { }
             public enum MediaType
             {
-                [QRCoder.Extensions.StringValue("image/png")]
                 PNG = 0,
-                [QRCoder.Extensions.StringValue("image/svg+xml")]
                 SVG = 1,
             }
         }
@@ -1003,21 +1001,5 @@ namespace QRCoder.Exceptions
     {
         public DataTooLongException(string eccLevel, string encodingMode, int maxSizeByte) { }
         public DataTooLongException(string eccLevel, string encodingMode, int version, int maxSizeByte) { }
-    }
-}
-namespace QRCoder.Extensions
-{
-    [System.Obsolete("This class will be removed in a future version of QRCoder.")]
-    public static class CustomExtensions
-    {
-        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("This method uses reflection to examine the provided enum value.")]
-        public static string? GetStringValue(this System.Enum value) { }
-    }
-    [System.AttributeUsage(System.AttributeTargets.Field)]
-    [System.Obsolete("This attribute will be removed in a future version of QRCoder.")]
-    public class StringValueAttribute : System.Attribute
-    {
-        public StringValueAttribute(string value) { }
-        public string StringValue { get; set; }
     }
 }

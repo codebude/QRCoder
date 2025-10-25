@@ -63,13 +63,8 @@ public class BitcoinCashAddressTests
     [Fact]
     public void bitcoincash_address_generator_disregards_current_culture()
     {
-#if NETCOREAPP1_1
-        var currentCulture = CultureInfo.DefaultThreadCurrentCulture;
-        CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("de-DE");
-#else
         var currentCulture = Thread.CurrentThread.CurrentCulture;
         Thread.CurrentThread.CurrentCulture = new CultureInfo("de-DE");
-#endif
 
         var address = "qqtlfk37qyey50f4wfuhc7jw85zsdp8s2swffjk890";
         var amount = .123;
@@ -81,10 +76,6 @@ public class BitcoinCashAddressTests
             .ToString()
             .ShouldBe("bitcoincash:qqtlfk37qyey50f4wfuhc7jw85zsdp8s2swffjk890?amount=.123");
 
-#if NETCOREAPP1_1
-        CultureInfo.DefaultThreadCurrentCulture = currentCulture;
-#else
         Thread.CurrentThread.CurrentCulture = currentCulture;
-#endif
     }
 }

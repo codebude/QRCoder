@@ -42,7 +42,6 @@ public class Base64QRCodeRendererTests
         base64QRCode.ShouldBe(Convert.ToBase64String(pngCodeGfx));
     }
 
-#if SYSTEM_DRAWING
     [Fact]
     public void can_render_base64_qrcode_jpeg()
     {
@@ -50,5 +49,4 @@ public class Base64QRCodeRendererTests
         var data = Convert.FromBase64String(base64QRCode);
         data.ShouldMatchApprovedImage(asMonochrome: true); // remove JPEG compression artifacts by converting to monochrome
     }
-#endif
 }

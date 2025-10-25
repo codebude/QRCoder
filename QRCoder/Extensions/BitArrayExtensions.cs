@@ -22,4 +22,28 @@ internal static class BitArrayExtensions
         }
         return destinationOffset + count;
     }
+
+    public static void ShiftTowardsBit0(this BitArray fStrEcc, int num)
+    {
+#if !NETSTANDARD2_0
+        fStrEcc.RightShift(num); // Shift towards bit 0
+#else
+        for (var i = 0; i < fStrEcc.Length - num; i++)
+            fStrEcc[i] = fStrEcc[i + num];
+        for (var i = fStrEcc.Length - num; i < fStrEcc.Length; i++)
+            fStrEcc[i] = false;
+#endif
+    }
+
+    public static void ShiftAwayFromBit0(this BitArray fStrEcc, int num)
+    {
+#if !NETSTANDARD2_0
+        fStrEcc.LeftShift(num); // Shift away from bit 0
+#else
+        for (var i = fStrEcc.Length - 1; i >= num; i--)
+            fStrEcc[i] = fStrEcc[i - num];
+        for (var i = 0; i < num; i++)
+            fStrEcc[i] = false;
+#endif
+    }
 }

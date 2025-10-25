@@ -1,4 +1,3 @@
-#if !NETSTANDARD1_3
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -88,7 +87,6 @@ public class Base64QRCode : AbstractQRCode, IDisposable
             return Convert.ToBase64String(pngData, Base64FormattingOptions.None);
         }
 
-#if SYSTEM_DRAWING
 #pragma warning disable CA1416 // Validate platform compatibility
         var qr = new QRCode(QrCodeData);
         var base64 = string.Empty;
@@ -98,12 +96,8 @@ public class Base64QRCode : AbstractQRCode, IDisposable
         }
         return base64;
 #pragma warning restore CA1416 // Validate platform compatibility
-#else
-        throw new PlatformNotSupportedException("Only the PNG image type is supported on this platform.");
-#endif
     }
 
-#if SYSTEM_DRAWING
     /// <summary>
     /// Returns a base64-encoded string that contains the resulting QR code as an image with an embedded icon.
     /// </summary>
@@ -116,9 +110,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
     /// <param name="drawQuietZones">Indicates if quiet zones around the QR code should be drawn.</param>
     /// <param name="imgType">The type of image to generate (PNG, JPEG, GIF).</param>
     /// <returns>Returns the QR code graphic as a base64-encoded string.</returns>
-#if NET6_0_OR_GREATER
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
     public string GetGraphic(int pixelsPerModule, Color darkColor, Color lightColor, Bitmap icon, int iconSizePercent = 15, int iconBorderWidth = 6, bool drawQuietZones = true, ImageType imgType = ImageType.Png)
     {
         var qr = new QRCode(QrCodeData);
@@ -129,18 +121,14 @@ public class Base64QRCode : AbstractQRCode, IDisposable
         }
         return base64;
     }
-#endif
 
-#if SYSTEM_DRAWING
     /// <summary>
     /// Converts a bitmap to a base64-encoded string.
     /// </summary>
     /// <param name="bmp">The bitmap to convert.</param>
     /// <param name="imgType">The type of image (PNG, JPEG, GIF).</param>
     /// <returns>Returns the base64-encoded string representation of the bitmap.</returns>
-#if NET6_0_OR_GREATER
     [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
     private static string BitmapToBase64(Bitmap bmp, ImageType imgType)
     {
         var iFormat = imgType switch
@@ -154,7 +142,6 @@ public class Base64QRCode : AbstractQRCode, IDisposable
         bmp.Save(memoryStream, iFormat);
         return Convert.ToBase64String(memoryStream.ToArray(), Base64FormattingOptions.None);
     }
-#endif
 
     /// <summary>
     /// Specifies the type of image to generate.
@@ -164,16 +151,12 @@ public class Base64QRCode : AbstractQRCode, IDisposable
         /// <summary>
         /// Graphics Interchange Format (GIF) image format, a bitmap image format with limited color support
         /// </summary>
-#if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
         Gif,
         /// <summary>
         /// Joint Photographic Experts Group (JPEG) image format, a lossy compressed image format
         /// </summary>
-#if NET6_0_OR_GREATER
         [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
         Jpeg,
         /// <summary>
         /// Portable Network Graphics (PNG) image format, a lossless raster graphics format
@@ -211,5 +194,3 @@ public static class Base64QRCodeHelper
         return qrCode.GetGraphic(pixelsPerModule, darkColorHtmlHex, lightColorHtmlHex, drawQuietZones, imgType);
     }
 }
-
-#endif

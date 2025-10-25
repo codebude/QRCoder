@@ -1,10 +1,6 @@
-#if HAS_SPAN
 using System.Buffers;
-#endif
-using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace QRCoder;
 
@@ -512,11 +508,11 @@ public partial class QRCodeGenerator : IDisposable
         }
 
         // Align bits with the start of the array.
-        ShiftTowardsBit0(fStrEcc, index);
+        fStrEcc.ShiftTowardsBit0(index);
 
         // Prefix the error correction bits with the ECC level and version number.
         fStrEcc.Length = 10 + 5;
-        ShiftAwayFromBit0(fStrEcc, (10 - count) + 5);
+        fStrEcc.ShiftAwayFromBit0((10 - count) + 5);
         if (version < 0)
             WriteMicroEccLevelAndVersion();
         else
@@ -591,9 +587,7 @@ public partial class QRCodeGenerator : IDisposable
         }
     }
 
-#if !NETFRAMEWORK || NET45_OR_GREATER
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
     private static void TrimLeadingZeros(BitArray fStrEcc, ref int index, ref int count)
     {
         while (count > 0 && !fStrEcc[index])
@@ -601,30 +595,6 @@ public partial class QRCodeGenerator : IDisposable
             index++;
             count--;
         }
-    }
-
-    private static void ShiftTowardsBit0(BitArray fStrEcc, int num)
-    {
-#if HAS_SPAN
-        fStrEcc.RightShift(num); // Shift towards bit 0
-#else
-        for (var i = 0; i < fStrEcc.Length - num; i++)
-            fStrEcc[i] = fStrEcc[i + num];
-        for (var i = fStrEcc.Length - num; i < fStrEcc.Length; i++)
-            fStrEcc[i] = false;
-#endif
-    }
-
-    private static void ShiftAwayFromBit0(BitArray fStrEcc, int num)
-    {
-#if HAS_SPAN
-        fStrEcc.LeftShift(num); // Shift away from bit 0
-#else
-        for (var i = fStrEcc.Length - 1; i >= num; i--)
-            fStrEcc[i] = fStrEcc[i - num];
-        for (var i = 0; i < num; i++)
-            fStrEcc[i] = false;
-#endif
     }
 
     private static readonly BitArray _getVersionGenerator = new BitArray(new bool[] { true, true, true, true, true, false, false, true, false, false, true, false, true });
@@ -655,11 +625,11 @@ public partial class QRCodeGenerator : IDisposable
             TrimLeadingZeros(vStr, ref index, ref count); // Trim leading zeros after each XOR operation to maintain the proper sequence.
         }
 
-        ShiftTowardsBit0(vStr, index); // Align the bit array so the data starts at index 0.
+        vStr.ShiftTowardsBit0(index); // Align the bit array so the data starts at index 0.
 
         // Prefix the error correction encoding with 6 bits containing the version number
         vStr.Length = 12 + 6;
-        ShiftAwayFromBit0(vStr, (12 - count) + 6);
+        vStr.ShiftAwayFromBit0((12 - count) + 6);
         DecToBin(version, 6, vStr, 0);
     }
 
@@ -716,13 +686,8 @@ public partial class QRCodeGenerator : IDisposable
         generatorPolynom.Dispose();
 
         // Convert the resulting polynomial into a byte array representing the ECC codewords.
-#if HAS_SPAN
         var array = ArrayPool<byte>.Shared.Rent(leadTermSource.Count);
         var ret = new ArraySegment<byte>(array, 0, leadTermSource.Count);
-#else
-        var ret = new ArraySegment<byte>(new byte[leadTermSource.Count]);
-        var array = ret.Array!;
-#endif
 
         for (var i = 0; i < leadTermSource.Count; i++)
             array[i] = (byte)leadTermSource[i].Coefficient;
@@ -1018,11 +983,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <param name="prefixZeros">The number of leading zeros to prepend to the resulting BitArray.</param>
     /// <returns>A BitArray representing the bits of the input byteArray, with optional leading zeros.</returns>
     private static BitArray ToBitArray(
-#if HAS_SPAN
         ReadOnlySpan<byte> byteArray, // byte[] has an implicit cast to ReadOnlySpan<byte>
-#else
-        byte[] byteArray,
-#endif
         int prefixZeros = 0)
     {
         // Calculate the total number of bits in the resulting BitArray including the prefix zeros.
@@ -1039,11 +1000,7 @@ public partial class QRCodeGenerator : IDisposable
     /// <param name="bitArray">The target BitArray to write to.</param>
     /// <param name="offset">The starting offset in the BitArray where bits will be written.</param>
     private static void CopyToBitArray(
-#if HAS_SPAN
         ReadOnlySpan<byte> byteArray, // byte[] has an implicit cast to ReadOnlySpan<byte>
-#else
-        byte[] byteArray,
-#endif
         BitArray bitArray,
         int offset)
     {
@@ -1235,7 +1192,7 @@ public partial class QRCodeGenerator : IDisposable
             var dic = new Dictionary<int, bool>(list.Count);
             foreach (var row in list)
             {
-#if NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+#if !NETSTANDARD2_0
                 if (!dic.TryAdd(row.Exponent, false))
 #else
                 if (!dic.ContainsKey(row.Exponent))

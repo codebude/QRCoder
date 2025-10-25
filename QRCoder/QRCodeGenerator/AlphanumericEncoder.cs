@@ -7,13 +7,9 @@ public partial class QRCodeGenerator
     /// </summary>
     internal static class AlphanumericEncoder
     {
-#if HAS_SPAN
         // With C# 7.3 and later, this byte array is inlined into the assembly's read-only data section, improving performance and reducing memory usage.
         // See: https://devblogs.microsoft.com/dotnet/performance-improvements-in-net-core-3-0/
         internal static ReadOnlySpan<byte> _map =>
-#else
-        internal static readonly byte[] _map =
-#endif
         [
             // 0..31
             255, 255, 255, 255, 255, 255, 255, 255,
