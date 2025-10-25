@@ -9,7 +9,7 @@ namespace QRCoder;
 /// </summary>
 public class PdfByteQRCode : AbstractQRCode, IDisposable
 {
-    private readonly byte[] _pdfBinaryComment = new byte[] { 0x25, 0xe2, 0xe3, 0xcf, 0xd3 };
+    private static ReadOnlySpan<byte> _pdfBinaryComment => [0x25, 0xe2, 0xe3, 0xcf, 0xd3];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PdfByteQRCode"/> class.
@@ -63,7 +63,7 @@ public class PdfByteQRCode : AbstractQRCode, IDisposable
         writer.Flush();
 
         // Binary comment - ensures PDF is treated as binary file (prevents text mode corruption)
-        stream.Write(_pdfBinaryComment, 0, _pdfBinaryComment.Length);
+        stream.Write(_pdfBinaryComment);
         writer.WriteLine();
 
         writer.Flush();
