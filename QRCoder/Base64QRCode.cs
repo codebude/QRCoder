@@ -120,7 +120,7 @@ public class Base64QRCode : AbstractQRCode, IDisposable
 public static class Base64QRCodeHelper
 {
     /// <summary>
-    /// Creates a base64-encoded QR code with a single function call.
+    /// Creates a base64-encoded QR code as a one-shot operation.
     /// </summary>
     /// <param name="plainText">The text or payload to be encoded inside the QR code.</param>
     /// <param name="pixelsPerModule">The number of pixels each dark/light module of the QR code will occupy in the final QR code image.</param>
