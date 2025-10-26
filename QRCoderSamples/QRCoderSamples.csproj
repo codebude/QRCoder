@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\QRCoder\QRCoder.csproj" />
+    <ProjectReference Include="..\QRCoder.SystemDrawing\QRCoder.SystemDrawing.csproj" />
   </ItemGroup>
 
 </Project>
